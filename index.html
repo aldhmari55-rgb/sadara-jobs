@@ -3,24 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة صدارة للوظائف - ذمار</title>
-    <!-- خط تجوال من Google Fonts -->
+    <title>منصة صدارة للوظائف والخدمات الذكية | ذمار</title>
+    <!-- خط تجوال الاحترافي -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-blue: #0b1d3a;
-            --secondary-blue: #1b3b6f;
+            --primary-dark: #0a1324;
+            --primary-blue: #0f2347;
+            --accent-gold: #d4af37;
+            --accent-gold-hover: #b89628;
             --accent-blue: #2563eb;
-            --bg-light: #f4f6f9;
+            --bg-light: #f8fafc;
             --card-bg: #ffffff;
-            --text-main: #1e293b;
+            --text-dark: #0f172a;
             --text-muted: #64748b;
             --whatsapp-green: #25d366;
-            --whatsapp-hover: #1eaa53;
+            --whatsapp-hover: #1ebd56;
             --border-color: #e2e8f0;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
         }
 
         * {
@@ -28,497 +35,736 @@
             margin: 0;
             padding: 0;
             font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg-light);
-            color: var(--text-main);
+            color: var(--text-dark);
             line-height: 1.6;
-            padding-bottom: 50px;
+            padding-bottom: 60px;
         }
 
-        /* Top Navbar */
+        /* Top Header Navbar */
         .top-navbar {
-            background-color: var(--primary-blue);
+            background: var(--primary-dark);
             color: #ffffff;
-            padding: 12px 20px;
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
 
-        .user-status {
+        .user-status-badge {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 14px;
-            color: #cbd5e1;
+            font-size: 13px;
+            background: rgba(255,255,255,0.08);
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #e2e8f0;
         }
 
-        .login-btn {
-            background-color: var(--accent-blue);
-            color: #ffffff;
+        .auth-btn {
+            background: linear-gradient(135deg, var(--accent-gold), #f3e5ab);
+            color: var(--primary-dark);
             border: none;
             padding: 6px 16px;
-            border-radius: 6px;
-            font-weight: 600;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 13px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
         }
 
-        .login-btn:hover {
-            background-color: #1d4ed8;
+        .auth-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
         }
 
-        /* Hero Header */
+        /* Hero Banner Section */
         .hero-section {
-            background: linear-gradient(180deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
             color: #ffffff;
-            padding: 30px 20px 40px 20px;
+            padding: 35px 20px 50px 20px;
             text-align: center;
             position: relative;
+            overflow: hidden;
         }
 
-        .brand-header {
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 20px;
+            background: var(--bg-light);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .brand-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             max-width: 900px;
-            margin: 0 auto 25px auto;
+            margin: 0 auto 20px auto;
         }
 
-        .brand-logo-title {
+        .brand-identity {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .logo-box {
-            background-color: #ffffff;
-            color: var(--primary-blue);
-            width: 45px;
-            height: 45px;
-            border-radius: 10px;
+        .brand-logo {
+            background: linear-gradient(135deg, var(--accent-gold), #fff8dc);
+            color: var(--primary-dark);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            font-weight: 800;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-size: 26px;
+            font-weight: 900;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
         }
 
-        .brand-names {
+        .brand-titles h2 {
+            font-size: 22px;
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1.1;
             text-align: right;
         }
 
-        .brand-title {
-            font-size: 22px;
-            font-weight: 800;
-            line-height: 1.1;
-        }
-
-        .brand-subtitle {
+        .brand-titles span {
             font-size: 12px;
-            color: #94a3b8;
+            color: var(--accent-gold);
+            display: block;
+            text-align: right;
         }
 
-        .add-job-btn {
-            background-color: var(--accent-blue);
+        .action-add-btn {
+            background: var(--accent-blue);
             color: #ffffff;
             border: none;
             padding: 10px 18px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 700;
+            font-size: 13px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-            transition: transform 0.1s, background-color 0.2s;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            transition: all 0.2s;
         }
 
-        .add-job-btn:hover {
-            background-color: #1d4ed8;
-            transform: translateY(-1px);
+        .action-add-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
         }
 
-        .hero-title {
+        .hero-main-title {
             font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 10px;
-            line-height: 1.3;
+            font-weight: 900;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .hero-desc {
+        .hero-sub-title {
             font-size: 14px;
-            color: #cbd5e1;
-            max-width: 600px;
-            margin: 0 auto;
+            color: #94a3b8;
+            max-width: 550px;
+            margin: 0 auto 20px auto;
         }
 
-        /* Container & Cards Layout */
-        .container {
-            max-width: 800px;
-            margin: -20px auto 0 auto;
+        /* Container Layout */
+        .main-container {
+            max-width: 850px;
+            margin: 0 auto;
             padding: 0 16px;
             position: relative;
             z-index: 10;
         }
 
-        /* BANNER SECTION WITH PHONE GALLERY UPLOAD */
-        .banner-card {
-            background-color: var(--card-bg);
-            border-radius: 14px;
-            border: 2px dashed #cbd5e1;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        /* Search & Filter Bar */
+        .search-filter-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            box-shadow: var(--shadow-md);
             margin-bottom: 24px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .banner-card.has-image {
             border: 1px solid var(--border-color);
-            background-color: transparent;
         }
 
-        .banner-upload-area {
-            padding: 24px 16px;
-            text-align: center;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background-color: #ffffff;
+        .search-input-box {
+            position: relative;
+            margin-bottom: 12px;
         }
 
-        .banner-upload-area:hover {
-            background-color: #f8fafc;
+        .search-input-box input {
+            width: 100%;
+            padding: 12px 40px 12px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
         }
 
-        .plus-icon-circle {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background-color: #eff6ff;
-            color: var(--accent-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
+        .search-input-box input:focus {
+            border-color: var(--accent-blue);
         }
 
-        .upload-text-main {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--primary-blue);
-        }
-
-        .upload-text-sub {
-            font-size: 12px;
+        .search-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
             color: var(--text-muted);
         }
 
-        .banner-preview-img {
-            width: 100%;
-            max-height: 250px;
-            object-fit: cover;
-            display: none;
-            border-radius: 12px;
+        .filter-tags {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
         }
 
-        .remove-banner-btn {
+        .filter-tags::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tag-btn {
+            background: #f1f5f9;
+            color: var(--text-muted);
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag-btn.active {
+            background: var(--primary-blue);
+            color: #ffffff;
+        }
+
+        /* Banners (Admin Managed) */
+        .ad-banner-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 2px dashed #cbd5e1;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+            position: relative;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .ad-banner-overlay {
+            padding: 20px;
+            cursor: pointer;
+            background: #ffffff;
+            color: var(--primary-blue);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .ad-banner-img {
+            width: 100%;
+            max-height: 260px;
+            object-fit: cover;
+            display: block;
+            border-radius: var(--radius-lg);
+        }
+
+        .admin-badge-label {
             position: absolute;
             top: 10px;
-            left: 10px;
-            background-color: rgba(239, 68, 68, 0.9);
-            color: white;
-            border: none;
-            padding: 6px 12px;
+            right: 10px;
+            background: rgba(10, 19, 36, 0.85);
+            color: var(--accent-gold);
+            padding: 3px 10px;
             border-radius: 6px;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            display: none;
+            font-size: 11px;
+            font-weight: 800;
             z-index: 5;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            border: 1px solid rgba(212, 175, 55, 0.3);
         }
 
-        /* Section Header */
-        .section-header {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--primary-blue);
+        /* Jobs Section Header */
+        .section-title-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 16px;
         }
 
-        /* Job Cards List */
-        .jobs-list {
+        .section-title-wrap h3 {
+            font-size: 19px;
+            font-weight: 900;
+            color: var(--primary-dark);
+        }
+
+        .jobs-count-badge {
+            font-size: 12px;
+            background: #e2e8f0;
+            color: var(--text-dark);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        /* Job Cards Styling */
+        .jobs-grid {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
         .job-card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
             padding: 20px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+            position: relative;
         }
 
         .job-card:hover {
-            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow-md);
             transform: translateY(-2px);
+            border-color: #cbd5e1;
         }
 
-        .job-header {
+        .job-card-top {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            gap: 12px;
             margin-bottom: 12px;
         }
 
-        .job-title {
-            font-size: 18px;
+        .job-card-title {
+            font-size: 17px;
             font-weight: 800;
-            color: var(--text-main);
-            margin-bottom: 4px;
+            color: var(--text-dark);
+            line-height: 1.3;
         }
 
-        .company-name {
+        .company-name-text {
             font-size: 13px;
             color: var(--text-muted);
+            margin-top: 3px;
             display: flex;
             align-items: center;
             gap: 4px;
         }
 
-        .company-logo-placeholder {
-            width: 48px;
-            height: 48px;
-            background-color: #f1f5f9;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: #64748b;
-            font-weight: bold;
+        .company-logo-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
             flex-shrink: 0;
-            margin-right: 12px;
+            background: #f1f5f9;
         }
 
-        .job-badge {
-            display: inline-block;
-            background-color: #e0f2fe;
+        .job-tags-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .job-badge-tag {
+            background: #e0f2fe;
             color: #0369a1;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 10px;
             border-radius: 20px;
-            margin-top: 8px;
         }
 
-        .job-details {
-            margin: 12px 0;
-            font-size: 13px;
+        .job-location-text {
+            font-size: 12px;
             color: var(--text-muted);
             display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .job-detail-item {
-            display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
+            margin-bottom: 12px;
         }
 
-        .job-footer {
+        .job-card-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 16px;
-            padding-top: 12px;
+            padding-top: 14px;
             border-top: 1px solid #f1f5f9;
         }
 
-        .whatsapp-apply-btn {
-            background-color: var(--whatsapp-green);
+        .apply-whatsapp-btn {
+            background: var(--whatsapp-green);
             color: #ffffff;
             text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 14px;
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 13px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
         }
 
-        .whatsapp-apply-btn:hover {
-            background-color: var(--whatsapp-hover);
+        .apply-whatsapp-btn:hover {
+            background: var(--whatsapp-hover);
+            transform: scale(1.02);
         }
 
-        .category-tag {
+        .save-job-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: color 0.2s;
+        }
+
+        .save-job-btn.saved {
+            color: #ef4444;
+        }
+
+        /* Modals Overlay & Styles */
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 19, 36, 0.7);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 16px;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 520px;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--primary-dark);
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .form-field {
+            margin-bottom: 14px;
+        }
+
+        .form-field label {
+            display: block;
             font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .form-field input, .form-field select, .form-field textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-field input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .btn-submit-action {
+            width: 100%;
+            background: var(--primary-blue);
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-submit-action:hover {
+            background: var(--primary-dark);
+        }
+
+        .close-modal-icon {
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            background: #f1f5f9;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: var(--text-muted);
         }
 
-        /* Responsive */
-        @media (max-width: 480px) {
-            .hero-title {
-                font-size: 22px;
-            }
-            .brand-title {
-                font-size: 19px;
-            }
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: 40px;
+            border-top: 1px solid var(--border-color);
         }
     </style>
 </head>
 <body>
 
-    <!-- Top Navbar -->
+    <!-- Header Navbar -->
     <div class="top-navbar">
-        <div class="user-status">
+        <div class="user-status-badge">
             <span>👤</span>
-            <span>زائر غير مسجل</span>
+            <span id="displayUserRole">زائر (باحث عن عمل)</span>
         </div>
-        <button class="login-btn">تسجيل الدخول</button>
+        <button class="auth-btn" onclick="openModal('loginModal')">تسجيل الدخول</button>
     </div>
 
-    <!-- Hero Section -->
+    <!-- Hero Header -->
     <div class="hero-section">
-        <div class="brand-header">
-            <div class="brand-logo-title">
-                <div class="logo-box">S</div>
-                <div class="brand-names">
-                    <div class="brand-title">صدارة</div>
-                    <div class="brand-subtitle">الوظائف الشاغرة - ذمار</div>
+        <div class="brand-container">
+            <div class="brand-identity">
+                <div class="brand-logo">S</div>
+                <div class="brand-titles">
+                    <h2>صـدارة</h2>
+                    <span>منصة الوظائف والخدمات - ذمار</span>
                 </div>
             </div>
-            <button class="add-job-btn" onclick="alert('نموذج إضافة وظيفة جديدة جاهز للاستخدام')">+ إضافة وظيفة</button>
+            <button class="action-add-btn" onclick="openModal('addJobModal')">+ نشر شغل / خدمة</button>
         </div>
 
-        <h1 class="hero-title">أول منصة توظيف حقيقية<br>لمحافظة ذمار</h1>
-        <p class="hero-desc">تصل الباحثين عن عمل بشركات ومحلات ومؤسسات ذمار فوراً</p>
+        <h1 class="hero-main-title">منصة التوظيف الأولى بمحافظة ذمار</h1>
+        <p class="hero-sub-title">ربط مباشر وسريع بين الشركات والمحلات والباحثين عن عمل فوراً عبر الواتساب</p>
     </div>
 
-    <!-- Main Container -->
-    <div class="container">
+    <!-- Main Content Container -->
+    <div class="main-container">
 
-        <!-- BANNER SECTION - DIRECT FILE UPLOAD -->
-        <div class="banner-card" id="bannerCard">
-            <button class="remove-banner-btn" id="removeBannerBtn" onclick="removeBanner()">إزالة البنر</button>
-            
-            <!-- Hidden Input for phone file picker -->
-            <input type="file" id="bannerInput" accept="image/*" style="display: none;" onchange="handleBannerUpload(event)">
-            
-            <!-- Clickable upload area -->
-            <div class="banner-upload-area" id="uploadArea" onclick="document.getElementById('bannerInput').click();">
-                <div class="plus-icon-circle">+</div>
-                <div class="upload-text-main">إضافة بنر إعلاني (اختر صورة من الهاتف)</div>
-                <div class="upload-text-sub">اضغط هنا لرفع البنر مباشرة من الاستوديو بجودة عالية</div>
+        <!-- ADMIN TOP AD BANNER -->
+        <div class="ad-banner-card" id="topAdBanner">
+            <span class="admin-badge-label">إعلان مدفوع 👑</span>
+            <div id="topBannerContent" onclick="handleAdminBannerUpload('top')">
+                <div class="ad-banner-overlay">
+                    <span>📢 مساحة إعلانية مدفوعة (تعديل عبر مدير المنصة)</span>
+                </div>
             </div>
-
-            <!-- Preview Image -->
-            <img id="bannerPreview" class="banner-preview-img" alt="البنر الإعلاني">
         </div>
 
-        <!-- Latest Job Listings -->
-        <h2 class="section-header">أحدث الشواغر الوظيفية المعلنة</h2>
+        <!-- Search & Category Filters -->
+        <div class="search-filter-card">
+            <div class="search-input-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="ابحث عن وظيفة، شركة، أو مجال عمل..." oninput="filterJobs()">
+            </div>
+            <div class="filter-tags">
+                <button class="tag-btn active" onclick="setCategoryFilter('all', this)">الكل</button>
+                <button class="tag-btn" onclick="setCategoryFilter('تسويق', this)">تسويق ومبيعات</button>
+                <button class="tag-btn" onclick="setCategoryFilter('محاسبة', this)">محاسبة ومالية</button>
+                <button class="tag-btn" onclick="setCategoryFilter('تقنية', this)">برمجة وتقنية</button>
+                <button class="tag-btn" onclick="setCategoryFilter('إدارة', this)">إدارة وسكرتارية</button>
+                <button class="tag-btn" onclick="setCategoryFilter('خدمات', this)">خدمات عامة</button>
+            </div>
+        </div>
 
-        <div class="jobs-list">
-            
-            <!-- Job 1 -->
-            <div class="job-card">
-                <div class="job-header">
-                    <div>
-                        <div class="job-title">مسوق الكتروني</div>
-                        <div class="company-name">شركة صدارة للتسويق والخدمات الرقمية • ذمار</div>
-                        <div class="company-name" style="margin-top: 2px;">الشارع العام جولة بير خابوط</div>
-                        <span class="job-badge">عمل ميداني</span>
-                    </div>
-                    <div class="company-logo-placeholder">SADARA</div>
-                </div>
+        <!-- Job Listings -->
+        <div class="section-title-wrap">
+            <h3>أحدث الوظائف والخدمات المتاحة</h3>
+            <span class="jobs-count-badge" id="jobsCounter">0 وظيفة</span>
+        </div>
 
-                <div class="job-details">
-                    <div class="job-detail-item">
-                        <span>📍</span>
-                        <span>ذمار الشارع العام جولة بير خابوط</span>
-                    </div>
-                    <div class="job-detail-item">
-                        <span>💼</span>
-                        <span>لا يشترط خبرة سابقة ...</span>
-                    </div>
-                </div>
+        <div class="jobs-grid" id="jobsListContainer">
+            <!-- Dynamic jobs load here -->
+        </div>
 
-                <div class="job-footer">
-                    <a href="https://wa.me/967780568507?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%AA%D9%82%D8%AF%D9%8A%D9%85%20%D8%B9%D9%84%D9%89%20%D9%88%D8%B8%D9%8A%D9%81%D8%A9%20%D9%85%D8%B3%D9%88%D9%82%20%D8%A7%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A" target="_blank" class="whatsapp-apply-btn">
-                        <span>💬</span> تقديم عبر الواتساب
-                    </a>
-                    <span class="category-tag">فئة: التسويق والمبيعات</span>
+        <!-- ADMIN BOTTOM AD BANNER -->
+        <div class="ad-banner-card" style="margin-top: 30px;" id="bottomAdBanner">
+            <span class="admin-badge-label">إعلان مدفوع 👑</span>
+            <div id="bottomBannerContent" onclick="handleAdminBannerUpload('bottom')">
+                <div class="ad-banner-overlay">
+                    <span>📢 مساحة إعلانية مدفوعة سفليّة (تعديل عبر الأدمن)</span>
                 </div>
             </div>
-
         </div>
 
     </div>
+
+    <!-- Footer -->
+    <div class="app-footer">
+        <p>جميع الحقوق محفوظة © شركة صدارة للتسويق والخدمات الرقمية - ذمار 2026</p>
+    </div>
+
+    <!-- MODAL 1: ADD JOB FORM -->
+    <div class="modal-backdrop" id="addJobModal">
+        <div class="modal-card">
+            <button class="close-modal-icon" onclick="closeModal('addJobModal')">✕</button>
+            <h3 class="modal-header-title">نشر شاغر وظيفي / خدمة جديدة</h3>
+            
+            <div class="form-field">
+                <label>عنوان الوظيفة أو الخدمة *</label>
+                <input type="text" id="inputJobTitle" placeholder="مثال: مسوق إلكتروني وميداني، محاسب عام">
+            </div>
+
+            <div class="form-field">
+                <label>اسم الشركة / المكان *</label>
+                <input type="text" id="inputCompanyName" placeholder="مثال: شركة صدارة، متجر الأمل">
+            </div>
+
+            <div class="form-field">
+                <label>المجال / الفئة</label>
+                <select id="inputCategory">
+                    <option value="تسويق">تسويق ومبيعات</option>
+                    <option value="محاسبة">محاسبة ومالية</option>
+                    <option value="تقنية">برمجة وتقنية</option>
+                    <option value="إدارة">إدارة وسكرتارية</option>
+                    <option value="خدمات">خدمات عامة وميدانية</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label>العنوان والتفاصيل في ذمار *</label>
+                <input type="text" id="inputLocation" placeholder="مثال: ذمار - الشارع العام - جولة بير خابوط">
+            </div>
+
+            <div class="form-field">
+                <label>نوع الدوام</label>
+                <select id="inputJobType">
+                    <option value="عمل ميداني">عمل ميداني</option>
+                    <option value="دوام كامل">دوام كامل</option>
+                    <option value="دوام جزئي">دوام جزئي</option>
+                    <option value="عن بُعد">عن بُعد</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label>رقم الواتساب لاستلام طلبات المتقدمين *</label>
+                <input type="number" id="inputWhatsapp" placeholder="770000000">
+            </div>
+
+            <div class="form-field">
+                <label>شعار الشركة / صورة الخدمة (اختر من الاستوديو)</label>
+                <input type="file" id="inputCompanyLogo" accept="image/*">
+            </div>
+
+            <button class="btn-submit-action" onclick="submitNewJob()">نشر الوظيفة الآن 🚀</button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: USER LOGIN / ROLE -->
+    <div class="modal-backdrop" id="loginModal">
+        <div class="modal-card">
+            <button class="close-modal-icon" onclick="closeModal('loginModal')">✕</button>
+            <h3 class="modal-header-title">تسجيل الدخول / اختيار الحساب</h3>
+            
+            <div class="form-field">
+                <label>نوع الحساب</label>
+                <select id="selectRole">
+                    <option value="باحث عن عمل">باحث عن عمل (تصفح وتقديم)</option>
+                    <option value="صاحب عمل / شركة">صاحب عمل / شركة (نشر وظائف)</option>
+                    <option value="مدير المنصة (الأدمن)">مدير المنصة (الأدمن)</option>
+                </select>
+            </div>
+
+            <button class="btn-submit-action" onclick="confirmRoleSelection()">تأكيد الدخول</button>
+        </div>
+    </div>
+
+    <!-- HIDDEN INPUT FOR ADMIN BANNERS -->
+    <input type="file" id="adminBannerFileInput" accept="image/*" style="display: none;" onchange="processAdminBannerUpload(event)">
 
     <script>
-        // Handle Direct Upload from Phone Gallery using FileReader
-        function handleBannerUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const bannerPreview = document.getElementById('bannerPreview');
-                    const uploadArea = document.getElementById('uploadArea');
-                    const removeBtn = document.getElementById('removeBannerBtn');
-                    const bannerCard = document.getElementById('bannerCard');
+        const ADMIN_PIN_CODE = "1234";
+        let activeAdminBannerPosition = '';
+        let currentCategoryFilter = 'all';
 
-                    bannerPreview.src = e.target.result;
-                    bannerPreview.style.display = 'block';
-                    uploadArea.style.display = 'none';
-                    removeBtn.style.display = 'block';
-                    bannerCard.classList.add('has-image');
-
-                    try {
-                        localStorage.setItem('saved_banner_image', e.target.result);
-                    } catch (err) {
-                        console.log('ملاحظة: تم حفظ البنر مؤقتاً.');
-                    }
-                };
-                reader.readAsDataURL(file);
+        // Default initial job
+        const defaultJobsList = [
+            {
+                id: 1,
+                title: 'مسوق إلكتروني وميداني',
+                company: 'شركة صدارة للتسويق والخدمات الرقمية',
+                category: 'تسويق',
+                location: 'ذمار - الشارع العام جولة بير خابوط',
+                type: 'عمل ميداني',
+                whatsapp: '967780568507',
+                logo: ''
             }
-        }
+        ];
 
-        // Remove Banner
-        function removeBanner() {
-            document.getElementById('bannerPreview').src = '';
-            document.getElementById('bannerPreview').style.display = 'none';
-            document.getElementById('uploadArea').style.display = 'flex';
-            document.getElementById('removeBannerBtn').style.display = 'none';
-            document.getElementById('bannerCard').classList.remove('has-image');
-            document.getElementById('bannerInput').value = '';
-            localStorage.removeItem('saved_banner_image');
-        }
-
-        // Auto load saved banner from memory on page refresh
         window.addEventListener('DOMContentLoaded', () => {
-            const savedBanner = localStorage.getItem('saved_banner_image');
-            if (savedBanner) {
-                document.getElementById('bannerPreview').src = savedBanner;
-                document.getElementById('bannerPreview').style.display = 'block';
-                document.getElementById('uploadArea').style.display = 'none';
-                document.getElementById('removeBannerBtn').style.display = 'block';
-                document.getElementById('bannerCard').classList.add('has-image');
-            }
+            renderJobsGrid();
+            loadAdminBanners();
         });
-    </script>
-</body>
-</html>
+
+        // Modal Controls
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // Render Jobs
+        function renderJobsGrid() {
+            const container = document.getElementById('jobsListContainer');
+            const storedJobs = JSON.parse(localStorage.getItem('sadara_job_board_items')) || defaultJobsList;
+            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            let filtered = storedJobs.filter(job => {
+                const matchesCategory = (currentCategoryFilter === 'all') || (job.category === currentCategoryFilter);
+                const matchesSearch = job.title.toLowerCase().includes(searchVal) || 
+                                      job.company.toLowerCase().includes(searchVal) || 
+                                      job.location.toLowerCase().includes(searchVal);
+                return matchesCategory && matchesSearch;
+            });
+
+            document
