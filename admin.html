@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | إدارة المنصة الخارجية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --admin-dark: #0f172a;
+            --admin-accent: #2563eb;
+            --bg-light: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-dark: #1e293b;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #ca8a04;
+            --border: #cbd5e1;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            padding: 20px;
+        }
+
+        .admin-card-frame {
+            max-width: 650px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 2px solid var(--admin-dark);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .header-title {
+            text-align: center;
+            border-bottom: 2px dashed var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--admin-dark);
+        }
+
+        .header-title span {
+            font-size: 13px;
+            color: var(--admin-accent);
+            font-weight: 800;
+        }
+
+        .section-box {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .section-box h3 {
+            font-size: 16px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            color: var(--admin-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* إدارة الوظائف */
+        .job-admin-item {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .job-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .btn-action {
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 12px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-approve { background: var(--success); }
+        .btn-reject { background: var(--danger); }
+        .btn-toggle { background: var(--warning); }
+
+        /* إدارة البنرات */
+        .banner-upload-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .banner-input-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .banner-input-row input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .btn-save-banner {
+            background: var(--admin-accent);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* إدارة المستخدمين */
+        .user-type-badge {
+            display: inline-block;
+            background: #e2e8f0;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 800;
+            margin-left: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-card-frame">
+        <!-- ترويسة الحساب الخارجي -->
+        <div class="header-title">
+            <span>حساب خارجي لإدارة المنصة</span>
+            <h1>حساب مدير المنصة (لوحة التحكم)</h1>
+        </div>
+
+        <!-- 1. إدارة الوظائف (قبول - رفض - تعديل) -->
+        <div class="section-box">
+            <h3>⚫ إدارة الوظائف (قبول - رفض - تعديل)</h3>
+            <div id="adminJobsList"></div>
+        </div>
+
+        <!-- 2. إدارة البنرات والإعلانات المدفوعة -->
+        <div class="section-box">
+            <h3>⚫ إدارة البنرات والإعلانات المدفوعة</h3>
+            <div class="banner-upload-group">
+                <label style="font-size:12px; font-weight:bold;">البنر العلوي (رابط صورة):</label>
+                <div class="banner-input-row">
+                    <input type="text" id="topBannerUrl" placeholder="https://example.com/banner-top.jpg">
+                    <button class="btn-save-banner" onclick="saveBanner('top')">حفظ البنر</button>
+                </div>
+
+                <label style="font-size:12px; font-weight:bold; margin-top:8px;">البنر السفلي (رابط صورة):</label>
+                <div class="banner-input-row">
+                    <input type="text" id="bottomBannerUrl" placeholder="https://example.com/banner-bottom.jpg">
+                    <button class="btn-save-banner" onclick="saveBanner('bottom')">حفظ البنر</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. إدارة المستخدمين -->
+        <div class="section-box">
+            <h3>⚫ إدارة المستخدمين</h3>
+            <p style="font-size:13px; color:#64748b; margin-bottom:10px;">التحكم بصلاحيات فئات المنصة:</p>
+            <div>
+                <span class="user-type-badge">صاحب عمل</span>
+                <span class="user-type-badge">باحث عن عمل (موظف)</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getJobs() {
+            return JSON.parse(localStorage.getItem('dhawar_jobs')) || [];
+        }
+
+        function renderAdminJobs() {
+            const jobs = getJobs();
+            const container = document.getElementById('adminJobsList');
+            container.innerHTML = '';
+
+            if(jobs.length === 0) {
+                container.innerHTML = '<p style="font-size:12px; color:#64748b;">لا توجد طلبات أو وظائف مسجلة.</p>';
+                return;
+            }
+
+            jobs.forEach(job => {
+                const statusText = job.approved ? 'مقبول ومرفوع' : 'قيد المراجعة';
+                container.innerHTML += `
+                    <div class="job-admin-item">
+                        <div class="job-item-header">
+                            <strong>${job.title} - (${job.company})</strong>
+                            <span style="font-size:11px; font-weight:bold; color:${job.approved ? 'green' : 'orange'}">${statusText}</span>
+                        </div>
+                        <div style="font-size:12px; color:#64748b;">حالة التوفر الحالية: <strong>${job.status}</strong></div>
+                        <div class="action-btns">
+                            ${!job.approved ? `<button class="btn-action btn-approve" onclick="approveJob(${job.id})">قبول ونشر</button>` : ''}
+                            <button class="btn-action btn-toggle" onclick="toggleStatus(${job.id})">تعديل الحالة (${job.status === 'متوفر' ? 'تغيير لـ غير متوفر' : 'تغيير لـ متوفر'})</button>
+                            <button class="btn-action btn-reject" onclick="deleteJob(${job.id})">رفض / حذف</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // تحميل روابط البنرات الحالية
+            document.getElementById('topBannerUrl').value = localStorage.getItem('ad_banner_top') || '';
+            document.getElementById('bottomBannerUrl').value = localStorage.getItem('ad_banner_bottom') || '';
+        }
+
+        function approveJob(id) {
+            let jobs = getJobs();
+            jobs = jobs.map(j => j.id === id ? {...j, approved: true} : j);
+            localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
+            renderAdminJobs();
+        }
+
+        function toggleStatus(id) {
+            let jobs = getJobs();
+            jobs = jobs.map(j => {
+                if(j.id === id) {
+                    return {...j, status: j.status === 'متوفر' ? 'غير متوفر' : 'متوفر'};
+                }
+                return j;
+            });
+            localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
+            renderAdminJobs();
+        }
+
+        function deleteJob(id) {
+            if(confirm('هل أنت تأكد من رفض/حذف هذه الوظيفة؟')) {
+                let jobs = getJobs();
+                jobs = jobs.filter(j => j.id !== id);
+                localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
+                renderAdminJobs();
+            }
+        }
+
+        function saveBanner(type) {
+            const url = document.getElementById(type === 'top' ? 'topBannerUrl' : 'bottomBannerUrl').value;
+            localStorage.setItem(type === 'top' ? 'ad_banner_top' : 'ad_banner_bottom', url);
+            alert('تم تحديث البنر بنجاح!');
+        }
+
+        document.addEventListener('DOMContentLoaded', renderAdminJobs);
+    </script>
+</body>
+</html>
