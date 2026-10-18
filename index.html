@@ -280,4 +280,113 @@
 
             const newUser = { name, username, phone, pin, role };
             users.push(newUser);
-            localStorage.setItem('dhawar_registered_
+            localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            
+            alert(`مرحباً بك يا ${name}! تم إنشاء حسابك باسم المستخدم (@${username}) ودخولك بنجاح.`);
+            closeModal('registerModal');
+            checkAuthStatus();
+        }
+
+        // تسجيل الدخول باسم المستخدم (4 حروف) وكلمة المرور (4 أرقام/حروف)
+        function handleLogin() {
+            const username = document.getElementById('loginUsername').value.trim().toLowerCase();
+            const pin = document.getElementById('loginPin').value.trim();
+
+            if(!username || !pin) {
+                alert('يرجى إدخال اسم المستخدم وكلمة المرور');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            const foundUser = users.find(u => u.username === username && u.pin === pin);
+
+            if(foundUser) {
+                localStorage.setItem('currentUser', JSON.stringify(foundUser));
+                alert(`أهلاً بعودتك يا ${foundUser.name}! تم تسجيل دخولك بنجاح.`);
+                closeModal('loginModal');
+                checkAuthStatus();
+            } else {
+                alert('عذراً، اسم المستخدم أو كلمة المرور غير صحيحة.');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            alert('تم تسجيل الخروج من الموقع بنجاح.');
+            checkAuthStatus();
+        }
+
+        function renderMainJobs() {
+            const jobs = getStoredJobs().filter(j => j.approved === true);
+            const container = document.getElementById('jobsContainer');
+            container.innerHTML = '';
+
+            if (jobs.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-muted);">لا توجد وظائف معروضة حالياً</p>';
+            } else {
+                jobs.forEach(job => {
+                    const isAvailable = job.status === 'متوفر';
+                    container.innerHTML += `
+                        <div class="job-card">
+                            <div class="job-header-row">
+                                <div>
+                                    <div class="job-title">${job.title}</div>
+                                    <div class="job-company">${job.company}</div>
+                                </div>
+                                <span class="status-badge ${isAvailable ? 'status-available' : 'status-unavailable'}">${job.status}</span>
+                            </div>
+                            <div class="job-card-footer">
+                                <span style="font-size:12px; color:var(--text-muted);">ذمار - اليمن</span>
+                                <a href="${isAvailable ? 'https://wa.me/' + job.phone : '#'}" target="_blank" class="apply-btn ${!isAvailable ? 'disabled' : ''}">
+                                    ${isAvailable ? 'رقم التقديم (واتساب)' : 'التقديم مغلق'}
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // تحميل البنرات من الذاكرة
+            const topBanner = localStorage.getItem('ad_banner_top');
+            if(topBanner) document.getElementById('topAdBanner').innerHTML = `<img src="${topBanner}">`;
+            
+            const bottomBanner = localStorage.getItem('ad_banner_bottom');
+            if(bottomBanner) document.getElementById('bottomAdBanner').innerHTML = `<img src="${bottomBanner}">`;
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function submitNewJob() {
+            const title = document.getElementById('jobTitleInput').value;
+            const company = document.getElementById('companyInput').value;
+            const phone = document.getElementById('phoneInput').value;
+
+            if (!title || !company || !phone) {
+                alert('يرجى ملء كافة البيانات المطلوبة');
+                return;
+            }
+
+            const jobs = getStoredJobs();
+            jobs.push({
+                id: Date.now(),
+                title: title,
+                company: company,
+                phone: phone,
+                status: 'متوفر',
+                approved: false
+            });
+
+            localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
+            alert('تم إرسال الوظيفة! ستظهر بالمنصة فور اعتمادها من قبل إدارة المنصة.');
+            closeModal('addModal');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthStatus();
+            renderMainJobs();
+        });
+    </script>
+</body>
+</html>
