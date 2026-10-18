@@ -14,7 +14,6 @@
             --primary-dark: #0a1324;
             --primary-blue: #0f2347;
             --accent-gold: #d4af37;
-            --accent-gold-hover: #b89628;
             --accent-blue: #2563eb;
             --bg-light: #f8fafc;
             --card-bg: #ffffff;
@@ -49,14 +48,13 @@
         .top-navbar {
             background: var(--primary-dark);
             color: #ffffff;
-            padding: 10px 20px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            position: sticky;
-            top: 0;
-            z-index: 50;
+            position: relative;
+            z-index: 1000;
         }
 
         .user-status-badge {
@@ -65,7 +63,7 @@
             gap: 8px;
             font-size: 13px;
             background: rgba(255,255,255,0.08);
-            padding: 4px 12px;
+            padding: 5px 12px;
             border-radius: 20px;
             color: #e2e8f0;
         }
@@ -74,17 +72,18 @@
             background: linear-gradient(135deg, var(--accent-gold), #f3e5ab);
             color: var(--primary-dark);
             border: none;
-            padding: 6px 16px;
+            padding: 8px 18px;
             border-radius: 20px;
             font-weight: 800;
             font-size: 13px;
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
+            z-index: 1001;
         }
 
-        .auth-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        .auth-btn:active {
+            transform: scale(0.96);
         }
 
         /* Hero Banner Section */
@@ -94,16 +93,7 @@
             padding: 35px 20px 50px 20px;
             text-align: center;
             position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 20px;
-            background: var(--bg-light);
-            border-radius: 20px 20px 0 0;
+            z-index: 10;
         }
 
         .brand-container {
@@ -112,6 +102,8 @@
             align-items: center;
             max-width: 900px;
             margin: 0 auto 20px auto;
+            position: relative;
+            z-index: 20;
         }
 
         .brand-identity {
@@ -159,21 +151,20 @@
             font-size: 13px;
             cursor: pointer;
             box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            position: relative;
+            z-index: 1001;
             transition: all 0.2s;
         }
 
-        .action-add-btn:hover {
-            background: #1d4ed8;
-            transform: translateY(-2px);
+        .action-add-btn:active {
+            transform: scale(0.96);
         }
 
         .hero-main-title {
             font-size: 26px;
             font-weight: 900;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, #ffffff, #cbd5e1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ffffff;
         }
 
         .hero-sub-title {
@@ -186,10 +177,10 @@
         /* Container Layout */
         .main-container {
             max-width: 850px;
-            margin: 0 auto;
+            margin: -20px auto 0 auto;
             padding: 0 16px;
             position: relative;
-            z-index: 10;
+            z-index: 30;
         }
 
         /* Search & Filter Bar */
@@ -214,11 +205,6 @@
             border: 1px solid var(--border-color);
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .search-input-box input:focus {
-            border-color: var(--accent-blue);
         }
 
         .search-icon {
@@ -251,7 +237,6 @@
             font-weight: 700;
             white-space: nowrap;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
         .tag-btn.active {
@@ -269,7 +254,6 @@
             margin-bottom: 24px;
             position: relative;
             text-align: center;
-            transition: all 0.3s;
         }
 
         .ad-banner-overlay {
@@ -343,14 +327,6 @@
             padding: 20px;
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow-sm);
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .job-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-            border-color: #cbd5e1;
         }
 
         .job-card-top {
@@ -372,9 +348,6 @@
             font-size: 13px;
             color: var(--text-muted);
             margin-top: 3px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
 
         .company-logo-box {
@@ -406,9 +379,6 @@
         .job-location-text {
             font-size: 12px;
             color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 4px;
             margin-bottom: 12px;
         }
 
@@ -431,45 +401,25 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
-        }
-
-        .apply-whatsapp-btn:hover {
-            background: var(--whatsapp-hover);
-            transform: scale(1.02);
-        }
-
-        .save-job-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: #94a3b8;
-            transition: color 0.2s;
-        }
-
-        .save-job-btn.saved {
-            color: #ef4444;
         }
 
         /* Modals Overlay & Styles */
         .modal-backdrop {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(10, 19, 36, 0.7);
+            background: rgba(10, 19, 36, 0.75);
             backdrop-filter: blur(4px);
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 100;
+            z-index: 9999;
             padding: 16px;
         }
 
         .modal-card {
             background: #ffffff;
             width: 100%;
-            max-width: 520px;
+            max-width: 500px;
             border-radius: var(--radius-lg);
             padding: 24px;
             box-shadow: var(--shadow-lg);
@@ -499,17 +449,13 @@
             color: var(--text-dark);
         }
 
-        .form-field input, .form-field select, .form-field textarea {
+        .form-field input, .form-field select {
             width: 100%;
             padding: 11px;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
             font-size: 13px;
             outline: none;
-        }
-
-        .form-field input:focus {
-            border-color: var(--accent-blue);
         }
 
         .btn-submit-action {
@@ -523,11 +469,6 @@
             font-size: 14px;
             cursor: pointer;
             margin-top: 10px;
-            transition: background 0.2s;
-        }
-
-        .btn-submit-action:hover {
-            background: var(--primary-dark);
         }
 
         .close-modal-icon {
@@ -547,7 +488,6 @@
             color: var(--text-muted);
         }
 
-        /* Footer */
         .app-footer {
             text-align: center;
             padding: 30px 20px;
@@ -566,7 +506,7 @@
             <span>👤</span>
             <span id="displayUserRole">زائر (باحث عن عمل)</span>
         </div>
-        <button class="auth-btn" onclick="openModal('loginModal')">تسجيل الدخول</button>
+        <button class="auth-btn" id="loginBtnTrigger">تسجيل الدخول</button>
     </div>
 
     <!-- Hero Header -->
@@ -579,7 +519,7 @@
                     <span>منصة الوظائف والخدمات - ذمار</span>
                 </div>
             </div>
-            <button class="action-add-btn" onclick="openModal('addJobModal')">+ نشر شغل / خدمة</button>
+            <button class="action-add-btn" id="addJobBtnTrigger">+ نشر شغل / خدمة</button>
         </div>
 
         <h1 class="hero-main-title">منصة التوظيف الأولى بمحافظة ذمار</h1>
@@ -590,7 +530,7 @@
     <div class="main-container">
 
         <!-- ADMIN TOP AD BANNER -->
-        <div class="ad-banner-card" id="topAdBanner">
+        <div class="ad-banner-card">
             <span class="admin-badge-label">إعلان مدفوع 👑</span>
             <div id="topBannerContent" onclick="handleAdminBannerUpload('top')">
                 <div class="ad-banner-overlay">
@@ -621,12 +561,10 @@
             <span class="jobs-count-badge" id="jobsCounter">0 وظيفة</span>
         </div>
 
-        <div class="jobs-grid" id="jobsListContainer">
-            <!-- Dynamic jobs load here -->
-        </div>
+        <div class="jobs-grid" id="jobsListContainer"></div>
 
         <!-- ADMIN BOTTOM AD BANNER -->
-        <div class="ad-banner-card" style="margin-top: 30px;" id="bottomAdBanner">
+        <div class="ad-banner-card" style="margin-top: 30px;">
             <span class="admin-badge-label">إعلان مدفوع 👑</span>
             <div id="bottomBannerContent" onclick="handleAdminBannerUpload('bottom')">
                 <div class="ad-banner-overlay">
@@ -725,7 +663,6 @@
         let activeAdminBannerPosition = '';
         let currentCategoryFilter = 'all';
 
-        // Default initial job
         const defaultJobsList = [
             {
                 id: 1,
@@ -740,11 +677,14 @@
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
+            // Attach Event Listeners Directly for 100% Mobile Click Guarantee
+            document.getElementById('loginBtnTrigger').onclick = function() { openModal('loginModal'); };
+            document.getElementById('addJobBtnTrigger').onclick = function() { openModal('addJobModal'); };
+
             renderJobsGrid();
             loadAdminBanners();
         });
 
-        // Modal Controls
         function openModal(id) {
             document.getElementById(id).style.display = 'flex';
         }
@@ -753,7 +693,6 @@
             document.getElementById(id).style.display = 'none';
         }
 
-        // Render Jobs
         function renderJobsGrid() {
             const container = document.getElementById('jobsListContainer');
             const storedJobs = JSON.parse(localStorage.getItem('sadara_job_board_items')) || defaultJobsList;
@@ -767,4 +706,136 @@
                 return matchesCategory && matchesSearch;
             });
 
-            document
+            document.getElementById('jobsCounter').innerText = filtered.length + ' وظيفة';
+            container.innerHTML = '';
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 30px; color: #94a3b8;">لا توجد وظائف معلنة تطابق بحثك حالياً.</div>`;
+                return;
+            }
+
+            filtered.forEach(job => {
+                const logoSrc = job.logo ? job.logo : 'https://via.placeholder.com/56/0f2347/ffffff?text=SADARA';
+                container.innerHTML += `
+                    <div class="job-card">
+                        <div class="job-card-top">
+                            <div>
+                                <div class="job-card-title">${job.title}</div>
+                                <div class="company-name-text">🏢 ${job.company}</div>
+                            </div>
+                            <img src="${logoSrc}" class="company-logo-box" alt="logo">
+                        </div>
+
+                        <div class="job-tags-row">
+                            <span class="job-badge-tag">${job.type}</span>
+                            <span class="job-badge-tag" style="background:#fef3c7; color:#92400e;">فئة: ${job.category || 'عام'}</span>
+                        </div>
+
+                        <div class="job-location-text">📍 ${job.location}</div>
+
+                        <div class="job-card-bottom">
+                            <a href="https://wa.me/${job.whatsapp}?text=مرحباً،%20أرغب%20في%20التقديم%20على%20وظيفة:%20${encodeURIComponent(job.title)}%20عبر%20منصة%20صدارة" target="_blank" class="apply-whatsapp-btn">
+                                💬 تقديم عبر الواتساب
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function setCategoryFilter(category, btn) {
+            currentCategoryFilter = category;
+            document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderJobsGrid();
+        }
+
+        function filterJobs() {
+            renderJobsGrid();
+        }
+
+        function submitNewJob() {
+            const title = document.getElementById('inputJobTitle').value.trim();
+            const company = document.getElementById('inputCompanyName').value.trim();
+            const category = document.getElementById('inputCategory').value;
+            const location = document.getElementById('inputLocation').value.trim();
+            const type = document.getElementById('inputJobType').value;
+            const whatsapp = document.getElementById('inputWhatsapp').value.trim();
+            const logoFile = document.getElementById('inputCompanyLogo').files[0];
+
+            if (!title || !company || !whatsapp || !location) {
+                alert('لطفاً قم بتعبئة الحقول الأساسية: العنوان، الشركة، الموقع، والواتساب.');
+                return;
+            }
+
+            if (logoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveJobData(title, company, category, location, type, whatsapp, e.target.result);
+                };
+                reader.readAsDataURL(logoFile);
+            } else {
+                saveJobData(title, company, category, location, type, whatsapp, '');
+            }
+        }
+
+        function saveJobData(title, company, category, location, type, whatsapp, logo) {
+            let jobs = JSON.parse(localStorage.getItem('sadara_job_board_items')) || defaultJobsList;
+            jobs.unshift({
+                id: Date.now(),
+                title, company, category, location, type, whatsapp, logo
+            });
+            localStorage.setItem('sadara_job_board_items', JSON.stringify(jobs));
+            renderJobsGrid();
+            closeModal('addJobModal');
+            alert('تم نشر الشاغر الوظيفي بنجاح!');
+        }
+
+        function handleAdminBannerUpload(pos) {
+            const pin = prompt("هذه المساحة مخصصة للإعلانات المدفوعة (الأدمن فقط).\nأدخل الرمز السري للأدمن:");
+            if (pin === ADMIN_PIN_CODE) {
+                activeAdminBannerPosition = pos;
+                document.getElementById('adminBannerFileInput').click();
+            } else if (pin !== null) {
+                alert("الرمز السري غير صحيح!");
+            }
+        }
+
+        function processAdminBannerUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const imgData = event.target.result;
+                    if (activeAdminBannerPosition === 'top') {
+                        localStorage.setItem('sadara_top_ad_banner', imgData);
+                    } else {
+                        localStorage.setItem('sadara_bottom_ad_banner', imgData);
+                    }
+                    loadAdminBanners();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function loadAdminBanners() {
+            const topBanner = localStorage.getItem('sadara_top_ad_banner');
+            const bottomBanner = localStorage.getItem('sadara_bottom_ad_banner');
+
+            if (topBanner) {
+                document.getElementById('topBannerContent').innerHTML = `<img src="${topBanner}" class="ad-banner-img">`;
+            }
+            if (bottomBanner) {
+                document.getElementById('bottomBannerContent').innerHTML = `<img src="${bottomBanner}" class="ad-banner-img">`;
+            }
+        }
+
+        function confirmRoleSelection() {
+            const role = document.getElementById('selectRole').value;
+            document.getElementById('displayUserRole').innerText = role;
+            closeModal('loginModal');
+            alert('تم تغيير نوع الحساب إلى: ' + role);
+        }
+    </script>
+</body>
+</html>
