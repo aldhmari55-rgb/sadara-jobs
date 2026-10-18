@@ -79,6 +79,30 @@
         }
         .hero-banner-title h1 { font-size: 22px; font-weight: 900; }
 
+        /* زر الانضمام لقناة الواتساب */
+        .whatsapp-channel-bar {
+            background: #dcfce7;
+            border: 1px solid #86efac;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: #166534;
+        }
+        .whatsapp-channel-btn {
+            background: var(--whatsapp-green);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
         .main-container { max-width: 800px; margin: -25px auto 0 auto; padding: 0 16px; }
 
         .ad-banner-box {
@@ -96,6 +120,7 @@
 
         .jobs-grid { display: flex; flex-direction: column; gap: 16px; }
         .job-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 18px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+        .job-card-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; }
         .job-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
         .job-title { font-size: 18px; font-weight: 800; color: var(--primary-blue); }
         .job-company { font-size: 14px; color: var(--text-muted); font-weight: 700; margin-top: 2px; }
@@ -107,7 +132,6 @@
         .apply-btn { background: var(--whatsapp-green); color: #ffffff; text-decoration: none; padding: 8px 18px; border-radius: var(--radius-md); font-weight: 800; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
         .apply-btn.disabled { background: #cbd5e1; pointer-events: none; }
 
-        /* الشريط المتحرك (شعارات فقط من لوحة الإدارة) */
         .partners-ticker-section {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--primary-dark); color: #ffffff;
@@ -123,7 +147,6 @@
 
         .ticker-wrapper { display: flex; overflow: hidden; width: 100%; }
         .ticker-content { display: flex; align-items: center; gap: 20px; white-space: nowrap; animation: tickerSlide 20s linear infinite; }
-        
         .ticker-logo-only {
             width: 42px; height: 42px;
             border-radius: 50%; object-fit: cover;
@@ -141,7 +164,7 @@
         .modal-box { background: #ffffff; width: 100%; max-width: 440px; border-radius: var(--radius-lg); padding: 24px; position: relative; max-height: 90vh; overflow-y: auto; }
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-size: 12px; font-weight: 800; margin-bottom: 5px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; }
         .btn-submit { width: 100%; background: var(--primary-blue); color: #ffffff; border: none; padding: 11px; border-radius: var(--radius-md); font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 8px; }
         .modal-close-btn { position: absolute; left: 15px; top: 15px; border: none; background: #f1f5f9; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-weight: bold; }
     </style>
@@ -165,6 +188,12 @@
     </div>
 
     <div class="main-container">
+        <!-- شريط التوجيه لقناة الواتساب -->
+        <div class="whatsapp-channel-bar">
+            <span>📢 تابع الوظائف والخدمات فور نشرها أولاً بأول!</span>
+            <a href="https://whatsapp.com/channel/YOUR_CHANNEL_LINK_HERE" target="_blank" class="whatsapp-channel-btn">الانضمام للقناة 🟢</a>
+        </div>
+
         <div class="ad-banner-box" id="topAdBanner"><div class="ad-banner-text">إعلان المنصة العلوي</div></div>
         <div class="jobs-section-header">
             <h2 class="jobs-section-title">الوظائف والخدمات المتاحة</h2>
@@ -173,7 +202,6 @@
         <div class="jobs-grid" id="jobsContainer"></div>
     </div>
 
-    <!-- الشريط المتحرك للشعارات المضافة عبر الأدمن فقط -->
     <div class="partners-ticker-section">
         <div class="ticker-label">شركاء النجاح 🤝</div>
         <div class="ticker-wrapper">
@@ -181,100 +209,33 @@
         </div>
     </div>
 
-    <!-- 1. نافذة إنشاء حساب جديد -->
-    <div class="modal-overlay" id="registerModal">
-        <div class="modal-box">
-            <button class="modal-close-btn" onclick="closeModal('registerModal')">✕</button>
-            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--primary-blue);">إنشاء حساب جديد</h3>
-            <div class="form-group">
-                <label>نوع الحساب</label>
-                <select id="regRole">
-                    <option value="باحث عن عمل">باحث عن عمل (موظف)</option>
-                    <option value="صاحب عمل">صاحب عمل (مؤسسة / متجر)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>الاسم الكامل / اسم الشركة أو المتجر *</label>
-                <input type="text" id="regName" placeholder="مثال: متجر الأمل">
-            </div>
-            <div class="form-group">
-                <label>اسم المستخدم (4 حروف إنجليزي للدخول) *</label>
-                <input type="text" id="regUsername" maxlength="4" style="text-transform: lowercase;" placeholder="مثال: abdo">
-            </div>
-            <div class="form-group">
-                <label>رقم الهاتف الأساسي (الواتساب) *</label>
-                <input type="text" id="regPhone" placeholder="770000000">
-            </div>
-            <div class="form-group">
-                <label>كلمة المرور (4 أرقام أو حروف) *</label>
-                <input type="password" id="regPin" maxlength="4" placeholder="مثال: 1234">
-            </div>
-            <button class="btn-submit" onclick="handleRegister()">تسجيل وإنشاء الحساب فوراً</button>
-        </div>
-    </div>
-
-    <!-- 2. نافذة تعديل الملف الشخصي -->
-    <div class="modal-overlay" id="profileModal">
-        <div class="modal-box">
-            <button class="modal-close-btn" onclick="closeModal('profileModal')">✕</button>
-            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--primary-dark);">تعديل الملف الشخصي</h3>
-            
-            <div class="form-group">
-                <label>الاسم الكامل / اسم الجهة</label>
-                <input type="text" id="profName">
-            </div>
-            <div class="form-group">
-                <label>رقم الهاتف الأساسي</label>
-                <input type="text" id="profPhone">
-            </div>
-            <div class="form-group">
-                <label>رقم هاتف إضافي (اختياري)</label>
-                <input type="text" id="profPhone2" placeholder="أدخل رقم إضافي إن وجد">
-            </div>
-            <button class="btn-submit" onclick="saveProfileChanges()">حفظ التعديلات</button>
-        </div>
-    </div>
-
-    <!-- 3. نافذة تسجيل الدخول -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-box">
-            <button class="modal-close-btn" onclick="closeModal('loginModal')">✕</button>
-            <h3 style="margin-bottom: 16px; font-size: 18px;">تسجيل الدخول بحسابك</h3>
-            <div class="form-group">
-                <label>اسم المستخدم (4 حروف إنجليزي) *</label>
-                <input type="text" id="loginUsername" maxlength="4" style="text-transform: lowercase;" placeholder="مثال: abdo">
-            </div>
-            <div class="form-group">
-                <label>كلمة المرور (4 أرقام / حروف) *</label>
-                <input type="password" id="loginPin" maxlength="4" placeholder="أدخل كلمة المرور">
-            </div>
-            <button class="btn-submit" onclick="handleLogin()">دخول المنصة</button>
-        </div>
-    </div>
-
-    <!-- 4. نافذة إضافة وظيفة -->
+    <!-- نافذة إضافة وظيفة (تتضمن خيار رفع الصورة) -->
     <div class="modal-overlay" id="addModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('addModal')">✕</button>
             <h3 style="margin-bottom: 14px; font-size: 16px;">نشر شاغر وظيفي / خدمة جديد</h3>
             <div class="form-group">
-                <label>عنوان الوظيفة *</label>
-                <input type="text" id="jobTitleInput" placeholder="مثال: محاسب">
+                <label>عنوان الوظيفة / الخدمة *</label>
+                <input type="text" id="jobTitleInput" placeholder="مثال: محاسب عام، معلمة انجليزي">
             </div>
             <div class="form-group">
-                <label>اسم الشركة / المكان *</label>
-                <input type="text" id="companyInput" placeholder="اسم الشركة">
+                <label>اسم الشركة / المتجر *</label>
+                <input type="text" id="companyInput" placeholder="اسم المكان">
             </div>
             <div class="form-group">
                 <label>رقم التواصل (الواتساب) *</label>
                 <input type="text" id="phoneInput" placeholder="770000000">
+            </div>
+            <div class="form-group">
+                <label>صورة الإعلان / الشعار (اختياري من الاستوديو)</label>
+                <input type="file" id="jobImageInput" accept="image/*" style="background:#f8fafc; padding:6px;">
             </div>
             <button class="btn-submit" onclick="submitNewJob()">إرسال للمراجعة والاعتماد</button>
         </div>
     </div>
     <script>
         const DEFAULT_JOBS = [
-            { id: 1, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', status: 'متوفر', approved: true }
+            { id: 1, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', image: '', status: 'متوفر', approved: true }
         ];
 
         function getStoredJobs() {
@@ -300,115 +261,6 @@
             }
         }
 
-        function openProfileModal() {
-            const user = JSON.parse(localStorage.getItem('currentUser'));
-            if(!user) return;
-
-            document.getElementById('profName').value = user.name || '';
-            document.getElementById('profPhone').value = user.phone || '';
-            document.getElementById('profPhone2').value = user.phone2 || '';
-            openModal('profileModal');
-        }
-
-        function saveProfileChanges() {
-            let user = JSON.parse(localStorage.getItem('currentUser'));
-            if(!user) return;
-
-            const name = document.getElementById('profName').value.trim();
-            const phone = document.getElementById('profPhone').value.trim();
-            const phone2 = document.getElementById('profPhone2').value.trim();
-
-            if(!name || !phone) {
-                alert('الاسم ورقم الهاتف الأساسي مطلوبان');
-                return;
-            }
-
-            user.name = name;
-            user.phone = phone;
-            user.phone2 = phone2;
-
-            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-            users = users.map(u => u.username === user.username ? user : u);
-            
-            localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
-            localStorage.setItem('currentUser', JSON.stringify(user));
-
-            alert('تم حفظ وتحديث البيانات بنجاح!');
-            closeModal('profileModal');
-            checkAuthStatus();
-        }
-
-        function handleRegister() {
-            const name = document.getElementById('regName').value.trim();
-            const username = document.getElementById('regUsername').value.trim().toLowerCase();
-            const phone = document.getElementById('regPhone').value.trim();
-            const pin = document.getElementById('regPin').value.trim();
-            const role = document.getElementById('regRole').value;
-
-            if(!name || !username || !phone || !pin) {
-                alert('يرجى ملء جميع الحقول المطلوبة');
-                return;
-            }
-
-            if(username.length !== 4) { alert('اسم المستخدم يجب أن يكون 4 حروف إنجليزية'); return; }
-            if(pin.length !== 4) { alert('كلمة المرور يجب أن تكون 4 عناصر'); return; }
-
-            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-            if(users.some(u => u.username === username)) { alert('اسم المستخدم مستخدم مسبقاً'); return; }
-
-            const newUser = { name, username, phone, phone2: '', pin, role };
-            users.push(newUser);
-            localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
-            localStorage.setItem('currentUser', JSON.stringify(newUser));
-
-            alert(`مرحباً بك يا ${name}! تم إنشاء حسابك بنجاح.`);
-            closeModal('registerModal');
-            checkAuthStatus();
-        }
-
-        function handleLogin() {
-            const username = document.getElementById('loginUsername').value.trim().toLowerCase();
-            const pin = document.getElementById('loginPin').value.trim();
-
-            if(!username || !pin) {
-                alert('يرجى إدخال اسم المستخدم وكلمة المرور');
-                return;
-            }
-
-            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-            const foundUser = users.find(u => u.username === username && u.pin === pin);
-
-            if(foundUser) {
-                localStorage.setItem('currentUser', JSON.stringify(foundUser));
-                alert(`أهلاً بعودتك يا ${foundUser.name}!`);
-                closeModal('loginModal');
-                checkAuthStatus();
-            } else {
-                alert('اسم المستخدم أو كلمة المرور غير صحيحة.');
-            }
-        }
-
-        function handleLogout() {
-            localStorage.removeItem('currentUser');
-            alert('تم تسجيل الخروج بنجاح.');
-            checkAuthStatus();
-        }
-
-        // عرض الشعارات المضافة من قبل الأدمن فقط
-        function renderTicker() {
-            const partners = JSON.parse(localStorage.getItem('dhawar_partners')) || [
-                { id: 1, name: 'صدارة', logo: 'https://via.placeholder.com/60/0f2347/ffffff?text=SADARA' },
-                { id: 2, name: 'الأمل', logo: 'https://via.placeholder.com/60/d4af37/000000?text=AMAL' }
-            ];
-
-            const container = document.getElementById('tickerContainer');
-            container.innerHTML = '';
-
-            partners.forEach(p => {
-                container.innerHTML += `<img class="ticker-logo-only" src="${p.logo}" alt="${p.name}">`;
-            });
-        }
-
         function renderMainJobs() {
             const jobs = getStoredJobs().filter(j => j.approved === true);
             const container = document.getElementById('jobsContainer');
@@ -421,6 +273,7 @@
                     const isAvailable = job.status === 'متوفر';
                     container.innerHTML += `
                         <div class="job-card">
+                            ${job.image ? `<img src="${job.image}" class="job-card-img" alt="صورة الإعلان">` : ''}
                             <div class="job-header-row">
                                 <div>
                                     <div class="job-title">${job.title}</div>
@@ -443,38 +296,49 @@
             if(topBanner) document.getElementById('topAdBanner').innerHTML = `<img src="${topBanner}">`;
         }
 
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
         function submitNewJob() {
             const title = document.getElementById('jobTitleInput').value;
             const company = document.getElementById('companyInput').value;
             const phone = document.getElementById('phoneInput').value;
+            const imgFile = document.getElementById('jobImageInput').files[0];
 
             if (!title || !company || !phone) {
                 alert('يرجى ملء كافة البيانات المطلوبة');
                 return;
             }
 
-            const jobs = getStoredJobs();
-            jobs.push({
-                id: Date.now(),
-                title: title,
-                company: company,
-                phone: phone,
-                status: 'متوفر',
-                approved: false
-            });
+            function saveJob(imgData) {
+                const jobs = getStoredJobs();
+                jobs.push({
+                    id: Date.now(),
+                    title: title,
+                    company: company,
+                    phone: phone,
+                    image: imgData || '',
+                    status: 'متوفر',
+                    approved: false
+                });
 
-            localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
-            alert('تم إرسال الوظيفة للمراجعة والاعتماد.');
-            closeModal('addModal');
+                localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
+                alert('تم إرسال الوظيفة مع الصورة بنجاح! ستظهر بالمنصة والقناة فور اعتمادها.');
+                closeModal('addModal');
+            }
+
+            if(imgFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) { saveJob(e.target.result); };
+                reader.readAsDataURL(imgFile);
+            } else {
+                saveJob('');
+            }
         }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         document.addEventListener('DOMContentLoaded', () => {
             checkAuthStatus();
             renderMainJobs();
-            renderTicker();
         });
     </script>
 </body>
