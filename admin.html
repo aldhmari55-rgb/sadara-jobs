@@ -18,6 +18,7 @@
             --success: #16a34a;
             --danger: #dc2626;
             --warning: #ca8a04;
+            --whatsapp: #25d366;
             --border: #cbd5e1;
             --radius: 12px;
         }
@@ -42,10 +43,11 @@
         .item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 
         .action-btns { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-        .btn-action { border: none; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 12px; cursor: pointer; color: white; }
+        .btn-action { border: none; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 12px; cursor: pointer; color: white; text-decoration: none; display: inline-flex; align-items: center; }
         .btn-approve { background: var(--success); }
         .btn-reject { background: var(--danger); }
         .btn-toggle { background: var(--warning); }
+        .btn-share { background: var(--whatsapp); color: white; }
 
         .file-upload-btn {
             display: inline-block; background: var(--admin-accent); color: white;
@@ -69,12 +71,11 @@
             <h1>لوحة التحكم الشاملة لمدير المنصة</h1>
         </div>
 
-        <!-- 1. إدارة الشركاء والشعارات (جديد) -->
+        <!-- 1. إدارة الشعارات للشريط المتحرك -->
         <div class="section-box">
             <h3>🤝 إدارة شعارات شركاء النجاح (الشريط المتحرك)</h3>
-            
             <div style="background: white; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
-                <label style="font-size:12px; font-weight:bold;">➕ إضافة شركة / شريك جديد للشريط المتحرك:</label><br>
+                <label style="font-size:12px; font-weight:bold;">➕ إضافة شركة / شريك جديد:</label><br>
                 <input type="text" id="newPartnerName" placeholder="اسم الشركة أو المتجر" style="width:100%; padding:8px; margin: 6px 0; border:1px solid var(--border); border-radius:6px; font-size:12px;">
                 <label class="file-upload-btn">
                     📷 اختيار الشعار من المعرض
@@ -82,18 +83,17 @@
                 </label>
                 <button class="btn-action btn-approve" style="margin-top:6px;" onclick="addPartnerByAdmin()">إضافة للشريط المتحرك</button>
             </div>
-
-            <h4 style="font-size:13px; font-weight:bold; margin-top:15px;">الشعارات المعروضة حالياً بالشريط (يمكنك حذف أي شعار):</h4>
+            <h4 style="font-size:13px; font-weight:bold; margin-top:15px;">الشعارات المعروضة حالياً:</h4>
             <div class="partner-logo-grid" id="adminPartnersList"></div>
         </div>
 
-        <!-- 2. إدارة الوظائف والخدمات -->
+        <!-- 2. إدارة الوظائف والنشر بالقناة -->
         <div class="section-box">
-            <h3>⚫ إدارة الوظائف (قبول - رفض - تعديل)</h3>
+            <h3>⚫ إدارة الوظائف والخدمات (مراجعة ونشر)</h3>
             <div id="adminJobsList"></div>
         </div>
 
-        <!-- 3. إدارة البنرات المباشرة من المعرض -->
+        <!-- 3. إدارة إعلانات البنرات -->
         <div class="section-box">
             <h3>⚫ إدارة إعلانات البنرات</h3>
             <div>
@@ -107,8 +107,9 @@
             </div>
         </div>
     </div>
-
     <script>
+        const CHANNEL_LINK = "https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s";
+
         function getJobs() { return JSON.parse(localStorage.getItem('dhawar_jobs')) || []; }
         function getPartners() { 
             return JSON.parse(localStorage.getItem('dhawar_partners')) || [
@@ -118,11 +119,10 @@
         }
 
         function renderAllAdmin() {
-            // 1. عرض وتعيين شركاء النجاح بالشريط
+            // عرض الشركاء
             const partners = getPartners();
             const partnerContainer = document.getElementById('adminPartnersList');
-            partnerContainer.innerHTML = partners.length === 0 ? '<p style="font-size:11px; color:#64748b;">لا توجد شعارات معروضة حالياً.</p>' : '';
-            
+            partnerContainer.innerHTML = partners.length === 0 ? '<p style="font-size:11px; color:#64748b;">لا توجد شعارات معروضة.</p>' : '';
             partners.forEach(p => {
                 partnerContainer.innerHTML += `
                     <div class="partner-logo-card">
@@ -132,11 +132,29 @@
                 `;
             });
 
-            // 2. الوظائف
+            // عرض الوظائف وإضافة زر مشاركة الواتساب بالنص الجاهز
             const jobs = getJobs();
             const jobsContainer = document.getElementById('adminJobsList');
             jobsContainer.innerHTML = jobs.length === 0 ? '<p style="font-size:12px; color:#64748b;">لا توجد وظائف جديدة.</p>' : '';
+            
             jobs.forEach(job => {
+                // صياغة نص الوظيفة المميز والجاهز للنشر على القناة
+                const formattedMessage = encodeURIComponent(
+`📢 *فرصة عمل جديد - منصة صدارة ذمار*
+
+💼 *المسمى الوظيفي:* ${job.title}
+🏢 *الجهة / المكان:* ${job.company}
+📍 *الموقع:* ذمار - اليمن
+STATUS: *${job.status}*
+
+📲 *للتقديم والتواصل المباشر عبر الواتساب:*
+https://wa.me/${job.phone}
+
+---
+🟢 *تابع جديد الوظائف اليومية عبر قناتنا الرسمية:*
+${CHANNEL_LINK}`
+                );
+
                 jobsContainer.innerHTML += `
                     <div class="admin-item">
                         <div class="item-header">
@@ -146,6 +164,7 @@
                         <div style="font-size:12px; color:#64748b;">الهاتف: ${job.phone} | الحالة: <strong>${job.status}</strong></div>
                         <div class="action-btns">
                             ${!job.approved ? `<button class="btn-action btn-approve" onclick="approveJob(${job.id})">قبول ونشر</button>` : ''}
+                            <a href="https://api.whatsapp.com/send?text=${formattedMessage}" target="_blank" class="btn-action btn-share">مشاركة بالقناة 🟢</a>
                             <button class="btn-action btn-toggle" onclick="toggleJobStatus(${job.id})">تغيير التوفر (${job.status === 'متوفر' ? 'غير متوفر' : 'متوفر'})</button>
                             <button class="btn-action btn-reject" onclick="deleteJob(${job.id})">حذف</button>
                         </div>
@@ -153,40 +172,34 @@
                 `;
             });
 
-            // 3. معاينة البنرات
+            // معاينة البنر العلوي
             const topB = localStorage.getItem('ad_banner_top');
             if(topB) { document.getElementById('prevTop').src = topB; document.getElementById('prevTop').style.display = 'block'; }
         }
 
-        // إضافة شريك جديد بيدك كأدمن من الاستوديو
         function addPartnerByAdmin() {
             const name = document.getElementById('newPartnerName').value.trim();
             const file = document.getElementById('newPartnerLogoFile').files[0];
 
             if(!name || !file) {
-                alert('يرجى كتابة اسم الشريك واختيار صوته من الاستوديو');
+                alert('يرجى إدخال الاسم واختيار الشعار');
                 return;
             }
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 let partners = getPartners();
-                partners.push({
-                    id: Date.now(),
-                    name: name,
-                    logo: e.target.result
-                });
+                partners.push({ id: Date.now(), name: name, logo: e.target.result });
                 localStorage.setItem('dhawar_partners', JSON.stringify(partners));
-                alert('تمت إضافة الشعار بنجاح وسيظهر في الشريط المتحرك فوراً!');
+                alert('تمت إضافة الشعار بنجاح!');
                 document.getElementById('newPartnerName').value = '';
                 renderAllAdmin();
             };
             reader.readAsDataURL(file);
         }
 
-        // حذف أي شعار برغبتك في أي وقت
         function deletePartner(id) {
-            if(confirm('هل أنت متأكد من حذف هذا الشعار من الشريط المتحرك؟')) {
+            if(confirm('هل أنت متأكد من حذف الشعار؟')) {
                 let partners = getPartners().filter(p => p.id !== id);
                 localStorage.setItem('dhawar_partners', JSON.stringify(partners));
                 renderAllAdmin();
@@ -196,13 +209,16 @@
         function approveJob(id) {
             let jobs = getJobs().map(j => j.id === id ? {...j, approved: true} : j);
             localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
+            alert('تم قبول الوظيفة! يمكنك الآن إرسالها للقناة عبر زر المشاركة الأخضر.');
             renderAllAdmin();
         }
+
         function toggleJobStatus(id) {
             let jobs = getJobs().map(j => j.id === id ? {...j, status: j.status === 'متوفر' ? 'غير متوفر' : 'متوفر'} : j);
             localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
             renderAllAdmin();
         }
+
         function deleteJob(id) {
             let jobs = getJobs().filter(j => j.id !== id);
             localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
