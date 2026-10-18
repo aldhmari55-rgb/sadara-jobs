@@ -66,7 +66,12 @@
             color: #ffffff; border: none; padding: 7px 16px; border-radius: 20px;
             font-weight: 800; font-size: 13px; cursor: pointer;
         }
-        .user-welcome { font-size: 12px; color: var(--accent-gold); font-weight: 800; }
+        .profile-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff; border: 1px solid var(--accent-gold);
+            padding: 6px 12px; border-radius: 20px;
+            font-weight: 700; font-size: 12px; cursor: pointer;
+        }
 
         .hero-banner-title {
             background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
@@ -102,6 +107,7 @@
         .apply-btn { background: var(--whatsapp-green); color: #ffffff; text-decoration: none; padding: 8px 18px; border-radius: var(--radius-md); font-weight: 800; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
         .apply-btn.disabled { background: #cbd5e1; pointer-events: none; }
 
+        /* ===== تصميم الشريط المتحرك (صور للشعارات فقط) ===== */
         .partners-ticker-section {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--primary-dark); color: #ffffff;
@@ -116,14 +122,15 @@
         }
 
         .ticker-wrapper { display: flex; overflow: hidden; width: 100%; }
-        .ticker-content { display: flex; align-items: center; gap: 25px; white-space: nowrap; animation: tickerSlide 22s linear infinite; }
-        .ticker-item {
-            display: flex; align-items: center; gap: 8px;
-            background: rgba(255, 255, 255, 0.08); padding: 4px 12px;
-            border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.3);
-            font-size: 12px; font-weight: 700;
+        .ticker-content { display: flex; align-items: center; gap: 20px; white-space: nowrap; animation: tickerSlide 20s linear infinite; }
+        
+        .ticker-logo-only {
+            width: 42px; height: 42px;
+            border-radius: 50%; object-fit: cover;
+            border: 2px solid var(--accent-gold);
+            background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            flex-shrink: 0;
         }
-        .ticker-item img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: #ffffff; }
 
         @keyframes tickerSlide {
             0% { transform: translateX(100%); }
@@ -166,6 +173,7 @@
         <div class="jobs-grid" id="jobsContainer"></div>
     </div>
 
+    <!-- الشريط المتحرك للشعارات فقط -->
     <div class="partners-ticker-section">
         <div class="ticker-label">شركاء النجاح 🤝</div>
         <div class="ticker-wrapper">
@@ -173,6 +181,7 @@
         </div>
     </div>
 
+    <!-- 1. نافذة إنشاء حساب جديد -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('registerModal')">✕</button>
@@ -193,11 +202,11 @@
                 <input type="text" id="regUsername" maxlength="4" style="text-transform: lowercase;" placeholder="مثال: abdo">
             </div>
             <div class="form-group">
-                <label>رقم الهاتف (الواتساب) *</label>
+                <label>رقم الهاتف الأساسي (الواتساب) *</label>
                 <input type="text" id="regPhone" placeholder="770000000">
             </div>
             <div class="form-group" id="employerLogoGroup" style="display: none; background: #f1f5f9; padding: 10px; border-radius: 8px;">
-                <label style="color: var(--primary-blue);">شعار المتجر / الشركة:</label>
+                <label style="color: var(--primary-blue);">رفع شعار المتجر / الشركة (صورة للشريط المتحرك):</label>
                 <input type="file" id="regLogoFile" accept="image/*" style="background: white; padding: 5px;">
             </div>
             <div class="form-group">
@@ -208,6 +217,34 @@
         </div>
     </div>
 
+    <!-- 2. نافذة تعديل الملف الشخصي -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" onclick="closeModal('profileModal')">✕</button>
+            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--primary-dark);">تعديل الملف الشخصي</h3>
+            
+            <div class="form-group">
+                <label>الاسم الكامل / اسم الجهة</label>
+                <input type="text" id="profName">
+            </div>
+            <div class="form-group">
+                <label>رقم الهاتف الأساسي</label>
+                <input type="text" id="profPhone">
+            </div>
+            <div class="form-group">
+                <label>رقم هاتف إضافي (اختياري)</label>
+                <input type="text" id="profPhone2" placeholder="أدخل رقم إضافي إن وجد">
+            </div>
+            <div class="form-group" id="profLogoBox" style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <label style="color: var(--primary-blue);">تحديث / رفع الشعار (يظهر في الشريط المتحرك):</label>
+                <input type="file" id="profLogoFile" accept="image/*" style="background: white; padding: 5px; margin-top:4px;">
+                <img id="profLogoPreview" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; margin-top: 8px; display: none;">
+            </div>
+            <button class="btn-submit" onclick="saveProfileChanges()">حفظ التعديلات</button>
+        </div>
+    </div>
+
+    <!-- 3. نافذة تسجيل الدخول -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('loginModal')">✕</button>
@@ -224,6 +261,7 @@
         </div>
     </div>
 
+    <!-- 4. نافذة إضافة وظيفة -->
     <div class="modal-overlay" id="addModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('addModal')">✕</button>
@@ -248,9 +286,10 @@
             { id: 1, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', status: 'متوفر', approved: true }
         ];
 
+        // شعارات افتراضية للشريط بدون أسماء
         const DEFAULT_PARTNERS = [
-            { name: 'شركة صدارة للتسويق', logo: 'https://via.placeholder.com/50/0f2347/ffffff?text=SADARA' },
-            { name: 'متجر الأمل ذمار', logo: 'https://via.placeholder.com/50/d4af37/000000?text=AMAL' }
+            { logo: 'https://via.placeholder.com/60/0f2347/ffffff?text=SADARA' },
+            { logo: 'https://via.placeholder.com/60/d4af37/000000?text=AMAL' }
         ];
 
         function toggleEmployerFields() {
@@ -268,7 +307,7 @@
 
             if(currentUser) {
                 navAuthArea.innerHTML = `
-                    <span class="user-welcome">👤 ${currentUser.name} (@${currentUser.username})</span>
+                    <button class="profile-btn" onclick="openProfileModal()">👤 الملف الشخصي</button>
                     <button class="btn-add-job" onclick="openModal('addModal')">+ نشر شغل</button>
                     <button class="auth-btn" style="background:#ef4444; color:white;" onclick="handleLogout()">خروج</button>
                 `;
@@ -278,6 +317,67 @@
                     <button class="register-btn" onclick="openModal('registerModal')">حساب جديد</button>
                     <button class="auth-btn" onclick="openModal('loginModal')">تسجيل الدخول</button>
                 `;
+            }
+        }
+
+        function openProfileModal() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if(!user) return;
+
+            document.getElementById('profName').value = user.name || '';
+            document.getElementById('profPhone').value = user.phone || '';
+            document.getElementById('profPhone2').value = user.phone2 || '';
+
+            const logoPrev = document.getElementById('profLogoPreview');
+            if(user.logo) {
+                logoPrev.src = user.logo;
+                logoPrev.style.display = 'block';
+            } else {
+                logoPrev.style.display = 'none';
+            }
+
+            openModal('profileModal');
+        }
+
+        function saveProfileChanges() {
+            let user = JSON.parse(localStorage.getItem('currentUser'));
+            if(!user) return;
+
+            const name = document.getElementById('profName').value.trim();
+            const phone = document.getElementById('profPhone').value.trim();
+            const phone2 = document.getElementById('profPhone2').value.trim();
+            const logoFile = document.getElementById('profLogoFile').files[0];
+
+            if(!name || !phone) {
+                alert('الاسم ورقم الهاتف الأساسي مطلوبان');
+                return;
+            }
+
+            function finalizeSave(logoData) {
+                user.name = name;
+                user.phone = phone;
+                user.phone2 = phone2;
+                if(logoData) user.logo = logoData;
+
+                // تحديث الحساب المسجل بقائمة المستخدمين
+                let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+                users = users.map(u => u.username === user.username ? user : u);
+                
+                localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
+                localStorage.setItem('currentUser', JSON.stringify(user));
+
+                alert('تم حفظ وتحديث بيانات الملف الشخصي وشعارك بنجاح!');
+                closeModal('profileModal');
+                checkAuthStatus();
+                renderTicker();
+            }
+
+            if(logoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) { finalizeSave(e.target.result); };
+                reader.readAsDataURL(logoFile);
+            } else {
+                finalizeSave(null);
             }
         }
 
@@ -294,24 +394,14 @@
                 return;
             }
 
-            if(username.length !== 4) {
-                alert('اسم المستخدم يجب أن يكون 4 حروف إنجليزية');
-                return;
-            }
-
-            if(pin.length !== 4) {
-                alert('كلمة المرور يجب أن تكون 4 أرقام/حروف');
-                return;
-            }
+            if(username.length !== 4) { alert('اسم المستخدم يجب أن يكون 4 حروف إنجليزية'); return; }
+            if(pin.length !== 4) { alert('كلمة المرور يجب أن تكون 4 عناصر'); return; }
 
             let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-            if(users.some(u => u.username === username)) {
-                alert('اسم المستخدم مستخدم مسبقاً');
-                return;
-            }
+            if(users.some(u => u.username === username)) { alert('اسم المستخدم مستخدم مسبقاً'); return; }
 
             function saveUser(logoData) {
-                const newUser = { name, username, phone, pin, role, logo: logoData || null };
+                const newUser = { name, username, phone, phone2: '', pin, role, logo: logoData || null };
                 users.push(newUser);
                 localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
                 localStorage.setItem('currentUser', JSON.stringify(newUser));
@@ -359,6 +449,7 @@
             checkAuthStatus();
         }
 
+        // عرض الشريط المتحرك (صور للشعارات فقط دون أي أسماء)
         function renderTicker() {
             const users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
             const container = document.getElementById('tickerContainer');
@@ -367,21 +458,13 @@
             let partners = [...DEFAULT_PARTNERS];
 
             users.forEach(u => {
-                if (u.role === 'صاحب عمل') {
-                    partners.push({
-                        name: u.name,
-                        logo: u.logo || 'https://via.placeholder.com/50/0f2347/ffffff?text=' + u.name.charAt(0)
-                    });
+                if (u.logo) {
+                    partners.push({ logo: u.logo });
                 }
             });
 
             partners.forEach(p => {
-                container.innerHTML += `
-                    <div class="ticker-item">
-                        <img src="${p.logo}" alt="${p.name}">
-                        <span>${p.name}</span>
-                    </div>
-                `;
+                container.innerHTML += `<img class="ticker-logo-only" src="${p.logo}" alt="شعار الشريك">`;
             });
         }
 
