@@ -187,7 +187,7 @@
     </div>
 
     <div class="main-container">
-        <!-- شريط قناتك الرسمية على الواتساب -->
+        <!-- شريط التوجيه لقناة الواتساب الرسمية -->
         <div class="whatsapp-channel-bar">
             <span>📢 انضم لقناة المنصة الرسمية على الواتساب!</span>
             <a href="https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s" target="_blank" class="whatsapp-channel-btn">الانضمام للقناة 🟢</a>
@@ -208,14 +208,84 @@
         </div>
     </div>
 
-    <!-- نافذة إضافة وظيفة -->
+    <!-- 1. نافذة إنشاء حساب جديد -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" onclick="closeModal('registerModal')">✕</button>
+            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--primary-blue);">إنشاء حساب جديد</h3>
+            <div class="form-group">
+                <label>نوع الحساب</label>
+                <select id="regRole">
+                    <option value="باحث عن عمل">باحث عن عمل (موظف)</option>
+                    <option value="صاحب عمل">صاحب عمل (مؤسسة / متجر)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>الاسم الكامل / اسم الشركة أو المتجر *</label>
+                <input type="text" id="regName" placeholder="مثال: متجر الأمل">
+            </div>
+            <div class="form-group">
+                <label>اسم المستخدم (4 حروف إنجليزي للدخول) *</label>
+                <input type="text" id="regUsername" maxlength="4" style="text-transform: lowercase;" placeholder="مثال: abdo">
+            </div>
+            <div class="form-group">
+                <label>رقم الهاتف الأساسي (الواتساب) *</label>
+                <input type="text" id="regPhone" placeholder="770000000">
+            </div>
+            <div class="form-group">
+                <label>كلمة المرور (4 أرقام أو حروف) *</label>
+                <input type="password" id="regPin" maxlength="4" placeholder="مثال: 1234">
+            </div>
+            <button class="btn-submit" onclick="handleRegister()">تسجيل وإنشاء الحساب فوراً</button>
+        </div>
+    </div>
+
+    <!-- 2. نافذة تعديل الملف الشخصي -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" onclick="closeModal('profileModal')">✕</button>
+            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--primary-dark);">تعديل الملف الشخصي</h3>
+            <div class="form-group">
+                <label>الاسم الكامل / اسم الجهة</label>
+                <input type="text" id="profName">
+            </div>
+            <div class="form-group">
+                <label>رقم الهاتف الأساسي</label>
+                <input type="text" id="profPhone">
+            </div>
+            <div class="form-group">
+                <label>رقم هاتف إضافي (اختياري)</label>
+                <input type="text" id="profPhone2" placeholder="أدخل رقم إضافي إن وجد">
+            </div>
+            <button class="btn-submit" onclick="saveProfileChanges()">حفظ التعديلات</button>
+        </div>
+    </div>
+
+    <!-- 3. نافذة تسجيل الدخول -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" onclick="closeModal('loginModal')">✕</button>
+            <h3 style="margin-bottom: 16px; font-size: 18px;">تسجيل الدخول بحسابك</h3>
+            <div class="form-group">
+                <label>اسم المستخدم (4 حروف إنجليزي) *</label>
+                <input type="text" id="loginUsername" maxlength="4" style="text-transform: lowercase;" placeholder="مثال: abdo">
+            </div>
+            <div class="form-group">
+                <label>كلمة المرور (4 أرقام / حروف) *</label>
+                <input type="password" id="loginPin" maxlength="4" placeholder="أدخل كلمة المرور">
+            </div>
+            <button class="btn-submit" onclick="handleLogin()">دخول المنصة</button>
+        </div>
+    </div>
+
+    <!-- 4. نافذة إضافة وظيفة -->
     <div class="modal-overlay" id="addModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('addModal')">✕</button>
             <h3 style="margin-bottom: 14px; font-size: 16px;">نشر شاغر وظيفي / خدمة جديد</h3>
             <div class="form-group">
                 <label>عنوان الوظيفة / الخدمة *</label>
-                <input type="text" id="jobTitleInput" placeholder="مثال: محاسب عام، مسوق ميداني">
+                <input type="text" id="jobTitleInput" placeholder="مثال: محاسب عام">
             </div>
             <div class="form-group">
                 <label>اسم الشركة / المكان *</label>
@@ -241,6 +311,14 @@
             return JSON.parse(localStorage.getItem('dhawar_jobs')) || DEFAULT_JOBS;
         }
 
+        function openModal(id) { 
+            document.getElementById(id).style.display = 'flex'; 
+        }
+        
+        function closeModal(id) { 
+            document.getElementById(id).style.display = 'none'; 
+        }
+
         function checkAuthStatus() {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             const navAuthArea = document.getElementById('navAuthArea');
@@ -258,6 +336,115 @@
                     <button class="auth-btn" onclick="openModal('loginModal')">تسجيل الدخول</button>
                 `;
             }
+        }
+
+        function openProfileModal() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if(!user) return;
+
+            document.getElementById('profName').value = user.name || '';
+            document.getElementById('profPhone').value = user.phone || '';
+            document.getElementById('profPhone2').value = user.phone2 || '';
+            openModal('profileModal');
+        }
+
+        function saveProfileChanges() {
+            let user = JSON.parse(localStorage.getItem('currentUser'));
+            if(!user) return;
+
+            const name = document.getElementById('profName').value.trim();
+            const phone = document.getElementById('profPhone').value.trim();
+            const phone2 = document.getElementById('profPhone2').value.trim();
+
+            if(!name || !phone) {
+                alert('الاسم ورقم الهاتف الأساسي مطلوبان');
+                return;
+            }
+
+            user.name = name;
+            user.phone = phone;
+            user.phone2 = phone2;
+
+            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            users = users.map(u => u.username === user.username ? user : u);
+            
+            localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(user));
+
+            alert('تم حفظ وتحديث البيانات بنجاح!');
+            closeModal('profileModal');
+            checkAuthStatus();
+        }
+
+        function handleRegister() {
+            const name = document.getElementById('regName').value.trim();
+            const username = document.getElementById('regUsername').value.trim().toLowerCase();
+            const phone = document.getElementById('regPhone').value.trim();
+            const pin = document.getElementById('regPin').value.trim();
+            const role = document.getElementById('regRole').value;
+
+            if(!name || !username || !phone || !pin) {
+                alert('يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
+
+            if(username.length !== 4) { alert('اسم المستخدم يجب أن يكون 4 حروف إنجليزية'); return; }
+            if(pin.length !== 4) { alert('كلمة المرور يجب أن تكون 4 عناصر'); return; }
+
+            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            if(users.some(u => u.username === username)) { alert('اسم المستخدم مستخدم مسبقاً'); return; }
+
+            const newUser = { name, username, phone, phone2: '', pin, role };
+            users.push(newUser);
+            localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+
+            alert(`مرحباً بك يا ${name}! تم إنشاء حسابك بنجاح.`);
+            closeModal('registerModal');
+            checkAuthStatus();
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('loginUsername').value.trim().toLowerCase();
+            const pin = document.getElementById('loginPin').value.trim();
+
+            if(!username || !pin) {
+                alert('يرجى إدخال اسم المستخدم وكلمة المرور');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            const foundUser = users.find(u => u.username === username && u.pin === pin);
+
+            if(foundUser) {
+                localStorage.setItem('currentUser', JSON.stringify(foundUser));
+                alert(`أهلاً بعودتك يا ${foundUser.name}!`);
+                closeModal('loginModal');
+                checkAuthStatus();
+            } else {
+                alert('اسم المستخدم أو كلمة المرور غير صحيحة.');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            alert('تم تسجيل الخروج بنجاح.');
+            checkAuthStatus();
+        }
+
+        function renderTicker() {
+            const partners = JSON.parse(localStorage.getItem('dhawar_partners')) || [
+                { id: 1, name: 'صدارة', logo: 'https://via.placeholder.com/60/0f2347/ffffff?text=SADARA' },
+                { id: 2, name: 'الأمل', logo: 'https://via.placeholder.com/60/d4af37/000000?text=AMAL' }
+            ];
+
+            const container = document.getElementById('tickerContainer');
+            if(!container) return;
+            container.innerHTML = '';
+
+            partners.forEach(p => {
+                container.innerHTML += `<img class="ticker-logo-only" src="${p.logo}" alt="${p.name}">`;
+            });
         }
 
         function renderMainJobs() {
@@ -319,7 +506,7 @@
                 });
 
                 localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
-                alert('تم إرسال الوظيفة والصورة بنجاح! ستظهر بالمنصة والقناة فور مراجعتها وقبولها من الإدارة.');
+                alert('تم إرسال الوظيفة مع الصورة بنجاح! ستظهر بالمنصة فور اعتمادها من الإدارة.');
                 closeModal('addModal');
             }
 
@@ -332,12 +519,10 @@
             }
         }
 
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
         document.addEventListener('DOMContentLoaded', () => {
             checkAuthStatus();
             renderMainJobs();
+            renderTicker();
         });
     </script>
 </body>
