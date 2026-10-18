@@ -75,7 +75,7 @@
             box-shadow: var(--shadow-sm); margin-bottom: 20px; text-align: center;
             min-height: 80px; display: flex; align-items: center; justify-content: center;
         }
-        .ad-banner-box img { width: 100%; height: auto; display: block; }
+        .ad-banner-box img { width: 100%; height: auto; display: block; max-height: 250px; object-fit: cover; }
         .ad-banner-text { padding: 15px; color: var(--text-muted); font-size: 14px; font-weight: 700; }
 
         .jobs-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
@@ -95,7 +95,6 @@
         .apply-btn { background: var(--whatsapp-green); color: #ffffff; text-decoration: none; padding: 8px 18px; border-radius: var(--radius-md); font-weight: 800; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
         .apply-btn.disabled { background: #cbd5e1; pointer-events: none; }
 
-        /* NAFATH MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 19, 36, 0.75); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 16px; }
         .modal-box { background: #ffffff; width: 100%; max-width: 440px; border-radius: var(--radius-lg); padding: 24px; position: relative; }
         .form-group { margin-bottom: 14px; }
@@ -119,32 +118,32 @@
         </div>
     </div>
 
-    <!-- البنر الرئـيسي -->
+    <!-- العنوان والبنر -->
     <div class="hero-banner-title">
         <h1>المنصة الأولى للوظائف بمحافظة ذمار</h1>
     </div>
 
     <div class="main-container">
         <!-- البنـر العلـوي -->
-        <div class="ad-banner-box" id="topAdBanner"><div class="ad-banner-text">مساحة البنر العلوي الإعلاني</div></div>
+        <div class="ad-banner-box" id="topAdBanner"><div class="ad-banner-text">إعلان المنصة العلوي</div></div>
 
         <!-- قائمة الوظائف -->
         <div class="jobs-section-header">
-            <h2 class="jobs-section-title">الوظائف المتاحة</h2>
+            <h2 class="jobs-section-title">الوظائف والخدمات المتاحة</h2>
             <button class="show-all-btn" onclick="renderMainJobs()">عرض الكل</button>
         </div>
 
         <div class="jobs-grid" id="jobsContainer"></div>
 
         <!-- البنـر السفلـي -->
-        <div class="ad-banner-box" style="margin-top: 25px;" id="bottomAdBanner"><div class="ad-banner-text">مساحة البنر السفلي الإعلاني</div></div>
+        <div class="ad-banner-box" style="margin-top: 25px;" id="bottomAdBanner"><div class="ad-banner-text">إعلان المنصة السفلي</div></div>
     </div>
 
     <!-- نافذة تسجيل الدخول / إنشاء حساب -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('authModal')">✕</button>
-            <h3 style="margin-bottom: 16px; font-size: 18px;" id="authModalTitle">تسجيل الدخول / حساب جديد</h3>
+            <h3 style="margin-bottom: 16px; font-size: 18px;">تسجيل الدخول / طلب حساب جديد</h3>
             
             <div class="form-group">
                 <label>نوع الحساب</label>
@@ -161,7 +160,7 @@
                 <label>رقم الهاتف (الواتساب) *</label>
                 <input type="text" id="authPhone" placeholder="770000000">
             </div>
-            <button class="btn-submit" onclick="handleLoginSubmit()">دخول المنصة فوراً</button>
+            <button class="btn-submit" onclick="handleRegisterSubmit()">إرسال الطلب للإدارة للموافقة</button>
         </div>
     </div>
 
@@ -182,14 +181,13 @@
                 <label>رقم التواصل (الواتساب) *</label>
                 <input type="text" id="phoneInput" placeholder="770000000">
             </div>
-            <button class="btn-submit" onclick="submitNewJob()">إرسال للمراجعة والنشر</button>
+            <button class="btn-submit" onclick="submitNewJob()">إرسال للمراجعة والاعتماد</button>
         </div>
     </div>
 
     <script>
         const DEFAULT_JOBS = [
-            { id: 1, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', status: 'متوفر', approved: true },
-            { id: 2, title: 'مسوق مبيعات ميداني', company: 'مركز ذمار التجاري', phone: '967771111222', status: 'غير متوفر', approved: true }
+            { id: 1, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', status: 'متوفر', approved: true }
         ];
 
         function getStoredJobs() {
@@ -200,7 +198,7 @@
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             const navAuthArea = document.getElementById('navAuthArea');
 
-            if(currentUser) {
+            if(currentUser && currentUser.approved) {
                 navAuthArea.innerHTML = `
                     <span class="user-welcome">👤 ${currentUser.name} (${currentUser.role})</span>
                     <button class="btn-add-job" onclick="openModal('addModal')">+ نشر شغل</button>
@@ -214,7 +212,7 @@
             }
         }
 
-        function handleLoginSubmit() {
+        function handleRegisterSubmit() {
             const name = document.getElementById('authName').value;
             const phone = document.getElementById('authPhone').value;
             const role = document.getElementById('userRoleSelect').value;
@@ -224,11 +222,12 @@
                 return;
             }
 
-            const userData = { name, phone, role };
-            localStorage.setItem('currentUser', JSON.stringify(userData));
-            alert(`أهلاً بك يا ${name}! تم تسجيل دخولك بنجاح بصفة (${role}).`);
+            const users = JSON.parse(localStorage.getItem('dhawar_users')) || [];
+            users.push({ id: Date.now(), name, phone, role, approved: false });
+            localStorage.setItem('dhawar_users', JSON.stringify(users));
+
+            alert('تم إرسال طلب إنشاء الحساب بنجاح! سيتم تفعيل حسابك فور مراجعته وقبوله من قبل إدارة المنصة.');
             closeModal('authModal');
-            checkAuthStatus();
         }
 
         function handleLogout() {
@@ -244,31 +243,30 @@
 
             if (jobs.length === 0) {
                 container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-muted);">لا توجد وظائف معروضة حالياً</p>';
-                return;
+            } else {
+                jobs.forEach(job => {
+                    const isAvailable = job.status === 'متوفر';
+                    container.innerHTML += `
+                        <div class="job-card">
+                            <div class="job-header-row">
+                                <div>
+                                    <div class="job-title">${job.title}</div>
+                                    <div class="job-company">${job.company}</div>
+                                </div>
+                                <span class="status-badge ${isAvailable ? 'status-available' : 'status-unavailable'}">${job.status}</span>
+                            </div>
+                            <div class="job-card-footer">
+                                <span style="font-size:12px; color:var(--text-muted);">ذمار - اليمن</span>
+                                <a href="${isAvailable ? 'https://wa.me/' + job.phone : '#'}" target="_blank" class="apply-btn ${!isAvailable ? 'disabled' : ''}">
+                                    ${isAvailable ? 'رقم التقديم (واتساب)' : 'التقديم مغلق'}
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
             }
 
-            jobs.forEach(job => {
-                const isAvailable = job.status === 'متوفر';
-                container.innerHTML += `
-                    <div class="job-card">
-                        <div class="job-header-row">
-                            <div>
-                                <div class="job-title">${job.title}</div>
-                                <div class="job-company">${job.company}</div>
-                            </div>
-                            <span class="status-badge ${isAvailable ? 'status-available' : 'status-unavailable'}">${job.status}</span>
-                        </div>
-                        <div class="job-card-footer">
-                            <span style="font-size:12px; color:var(--text-muted);">ذمار - اليمن</span>
-                            <a href="${isAvailable ? 'https://wa.me/' + job.phone : '#'}" target="_blank" class="apply-btn ${!isAvailable ? 'disabled' : ''}">
-                                ${isAvailable ? 'رقم التقديم (واتساب)' : 'التقديم مغلق'}
-                            </a>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // تحميل البنرات
+            // تحميل البنرات من الذاكرة
             const topBanner = localStorage.getItem('ad_banner_top');
             if(topBanner) document.getElementById('topAdBanner').innerHTML = `<img src="${topBanner}">`;
             
@@ -285,7 +283,7 @@
             const phone = document.getElementById('phoneInput').value;
 
             if (!title || !company || !phone) {
-                alert('يرجى ملء جميع البيانات المطلوبة');
+                alert('يرجى ملء كافة البيانات المطلوب');
                 return;
             }
 
@@ -300,7 +298,7 @@
             });
 
             localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
-            alert('تم إرسال الوظيفة! ستظهر بالمنصة فور اعتمادها من مدير المنصة.');
+            alert('تم إرسال الوظيفة! ستظهر بالمنصة فور اعتمادها من قبل إدارة المنصة.');
             closeModal('addModal');
         }
 
