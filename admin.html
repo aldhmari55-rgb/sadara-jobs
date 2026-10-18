@@ -54,6 +54,11 @@
         }
         .file-upload-btn input { display: none; }
         .banner-preview-img { width: 100%; max-height: 120px; object-fit: cover; border-radius: 8px; margin-top: 8px; display: none; }
+
+        .partner-logo-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        .partner-logo-card { position: relative; width: 70px; text-align: center; background: white; padding: 6px; border-radius: 8px; border: 1px solid var(--border); }
+        .partner-logo-card img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .partner-delete-btn { background: var(--danger); color: white; border: none; padding: 2px 6px; font-size: 10px; border-radius: 4px; cursor: pointer; margin-top: 4px; width: 100%; }
     </style>
 </head>
 <body>
@@ -64,52 +69,70 @@
             <h1>لوحة التحكم الشاملة لمدير المنصة</h1>
         </div>
 
-        <!-- 1. إدارة الوظائف والخدمات -->
+        <!-- 1. إدارة الشركاء والشعارات (جديد) -->
+        <div class="section-box">
+            <h3>🤝 إدارة شعارات شركاء النجاح (الشريط المتحرك)</h3>
+            
+            <div style="background: white; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                <label style="font-size:12px; font-weight:bold;">➕ إضافة شركة / شريك جديد للشريط المتحرك:</label><br>
+                <input type="text" id="newPartnerName" placeholder="اسم الشركة أو المتجر" style="width:100%; padding:8px; margin: 6px 0; border:1px solid var(--border); border-radius:6px; font-size:12px;">
+                <label class="file-upload-btn">
+                    📷 اختيار الشعار من المعرض
+                    <input type="file" id="newPartnerLogoFile" accept="image/*">
+                </label>
+                <button class="btn-action btn-approve" style="margin-top:6px;" onclick="addPartnerByAdmin()">إضافة للشريط المتحرك</button>
+            </div>
+
+            <h4 style="font-size:13px; font-weight:bold; margin-top:15px;">الشعارات المعروضة حالياً بالشريط (يمكنك حذف أي شعار):</h4>
+            <div class="partner-logo-grid" id="adminPartnersList"></div>
+        </div>
+
+        <!-- 2. إدارة الوظائف والخدمات -->
         <div class="section-box">
             <h3>⚫ إدارة الوظائف (قبول - رفض - تعديل)</h3>
             <div id="adminJobsList"></div>
         </div>
 
-        <!-- 2. إدارة المستخدمين والحسابات -->
+        <!-- 3. إدارة البنرات المباشرة من المعرض -->
         <div class="section-box">
-            <h3>⚫ إدارة طلبات وتسجيل المستخدمين</h3>
-            <div id="adminUsersList"></div>
-        </div>
-
-        <!-- 3. إدارة البنرات مباشرة من المعرض -->
-        <div class="section-box">
-            <h3>⚫ إدارة البنرات والإعلانات (تحميل من الاستوديو)</h3>
-            
-            <div style="margin-bottom: 15px;">
+            <h3>⚫ إدارة إعلانات البنرات</h3>
+            <div>
                 <label style="font-size:12px; font-weight:bold;">البنر العلوي:</label><br>
                 <label class="file-upload-btn">
-                    📷 اختيار صورة البنر العلوي من المعرض
+                    📷 اختيار صورة البنر العلوي
                     <input type="file" accept="image/*" onchange="uploadBanner(event, 'top')">
                 </label>
                 <img id="prevTop" class="banner-preview-img">
                 <button class="btn-action btn-reject" style="margin-top:5px;" onclick="deleteBanner('top')">حذف البنر العلوي</button>
-            </div>
-
-            <hr style="margin:12px 0; border:none; border-top:1px dashed var(--border);">
-
-            <div>
-                <label style="font-size:12px; font-weight:bold;">البنر السفلي:</label><br>
-                <label class="file-upload-btn">
-                    📷 اختيار صورة البنر السفلي من المعرض
-                    <input type="file" accept="image/*" onchange="uploadBanner(event, 'bottom')">
-                </label>
-                <img id="prevBottom" class="banner-preview-img">
-                <button class="btn-action btn-reject" style="margin-top:5px;" onclick="deleteBanner('bottom')">حذف البنر السفلي</button>
             </div>
         </div>
     </div>
 
     <script>
         function getJobs() { return JSON.parse(localStorage.getItem('dhawar_jobs')) || []; }
-        function getUsers() { return JSON.parse(localStorage.getItem('dhawar_users')) || []; }
+        function getPartners() { 
+            return JSON.parse(localStorage.getItem('dhawar_partners')) || [
+                { id: 1, name: 'صدارة', logo: 'https://via.placeholder.com/60/0f2347/ffffff?text=SADARA' },
+                { id: 2, name: 'الأمل', logo: 'https://via.placeholder.com/60/d4af37/000000?text=AMAL' }
+            ]; 
+        }
 
         function renderAllAdmin() {
-            // 1. الوظائف
+            // 1. عرض وتعيين شركاء النجاح بالشريط
+            const partners = getPartners();
+            const partnerContainer = document.getElementById('adminPartnersList');
+            partnerContainer.innerHTML = partners.length === 0 ? '<p style="font-size:11px; color:#64748b;">لا توجد شعارات معروضة حالياً.</p>' : '';
+            
+            partners.forEach(p => {
+                partnerContainer.innerHTML += `
+                    <div class="partner-logo-card">
+                        <img src="${p.logo}" title="${p.name}">
+                        <button class="partner-delete-btn" onclick="deletePartner(${p.id})">حذف ✕</button>
+                    </div>
+                `;
+            });
+
+            // 2. الوظائف
             const jobs = getJobs();
             const jobsContainer = document.getElementById('adminJobsList');
             jobsContainer.innerHTML = jobs.length === 0 ? '<p style="font-size:12px; color:#64748b;">لا توجد وظائف جديدة.</p>' : '';
@@ -130,35 +153,46 @@
                 `;
             });
 
-            // 2. المستخدمين
-            const users = getUsers();
-            const usersContainer = document.getElementById('adminUsersList');
-            usersContainer.innerHTML = users.length === 0 ? '<p style="font-size:12px; color:#64748b;">لا توجد طلبات تسجيل حسابت.</p>' : '';
-            users.forEach(u => {
-                usersContainer.innerHTML += `
-                    <div class="admin-item">
-                        <div class="item-header">
-                            <strong>${u.name} (${u.role})</strong>
-                            <span style="font-size:11px; font-weight:bold; color:${u.approved ? 'green' : 'orange'}">${u.approved ? 'حساب مفعل' : 'ينتظر الموافقة'}</span>
-                        </div>
-                        <div style="font-size:12px; color:#64748b;">الهاتف: ${u.phone}</div>
-                        <div class="action-btns">
-                            ${!u.approved ? `<button class="btn-action btn-approve" onclick="approveUser(${u.id})">تفعيل الحساب</button>` : ''}
-                            <button class="btn-action btn-reject" onclick="deleteUser(${u.id})">رفض / حذف الحساب</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // 3. المعاينة الحالية للبنرات
+            // 3. معاينة البنرات
             const topB = localStorage.getItem('ad_banner_top');
             if(topB) { document.getElementById('prevTop').src = topB; document.getElementById('prevTop').style.display = 'block'; }
-            
-            const botB = localStorage.getItem('ad_banner_bottom');
-            if(botB) { document.getElementById('prevBottom').src = botB; document.getElementById('prevBottom').style.display = 'block'; }
         }
 
-        // إجراءات الوظائف
+        // إضافة شريك جديد بيدك كأدمن من الاستوديو
+        function addPartnerByAdmin() {
+            const name = document.getElementById('newPartnerName').value.trim();
+            const file = document.getElementById('newPartnerLogoFile').files[0];
+
+            if(!name || !file) {
+                alert('يرجى كتابة اسم الشريك واختيار صوته من الاستوديو');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let partners = getPartners();
+                partners.push({
+                    id: Date.now(),
+                    name: name,
+                    logo: e.target.result
+                });
+                localStorage.setItem('dhawar_partners', JSON.stringify(partners));
+                alert('تمت إضافة الشعار بنجاح وسيظهر في الشريط المتحرك فوراً!');
+                document.getElementById('newPartnerName').value = '';
+                renderAllAdmin();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // حذف أي شعار برغبتك في أي وقت
+        function deletePartner(id) {
+            if(confirm('هل أنت متأكد من حذف هذا الشعار من الشريط المتحرك؟')) {
+                let partners = getPartners().filter(p => p.id !== id);
+                localStorage.setItem('dhawar_partners', JSON.stringify(partners));
+                renderAllAdmin();
+            }
+        }
+
         function approveJob(id) {
             let jobs = getJobs().map(j => j.id === id ? {...j, approved: true} : j);
             localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
@@ -175,44 +209,21 @@
             renderAllAdmin();
         }
 
-        // إجراءات المستخدمين
-        function approveUser(id) {
-            let users = getUsers().map(u => {
-                if(u.id === id) {
-                    u.approved = true;
-                    localStorage.setItem('currentUser', JSON.stringify(u));
-                }
-                return u;
-            });
-            localStorage.setItem('dhawar_users', JSON.stringify(users));
-            alert('تم قبول وتفعيل الحساب بنجاح!');
-            renderAllAdmin();
-        }
-        function deleteUser(id) {
-            let users = getUsers().filter(u => u.id !== id);
-            localStorage.setItem('dhawar_users', JSON.stringify(users));
-            renderAllAdmin();
-        }
-
-        // رفع البنر مباشرة من معرض صور الهاتف
         function uploadBanner(event, type) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
-                const imgData = e.target.result;
-                localStorage.setItem(type === 'top' ? 'ad_banner_top' : 'ad_banner_bottom', imgData);
-                alert('تم رفع البنر بنجاح من المعرض وسيطبق في المنصة فوراً!');
+                localStorage.setItem('ad_banner_top', e.target.result);
+                alert('تم رفع البنر بنجاح!');
                 renderAllAdmin();
             };
             reader.readAsDataURL(file);
         }
 
         function deleteBanner(type) {
-            localStorage.removeItem(type === 'top' ? 'ad_banner_top' : 'ad_banner_bottom');
-            if(type==='top') document.getElementById('prevTop').style.display = 'none';
-            else document.getElementById('prevBottom').style.display = 'none';
+            localStorage.removeItem('ad_banner_top');
+            document.getElementById('prevTop').style.display = 'none';
             alert('تم حذف البنر.');
         }
 
