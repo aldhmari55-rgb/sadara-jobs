@@ -147,7 +147,7 @@
         <div class="ad-banner-box" style="margin-top: 25px;" id="bottomAdBanner"><div class="ad-banner-text">إعلان المنصة السفلي</div></div>
     </div>
 
-    <!-- 1. نافذة إنشاء حساب جديد (قائمة مستقلة) -->
+    <!-- 1. نافذة إنشاء حساب جديد -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('registerModal')">✕</button>
@@ -162,29 +162,37 @@
             </div>
             <div class="form-group">
                 <label>الاسم الكامل / اسم الجهة *</label>
-                <input type="text" id="regName" placeholder="أدخل اسمك أو اسم شركتك">
+                <input type="text" id="regName" placeholder="مثال: عبد الرحمن الذماري">
+            </div>
+            <div class="form-group">
+                <label>اسم المستخدم (4 حروف إنجليزي للدخول) *</label>
+                <input type="text" id="regUsername" maxlength="4" style="text-transform: lowercase;" placeholder="مثال: abdo">
             </div>
             <div class="form-group">
                 <label>رقم الهاتف (الواتساب) *</label>
                 <input type="text" id="regPhone" placeholder="770000000">
             </div>
+            <div class="form-group">
+                <label>كلمة المرور (4 أرقام أو حروف) *</label>
+                <input type="password" id="regPin" maxlength="4" placeholder="مثال: 1234">
+            </div>
             <button class="btn-submit" onclick="handleRegister()">تسجيل وإنشاء الحساب فوراً</button>
         </div>
     </div>
 
-    <!-- 2. نافذة تسجيل الدخول (للأعضاء المسجلين مسبقاً) -->
+    <!-- 2. نافذة تسجيل الدخول باسم المستخدم وكلمة المرور -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('loginModal')">✕</button>
-            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--primary-dark);">تسجيل الدخول ببياناتك السابقة</h3>
+            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--primary-dark);">تسجيل الدخول بحسابك</h3>
             
             <div class="form-group">
-                <label>الاسم المسجل به *</label>
-                <input type="text" id="loginName" placeholder="اكتب اسمك السابق">
+                <label>اسم المستخدم (4 حروف إنجليزي) *</label>
+                <input type="text" id="loginUsername" maxlength="4" style="text-transform: lowercase;" placeholder="مثال: abdo">
             </div>
             <div class="form-group">
-                <label>رقم الهاتف السابق *</label>
-                <input type="text" id="loginPhone" placeholder="770000000">
+                <label>كلمة المرور (4 أرقام / حروف) *</label>
+                <input type="password" id="loginPin" maxlength="4" placeholder="أدخل كلمة المرور">
             </div>
             <button class="btn-submit" onclick="handleLogin()">دخول المنصة</button>
         </div>
@@ -226,7 +234,7 @@
 
             if(currentUser) {
                 navAuthArea.innerHTML = `
-                    <span class="user-welcome">👤 ${currentUser.name}</span>
+                    <span class="user-welcome">👤 ${currentUser.name} (@${currentUser.username})</span>
                     <button class="btn-add-job" onclick="openModal('addModal')">+ نشر شغل</button>
                     <button class="auth-btn" style="background:#ef4444; color:white;" onclick="handleLogout()">خروج</button>
                 `;
@@ -239,132 +247,37 @@
             }
         }
 
-        // إنشاء حساب جديد ودخول مباشر بدون انتظار
+        // إنشاء حساب جديد مع اسم مستخدم 4 حروف إنجليزي وكلمة مرور 4 عناصر
         function handleRegister() {
             const name = document.getElementById('regName').value.trim();
+            const username = document.getElementById('regUsername').value.trim().toLowerCase();
             const phone = document.getElementById('regPhone').value.trim();
+            const pin = document.getElementById('regPin').value.trim();
             const role = document.getElementById('regRole').value;
 
-            if(!name || !phone) {
-                alert('يرجى كتابة الاسم ورقم الهاتف بشكل صحيح');
+            if(!name || !username || !phone || !pin) {
+                alert('يرجى ملء جميع الحقول المطلوبة');
                 return;
             }
 
-            const newUser = { name, phone, role };
-            // حفظ الحساب بقائمة المستخدمين المسجلين
+            if(username.length !== 4) {
+                alert('يجب أن يكون اسم المستخدم مكوناً من 4 حروف إنجليزية بالضبط');
+                return;
+            }
+
+            if(pin.length !== 4) {
+                alert('يجب أن تكون كلمة المرور مكونة من 4 أرقام أو حروف بالضبط');
+                return;
+            }
+
             let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            
+            // التأكد من عدم تكرار اسم المستخدم
+            if(users.some(u => u.username === username)) {
+                alert('اسم المستخدم هذا مستخدم مسبقاً، يرجى اختيار اسم آخر من 4 حروف.');
+                return;
+            }
+
+            const newUser = { name, username, phone, pin, role };
             users.push(newUser);
-            localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
-
-            // تسجيل الدخول المباشر وتفعيل الجلسة
-            localStorage.setItem('currentUser', JSON.stringify(newUser));
-            
-            alert(`مرحباً بك يا ${name}! تم إنشاء حسابك ودخولك بنجاح.`);
-            closeModal('registerModal');
-            checkAuthStatus();
-        }
-
-        // تسجيل الدخول بالبيانات السابقة عند العودة للخروج والدخول لاحقاً
-        function handleLogin() {
-            const name = document.getElementById('loginName').value.trim();
-            const phone = document.getElementById('loginPhone').value.trim();
-
-            if(!name || !phone) {
-                alert('يرجى إدخال اسمك ورقم هاتفك السابق');
-                return;
-            }
-
-            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-            // البحث عن الحساب المسجل مسبقاً بنفس الاسم والجوال
-            const foundUser = users.find(u => u.name === name && u.phone === phone);
-
-            if(foundUser || (name && phone)) { // السماح بالدخول المباشر إذا طابق البيانات أو كُتبت صحيحة
-                const userData = foundUser ? foundUser : { name, phone, role: 'مستخدم' };
-                localStorage.setItem('currentUser', JSON.stringify(userData));
-                alert(`أهلاً بعودتك يا ${name}! تم تسجيل دخولك بنجاح.`);
-                closeModal('loginModal');
-                checkAuthStatus();
-            } else {
-                alert('عذراً، البيانات غير مسجلة. يرجى التأكد أو إنشاء حساب جديد.');
-            }
-        }
-
-        function handleLogout() {
-            localStorage.removeItem('currentUser');
-            alert('تم تسجيل الخروج من الموقع بنجاح.');
-            checkAuthStatus();
-        }
-
-        function renderMainJobs() {
-            const jobs = getStoredJobs().filter(j => j.approved === true);
-            const container = document.getElementById('jobsContainer');
-            container.innerHTML = '';
-
-            if (jobs.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-muted);">لا توجد وظائف معروضة حالياً</p>';
-            } else {
-                jobs.forEach(job => {
-                    const isAvailable = job.status === 'متوفر';
-                    container.innerHTML += `
-                        <div class="job-card">
-                            <div class="job-header-row">
-                                <div>
-                                    <div class="job-title">${job.title}</div>
-                                    <div class="job-company">${job.company}</div>
-                                </div>
-                                <span class="status-badge ${isAvailable ? 'status-available' : 'status-unavailable'}">${job.status}</span>
-                            </div>
-                            <div class="job-card-footer">
-                                <span style="font-size:12px; color:var(--text-muted);">ذمار - اليمن</span>
-                                <a href="${isAvailable ? 'https://wa.me/' + job.phone : '#'}" target="_blank" class="apply-btn ${!isAvailable ? 'disabled' : ''}">
-                                    ${isAvailable ? 'رقم التقديم (واتساب)' : 'التقديم مغلق'}
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            // تحميل البنرات من الذاكرة
-            const topBanner = localStorage.getItem('ad_banner_top');
-            if(topBanner) document.getElementById('topAdBanner').innerHTML = `<img src="${topBanner}">`;
-            
-            const bottomBanner = localStorage.getItem('ad_banner_bottom');
-            if(bottomBanner) document.getElementById('bottomAdBanner').innerHTML = `<img src="${bottomBanner}">`;
-        }
-
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function submitNewJob() {
-            const title = document.getElementById('jobTitleInput').value;
-            const company = document.getElementById('companyInput').value;
-            const phone = document.getElementById('phoneInput').value;
-
-            if (!title || !company || !phone) {
-                alert('يرجى ملء كافة البيانات المطلوبة');
-                return;
-            }
-
-            const jobs = getStoredJobs();
-            jobs.push({
-                id: Date.now(),
-                title: title,
-                company: company,
-                phone: phone,
-                status: 'متوفر',
-                approved: false
-            });
-
-            localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
-            alert('تم إرسال الوظيفة! ستظهر بالمنصة فور اعتمادها من قبل إدارة المنصة.');
-            closeModal('addModal');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            checkAuthStatus();
-            renderMainJobs();
-        });
-    </script>
-</body>
-</html>
+            localStorage.setItem('dhawar_registered_
