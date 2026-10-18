@@ -73,7 +73,6 @@
             <h1>لوحة التحكم الشاملة لمدير المنصة</h1>
         </div>
 
-        <!-- 1. إدارة الشعارات -->
         <div class="section-box">
             <h3>🤝 إدارة شعارات شركاء النجاح (الشريط المتحرك)</h3>
             <div style="background: white; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
@@ -89,13 +88,11 @@
             <div class="partner-logo-grid" id="adminPartnersList"></div>
         </div>
 
-        <!-- 2. إدارة الوظائف والخدمات -->
         <div class="section-box">
             <h3>⚫ إدارة الوظائف والخدمات (مراجعة ونشر)</h3>
             <div id="adminJobsList"></div>
         </div>
 
-        <!-- 3. إدارة الإعلانات والبنرات -->
         <div class="section-box">
             <h3>⚫ إدارة إعلانات البنرات</h3>
             <div>
@@ -112,99 +109,103 @@
     <script>
         var CHANNEL_LINK = "https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s";
 
-        function getJobs() { return JSON.parse(localStorage.getItem('dhawar_jobs')) || []; }
-        function getPartners() { 
-            return JSON.parse(localStorage.getItem('dhawar_partners')) || [
-                { id: 1, name: 'صدارة', logo: 'https://via.placeholder.com/60/0f2347/ffffff?text=SADARA' },
-                { id: 2, name: 'الأمل', logo: 'https://via.placeholder.com/60/d4af37/000000?text=AMAL' }
-            ]; 
+        function getJobs() {
+            return JSON.parse(localStorage.getItem('dhawar_jobs')) || [];
+        }
+
+        function getPartners() {
+            return JSON.parse(localStorage.getItem('dhawar_partners')) || [];
         }
 
         function renderAllAdmin() {
             var partners = getPartners();
             var partnerContainer = document.getElementById('adminPartnersList');
-            partnerContainer.innerHTML = partners.length === 0 ? '<p style="font-size:11px; color:#64748b;">لا توجد شعارات معروضة.</p>' : '';
+            partnerContainer.innerHTML = (partners.length === 0) ? '<p style="font-size:11px; color:#64748b;">لا توجد شعارات معروضة.</p>' : '';
             
-            partners.forEach(function(p) {
-                partnerContainer.innerHTML += 
-                    '<div class="partner-logo-card">' +
-                        '<img src="' + p.logo + '" title="' + p.name + '">' +
-                        '<button class="partner-delete-btn" onclick="deletePartner(' + p.id + ')">حذف ✕</button>' +
-                    '</div>';
-            });
+            for (var i = 0; i < partners.length; i++) {
+                var p = partners[i];
+                var cardHtml = '<div class="partner-logo-card">';
+                cardHtml += '<img src="' + p.logo + '">';
+                cardHtml += '<button class="partner-delete-btn" onclick="deletePartner(' + p.id + ')">حذف ✕</button>';
+                cardHtml += '</div>';
+                partnerContainer.innerHTML += cardHtml;
+            }
 
             var jobs = getJobs();
             var jobsContainer = document.getElementById('adminJobsList');
-            jobsContainer.innerHTML = jobs.length === 0 ? '<p style="font-size:12px; color:#64748b;">لا توجد وظائف جديدة.</p>' : '';
+            jobsContainer.innerHTML = (jobs.length === 0) ? '<p style="font-size:12px; color:#64748b;">لا توجد وظائف جديدة.</p>' : '';
             
-            jobs.forEach(function(job) {
-                var approveBtn = !job.approved ? '<button class="btn-action btn-approve" onclick="approveJob(' + job.id + ')">قبول ونشر</button>' : '';
-                var imgTag = job.image ? '<img src="' + job.image + '" class="job-thumb">' : '';
-                var statusText = job.approved ? 'مقبول' : 'قيد المراجعة';
-                var statusColor = job.approved ? 'green' : 'orange';
+            for (var j = 0; j < jobs.length; j++) {
+                var job = jobs[j];
+                var approveBtn = (!job.approved) ? '<button class="btn-action btn-approve" onclick="approveJob(' + job.id + ')">قبول ونشر</button>' : '';
+                var imgTag = (job.image) ? '<img src="' + job.image + '" class="job-thumb">' : '';
+                var statusText = (job.approved) ? 'مقبول' : 'قيد المراجعة';
+                var statusColor = (job.approved) ? 'green' : 'orange';
 
-                jobsContainer.innerHTML += 
-                    '<div class="admin-item">' +
-                        '<div class="item-header">' +
-                            '<div style="display:flex; align-items:center;">' +
-                                imgTag +
-                                '<div>' +
-                                    '<strong>' + job.title + '</strong><br>' +
-                                    '<span style="font-size:12px; color:#64748b;">' + job.company + '</span>' +
-                                '</div>' +
-                            '</div>' +
-                            '<span style="font-size:11px; font-weight:bold; color:' + statusColor + ';">' + statusText + '</span>' +
-                        '</div>' +
-                        '<div style="font-size:12px; color:#64748b; margin-top:6px;">الهاتف: ' + job.phone + ' | الحالة: <strong>' + job.status + '</strong></div>' +
-                        '<div class="action-btns">' +
-                            approveBtn +
-                            '<button class="btn-action btn-share" onclick="shareToWhatsAppChannel(' + job.id + ')">مشاركة بالقناة 🟢</button>' +
-                            '<button class="btn-action btn-toggle" onclick="toggleJobStatus(' + job.id + ')">تغيير التوفر</button>' +
-                            '<button class="btn-action btn-reject" onclick="deleteJob(' + job.id + ')">حذف</button>' +
-                        '</div>' +
-                    '</div>';
-            });
+                var itemHtml = '<div class="admin-item">';
+                itemHtml += '<div class="item-header">';
+                itemHtml += '<div style="display:flex; align-items:center;">' + imgTag + '<div><strong>' + job.title + '</strong><br><span style="font-size:12px; color:#64748b;">' + job.company + '</span></div></div>';
+                itemHtml += '<span style="font-size:11px; font-weight:bold; color:' + statusColor + ';">' + statusText + '</span>';
+                itemHtml += '</div>';
+                itemHtml += '<div style="font-size:12px; color:#64748b; margin-top:6px;">الهاتف: ' + job.phone + ' | الحالة: <strong>' + job.status + '</strong></div>';
+                itemHtml += '<div class="action-btns">';
+                itemHtml += approveBtn;
+                itemHtml += '<button class="btn-action btn-share" onclick="shareToWhatsAppChannel(' + job.id + ')">مشاركة بالقناة 🟢</button>';
+                itemHtml += '<button class="btn-action btn-toggle" onclick="toggleJobStatus(' + job.id + ')">تغيير التوفر</button>';
+                itemHtml += '<button class="btn-action btn-reject" onclick="deleteJob(' + job.id + ')">حذف</button>';
+                itemHtml += '</div></div>';
+
+                jobsContainer.innerHTML += itemHtml;
+            }
 
             var topB = localStorage.getItem('ad_banner_top');
-            if(topB) { 
-                document.getElementById('prevTop').src = topB; 
-                document.getElementById('prevTop').style.display = 'block'; 
+            if (topB) {
+                document.getElementById('prevTop').src = topB;
+                document.getElementById('prevTop').style.display = 'block';
             }
         }
 
         function shareToWhatsAppChannel(jobId) {
             var jobs = getJobs();
-            var job = jobs.find(function(j) { return j.id === jobId; });
-            if(!job) return;
+            var job = null;
+            for (var i = 0; i < jobs.length; i++) {
+                if (jobs[i].id === jobId) {
+                    job = jobs[i];
+                    break;
+                }
+            }
+            if (!job) return;
 
-            var arabicMessage = 
-                "📢 *فرصة عمل جديدة - منصة صدارة للوظائف بذمار*\n\n" +
-                "💼 *المسمى الوظيفي:* " + job.title + "\n" +
-                "🏢 *الجهة / المكان:* " + job.company + "\n" +
-                "📍 *الموقع:* محافظة ذمار - اليمن\n" +
-                "الحالة: *" + job.status + "*\n\n" +
-                "📲 *للتقديم والتواصل المباشر عبر الواتساب:*\n" +
-                "https://wa.me/" + job.phone + "\n\n" +
-                "---\n" +
-                "🟢 *تابع جديد الوظائف والخدمات اليومية عبر قناتنا الرسمية:*\n" +
-                CHANNEL_LINK;
+            var msg = "📢 *فرصة عمل جديدة - منصة صدارة للوظائف بذمار*\n\n";
+            msg += "💼 *المسمى الوظيفي:* " + job.title + "\n";
+            msg += "🏢 *الجهة / المكان:* " + job.company + "\n";
+            msg += "📍 *الموقع:* محافظة ذمار - اليمن\n";
+            msg += "الحالة: *" + job.status + "*\n\n";
+            msg += "📲 *للتقديم والتواصل المباشر عبر الواتساب:*\n";
+            msg += "https://wa.me/" + job.phone + "\n\n";
+            msg += "---\n";
+            msg += "🟢 *تابع جديد الوظائف والخدمات اليومية عبر قناتنا الرسمية:*\n";
+            msg += CHANNEL_LINK;
 
-            navigator.clipboard.writeText(arabicMessage);
+            navigator.clipboard.writeText(msg);
 
-            if(job.image) {
-                var imageWindow = window.open("");
-                imageWindow.document.write('<title>صورة الخدمة / الوظيفية</title><h3 style="font-family:sans-serif; text-align:center;">تم نسخ النص العربي بنجاح! قم بحفظ الصورة أدناه لمشاركتها بالقناة:</h3><div style="text-align:center;"><img src="' + job.image + '" style="max-width:90%; border-radius:12px;"></div>');
+            if (job.image) {
+                var win = window.open("", "_blank");
+                if (win) {
+                    win.document.write('<html><head><title>صورة الخدمة</title></head><body style="text-align:center; font-family:sans-serif; padding:20px;"><h3>تم نسخ النص العربي! أحفظ الصورة أدناه لمشاركتها بالقناة:</h3><img src="' + job.image + '" style="max-width:90%; border-radius:12px;"></body></html>');
+                }
             }
 
             alert('تم نسخ نص الوظيفة بالعربي بنجاح! سيتم فتح الواتساب الآن للصق الرسالة وإرسالها للقناة.');
-            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(arabicMessage), '_blank');
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(msg), '_blank');
         }
 
         function addPartnerByAdmin() {
             var name = document.getElementById('newPartnerName').value.trim();
-            var file = document.getElementById('newPartnerLogoFile').files[0];
+            var fileInput = document.getElementById('newPartnerLogoFile');
+            var file = fileInput.files[0];
 
-            if(!name || !file) {
+            if (!name || !file) {
                 alert('يرجى إدخال الاسم واختيار الشعار');
                 return;
             }
@@ -222,35 +223,51 @@
         }
 
         function deletePartner(id) {
-            if(confirm('هل أنت متأكد من حذف الشعار؟')) {
-                var partners = getPartners().filter(function(p) { return p.id !== id; });
-                localStorage.setItem('dhawar_partners', JSON.stringify(partners));
+            if (confirm('هل أنت متأكد من حذف الشعار؟')) {
+                var partners = getPartners();
+                var filtered = [];
+                for (var i = 0; i < partners.length; i++) {
+                    if (partners[i].id !== id) {
+                        filtered.push(partners[i]);
+                    }
+                }
+                localStorage.setItem('dhawar_partners', JSON.stringify(filtered));
                 renderAllAdmin();
             }
         }
 
         function approveJob(id) {
-            var jobs = getJobs().map(function(j) { 
-                if(j.id === id) j.approved = true; 
-                return j; 
-            });
+            var jobs = getJobs();
+            for (var i = 0; i < jobs.length; i++) {
+                if (jobs[i].id === id) {
+                    jobs[i].approved = true;
+                }
+            }
             localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
             alert('تم قبول الوظيفة بنجاح!');
             renderAllAdmin();
         }
 
         function toggleJobStatus(id) {
-            var jobs = getJobs().map(function(j) {
-                if(j.id === id) j.status = (j.status === 'متوفر' ? 'غير متوفر' : 'متوفر');
-                return j;
-            });
+            var jobs = getJobs();
+            for (var i = 0; i < jobs.length; i++) {
+                if (jobs[i].id === id) {
+                    jobs[i].status = (jobs[i].status === 'متوفر' ? 'غير متوفر' : 'متوفر');
+                }
+            }
             localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
             renderAllAdmin();
         }
 
         function deleteJob(id) {
-            var jobs = getJobs().filter(function(j) { return j.id !== id; });
-            localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
+            var jobs = getJobs();
+            var filtered = [];
+            for (var i = 0; i < jobs.length; i++) {
+                if (jobs[i].id !== id) {
+                    filtered.push(jobs[i]);
+                }
+            }
+            localStorage.setItem('dhawar_jobs', JSON.stringify(filtered));
             renderAllAdmin();
         }
 
