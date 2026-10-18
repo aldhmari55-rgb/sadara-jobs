@@ -26,7 +26,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background-color: var(--bg-light); color: var(--text-dark); padding-bottom: 40px; }
+        body { background-color: var(--bg-light); color: var(--text-dark); padding-bottom: 90px; }
 
         .top-navbar {
             background: var(--primary-dark);
@@ -102,8 +102,74 @@
         .apply-btn { background: var(--whatsapp-green); color: #ffffff; text-decoration: none; padding: 8px 18px; border-radius: var(--radius-md); font-weight: 800; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
         .apply-btn.disabled { background: #cbd5e1; pointer-events: none; }
 
+        /* ===== تصميم الشريط المتحرك لشركاء النجاح ===== */
+        .partners-ticker-section {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--primary-dark);
+            color: #ffffff;
+            border-top: 2px solid var(--accent-gold);
+            padding: 8px 0;
+            overflow: hidden;
+            z-index: 900;
+            display: flex;
+            align-items: center;
+        }
+
+        .ticker-label {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            font-weight: 900;
+            font-size: 11px;
+            padding: 6px 14px;
+            border-radius: 0 15px 15px 0;
+            white-space: nowrap;
+            z-index: 10;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+        }
+
+        .ticker-wrapper {
+            display: flex;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .ticker-content {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            white-space: nowrap;
+            animation: tickerSlide 22s linear infinite;
+        }
+
+        .ticker-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .ticker-item img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #ffffff;
+        }
+
+        @keyframes tickerSlide {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* ===== النوافذ المنبثقة ===== */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 19, 36, 0.75); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 16px; }
-        .modal-box { background: #ffffff; width: 100%; max-width: 440px; border-radius: var(--radius-lg); padding: 24px; position: relative; }
+        .modal-box { background: #ffffff; width: 100%; max-width: 440px; border-radius: var(--radius-lg); padding: 24px; position: relative; max-height: 90vh; overflow-y: auto; }
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-size: 12px; font-weight: 800; margin-bottom: 5px; }
         .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; }
@@ -126,7 +192,7 @@
         </div>
     </div>
 
-    <!-- العنوان والبنر -->
+    <!-- العنوان والبنر الرئيسي -->
     <div class="hero-banner-title">
         <h1>المنصة الأولى للوظائف بمحافظة ذمار</h1>
     </div>
@@ -142,9 +208,16 @@
         </div>
 
         <div class="jobs-grid" id="jobsContainer"></div>
+    </div>
 
-        <!-- البنـر السفلـي -->
-        <div class="ad-banner-box" style="margin-top: 25px;" id="bottomAdBanner"><div class="ad-banner-text">إعلان المنصة السفلي</div></div>
+    <!-- ===== الشريط المتحرك في أسفل الصفحة ===== -->
+    <div class="partners-ticker-section">
+        <div class="ticker-label">شركاء النجاح 🤝</div>
+        <div class="ticker-wrapper">
+            <div class="ticker-content" id="tickerContainer">
+                <!-- يُملأ آلياً بشعارات الشركات المسجلة بالمنصة -->
+            </div>
+        </div>
     </div>
 
     <!-- 1. نافذة إنشاء حساب جديد -->
@@ -155,14 +228,14 @@
             
             <div class="form-group">
                 <label>نوع الحساب</label>
-                <select id="regRole">
+                <select id="regRole" onchange="toggleEmployerFields()">
                     <option value="باحث عن عمل">باحث عن عمل (موظف)</option>
                     <option value="صاحب عمل">صاحب عمل (مؤسسة / متجر)</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>الاسم الكامل / اسم الجهة *</label>
-                <input type="text" id="regName" placeholder="مثال: عبد الرحمن الذماري">
+                <label>الاسم الكامل / اسم الشركة أو المتجر *</label>
+                <input type="text" id="regName" placeholder="مثال: متجر الأمل، عبد الرحمن الذماري">
             </div>
             <div class="form-group">
                 <label>اسم المستخدم (4 حروف إنجليزي للدخول) *</label>
@@ -172,6 +245,13 @@
                 <label>رقم الهاتف (الواتساب) *</label>
                 <input type="text" id="regPhone" placeholder="770000000">
             </div>
+
+            <!-- حقل الشعار (يظهر لصاحب العمل فقط) -->
+            <div class="form-group" id="employerLogoGroup" style="display: none; background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px dashed var(--accent-blue);">
+                <label style="color: var(--primary-blue);">شعار المتجر / الشركة (يظهر بالشريط المتحرك):</label>
+                <input type="file" id="regLogoFile" accept="image/*" style="background: white; padding: 5px;">
+            </div>
+
             <div class="form-group">
                 <label>كلمة المرور (4 أرقام أو حروف) *</label>
                 <input type="password" id="regPin" maxlength="4" placeholder="مثال: 1234">
@@ -180,7 +260,7 @@
         </div>
     </div>
 
-    <!-- 2. نافذة تسجيل الدخول باسم المستخدم وكلمة المرور -->
+    <!-- 2. نافذة تسجيل الدخول -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('loginModal')">✕</button>
@@ -224,6 +304,17 @@
             { id: 1, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', status: 'متوفر', approved: true }
         ];
 
+        const DEFAULT_PARTNERS = [
+            { name: 'شركة صدارة للتسويق', logo: 'https://via.placeholder.com/50/0f2347/ffffff?text=SADARA' },
+            { name: 'متجر الأمل ذمار', logo: 'https://via.placeholder.com/50/d4af37/000000?text=AMAL' }
+        ];
+
+        function toggleEmployerFields() {
+            const role = document.getElementById('regRole').value;
+            const logoGroup = document.getElementById('employerLogoGroup');
+            logoGroup.style.display = (role === 'صاحب عمل') ? 'block' : 'none';
+        }
+
         function getStoredJobs() {
             return JSON.parse(localStorage.getItem('dhawar_jobs')) || DEFAULT_JOBS;
         }
@@ -247,13 +338,14 @@
             }
         }
 
-        // إنشاء حساب جديد مع اسم مستخدم 4 حروف إنجليزي وكلمة مرور 4 عناصر
+        // إنشاء حساب جديد وقراءة الشعار إذا كان صاحب عمل
         function handleRegister() {
             const name = document.getElementById('regName').value.trim();
             const username = document.getElementById('regUsername').value.trim().toLowerCase();
             const phone = document.getElementById('regPhone').value.trim();
             const pin = document.getElementById('regPin').value.trim();
             const role = document.getElementById('regRole').value;
+            const logoFile = document.getElementById('regLogoFile').files[0];
 
             if(!name || !username || !phone || !pin) {
                 alert('يرجى ملء جميع الحقول المطلوبة');
@@ -271,24 +363,34 @@
             }
 
             let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-            
-            // التأكد من عدم تكرار اسم المستخدم
             if(users.some(u => u.username === username)) {
-                alert('اسم المستخدم هذا مستخدم مسبقاً، يرجى اختيار اسم آخر من 4 حروف.');
+                alert('اسم المستخدم هذا مستخدم مسبقاً، يرجى اختيار اسم آخر.');
                 return;
             }
 
-            const newUser = { name, username, phone, pin, role };
-            users.push(newUser);
-            localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
-            localStorage.setItem('currentUser', JSON.stringify(newUser));
-            
-            alert(`مرحباً بك يا ${name}! تم إنشاء حسابك باسم المستخدم (@${username}) ودخولك بنجاح.`);
-            closeModal('registerModal');
-            checkAuthStatus();
+            function saveUser(logoData) {
+                const newUser = { name, username, phone, pin, role, logo: logoData || null };
+                users.push(newUser);
+                localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
+                localStorage.setItem('currentUser', JSON.stringify(newUser));
+
+                alert(`مرحباً بك يا ${name}! تم إنشاء حسابك بنجاح.`);
+                closeModal('registerModal');
+                checkAuthStatus();
+                renderTicker();
+            }
+
+            if (role === 'صاحب عمل' && logoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveUser(e.target.result);
+                };
+                reader.readAsDataURL(logoFile);
+            } else {
+                saveUser(null);
+            }
         }
 
-        // تسجيل الدخول باسم المستخدم (4 حروف) وكلمة المرور (4 أرقام/حروف)
         function handleLogin() {
             const username = document.getElementById('loginUsername').value.trim().toLowerCase();
             const pin = document.getElementById('loginPin').value.trim();
@@ -313,80 +415,26 @@
 
         function handleLogout() {
             localStorage.removeItem('currentUser');
-            alert('تم تسجيل الخروج من الموقع بنجاح.');
+            alert('تم تسجيل الخروج بنجاح.');
             checkAuthStatus();
         }
 
-        function renderMainJobs() {
-            const jobs = getStoredJobs().filter(j => j.approved === true);
-            const container = document.getElementById('jobsContainer');
+        // بناء وعرض الشريط المتحرك للشركاء
+        function renderTicker() {
+            const users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            const container = document.getElementById('tickerContainer');
             container.innerHTML = '';
 
-            if (jobs.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-muted);">لا توجد وظائف معروضة حالياً</p>';
-            } else {
-                jobs.forEach(job => {
-                    const isAvailable = job.status === 'متوفر';
-                    container.innerHTML += `
-                        <div class="job-card">
-                            <div class="job-header-row">
-                                <div>
-                                    <div class="job-title">${job.title}</div>
-                                    <div class="job-company">${job.company}</div>
-                                </div>
-                                <span class="status-badge ${isAvailable ? 'status-available' : 'status-unavailable'}">${job.status}</span>
-                            </div>
-                            <div class="job-card-footer">
-                                <span style="font-size:12px; color:var(--text-muted);">ذمار - اليمن</span>
-                                <a href="${isAvailable ? 'https://wa.me/' + job.phone : '#'}" target="_blank" class="apply-btn ${!isAvailable ? 'disabled' : ''}">
-                                    ${isAvailable ? 'رقم التقديم (واتساب)' : 'التقديم مغلق'}
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
+            // جمع شركاء النجاح الافتراضيين + أصحاب الأعمال الجدد المسجلين
+            let partners = [...DEFAULT_PARTNERS];
 
-            // تحميل البنرات من الذاكرة
-            const topBanner = localStorage.getItem('ad_banner_top');
-            if(topBanner) document.getElementById('topAdBanner').innerHTML = `<img src="${topBanner}">`;
-            
-            const bottomBanner = localStorage.getItem('ad_banner_bottom');
-            if(bottomBanner) document.getElementById('bottomAdBanner').innerHTML = `<img src="${bottomBanner}">`;
-        }
-
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function submitNewJob() {
-            const title = document.getElementById('jobTitleInput').value;
-            const company = document.getElementById('companyInput').value;
-            const phone = document.getElementById('phoneInput').value;
-
-            if (!title || !company || !phone) {
-                alert('يرجى ملء كافة البيانات المطلوبة');
-                return;
-            }
-
-            const jobs = getStoredJobs();
-            jobs.push({
-                id: Date.now(),
-                title: title,
-                company: company,
-                phone: phone,
-                status: 'متوفر',
-                approved: false
+            users.forEach(u => {
+                if (u.role === 'صاحب عمل') {
+                    partners.push({
+                        name: u.name,
+                        logo: u.logo || 'https://via.placeholder.com/50/0f2347/ffffff?text=' + u.name.charAt(0)
+                    });
+                }
             });
 
-            localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
-            alert('تم إرسال الوظيفة! ستظهر بالمنصة فور اعتمادها من قبل إدارة المنصة.');
-            closeModal('addModal');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            checkAuthStatus();
-            renderMainJobs();
-        });
-    </script>
-</body>
-</html>
+            // عرض العناصر في ا
