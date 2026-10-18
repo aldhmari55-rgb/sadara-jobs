@@ -187,7 +187,6 @@
     </div>
 
     <div class="main-container">
-        <!-- شريط التوجيه لقناة الواتساب الرسمية -->
         <div class="whatsapp-channel-bar">
             <span>📢 انضم لقناة المنصة الرسمية على الواتساب!</span>
             <a href="https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s" target="_blank" class="whatsapp-channel-btn">الانضمام للقناة 🟢</a>
@@ -208,7 +207,6 @@
         </div>
     </div>
 
-    <!-- 1. نافذة إنشاء حساب جديد -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('registerModal')">✕</button>
@@ -240,7 +238,6 @@
         </div>
     </div>
 
-    <!-- 2. نافذة تعديل الملف الشخصي -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('profileModal')">✕</button>
@@ -261,7 +258,6 @@
         </div>
     </div>
 
-    <!-- 3. نافذة تسجيل الدخول -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('loginModal')">✕</button>
@@ -278,7 +274,6 @@
         </div>
     </div>
 
-    <!-- 4. نافذة إضافة وظيفة -->
     <div class="modal-overlay" id="addModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('addModal')">✕</button>
@@ -303,12 +298,32 @@
         </div>
     </div>
     <script>
-        const DEFAULT_JOBS = [
-            { id: 1, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', image: '', status: 'متوفر', approved: true }
+        // الوظائف الافتراضية الموحدة لجميع الزوار على أي جهاز
+        var DEFAULT_JOBS = [
+            { id: 1, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', image: '', status: 'متوفر', approved: true },
+            { id: 2, title: 'مسوق إلكتروني وميداني', company: 'مؤسسة صدارة', phone: '967770000000', image: '', status: 'متوفر', approved: true }
         ];
 
         function getStoredJobs() {
-            return JSON.parse(localStorage.getItem('dhawar_jobs')) || DEFAULT_JOBS;
+            var stored = localStorage.getItem('dhawar_jobs');
+            if (!stored) {
+                localStorage.setItem('dhawar_jobs', JSON.stringify(DEFAULT_JOBS));
+                return DEFAULT_JOBS;
+            }
+            return JSON.parse(stored);
+        }
+
+        function getStoredPartners() {
+            var stored = localStorage.getItem('dhawar_partners');
+            if (!stored) {
+                var defaultPartners = [
+                    { id: 1, name: 'صدارة', logo: 'https://via.placeholder.com/60/0f2347/ffffff?text=SADARA' },
+                    { id: 2, name: 'الأمل', logo: 'https://via.placeholder.com/60/d4af37/000000?text=AMAL' }
+                ];
+                localStorage.setItem('dhawar_partners', JSON.stringify(defaultPartners));
+                return defaultPartners;
+            }
+            return JSON.parse(stored);
         }
 
         function openModal(id) { 
@@ -320,26 +335,24 @@
         }
 
         function checkAuthStatus() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            const navAuthArea = document.getElementById('navAuthArea');
+            var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            var navAuthArea = document.getElementById('navAuthArea');
 
             if(currentUser) {
-                navAuthArea.innerHTML = `
-                    <button class="profile-btn" onclick="openProfileModal()">👤 الملف الشخصي</button>
-                    <button class="btn-add-job" onclick="openModal('addModal')">+ نشر شغل</button>
-                    <button class="auth-btn" style="background:#ef4444; color:white;" onclick="handleLogout()">خروج</button>
-                `;
+                navAuthArea.innerHTML = 
+                    '<button class="profile-btn" onclick="openProfileModal()">👤 الملف الشخصي</button>' +
+                    '<button class="btn-add-job" onclick="openModal(\'addModal\')">+ نشر شغل</button>' +
+                    '<button class="auth-btn" style="background:#ef4444; color:white;" onclick="handleLogout()">خروج</button>';
             } else {
-                navAuthArea.innerHTML = `
-                    <button class="btn-add-job" onclick="openModal('addModal')">+ نشر شغل</button>
-                    <button class="register-btn" onclick="openModal('registerModal')">حساب جديد</button>
-                    <button class="auth-btn" onclick="openModal('loginModal')">تسجيل الدخول</button>
-                `;
+                navAuthArea.innerHTML = 
+                    '<button class="btn-add-job" onclick="openModal(\'addModal\')">+ نشر شغل</button>' +
+                    '<button class="register-btn" onclick="openModal(\'registerModal\')">حساب جديد</button>' +
+                    '<button class="auth-btn" onclick="openModal(\'loginModal\')">تسجيل الدخول</button>';
             }
         }
 
         function openProfileModal() {
-            const user = JSON.parse(localStorage.getItem('currentUser'));
+            var user = JSON.parse(localStorage.getItem('currentUser'));
             if(!user) return;
 
             document.getElementById('profName').value = user.name || '';
@@ -349,12 +362,12 @@
         }
 
         function saveProfileChanges() {
-            let user = JSON.parse(localStorage.getItem('currentUser'));
+            var user = JSON.parse(localStorage.getItem('currentUser'));
             if(!user) return;
 
-            const name = document.getElementById('profName').value.trim();
-            const phone = document.getElementById('profPhone').value.trim();
-            const phone2 = document.getElementById('profPhone2').value.trim();
+            var name = document.getElementById('profName').value.trim();
+            var phone = document.getElementById('profPhone').value.trim();
+            var phone2 = document.getElementById('profPhone2').value.trim();
 
             if(!name || !phone) {
                 alert('الاسم ورقم الهاتف الأساسي مطلوبان');
@@ -365,8 +378,12 @@
             user.phone = phone;
             user.phone2 = phone2;
 
-            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-            users = users.map(u => u.username === user.username ? user : u);
+            var users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            for (var i = 0; i < users.length; i++) {
+                if (users[i].username === user.username) {
+                    users[i] = user;
+                }
+            }
             
             localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
             localStorage.setItem('currentUser', JSON.stringify(user));
@@ -377,11 +394,11 @@
         }
 
         function handleRegister() {
-            const name = document.getElementById('regName').value.trim();
-            const username = document.getElementById('regUsername').value.trim().toLowerCase();
-            const phone = document.getElementById('regPhone').value.trim();
-            const pin = document.getElementById('regPin').value.trim();
-            const role = document.getElementById('regRole').value;
+            var name = document.getElementById('regName').value.trim();
+            var username = document.getElementById('regUsername').value.trim().toLowerCase();
+            var phone = document.getElementById('regPhone').value.trim();
+            var pin = document.getElementById('regPin').value.trim();
+            var role = document.getElementById('regRole').value;
 
             if(!name || !username || !phone || !pin) {
                 alert('يرجى ملء جميع الحقول المطلوبة');
@@ -391,34 +408,45 @@
             if(username.length !== 4) { alert('اسم المستخدم يجب أن يكون 4 حروف إنجليزية'); return; }
             if(pin.length !== 4) { alert('كلمة المرور يجب أن تكون 4 عناصر'); return; }
 
-            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-            if(users.some(u => u.username === username)) { alert('اسم المستخدم مستخدم مسبقاً'); return; }
+            var users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            for (var i = 0; i < users.length; i++) {
+                if(users[i].username === username) { 
+                    alert('اسم المستخدم مستخدم مسبقاً'); 
+                    return; 
+                }
+            }
 
-            const newUser = { name, username, phone, phone2: '', pin, role };
+            var newUser = { name: name, username: username, phone: phone, phone2: '', pin: pin, role: role };
             users.push(newUser);
             localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
             localStorage.setItem('currentUser', JSON.stringify(newUser));
 
-            alert(`مرحباً بك يا ${name}! تم إنشاء حسابك بنجاح.`);
+            alert('مرحباً بك يا ' + name + '! تم إنشاء حسابك بنجاح.');
             closeModal('registerModal');
             checkAuthStatus();
         }
 
         function handleLogin() {
-            const username = document.getElementById('loginUsername').value.trim().toLowerCase();
-            const pin = document.getElementById('loginPin').value.trim();
+            var username = document.getElementById('loginUsername').value.trim().toLowerCase();
+            var pin = document.getElementById('loginPin').value.trim();
 
             if(!username || !pin) {
                 alert('يرجى إدخال اسم المستخدم وكلمة المرور');
                 return;
             }
 
-            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-            const foundUser = users.find(u => u.username === username && u.pin === pin);
+            var users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            var foundUser = null;
+            for (var i = 0; i < users.length; i++) {
+                if (users[i].username === username && users[i].pin === pin) {
+                    foundUser = users[i];
+                    break;
+                }
+            }
 
             if(foundUser) {
                 localStorage.setItem('currentUser', JSON.stringify(foundUser));
-                alert(`أهلاً بعودتك يا ${foundUser.name}!`);
+                alert('أهلاً بعودتك يا ' + foundUser.name + '!');
                 closeModal('loginModal');
                 checkAuthStatus();
             } else {
@@ -433,60 +461,68 @@
         }
 
         function renderTicker() {
-            const partners = JSON.parse(localStorage.getItem('dhawar_partners')) || [
-                { id: 1, name: 'صدارة', logo: 'https://via.placeholder.com/60/0f2347/ffffff?text=SADARA' },
-                { id: 2, name: 'الأمل', logo: 'https://via.placeholder.com/60/d4af37/000000?text=AMAL' }
-            ];
-
-            const container = document.getElementById('tickerContainer');
+            var partners = getStoredPartners();
+            var container = document.getElementById('tickerContainer');
             if(!container) return;
             container.innerHTML = '';
 
-            partners.forEach(p => {
-                container.innerHTML += `<img class="ticker-logo-only" src="${p.logo}" alt="${p.name}">`;
-            });
+            for (var i = 0; i < partners.length; i++) {
+                var p = partners[i];
+                container.innerHTML += '<img class="ticker-logo-only" src="' + p.logo + '" alt="' + p.name + '">';
+            }
         }
 
         function renderMainJobs() {
-            const jobs = getStoredJobs().filter(j => j.approved === true);
-            const container = document.getElementById('jobsContainer');
+            var allJobs = getStoredJobs();
+            var container = document.getElementById('jobsContainer');
             container.innerHTML = '';
 
-            if (jobs.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-muted);">لا توجد وظائف معروضة حالياً</p>';
-            } else {
-                jobs.forEach(job => {
-                    const isAvailable = job.status === 'متوفر';
-                    container.innerHTML += `
-                        <div class="job-card">
-                            ${job.image ? `<img src="${job.image}" class="job-card-img" alt="صورة الإعلان">` : ''}
-                            <div class="job-header-row">
-                                <div>
-                                    <div class="job-title">${job.title}</div>
-                                    <div class="job-company">${job.company}</div>
-                                </div>
-                                <span class="status-badge ${isAvailable ? 'status-available' : 'status-unavailable'}">${job.status}</span>
-                            </div>
-                            <div class="job-card-footer">
-                                <span style="font-size:12px; color:var(--text-muted);">ذمار - اليمن</span>
-                                <a href="${isAvailable ? 'https://wa.me/' + job.phone : '#'}" target="_blank" class="apply-btn ${!isAvailable ? 'disabled' : ''}">
-                                    ${isAvailable ? 'رقم التقديم (واتساب)' : 'التقديم مغلق'}
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                });
+            var approvedJobs = [];
+            for (var i = 0; i < allJobs.length; i++) {
+                if (allJobs[i].approved === true) {
+                    approvedJobs.push(allJobs[i]);
+                }
             }
 
-            const topBanner = localStorage.getItem('ad_banner_top');
-            if(topBanner) document.getElementById('topAdBanner').innerHTML = `<img src="${topBanner}">`;
+            if (approvedJobs.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-muted);">لا توجد وظائف معروضة حالياً</p>';
+            } else {
+                for (var j = 0; j < approvedJobs.length; j++) {
+                    var job = approvedJobs[j];
+                    var isAvailable = (job.status === 'متوفر');
+                    var imgTag = (job.image) ? '<img src="' + job.image + '" class="job-card-img" alt="صورة الإعلان">' : '';
+                    var statusClass = isAvailable ? 'status-available' : 'status-unavailable';
+                    var applyBtnClass = isAvailable ? 'apply-btn' : 'apply-btn disabled';
+                    var applyBtnText = isAvailable ? 'رقم التقديم (واتساب)' : 'التقديم مغلق';
+                    var applyLink = isAvailable ? ('https://wa.me/' + job.phone) : '#';
+
+                    var cardHtml = '<div class="job-card">';
+                    cardHtml += imgTag;
+                    cardHtml += '<div class="job-header-row">';
+                    cardHtml += '<div><div class="job-title">' + job.title + '</div><div class="job-company">' + job.company + '</div></div>';
+                    cardHtml += '<span class="status-badge ' + statusClass + '">' + job.status + '</span>';
+                    cardHtml += '</div>';
+                    cardHtml += '<div class="job-card-footer">';
+                    cardHtml += '<span style="font-size:12px; color:var(--text-muted);">ذمار - اليمن</span>';
+                    cardHtml += '<a href="' + applyLink + '" target="_blank" class="' + applyBtnClass + '">' + applyBtnText + '</a>';
+                    cardHtml += '</div></div>';
+
+                    container.innerHTML += cardHtml;
+                }
+            }
+
+            var topBanner = localStorage.getItem('ad_banner_top');
+            if(topBanner) {
+                document.getElementById('topAdBanner').innerHTML = '<img src="' + topBanner + '">';
+            }
         }
 
         function submitNewJob() {
-            const title = document.getElementById('jobTitleInput').value;
-            const company = document.getElementById('companyInput').value;
-            const phone = document.getElementById('phoneInput').value;
-            const imgFile = document.getElementById('jobImageInput').files[0];
+            var title = document.getElementById('jobTitleInput').value;
+            var company = document.getElementById('companyInput').value;
+            var phone = document.getElementById('phoneInput').value;
+            var imgInput = document.getElementById('jobImageInput');
+            var imgFile = imgInput.files[0];
 
             if (!title || !company || !phone) {
                 alert('يرجى ملء كافة البيانات المطلوبة');
@@ -494,7 +530,7 @@
             }
 
             function saveJob(imgData) {
-                const jobs = getStoredJobs();
+                var jobs = getStoredJobs();
                 jobs.push({
                     id: Date.now(),
                     title: title,
@@ -511,7 +547,7 @@
             }
 
             if(imgFile) {
-                const reader = new FileReader();
+                var reader = new FileReader();
                 reader.onload = function(e) { saveJob(e.target.result); };
                 reader.readAsDataURL(imgFile);
             } else {
@@ -519,7 +555,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function() {
             checkAuthStatus();
             renderMainJobs();
             renderTicker();
