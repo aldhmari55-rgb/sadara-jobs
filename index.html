@@ -107,7 +107,7 @@
         .apply-btn { background: var(--whatsapp-green); color: #ffffff; text-decoration: none; padding: 8px 18px; border-radius: var(--radius-md); font-weight: 800; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
         .apply-btn.disabled { background: #cbd5e1; pointer-events: none; }
 
-        /* ===== تصميم الشريط المتحرك (صور للشعارات فقط) ===== */
+        /* الشريط المتحرك (شعارات فقط من لوحة الإدارة) */
         .partners-ticker-section {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--primary-dark); color: #ffffff;
@@ -173,7 +173,7 @@
         <div class="jobs-grid" id="jobsContainer"></div>
     </div>
 
-    <!-- الشريط المتحرك للشعارات فقط -->
+    <!-- الشريط المتحرك للشعارات المضافة عبر الأدمن فقط -->
     <div class="partners-ticker-section">
         <div class="ticker-label">شركاء النجاح 🤝</div>
         <div class="ticker-wrapper">
@@ -188,7 +188,7 @@
             <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--primary-blue);">إنشاء حساب جديد</h3>
             <div class="form-group">
                 <label>نوع الحساب</label>
-                <select id="regRole" onchange="toggleEmployerFields()">
+                <select id="regRole">
                     <option value="باحث عن عمل">باحث عن عمل (موظف)</option>
                     <option value="صاحب عمل">صاحب عمل (مؤسسة / متجر)</option>
                 </select>
@@ -204,10 +204,6 @@
             <div class="form-group">
                 <label>رقم الهاتف الأساسي (الواتساب) *</label>
                 <input type="text" id="regPhone" placeholder="770000000">
-            </div>
-            <div class="form-group" id="employerLogoGroup" style="display: none; background: #f1f5f9; padding: 10px; border-radius: 8px;">
-                <label style="color: var(--primary-blue);">رفع شعار المتجر / الشركة (صورة للشريط المتحرك):</label>
-                <input type="file" id="regLogoFile" accept="image/*" style="background: white; padding: 5px;">
             </div>
             <div class="form-group">
                 <label>كلمة المرور (4 أرقام أو حروف) *</label>
@@ -234,11 +230,6 @@
             <div class="form-group">
                 <label>رقم هاتف إضافي (اختياري)</label>
                 <input type="text" id="profPhone2" placeholder="أدخل رقم إضافي إن وجد">
-            </div>
-            <div class="form-group" id="profLogoBox" style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);">
-                <label style="color: var(--primary-blue);">تحديث / رفع الشعار (يظهر في الشريط المتحرك):</label>
-                <input type="file" id="profLogoFile" accept="image/*" style="background: white; padding: 5px; margin-top:4px;">
-                <img id="profLogoPreview" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; margin-top: 8px; display: none;">
             </div>
             <button class="btn-submit" onclick="saveProfileChanges()">حفظ التعديلات</button>
         </div>
@@ -286,17 +277,6 @@
             { id: 1, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', status: 'متوفر', approved: true }
         ];
 
-        // شعارات افتراضية للشريط بدون أسماء
-        const DEFAULT_PARTNERS = [
-            { logo: 'https://via.placeholder.com/60/0f2347/ffffff?text=SADARA' },
-            { logo: 'https://via.placeholder.com/60/d4af37/000000?text=AMAL' }
-        ];
-
-        function toggleEmployerFields() {
-            const role = document.getElementById('regRole').value;
-            document.getElementById('employerLogoGroup').style.display = (role === 'صاحب عمل') ? 'block' : 'none';
-        }
-
         function getStoredJobs() {
             return JSON.parse(localStorage.getItem('dhawar_jobs')) || DEFAULT_JOBS;
         }
@@ -327,15 +307,6 @@
             document.getElementById('profName').value = user.name || '';
             document.getElementById('profPhone').value = user.phone || '';
             document.getElementById('profPhone2').value = user.phone2 || '';
-
-            const logoPrev = document.getElementById('profLogoPreview');
-            if(user.logo) {
-                logoPrev.src = user.logo;
-                logoPrev.style.display = 'block';
-            } else {
-                logoPrev.style.display = 'none';
-            }
-
             openModal('profileModal');
         }
 
@@ -346,39 +317,25 @@
             const name = document.getElementById('profName').value.trim();
             const phone = document.getElementById('profPhone').value.trim();
             const phone2 = document.getElementById('profPhone2').value.trim();
-            const logoFile = document.getElementById('profLogoFile').files[0];
 
             if(!name || !phone) {
                 alert('الاسم ورقم الهاتف الأساسي مطلوبان');
                 return;
             }
 
-            function finalizeSave(logoData) {
-                user.name = name;
-                user.phone = phone;
-                user.phone2 = phone2;
-                if(logoData) user.logo = logoData;
+            user.name = name;
+            user.phone = phone;
+            user.phone2 = phone2;
 
-                // تحديث الحساب المسجل بقائمة المستخدمين
-                let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-                users = users.map(u => u.username === user.username ? user : u);
-                
-                localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
-                localStorage.setItem('currentUser', JSON.stringify(user));
+            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            users = users.map(u => u.username === user.username ? user : u);
+            
+            localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(user));
 
-                alert('تم حفظ وتحديث بيانات الملف الشخصي وشعارك بنجاح!');
-                closeModal('profileModal');
-                checkAuthStatus();
-                renderTicker();
-            }
-
-            if(logoFile) {
-                const reader = new FileReader();
-                reader.onload = function(e) { finalizeSave(e.target.result); };
-                reader.readAsDataURL(logoFile);
-            } else {
-                finalizeSave(null);
-            }
+            alert('تم حفظ وتحديث البيانات بنجاح!');
+            closeModal('profileModal');
+            checkAuthStatus();
         }
 
         function handleRegister() {
@@ -387,7 +344,6 @@
             const phone = document.getElementById('regPhone').value.trim();
             const pin = document.getElementById('regPin').value.trim();
             const role = document.getElementById('regRole').value;
-            const logoFile = document.getElementById('regLogoFile').files[0];
 
             if(!name || !username || !phone || !pin) {
                 alert('يرجى ملء جميع الحقول المطلوبة');
@@ -400,25 +356,14 @@
             let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
             if(users.some(u => u.username === username)) { alert('اسم المستخدم مستخدم مسبقاً'); return; }
 
-            function saveUser(logoData) {
-                const newUser = { name, username, phone, phone2: '', pin, role, logo: logoData || null };
-                users.push(newUser);
-                localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
-                localStorage.setItem('currentUser', JSON.stringify(newUser));
+            const newUser = { name, username, phone, phone2: '', pin, role };
+            users.push(newUser);
+            localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
 
-                alert(`مرحباً بك يا ${name}! تم إنشاء حسابك بنجاح.`);
-                closeModal('registerModal');
-                checkAuthStatus();
-                renderTicker();
-            }
-
-            if (role === 'صاحب عمل' && logoFile) {
-                const reader = new FileReader();
-                reader.onload = function(e) { saveUser(e.target.result); };
-                reader.readAsDataURL(logoFile);
-            } else {
-                saveUser(null);
-            }
+            alert(`مرحباً بك يا ${name}! تم إنشاء حسابك بنجاح.`);
+            closeModal('registerModal');
+            checkAuthStatus();
         }
 
         function handleLogin() {
@@ -449,22 +394,18 @@
             checkAuthStatus();
         }
 
-        // عرض الشريط المتحرك (صور للشعارات فقط دون أي أسماء)
+        // عرض الشعارات المضافة من قبل الأدمن فقط
         function renderTicker() {
-            const users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            const partners = JSON.parse(localStorage.getItem('dhawar_partners')) || [
+                { id: 1, name: 'صدارة', logo: 'https://via.placeholder.com/60/0f2347/ffffff?text=SADARA' },
+                { id: 2, name: 'الأمل', logo: 'https://via.placeholder.com/60/d4af37/000000?text=AMAL' }
+            ];
+
             const container = document.getElementById('tickerContainer');
             container.innerHTML = '';
 
-            let partners = [...DEFAULT_PARTNERS];
-
-            users.forEach(u => {
-                if (u.logo) {
-                    partners.push({ logo: u.logo });
-                }
-            });
-
             partners.forEach(p => {
-                container.innerHTML += `<img class="ticker-logo-only" src="${p.logo}" alt="شعار الشريك">`;
+                container.innerHTML += `<img class="ticker-logo-only" src="${p.logo}" alt="${p.name}">`;
             });
         }
 
