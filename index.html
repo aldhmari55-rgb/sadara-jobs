@@ -20,7 +20,6 @@
             --text-dark: #0f172a;
             --text-muted: #64748b;
             --whatsapp-green: #25d366;
-            --whatsapp-hover: #1ebd56;
             --border-color: #e2e8f0;
             --radius-lg: 16px;
             --radius-md: 10px;
@@ -77,13 +76,7 @@
             font-weight: 800;
             font-size: 13px;
             cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
             z-index: 1001;
-        }
-
-        .auth-btn:active {
-            transform: scale(0.96);
         }
 
         /* Hero Banner Section */
@@ -124,6 +117,7 @@
             font-size: 26px;
             font-weight: 900;
             box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            cursor: pointer;
         }
 
         .brand-titles h2 {
@@ -153,11 +147,6 @@
             box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
             position: relative;
             z-index: 1001;
-            transition: all 0.2s;
-        }
-
-        .action-add-btn:active {
-            transform: scale(0.96);
         }
 
         .hero-main-title {
@@ -244,7 +233,7 @@
             color: #ffffff;
         }
 
-        /* Banners (Admin Managed) */
+        /* Banners */
         .ad-banner-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -513,7 +502,7 @@
     <div class="hero-section">
         <div class="brand-container">
             <div class="brand-identity">
-                <div class="brand-logo">S</div>
+                <div class="brand-logo" id="secretLogoTrigger" title="انقر هنا للدخول السري للأدمن">S</div>
                 <div class="brand-titles">
                     <h2>صـدارة</h2>
                     <span>منصة الوظائف والخدمات - ذمار</span>
@@ -636,7 +625,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: USER LOGIN / ROLE -->
+    <!-- MODAL 2: USER LOGIN / ROLE (REMOVED PUBLIC ADMIN OPTION) -->
     <div class="modal-backdrop" id="loginModal">
         <div class="modal-card">
             <button class="close-modal-icon" onclick="closeModal('loginModal')">✕</button>
@@ -647,7 +636,6 @@
                 <select id="selectRole">
                     <option value="باحث عن عمل">باحث عن عمل (تصفح وتقديم)</option>
                     <option value="صاحب عمل / شركة">صاحب عمل / شركة (نشر وظائف)</option>
-                    <option value="مدير المنصة (الأدمن)">مدير المنصة (الأدمن)</option>
                 </select>
             </div>
 
@@ -677,9 +665,19 @@
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Attach Event Listeners Directly for 100% Mobile Click Guarantee
             document.getElementById('loginBtnTrigger').onclick = function() { openModal('loginModal'); };
             document.getElementById('addJobBtnTrigger').onclick = function() { openModal('addJobModal'); };
+            
+            // Secret Admin Entry via Logo Click
+            document.getElementById('secretLogoTrigger').onclick = function() {
+                const secretPin = prompt("المنطقة السرية للإدارة:\nأدخل الرقم السري للتحول إلى حساب المدير:");
+                if (secretPin === ADMIN_PIN_CODE) {
+                    document.getElementById('displayUserRole').innerText = "مدير المنصة (الأدمن) 👑";
+                    alert("تم تفعيل وضع الأدمن بنجاح!");
+                } else if (secretPin !== null) {
+                    alert("الرمز غير صحيح!");
+                }
+            };
 
             renderJobsGrid();
             loadAdminBanners();
