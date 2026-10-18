@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حساب مدير المنصة | لوحة التحكم الخارجي</title>
+    <title>لوحة تحكم إدارة منصة صدارة</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -73,7 +73,7 @@
             <h1>لوحة التحكم الشاملة لمدير المنصة</h1>
         </div>
 
-        <!-- 1. إدارة الشعارات للشريط المتحرك -->
+        <!-- 1. إدارة الشعارات -->
         <div class="section-box">
             <h3>🤝 إدارة شعارات شركاء النجاح (الشريط المتحرك)</h3>
             <div style="background: white; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
@@ -89,19 +89,28 @@
             <div class="partner-logo-grid" id="adminPartnersList"></div>
         </div>
 
-        <!-- 2. إدارة الوظائف والنشر بالقناة -->
+        <!-- 2. إدارة الوظائف والخدمات -->
         <div class="section-box">
             <h3>⚫ إدارة الوظائف والخدمات (مراجعة ونشر)</h3>
             <div id="adminJobsList"></div>
         </div>
 
-        <!-- 3. إدارة إعلانات البنرات -->
+        <!-- 3. إدارة الإعلانات والبنرات -->
         <div class="section-box">
             <h3>⚫ إدارة إعلانات البنرات</h3>
             <div>
-                <label style="font-
+                <label style="font-size:12px; font-weight:bold;">البنر العلوي:</label><br>
+                <label class="file-upload-btn">
+                    📷 اختيار صورة البنر العلوي
+                    <input type="file" accept="image/*" onchange="uploadBanner(event, 'top')">
+                </label>
+                <img id="prevTop" class="banner-preview-img">
+                <button class="btn-action btn-reject" style="margin-top:5px;" onclick="deleteBanner('top')">حذف البنر العلوي</button>
+            </div>
+        </div>
+    </div>
     <script>
-        const CHANNEL_LINK = "https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s";
+        var CHANNEL_LINK = "https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s";
 
         function getJobs() { return JSON.parse(localStorage.getItem('dhawar_jobs')) || []; }
         function getPartners() { 
@@ -112,100 +121,97 @@
         }
 
         function renderAllAdmin() {
-            // عرض الشركاء
-            const partners = getPartners();
-            const partnerContainer = document.getElementById('adminPartnersList');
+            var partners = getPartners();
+            var partnerContainer = document.getElementById('adminPartnersList');
             partnerContainer.innerHTML = partners.length === 0 ? '<p style="font-size:11px; color:#64748b;">لا توجد شعارات معروضة.</p>' : '';
-            partners.forEach(p => {
-                partnerContainer.innerHTML += `
-                    <div class="partner-logo-card">
-                        <img src="${p.logo}" title="${p.name}">
-                        <button class="partner-delete-btn" onclick="deletePartner(${p.id})">حذف ✕</button>
-                    </div>
-                `;
+            
+            partners.forEach(function(p) {
+                partnerContainer.innerHTML += 
+                    '<div class="partner-logo-card">' +
+                        '<img src="' + p.logo + '" title="' + p.name + '">' +
+                        '<button class="partner-delete-btn" onclick="deletePartner(' + p.id + ')">حذف ✕</button>' +
+                    '</div>';
             });
 
-            // عرض الوظائف
-            const jobs = getJobs();
-            const jobsContainer = document.getElementById('adminJobsList');
+            var jobs = getJobs();
+            var jobsContainer = document.getElementById('adminJobsList');
             jobsContainer.innerHTML = jobs.length === 0 ? '<p style="font-size:12px; color:#64748b;">لا توجد وظائف جديدة.</p>' : '';
             
-            jobs.forEach(job => {
-                jobsContainer.innerHTML += `
-                    <div class="admin-item">
-                        <div class="item-header">
-                            <div style="display:flex; align-items:center;">
-                                ${job.image ? `<img src="${job.image}" class="job-thumb">` : ''}
-                                <div>
-                                    <strong>${job.title}</strong><br>
-                                    <span style="font-size:12px; color:#64748b;">${job.company}</span>
-                                </div>
-                            </div>
-                            <span style="font-size:11px; font-weight:bold; color:${job.approved ? 'green' : 'orange'}">${job.approved ? 'مقبول' : 'قيد المراجعة'}</span>
-                        </div>
-                        <div style="font-size:12px; color:#64748b; margin-top:6px;">الهاتف: ${job.phone} | الحالة: <strong>${job.status}</strong></div>
-                        <div class="action-btns">
-                            ${!job.approved ? `<button class="btn-action btn-approve" onclick="approveJob(${job.id})">قبول ونشر</button>` : ''}
-                            <button class="btn-action btn-share" onclick="shareToWhatsAppChannel(${job.id})">مشاركة بالقناة 🟢</button>
-                            <button class="btn-action btn-toggle" onclick="toggleJobStatus(${job.id})">تغيير التوفر (${job.status === 'متوفر' ? 'غير متوفر' : 'متوفر'})</button>
-                            <button class="btn-action btn-reject" onclick="deleteJob(${job.id})">حذف</button>
-                        </div>
-                    </div>
-                `;
+            jobs.forEach(function(job) {
+                var approveBtn = !job.approved ? '<button class="btn-action btn-approve" onclick="approveJob(' + job.id + ')">قبول ونشر</button>' : '';
+                var imgTag = job.image ? '<img src="' + job.image + '" class="job-thumb">' : '';
+                var statusText = job.approved ? 'مقبول' : 'قيد المراجعة';
+                var statusColor = job.approved ? 'green' : 'orange';
+
+                jobsContainer.innerHTML += 
+                    '<div class="admin-item">' +
+                        '<div class="item-header">' +
+                            '<div style="display:flex; align-items:center;">' +
+                                imgTag +
+                                '<div>' +
+                                    '<strong>' + job.title + '</strong><br>' +
+                                    '<span style="font-size:12px; color:#64748b;">' + job.company + '</span>' +
+                                '</div>' +
+                            '</div>' +
+                            '<span style="font-size:11px; font-weight:bold; color:' + statusColor + ';">' + statusText + '</span>' +
+                        '</div>' +
+                        '<div style="font-size:12px; color:#64748b; margin-top:6px;">الهاتف: ' + job.phone + ' | الحالة: <strong>' + job.status + '</strong></div>' +
+                        '<div class="action-btns">' +
+                            approveBtn +
+                            '<button class="btn-action btn-share" onclick="shareToWhatsAppChannel(' + job.id + ')">مشاركة بالقناة 🟢</button>' +
+                            '<button class="btn-action btn-toggle" onclick="toggleJobStatus(' + job.id + ')">تغيير التوفر</button>' +
+                            '<button class="btn-action btn-reject" onclick="deleteJob(' + job.id + ')">حذف</button>' +
+                        '</div>' +
+                    '</div>';
             });
 
-            const topB = localStorage.getItem('ad_banner_top');
-            if(topB) { document.getElementById('prevTop').src = topB; document.getElementById('prevTop').style.display = 'block'; }
+            var topB = localStorage.getItem('ad_banner_top');
+            if(topB) { 
+                document.getElementById('prevTop').src = topB; 
+                document.getElementById('prevTop').style.display = 'block'; 
+            }
         }
 
-        // دالة المشاركة العربية الشاملة مع تجهيز الصورة للنشر
         function shareToWhatsAppChannel(jobId) {
-            const jobs = getJobs();
-            const job = jobs.find(j => j.id === jobId);
+            var jobs = getJobs();
+            var job = jobs.find(function(j) { return j.id === jobId; });
             if(!job) return;
 
-            // نص عربي خالص وواضح بدون أي إنجليزي
-            const arabicMessage = 
-`📢 *فرصة عمل جديدة - منصة صدارة للوظائف بذمار*
+            var arabicMessage = 
+                "📢 *فرصة عمل جديدة - منصة صدارة للوظائف بذمار*\n\n" +
+                "💼 *المسمى الوظيفي:* " + job.title + "\n" +
+                "🏢 *الجهة / المكان:* " + job.company + "\n" +
+                "📍 *الموقع:* محافظة ذمار - اليمن\n" +
+                "الحالة: *" + job.status + "*\n\n" +
+                "📲 *للتقديم والتواصل المباشر عبر الواتساب:*\n" +
+                "https://wa.me/" + job.phone + "\n\n" +
+                "---\n" +
+                "🟢 *تابع جديد الوظائف والخدمات اليومية عبر قناتنا الرسمية:*\n" +
+                CHANNEL_LINK;
 
-💼 *المسمى الوظيفي:* ${job.title}
-🏢 *الجهة / المكان:* ${job.company}
-📍 *الموقع:* محافظة ذمار - اليمن
-الحالة: *${job.status}*
-
-📲 *للتقديم والتواصل المباشر عبر الواتساب:*
-https://wa.me/${job.phone}
-
----
-🟢 *تابع جديد الوظائف والخدمات اليومية عبر قناتنا الرسمية:*
-${CHANNEL_LINK}`;
-
-            // نسخ النص العربي تلقائياً
             navigator.clipboard.writeText(arabicMessage);
 
-            // إذا كانت الخدمة تحتوي على صورة، يتم فتحها في نافذة جديدة ليتمكن الأدمن من حفظها وتحديدها مع النص
             if(job.image) {
-                const imageWindow = window.open("");
-                imageWindow.document.write(`<title>صورة الخدمة / الوظيفة</title><h3 style="font-family:sans-serif; text-align:center;">تم نسخ النص العربي! قم بحفظ الصورة أدناه لمشاركتها بالقناة:</h3><div style="text-align:center;"><img src="${job.image}" style="max-width:90%; border-radius:12px;"></div>`);
+                var imageWindow = window.open("");
+                imageWindow.document.write('<title>صورة الخدمة / الوظيفية</title><h3 style="font-family:sans-serif; text-align:center;">تم نسخ النص العربي بنجاح! قم بحفظ الصورة أدناه لمشاركتها بالقناة:</h3><div style="text-align:center;"><img src="' + job.image + '" style="max-width:90%; border-radius:12px;"></div>');
             }
 
-            // فتح الواتساب فوراً للمشاركة
-            alert('تم نسخ تفاصيل الخدمة بالعربي بنجاح! سيتم فتح تطبيق الواتساب الآن للصق النص وإرساله للقناة.');
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(arabicMessage)}`, '_blank');
+            alert('تم نسخ نص الوظيفة بالعربي بنجاح! سيتم فتح الواتساب الآن للصق الرسالة وإرسالها للقناة.');
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(arabicMessage), '_blank');
         }
 
         function addPartnerByAdmin() {
-            const name = document.getElementById('newPartnerName').value.trim();
-            const file = document.getElementById('newPartnerLogoFile').files[0];
+            var name = document.getElementById('newPartnerName').value.trim();
+            var file = document.getElementById('newPartnerLogoFile').files[0];
 
             if(!name || !file) {
                 alert('يرجى إدخال الاسم واختيار الشعار');
                 return;
             }
 
-            const reader = new FileReader();
+            var reader = new FileReader();
             reader.onload = function(e) {
-                let partners = getPartners();
+                var partners = getPartners();
                 partners.push({ id: Date.now(), name: name, logo: e.target.result });
                 localStorage.setItem('dhawar_partners', JSON.stringify(partners));
                 alert('تمت إضافة الشعار بنجاح!');
@@ -217,35 +223,41 @@ ${CHANNEL_LINK}`;
 
         function deletePartner(id) {
             if(confirm('هل أنت متأكد من حذف الشعار؟')) {
-                let partners = getPartners().filter(p => p.id !== id);
+                var partners = getPartners().filter(function(p) { return p.id !== id; });
                 localStorage.setItem('dhawar_partners', JSON.stringify(partners));
                 renderAllAdmin();
             }
         }
 
         function approveJob(id) {
-            let jobs = getJobs().map(j => j.id === id ? {...j, approved: true} : j);
+            var jobs = getJobs().map(function(j) { 
+                if(j.id === id) j.approved = true; 
+                return j; 
+            });
             localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
-            alert('تم قبول الوظيفة! يمكنك الآن إرسالها للقناة عبر زر المشاركة الأخضر.');
+            alert('تم قبول الوظيفة بنجاح!');
             renderAllAdmin();
         }
 
         function toggleJobStatus(id) {
-            let jobs = getJobs().map(j => j.id === id ? {...j, status: j.status === 'متوفر' ? 'غير متوفر' : 'متوفر'} : j);
+            var jobs = getJobs().map(function(j) {
+                if(j.id === id) j.status = (j.status === 'متوفر' ? 'غير متوفر' : 'متوفر');
+                return j;
+            });
             localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
             renderAllAdmin();
         }
 
         function deleteJob(id) {
-            let jobs = getJobs().filter(j => j.id !== id);
+            var jobs = getJobs().filter(function(j) { return j.id !== id; });
             localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
             renderAllAdmin();
         }
 
         function uploadBanner(event, type) {
-            const file = event.target.files[0];
+            var file = event.target.files[0];
             if (!file) return;
-            const reader = new FileReader();
+            var reader = new FileReader();
             reader.onload = function(e) {
                 localStorage.setItem('ad_banner_top', e.target.result);
                 alert('تم رفع البنر بنجاح!');
