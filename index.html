@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الوظائف والخدمات | محافظة ذمار</title>
-    <!-- خط تجوال الاحترافي -->
+    <title>منصة صدارة للوظائف والخدمات | ذمار</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -20,30 +19,15 @@
             --text-dark: #0f172a;
             --text-muted: #64748b;
             --whatsapp-green: #25d366;
-            --red-color: #ef4444;
             --border-color: #e2e8f0;
             --radius-lg: 16px;
             --radius-md: 10px;
             --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
-            --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Tajawal', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-dark); padding-bottom: 40px; }
 
-        body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            line-height: 1.6;
-            padding-bottom: 40px;
-        }
-
-        /* الهيدر العلوي */
         .top-navbar {
             background: var(--primary-dark);
             color: #ffffff;
@@ -54,262 +38,71 @@
             border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        .brand-logo-wrap {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
+        .brand-logo-wrap { display: flex; align-items: center; gap: 10px; }
         .brand-logo {
             background: linear-gradient(135deg, var(--accent-gold), #fff8dc);
             color: var(--primary-dark);
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 900;
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 900;
         }
 
-        .brand-title-text {
-            font-size: 18px;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .nav-auth-actions {
-            display: flex;
-            gap: 8px;
-        }
-
+        .nav-auth-actions { display: flex; gap: 8px; align-items: center; }
         .auth-btn {
             background: linear-gradient(135deg, var(--accent-gold), #f3e5ab);
             color: var(--primary-dark);
-            border: none;
-            padding: 7px 16px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 13px;
-            cursor: pointer;
+            border: none; padding: 7px 16px; border-radius: 20px;
+            font-weight: 800; font-size: 13px; cursor: pointer;
         }
-
         .btn-add-job {
             background: var(--accent-blue);
-            color: #ffffff;
-            border: none;
-            padding: 7px 16px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 13px;
-            cursor: pointer;
+            color: #ffffff; border: none; padding: 7px 16px; border-radius: 20px;
+            font-weight: 800; font-size: 13px; cursor: pointer;
         }
+        .user-welcome { font-size: 12px; color: var(--accent-gold); font-weight: 800; }
 
-        /* العنوان الرئيسي */
         .hero-banner-title {
             background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
-            color: #ffffff;
-            padding: 28px 20px 45px 20px;
-            text-align: center;
+            color: #ffffff; padding: 28px 20px 45px 20px; text-align: center;
         }
+        .hero-banner-title h1 { font-size: 22px; font-weight: 900; }
 
-        .hero-banner-title h1 {
-            font-size: 22px;
-            font-weight: 900;
-            color: #ffffff;
-        }
+        .main-container { max-width: 800px; margin: -25px auto 0 auto; padding: 0 16px; }
 
-        /* الحاوية الرئيسية */
-        .main-container {
-            max-width: 800px;
-            margin: -25px auto 0 auto;
-            padding: 0 16px;
-        }
-
-        /* البنرات الإعلانية (العلوي والسفلي) */
         .ad-banner-box {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 20px;
-            text-align: center;
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: var(--card-bg); border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color); overflow: hidden;
+            box-shadow: var(--shadow-sm); margin-bottom: 20px; text-align: center;
+            min-height: 80px; display: flex; align-items: center; justify-content: center;
         }
+        .ad-banner-box img { width: 100%; height: auto; display: block; }
+        .ad-banner-text { padding: 15px; color: var(--text-muted); font-size: 14px; font-weight: 700; }
 
-        .ad-banner-box img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
+        .jobs-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .jobs-section-title { font-size: 20px; font-weight: 900; color: var(--primary-dark); }
+        .show-all-btn { background: #e2e8f0; color: var(--text-dark); border: none; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
 
-        .ad-banner-text {
-            padding: 15px;
-            color: var(--text-muted);
-            font-size: 14px;
-            font-weight: 700;
-        }
+        .jobs-grid { display: flex; flex-direction: column; gap: 16px; }
+        .job-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 18px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+        .job-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .job-title { font-size: 18px; font-weight: 800; color: var(--primary-blue); }
+        .job-company { font-size: 14px; color: var(--text-muted); font-weight: 700; margin-top: 2px; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; }
+        .status-available { background: #dcfce7; color: #166534; }
+        .status-unavailable { background: #fee2e2; color: #991b1b; }
 
-        /* شريط الوظائف وتصفية البحث */
-        .jobs-section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
+        .job-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid #f1f5f9; }
+        .apply-btn { background: var(--whatsapp-green); color: #ffffff; text-decoration: none; padding: 8px 18px; border-radius: var(--radius-md); font-weight: 800; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
+        .apply-btn.disabled { background: #cbd5e1; pointer-events: none; }
 
-        .jobs-section-title {
-            font-size: 20px;
-            font-weight: 900;
-            color: var(--primary-dark);
-        }
-
-        .show-all-btn {
-            background: #e2e8f0;
-            color: var(--text-dark);
-            border: none;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        /* شبكة كروت الوظائف */
-        .jobs-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .job-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 18px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .job-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-
-        .job-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--primary-blue);
-        }
-
-        .job-company {
-            font-size: 14px;
-            color: var(--text-muted);
-            font-weight: 700;
-            margin-top: 2px;
-        }
-
-        .status-badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        .status-available {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-unavailable {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .job-card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 14px;
-            padding-top: 12px;
-            border-top: 1px solid #f1f5f9;
-        }
-
-        .apply-btn {
-            background: var(--whatsapp-green);
-            color: #ffffff;
-            text-decoration: none;
-            padding: 8px 18px;
-            border-radius: var(--radius-md);
-            font-weight: 800;
-            font-size: 13px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .apply-btn.disabled {
-            background: #cbd5e1;
-            pointer-events: none;
-        }
-
-        /* نافذة تقديم إضافة وظيفة */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(10, 19, 36, 0.7);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-            padding: 16px;
-        }
-
-        .modal-box {
-            background: #ffffff;
-            width: 100%;
-            max-width: 480px;
-            border-radius: var(--radius-lg);
-            padding: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 800;
-            margin-bottom: 4px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            font-size: 13px;
-        }
-
-        .btn-submit {
-            width: 100%;
-            background: var(--primary-blue);
-            color: #ffffff;
-            border: none;
-            padding: 11px;
-            border-radius: var(--radius-md);
-            font-weight: 800;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 8px;
-        }
+        /* NAFATH MODALS */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 19, 36, 0.75); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 16px; }
+        .modal-box { background: #ffffff; width: 100%; max-width: 440px; border-radius: var(--radius-lg); padding: 24px; position: relative; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 800; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; }
+        .btn-submit { width: 100%; background: var(--primary-blue); color: #ffffff; border: none; padding: 11px; border-radius: var(--radius-md); font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 8px; }
+        .modal-close-btn { position: absolute; left: 15px; top: 15px; border: none; background: #f1f5f9; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -317,73 +110,131 @@
     <!-- الهيدر العلوي -->
     <div class="top-navbar">
         <div class="brand-logo-wrap">
-            <div class="brand-logo">ش</div>
-            <span class="brand-title-text">شعار المنصة</span>
+            <div class="brand-logo">ص</div>
+            <span style="font-weight: 800;">صدارة للوظائف</span>
         </div>
-        <div class="nav-auth-actions">
-            <button class="btn-add-job" onclick="openAddModal()">+ إضافة شغل</button>
-            <button class="auth-btn">اشتراك / دخول</button>
+        <div class="nav-auth-actions" id="navAuthArea">
+            <button class="btn-add-job" onclick="openModal('addModal')">+ نشر شغل</button>
+            <button class="auth-btn" onclick="openModal('authModal')">دخول / اشتراك</button>
         </div>
     </div>
 
-    <!-- البنر العلوي والتعريف -->
+    <!-- البنر الرئـيسي -->
     <div class="hero-banner-title">
         <h1>المنصة الأولى للوظائف بمحافظة ذمار</h1>
     </div>
 
-    <!-- الحاوية الرئيسية -->
     <div class="main-container">
-
-        <!-- البنـر العلـوي الإعلاني -->
-        <div class="ad-banner-box" id="topAdBanner">
-            <div class="ad-banner-text">مساحة البنر العلوي الإعلاني</div>
-        </div>
+        <!-- البنـر العلـوي -->
+        <div class="ad-banner-box" id="topAdBanner"><div class="ad-banner-text">مساحة البنر العلوي الإعلاني</div></div>
 
         <!-- قائمة الوظائف -->
         <div class="jobs-section-header">
-            <h2 class="jobs-section-title">الوظائف والخدمات</h2>
+            <h2 class="jobs-section-title">الوظائف المتاحة</h2>
             <button class="show-all-btn" onclick="renderMainJobs()">عرض الكل</button>
         </div>
 
         <div class="jobs-grid" id="jobsContainer"></div>
 
-        <!-- البنـر السفلـي الإعلاني -->
-        <div class="ad-banner-box" style="margin-top: 25px;" id="bottomAdBanner">
-            <div class="ad-banner-text">مساحة البنر السفلي الإعلاني</div>
-        </div>
-
+        <!-- البنـر السفلـي -->
+        <div class="ad-banner-box" style="margin-top: 25px;" id="bottomAdBanner"><div class="ad-banner-text">مساحة البنر السفلي الإعلاني</div></div>
     </div>
 
-    <!-- نافذة إضافة وظيفة من صاحب العمل -->
+    <!-- نافذة تسجيل الدخول / إنشاء حساب -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" onclick="closeModal('authModal')">✕</button>
+            <h3 style="margin-bottom: 16px; font-size: 18px;" id="authModalTitle">تسجيل الدخول / حساب جديد</h3>
+            
+            <div class="form-group">
+                <label>نوع الحساب</label>
+                <select id="userRoleSelect">
+                    <option value="باحث عن عمل">باحث عن عمل (موظف)</option>
+                    <option value="صاحب عمل">صاحب عمل (مؤسسة / متجر)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>الاسم الكامل / اسم الجهة *</label>
+                <input type="text" id="authName" placeholder="أدخل اسمك أو اسم شركتك">
+            </div>
+            <div class="form-group">
+                <label>رقم الهاتف (الواتساب) *</label>
+                <input type="text" id="authPhone" placeholder="770000000">
+            </div>
+            <button class="btn-submit" onclick="handleLoginSubmit()">دخول المنصة فوراً</button>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة وظيفة -->
     <div class="modal-overlay" id="addModal">
         <div class="modal-box">
+            <button class="modal-close-btn" onclick="closeModal('addModal')">✕</button>
             <h3 style="margin-bottom: 14px; font-size: 16px;">نشر شاغر وظيفي / خدمة جديد</h3>
             <div class="form-group">
-                <label>اسم الوظيفة *</label>
+                <label>عنوان الوظيفة *</label>
                 <input type="text" id="jobTitleInput" placeholder="مثال: محاسب، مسوق إلكتروني">
             </div>
             <div class="form-group">
-                <label>الجهة / اسم المكان *</label>
+                <label>اسم الشركة / المكان *</label>
                 <input type="text" id="companyInput" placeholder="اسم المحل أو الشركة">
             </div>
             <div class="form-group">
-                <label>رقم التقديم (الواتساب) *</label>
+                <label>رقم التواصل (الواتساب) *</label>
                 <input type="text" id="phoneInput" placeholder="770000000">
             </div>
             <button class="btn-submit" onclick="submitNewJob()">إرسال للمراجعة والنشر</button>
-            <button onclick="closeAddModal()" style="width:100%; border:none; background:none; margin-top:10px; color:var(--text-muted); cursor:pointer;">إلغاء</button>
         </div>
     </div>
 
     <script>
-        // الذاكرة التشاركية
         const DEFAULT_JOBS = [
-            { id: 1, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة', phone: '967770000000', status: 'متوفر', approved: true },
+            { id: 1, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', status: 'متوفر', approved: true },
             { id: 2, title: 'مسوق مبيعات ميداني', company: 'مركز ذمار التجاري', phone: '967771111222', status: 'غير متوفر', approved: true }
         ];
 
         function getStoredJobs() {
             return JSON.parse(localStorage.getItem('dhawar_jobs')) || DEFAULT_JOBS;
+        }
+
+        function checkAuthStatus() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const navAuthArea = document.getElementById('navAuthArea');
+
+            if(currentUser) {
+                navAuthArea.innerHTML = `
+                    <span class="user-welcome">👤 ${currentUser.name} (${currentUser.role})</span>
+                    <button class="btn-add-job" onclick="openModal('addModal')">+ نشر شغل</button>
+                    <button class="auth-btn" style="background:#ef4444; color:white;" onclick="handleLogout()">خروج</button>
+                `;
+            } else {
+                navAuthArea.innerHTML = `
+                    <button class="btn-add-job" onclick="openModal('addModal')">+ نشر شغل</button>
+                    <button class="auth-btn" onclick="openModal('authModal')">دخول / اشتراك</button>
+                `;
+            }
+        }
+
+        function handleLoginSubmit() {
+            const name = document.getElementById('authName').value;
+            const phone = document.getElementById('authPhone').value;
+            const role = document.getElementById('userRoleSelect').value;
+
+            if(!name || !phone) {
+                alert('يرجى كتابة الاسم ورقم الهاتف بوضوح');
+                return;
+            }
+
+            const userData = { name, phone, role };
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            alert(`أهلاً بك يا ${name}! تم تسجيل دخولك بنجاح بصفة (${role}).`);
+            closeModal('authModal');
+            checkAuthStatus();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            alert('تم تسجيل الخروج بنجاح.');
+            checkAuthStatus();
         }
 
         function renderMainJobs() {
@@ -425,8 +276,8 @@
             if(bottomBanner) document.getElementById('bottomAdBanner').innerHTML = `<img src="${bottomBanner}">`;
         }
 
-        function openAddModal() { document.getElementById('addModal').style.display = 'flex'; }
-        function closeAddModal() { document.getElementById('addModal').style.display = 'none'; }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         function submitNewJob() {
             const title = document.getElementById('jobTitleInput').value;
@@ -434,7 +285,7 @@
             const phone = document.getElementById('phoneInput').value;
 
             if (!title || !company || !phone) {
-                alert('يرجى ملء جميع الحقول المطلوب');
+                alert('يرجى ملء جميع البيانات المطلوبة');
                 return;
             }
 
@@ -445,15 +296,18 @@
                 company: company,
                 phone: phone,
                 status: 'متوفر',
-                approved: false // تحتاج موافقة الأدمن من لوحة التحكم الخارجي
+                approved: false
             });
 
             localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
-            alert('تم إرسال الوظيفة بنجاح! ستظهر في المنصة بعد مراجعتها وقبولها من قبل الإدارة.');
-            closeAddModal();
+            alert('تم إرسال الوظيفة! ستظهر بالمنصة فور اعتمادها من مدير المنصة.');
+            closeModal('addModal');
         }
 
-        document.addEventListener('DOMContentLoaded', renderMainJobs);
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthStatus();
+            renderMainJobs();
+        });
     </script>
 </body>
 </html>
