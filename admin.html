@@ -61,6 +61,8 @@
         .partner-logo-card { position: relative; width: 70px; text-align: center; background: white; padding: 6px; border-radius: 8px; border: 1px solid var(--border); }
         .partner-logo-card img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
         .partner-delete-btn { background: var(--danger); color: white; border: none; padding: 2px 6px; font-size: 10px; border-radius: 4px; cursor: pointer; margin-top: 4px; width: 100%; }
+        
+        .job-thumb { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; margin-left: 10px; }
     </style>
 </head>
 <body>
@@ -97,16 +99,7 @@
         <div class="section-box">
             <h3>⚫ إدارة إعلانات البنرات</h3>
             <div>
-                <label style="font-size:12px; font-weight:bold;">البنر العلوي:</label><br>
-                <label class="file-upload-btn">
-                    📷 اختيار صورة البنر العلوي
-                    <input type="file" accept="image/*" onchange="uploadBanner(event, 'top')">
-                </label>
-                <img id="prevTop" class="banner-preview-img">
-                <button class="btn-action btn-reject" style="margin-top:5px;" onclick="deleteBanner('top')">حذف البنر العلوي</button>
-            </div>
-        </div>
-    </div>
+                <label style="font-
     <script>
         const CHANNEL_LINK = "https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s";
 
@@ -132,39 +125,28 @@
                 `;
             });
 
-            // عرض الوظائف وإضافة زر مشاركة الواتساب بالنص الجاهز
+            // عرض الوظائف
             const jobs = getJobs();
             const jobsContainer = document.getElementById('adminJobsList');
             jobsContainer.innerHTML = jobs.length === 0 ? '<p style="font-size:12px; color:#64748b;">لا توجد وظائف جديدة.</p>' : '';
             
             jobs.forEach(job => {
-                // صياغة نص الوظيفة المميز والجاهز للنشر على القناة
-                const formattedMessage = encodeURIComponent(
-`📢 *فرصة عمل جديد - منصة صدارة ذمار*
-
-💼 *المسمى الوظيفي:* ${job.title}
-🏢 *الجهة / المكان:* ${job.company}
-📍 *الموقع:* ذمار - اليمن
-STATUS: *${job.status}*
-
-📲 *للتقديم والتواصل المباشر عبر الواتساب:*
-https://wa.me/${job.phone}
-
----
-🟢 *تابع جديد الوظائف اليومية عبر قناتنا الرسمية:*
-${CHANNEL_LINK}`
-                );
-
                 jobsContainer.innerHTML += `
                     <div class="admin-item">
                         <div class="item-header">
-                            <strong>${job.title} - (${job.company})</strong>
+                            <div style="display:flex; align-items:center;">
+                                ${job.image ? `<img src="${job.image}" class="job-thumb">` : ''}
+                                <div>
+                                    <strong>${job.title}</strong><br>
+                                    <span style="font-size:12px; color:#64748b;">${job.company}</span>
+                                </div>
+                            </div>
                             <span style="font-size:11px; font-weight:bold; color:${job.approved ? 'green' : 'orange'}">${job.approved ? 'مقبول' : 'قيد المراجعة'}</span>
                         </div>
-                        <div style="font-size:12px; color:#64748b;">الهاتف: ${job.phone} | الحالة: <strong>${job.status}</strong></div>
+                        <div style="font-size:12px; color:#64748b; margin-top:6px;">الهاتف: ${job.phone} | الحالة: <strong>${job.status}</strong></div>
                         <div class="action-btns">
                             ${!job.approved ? `<button class="btn-action btn-approve" onclick="approveJob(${job.id})">قبول ونشر</button>` : ''}
-                            <a href="https://api.whatsapp.com/send?text=${formattedMessage}" target="_blank" class="btn-action btn-share">مشاركة بالقناة 🟢</a>
+                            <button class="btn-action btn-share" onclick="shareToWhatsAppChannel(${job.id})">مشاركة بالقناة 🟢</button>
                             <button class="btn-action btn-toggle" onclick="toggleJobStatus(${job.id})">تغيير التوفر (${job.status === 'متوفر' ? 'غير متوفر' : 'متوفر'})</button>
                             <button class="btn-action btn-reject" onclick="deleteJob(${job.id})">حذف</button>
                         </div>
@@ -172,9 +154,44 @@ ${CHANNEL_LINK}`
                 `;
             });
 
-            // معاينة البنر العلوي
             const topB = localStorage.getItem('ad_banner_top');
             if(topB) { document.getElementById('prevTop').src = topB; document.getElementById('prevTop').style.display = 'block'; }
+        }
+
+        // دالة المشاركة العربية الشاملة مع تجهيز الصورة للنشر
+        function shareToWhatsAppChannel(jobId) {
+            const jobs = getJobs();
+            const job = jobs.find(j => j.id === jobId);
+            if(!job) return;
+
+            // نص عربي خالص وواضح بدون أي إنجليزي
+            const arabicMessage = 
+`📢 *فرصة عمل جديدة - منصة صدارة للوظائف بذمار*
+
+💼 *المسمى الوظيفي:* ${job.title}
+🏢 *الجهة / المكان:* ${job.company}
+📍 *الموقع:* محافظة ذمار - اليمن
+الحالة: *${job.status}*
+
+📲 *للتقديم والتواصل المباشر عبر الواتساب:*
+https://wa.me/${job.phone}
+
+---
+🟢 *تابع جديد الوظائف والخدمات اليومية عبر قناتنا الرسمية:*
+${CHANNEL_LINK}`;
+
+            // نسخ النص العربي تلقائياً
+            navigator.clipboard.writeText(arabicMessage);
+
+            // إذا كانت الخدمة تحتوي على صورة، يتم فتحها في نافذة جديدة ليتمكن الأدمن من حفظها وتحديدها مع النص
+            if(job.image) {
+                const imageWindow = window.open("");
+                imageWindow.document.write(`<title>صورة الخدمة / الوظيفة</title><h3 style="font-family:sans-serif; text-align:center;">تم نسخ النص العربي! قم بحفظ الصورة أدناه لمشاركتها بالقناة:</h3><div style="text-align:center;"><img src="${job.image}" style="max-width:90%; border-radius:12px;"></div>`);
+            }
+
+            // فتح الواتساب فوراً للمشاركة
+            alert('تم نسخ تفاصيل الخدمة بالعربي بنجاح! سيتم فتح تطبيق الواتساب الآن للصق النص وإرساله للقناة.');
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(arabicMessage)}`, '_blank');
         }
 
         function addPartnerByAdmin() {
