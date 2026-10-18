@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة صدارة للوظائف - ذمار</title>
+    <!-- خط تجوال من Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #0b1d3a;
+            --secondary-blue: #1b3b6f;
+            --accent-blue: #2563eb;
+            --bg-light: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --whatsapp-green: #25d366;
+            --whatsapp-hover: #1eaa53;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+
+        .login-btn {
+            background-color: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .login-btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Hero Header */
+        .hero-section {
+            background: linear-gradient(180deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: #ffffff;
+            padding: 30px 20px 40px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .brand-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 900px;
+            margin: 0 auto 25px auto;
+        }
+
+        .brand-logo-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-box {
+            background-color: #ffffff;
+            color: var(--primary-blue);
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .brand-names {
+            text-align: right;
+        }
+
+        .brand-title {
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .brand-subtitle {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .add-job-btn {
+            background-color: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .add-job-btn:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .hero-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .hero-desc {
+            font-size: 14px;
+            color: #cbd5e1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Container & Cards Layout */
+        .container {
+            max-width: 800px;
+            margin: -20px auto 0 auto;
+            padding: 0 16px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* BANNER SECTION WITH PHONE GALLERY UPLOAD */
+        .banner-card {
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            border: 2px dashed #cbd5e1;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .banner-card.has-image {
+            border: 1px solid var(--border-color);
+            background-color: transparent;
+        }
+
+        .banner-upload-area {
+            padding: 24px 16px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #ffffff;
+        }
+
+        .banner-upload-area:hover {
+            background-color: #f8fafc;
+        }
+
+        .plus-icon-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: #eff6ff;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .upload-text-main {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .upload-text-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .banner-preview-img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            display: none;
+            border-radius: 12px;
+        }
+
+        .remove-banner-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+            z-index: 5;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        /* Section Header */
+        .section-header {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 16px;
+        }
+
+        /* Job Cards List */
+        .jobs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .job-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .job-card:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .job-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .company-name {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .company-logo-placeholder {
+            width: 48px;
+            height: 48px;
+            background-color: #f1f5f9;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #64748b;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-right: 12px;
+        }
+
+        .job-badge {
+            display: inline-block;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-top: 8px;
+        }
+
+        .job-details {
+            margin: 12px 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .job-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .whatsapp-apply-btn {
+            background-color: var(--whatsapp-green);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .whatsapp-apply-btn:hover {
+            background-color: var(--whatsapp-hover);
+        }
+
+        .category-tag {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 22px;
+            }
+            .brand-title {
+                font-size: 19px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <div class="user-status">
+            <span>👤</span>
+            <span>زائر غير مسجل</span>
+        </div>
+        <button class="login-btn">تسجيل الدخول</button>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="brand-header">
+            <div class="brand-logo-title">
+                <div class="logo-box">S</div>
+                <div class="brand-names">
+                    <div class="brand-title">صدارة</div>
+                    <div class="brand-subtitle">الوظائف الشاغرة - ذمار</div>
+                </div>
+            </div>
+            <button class="add-job-btn" onclick="alert('نموذج إضافة وظيفة جديدة جاهز للاستخدام')">+ إضافة وظيفة</button>
+        </div>
+
+        <h1 class="hero-title">أول منصة توظيف حقيقية<br>لمحافظة ذمار</h1>
+        <p class="hero-desc">تصل الباحثين عن عمل بشركات ومحلات ومؤسسات ذمار فوراً</p>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- BANNER SECTION - DIRECT FILE UPLOAD -->
+        <div class="banner-card" id="bannerCard">
+            <button class="remove-banner-btn" id="removeBannerBtn" onclick="removeBanner()">إزالة البنر</button>
+            
+            <!-- Hidden Input for phone file picker -->
+            <input type="file" id="bannerInput" accept="image/*" style="display: none;" onchange="handleBannerUpload(event)">
+            
+            <!-- Clickable upload area -->
+            <div class="banner-upload-area" id="uploadArea" onclick="document.getElementById('bannerInput').click();">
+                <div class="plus-icon-circle">+</div>
+                <div class="upload-text-main">إضافة بنر إعلاني (اختر صورة من الهاتف)</div>
+                <div class="upload-text-sub">اضغط هنا لرفع البنر مباشرة من الاستوديو بجودة عالية</div>
+            </div>
+
+            <!-- Preview Image -->
+            <img id="bannerPreview" class="banner-preview-img" alt="البنر الإعلاني">
+        </div>
+
+        <!-- Latest Job Listings -->
+        <h2 class="section-header">أحدث الشواغر الوظيفية المعلنة</h2>
+
+        <div class="jobs-list">
+            
+            <!-- Job 1 -->
+            <div class="job-card">
+                <div class="job-header">
+                    <div>
+                        <div class="job-title">مسوق الكتروني</div>
+                        <div class="company-name">شركة صدارة للتسويق والخدمات الرقمية • ذمار</div>
+                        <div class="company-name" style="margin-top: 2px;">الشارع العام جولة بير خابوط</div>
+                        <span class="job-badge">عمل ميداني</span>
+                    </div>
+                    <div class="company-logo-placeholder">SADARA</div>
+                </div>
+
+                <div class="job-details">
+                    <div class="job-detail-item">
+                        <span>📍</span>
+                        <span>ذمار الشارع العام جولة بير خابوط</span>
+                    </div>
+                    <div class="job-detail-item">
+                        <span>💼</span>
+                        <span>لا يشترط خبرة سابقة ...</span>
+                    </div>
+                </div>
+
+                <div class="job-footer">
+                    <a href="https://wa.me/967780568507?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%AA%D9%82%D8%AF%D9%8A%D9%85%20%D8%B9%D9%84%D9%89%20%D9%88%D8%B8%D9%8A%D9%81%D8%A9%20%D9%85%D8%B3%D9%88%D9%82%20%D8%A7%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A" target="_blank" class="whatsapp-apply-btn">
+                        <span>💬</span> تقديم عبر الواتساب
+                    </a>
+                    <span class="category-tag">فئة: التسويق والمبيعات</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Handle Direct Upload from Phone Gallery using FileReader
+        function handleBannerUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const bannerPreview = document.getElementById('bannerPreview');
+                    const uploadArea = document.getElementById('uploadArea');
+                    const removeBtn = document.getElementById('removeBannerBtn');
+                    const bannerCard = document.getElementById('bannerCard');
+
+                    bannerPreview.src = e.target.result;
+                    bannerPreview.style.display = 'block';
+                    uploadArea.style.display = 'none';
+                    removeBtn.style.display = 'block';
+                    bannerCard.classList.add('has-image');
+
+                    try {
+                        localStorage.setItem('saved_banner_image', e.target.result);
+                    } catch (err) {
+                        console.log('ملاحظة: تم حفظ البنر مؤقتاً.');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Remove Banner
+        function removeBanner() {
+            document.getElementById('bannerPreview').src = '';
+            document.getElementById('bannerPreview').style.display = 'none';
+            document.getElementById('uploadArea').style.display = 'flex';
+            document.getElementById('removeBannerBtn').style.display = 'none';
+            document.getElementById('bannerCard').classList.remove('has-image');
+            document.getElementById('bannerInput').value = '';
+            localStorage.removeItem('saved_banner_image');
+        }
+
+        // Auto load saved banner from memory on page refresh
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedBanner = localStorage.getItem('saved_banner_image');
+            if (savedBanner) {
+                document.getElementById('bannerPreview').src = savedBanner;
+                document.getElementById('bannerPreview').style.display = 'block';
+                document.getElementById('uploadArea').style.display = 'none';
+                document.getElementById('removeBannerBtn').style.display = 'block';
+                document.getElementById('bannerCard').classList.add('has-image');
+            }
+        });
+    </script>
+</body>
+</html>
