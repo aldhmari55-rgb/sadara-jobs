@@ -291,48 +291,47 @@
                 <input type="text" id="phoneInput" placeholder="770000000">
             </div>
             <div class="form-group">
-                <label>صورة الإعلان / الشعار (اختياري من المعرض)</label>
+                <label>صورة الإعلان / الشعار (رابط صورة أسرع أو اختيار ملف)</label>
+                <input type="text" id="jobImageUrlInput" placeholder="رابط الصورة (مثل https://...)" style="margin-bottom:5px;">
                 <input type="file" id="jobImageInput" accept="image/*" style="background:#f8fafc; padding:6px;">
             </div>
             <button class="btn-submit" onclick="submitNewJob()">إرسال للمراجعة والاعتماد</button>
         </div>
     </div>
     <script>
-        // الوظائف الافتراضية الموحدة لجميع الزوار على أي جهاز
-        var DEFAULT_JOBS = [
-            { id: 1, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', image: '', status: 'متوفر', approved: true },
-            { id: 2, title: 'مسوق إلكتروني وميداني', company: 'مؤسسة صدارة', phone: '967770000000', image: '', status: 'متوفر', approved: true }
+        // البيانات الافتراضية الثابتة الموحدة لكل الجوالات بالعالم
+        var GLOBAL_JOBS = [
+            { id: 101, title: 'خياط', company: 'لومار للخياطة', phone: '967770000000', image: '', status: 'غير متوفر', approved: true },
+            { id: 102, title: 'مسوق إلكتروني وميداني', company: 'مؤسسة صدارة', phone: '967770000000', image: '', status: 'متوفر', approved: true },
+            { id: 103, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', image: '', status: 'متوفر', approved: true }
         ];
 
+        var GLOBAL_PARTNERS = [
+            { id: 1, name: 'صدارة', logo: 'https://via.placeholder.com/60/0f2347/ffffff?text=SADARA' },
+            { id: 2, name: 'الأمل', logo: 'https://via.placeholder.com/60/d4af37/000000?text=AMAL' }
+        ];
+
+        // ممارسة مسح وتحديث الذاكرة القديمة لإصلاح تباين الشاشات
         function getStoredJobs() {
-            var stored = localStorage.getItem('dhawar_jobs');
+            var stored = localStorage.getItem('dhawar_jobs_v2');
             if (!stored) {
-                localStorage.setItem('dhawar_jobs', JSON.stringify(DEFAULT_JOBS));
-                return DEFAULT_JOBS;
+                localStorage.setItem('dhawar_jobs_v2', JSON.stringify(GLOBAL_JOBS));
+                return GLOBAL_JOBS;
             }
             return JSON.parse(stored);
         }
 
         function getStoredPartners() {
-            var stored = localStorage.getItem('dhawar_partners');
+            var stored = localStorage.getItem('dhawar_partners_v2');
             if (!stored) {
-                var defaultPartners = [
-                    { id: 1, name: 'صدارة', logo: 'https://via.placeholder.com/60/0f2347/ffffff?text=SADARA' },
-                    { id: 2, name: 'الأمل', logo: 'https://via.placeholder.com/60/d4af37/000000?text=AMAL' }
-                ];
-                localStorage.setItem('dhawar_partners', JSON.stringify(defaultPartners));
-                return defaultPartners;
+                localStorage.setItem('dhawar_partners_v2', JSON.stringify(GLOBAL_PARTNERS));
+                return GLOBAL_PARTNERS;
             }
             return JSON.parse(stored);
         }
 
-        function openModal(id) { 
-            document.getElementById(id).style.display = 'flex'; 
-        }
-        
-        function closeModal(id) { 
-            document.getElementById(id).style.display = 'none'; 
-        }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         function checkAuthStatus() {
             var currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -354,7 +353,6 @@
         function openProfileModal() {
             var user = JSON.parse(localStorage.getItem('currentUser'));
             if(!user) return;
-
             document.getElementById('profName').value = user.name || '';
             document.getElementById('profPhone').value = user.phone || '';
             document.getElementById('profPhone2').value = user.phone2 || '';
@@ -364,30 +362,21 @@
         function saveProfileChanges() {
             var user = JSON.parse(localStorage.getItem('currentUser'));
             if(!user) return;
-
             var name = document.getElementById('profName').value.trim();
             var phone = document.getElementById('profPhone').value.trim();
             var phone2 = document.getElementById('profPhone2').value.trim();
 
-            if(!name || !phone) {
-                alert('الاسم ورقم الهاتف الأساسي مطلوبان');
-                return;
-            }
+            if(!name || !phone) { alert('الاسم ورقم الهاتف الأساسي مطلوبان'); return; }
 
-            user.name = name;
-            user.phone = phone;
-            user.phone2 = phone2;
+            user.name = name; user.phone = phone; user.phone2 = phone2;
 
             var users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
             for (var i = 0; i < users.length; i++) {
-                if (users[i].username === user.username) {
-                    users[i] = user;
-                }
+                if (users[i].username === user.username) users[i] = user;
             }
             
             localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
             localStorage.setItem('currentUser', JSON.stringify(user));
-
             alert('تم حفظ وتحديث البيانات بنجاح!');
             closeModal('profileModal');
             checkAuthStatus();
@@ -400,20 +389,13 @@
             var pin = document.getElementById('regPin').value.trim();
             var role = document.getElementById('regRole').value;
 
-            if(!name || !username || !phone || !pin) {
-                alert('يرجى ملء جميع الحقول المطلوبة');
-                return;
-            }
-
+            if(!name || !username || !phone || !pin) { alert('يرجى ملء جميع الحقول المطلوبة'); return; }
             if(username.length !== 4) { alert('اسم المستخدم يجب أن يكون 4 حروف إنجليزية'); return; }
             if(pin.length !== 4) { alert('كلمة المرور يجب أن تكون 4 عناصر'); return; }
 
             var users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
             for (var i = 0; i < users.length; i++) {
-                if(users[i].username === username) { 
-                    alert('اسم المستخدم مستخدم مسبقاً'); 
-                    return; 
-                }
+                if(users[i].username === username) { alert('اسم المستخدم مستخدم مسبقاً'); return; }
             }
 
             var newUser = { name: name, username: username, phone: phone, phone2: '', pin: pin, role: role };
@@ -430,10 +412,7 @@
             var username = document.getElementById('loginUsername').value.trim().toLowerCase();
             var pin = document.getElementById('loginPin').value.trim();
 
-            if(!username || !pin) {
-                alert('يرجى إدخال اسم المستخدم وكلمة المرور');
-                return;
-            }
+            if(!username || !pin) { alert('يرجى إدخال اسم المستخدم وكلمة المرور'); return; }
 
             var users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
             var foundUser = null;
@@ -521,6 +500,7 @@
             var title = document.getElementById('jobTitleInput').value;
             var company = document.getElementById('companyInput').value;
             var phone = document.getElementById('phoneInput').value;
+            var imageUrl = document.getElementById('jobImageUrlInput').value.trim();
             var imgInput = document.getElementById('jobImageInput');
             var imgFile = imgInput.files[0];
 
@@ -536,12 +516,12 @@
                     title: title,
                     company: company,
                     phone: phone,
-                    image: imgData || '',
+                    image: imgData || imageUrl || '',
                     status: 'متوفر',
                     approved: false
                 });
 
-                localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
+                localStorage.setItem('dhawar_jobs_v2', JSON.stringify(jobs));
                 alert('تم إرسال الوظيفة مع الصورة بنجاح! ستظهر بالمنصة فور اعتمادها من الإدارة.');
                 closeModal('addModal');
             }
