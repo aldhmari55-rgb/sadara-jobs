@@ -79,6 +79,19 @@
             z-index: 1001;
         }
 
+        .admin-dashboard-link {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            margin-right: 8px;
+            display: none;
+        }
+
         /* Hero Banner Section */
         .hero-section {
             background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
@@ -408,7 +421,7 @@
         .modal-card {
             background: #ffffff;
             width: 100%;
-            max-width: 500px;
+            max-width: 520px;
             border-radius: var(--radius-lg);
             padding: 24px;
             box-shadow: var(--shadow-lg);
@@ -477,6 +490,25 @@
             color: var(--text-muted);
         }
 
+        /* Admin Dashboard Specific Styles */
+        .admin-job-row {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        .admin-job-info h4 { font-size: 14px; font-weight: 800; }
+        .admin-job-info p { font-size: 12px; color: var(--text-muted); }
+        .admin-actions-btns { display: flex; gap: 5px; }
+        .btn-approve { background: #22c55e; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .btn-edit { background: #3b82f6; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .btn-delete { background: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+
         .app-footer {
             text-align: center;
             padding: 30px 20px;
@@ -495,14 +527,17 @@
             <span>👤</span>
             <span id="displayUserRole">زائر (باحث عن عمل)</span>
         </div>
-        <button class="auth-btn" id="loginBtnTrigger">تسجيل الدخول</button>
+        <div>
+            <button class="admin-dashboard-link" id="adminPanelBtn" onclick="openAdminDashboard()">لوحة الأدمن ⚙️</button>
+            <button class="auth-btn" id="loginBtnTrigger">تسجيل الدخول</button>
+        </div>
     </div>
 
     <!-- Hero Header -->
     <div class="hero-section">
         <div class="brand-container">
             <div class="brand-identity">
-                <div class="brand-logo" id="secretLogoTrigger" title="انقر هنا للدخول السري للأدمن">S</div>
+                <div class="brand-logo" id="secretLogoTrigger" title="انقر للدخول السري للأدمن">S</div>
                 <div class="brand-titles">
                     <h2>صـدارة</h2>
                     <span>منصة الوظائف والخدمات - ذمار</span>
@@ -532,7 +567,7 @@
         <div class="search-filter-card">
             <div class="search-input-box">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" placeholder="ابحث عن وظيفة، شركة، أو مجال عمل..." oninput="filterJobs()">
+                <input type="text" id="searchInput" placeholder="ابحث عن وظيفة، شركة، أو مجال عمل..." oninput="renderJobsGrid()">
             </div>
             <div class="filter-tags">
                 <button class="tag-btn active" onclick="setCategoryFilter('all', this)">الكل</button>
@@ -569,15 +604,16 @@
         <p>جميع الحقوق محفوظة © شركة صدارة للتسويق والخدمات الرقمية - ذمار 2026</p>
     </div>
 
-    <!-- MODAL 1: ADD JOB FORM -->
+    <!-- MODAL 1: ADD JOB FORM (COMPANY SUBMISSION) -->
     <div class="modal-backdrop" id="addJobModal">
         <div class="modal-card">
             <button class="close-modal-icon" onclick="closeModal('addJobModal')">✕</button>
             <h3 class="modal-header-title">نشر شاغر وظيفي / خدمة جديدة</h3>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">ملاحظة: ستخضع الوظيفة لمراجعة واعتماد إدارة المنصة قبل نشرها للعامة.</p>
             
             <div class="form-field">
                 <label>عنوان الوظيفة أو الخدمة *</label>
-                <input type="text" id="inputJobTitle" placeholder="مثال: مسوق إلكتروني وميداني، محاسب عام">
+                <input type="text" id="inputJobTitle" placeholder="مثال: مسوق إلكتروني، محاسب عام">
             </div>
 
             <div class="form-field">
@@ -621,11 +657,11 @@
                 <input type="file" id="inputCompanyLogo" accept="image/*">
             </div>
 
-            <button class="btn-submit-action" onclick="submitNewJob()">نشر الوظيفة الآن 🚀</button>
+            <button class="btn-submit-action" onclick="submitNewJobByCompany()">إرسال الوظيفة للمراجعة 🚀</button>
         </div>
     </div>
 
-    <!-- MODAL 2: USER LOGIN / ROLE (REMOVED PUBLIC ADMIN OPTION) -->
+    <!-- MODAL 2: USER LOGIN / ROLE -->
     <div class="modal-backdrop" id="loginModal">
         <div class="modal-card">
             <button class="close-modal-icon" onclick="closeModal('loginModal')">✕</button>
@@ -643,6 +679,24 @@
         </div>
     </div>
 
+    <!-- MODAL 3: ADMIN MANAGEMENT DASHBOARD -->
+    <div class="modal-backdrop" id="adminDashboardModal">
+        <div class="modal-card" style="max-width: 600px;">
+            <button class="close-modal-icon" onclick="closeModal('adminDashboardModal')">✕</button>
+            <h3 class="modal-header-title">لوحة تحكم الأدمن (مراجعة الوظائف والخدمات) ⚙️</h3>
+            
+            <div style="margin-bottom: 15px; font-weight: bold; font-size: 13px; color: #b91c1c;">
+                الوظائف المعلقة التي تنتظر الموافقة والاعتماد:
+            </div>
+            <div id="pendingJobsContainer"></div>
+
+            <div style="margin: 20px 0 10px 0; font-weight: bold; font-size: 13px; color: #0f2347;">
+                الوظائف المنشورة حالياً في المنصة:
+            </div>
+            <div id="approvedJobsContainer"></div>
+        </div>
+    </div>
+
     <!-- HIDDEN INPUT FOR ADMIN BANNERS -->
     <input type="file" id="adminBannerFileInput" accept="image/*" style="display: none;" onchange="processAdminBannerUpload(event)">
 
@@ -650,6 +704,7 @@
         const ADMIN_PIN_CODE = "1234";
         let activeAdminBannerPosition = '';
         let currentCategoryFilter = 'all';
+        let isAdminLoggedIn = false;
 
         const defaultJobsList = [
             {
@@ -660,7 +715,8 @@
                 location: 'ذمار - الشارع العام جولة بير خابوط',
                 type: 'عمل ميداني',
                 whatsapp: '967780568507',
-                logo: ''
+                logo: '',
+                status: 'approved' // approved or pending
             }
         ];
 
@@ -668,12 +724,14 @@
             document.getElementById('loginBtnTrigger').onclick = function() { openModal('loginModal'); };
             document.getElementById('addJobBtnTrigger').onclick = function() { openModal('addJobModal'); };
             
-            // Secret Admin Entry via Logo Click
+            // Secret Admin Entry via Logo Click (or long press)
             document.getElementById('secretLogoTrigger').onclick = function() {
-                const secretPin = prompt("المنطقة السرية للإدارة:\nأدخل الرقم السري للتحول إلى حساب المدير:");
+                const secretPin = prompt("منطقة الإدارة السرية:\nأدخل الرقم السري للتحول إلى حساب المدير (الأدمن):");
                 if (secretPin === ADMIN_PIN_CODE) {
+                    isAdminLoggedIn = true;
                     document.getElementById('displayUserRole').innerText = "مدير المنصة (الأدمن) 👑";
-                    alert("تم تفعيل وضع الأدمن بنجاح!");
+                    document.getElementById('adminPanelBtn').style.display = 'inline-block';
+                    alert("تم تفعيل صلاحيات الأدمن بنجاح! يمكنك الآن مراجعة الوظائف.");
                 } else if (secretPin !== null) {
                     alert("الرمز غير صحيح!");
                 }
@@ -685,23 +743,29 @@
 
         function openModal(id) {
             document.getElementById(id).style.display = 'flex';
+            if (id === 'adminDashboardModal') {
+                renderAdminDashboardLists();
+            }
         }
 
         function closeModal(id) {
             document.getElementById(id).style.display = 'none';
         }
 
+        // Render Approved Jobs for Public View
         function renderJobsGrid() {
             const container = document.getElementById('jobsListContainer');
-            const storedJobs = JSON.parse(localStorage.getItem('sadara_job_board_items')) || defaultJobsList;
+            let storedJobs = JSON.parse(localStorage.getItem('sadara_job_board_items')) || defaultJobsList;
             const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
 
+            // Filter only approved jobs for public
             let filtered = storedJobs.filter(job => {
+                const isApproved = job.status === 'approved';
                 const matchesCategory = (currentCategoryFilter === 'all') || (job.category === currentCategoryFilter);
                 const matchesSearch = job.title.toLowerCase().includes(searchVal) || 
                                       job.company.toLowerCase().includes(searchVal) || 
                                       job.location.toLowerCase().includes(searchVal);
-                return matchesCategory && matchesSearch;
+                return isApproved && matchesCategory && matchesSearch;
             });
 
             document.getElementById('jobsCounter').innerText = filtered.length + ' وظيفة';
@@ -741,18 +805,8 @@
             });
         }
 
-        function setCategoryFilter(category, btn) {
-            currentCategoryFilter = category;
-            document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderJobsGrid();
-        }
-
-        function filterJobs() {
-            renderJobsGrid();
-        }
-
-        function submitNewJob() {
+        // Company submits job -> goes to pending status
+        function submitNewJobByCompany() {
             const title = document.getElementById('inputJobTitle').value.trim();
             const company = document.getElementById('inputCompanyName').value.trim();
             const category = document.getElementById('inputCategory').value;
@@ -769,33 +823,138 @@
             if (logoFile) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    saveJobData(title, company, category, location, type, whatsapp, e.target.result);
+                    saveJobToStorage(title, company, category, location, type, whatsapp, e.target.result);
                 };
                 reader.readAsDataURL(logoFile);
             } else {
-                saveJobData(title, company, category, location, type, whatsapp, '');
+                saveJobToStorage(title, company, category, location, type, whatsapp, '');
             }
         }
 
-        function saveJobData(title, company, category, location, type, whatsapp, logo) {
+        function saveJobToStorage(title, company, category, location, type, whatsapp, logo) {
             let jobs = JSON.parse(localStorage.getItem('sadara_job_board_items')) || defaultJobsList;
             jobs.unshift({
                 id: Date.now(),
-                title, company, category, location, type, whatsapp, logo
+                title, company, category, location, type, whatsapp, logo,
+                status: 'pending' // Pending admin approval
             });
             localStorage.setItem('sadara_job_board_items', JSON.stringify(jobs));
-            renderJobsGrid();
             closeModal('addJobModal');
-            alert('تم نشر الشاغر الوظيفي بنجاح!');
+            alert('تم إرسال الوظيفة بنجاح! ستظهر في المنصة فور مراجعتها واعتمادها من الإدارة.');
+        }
+
+        // Admin Dashboard Functions
+        function openAdminDashboard() {
+            if (!isAdminLoggedIn) {
+                const pin = prompt("أدخل رمز الأدمن للوصول إلى لوحة التحكم:");
+                if (pin === ADMIN_PIN_CODE) {
+                    isAdminLoggedIn = true;
+                } else {
+                    alert("رمز غير صحيح!");
+                    return;
+                }
+            }
+            openModal('adminDashboardModal');
+        }
+
+        function renderAdminDashboardLists() {
+            let jobs = JSON.parse(localStorage.getItem('sadara_job_board_items')) || defaultJobsList;
+            const pendingContainer = document.getElementById('pendingJobsContainer');
+            const approvedContainer = document.getElementById('approvedJobsContainer');
+
+            pendingContainer.innerHTML = '';
+            approvedContainer.innerHTML = '';
+
+            const pendingJobs = jobs.filter(j => j.status === 'pending');
+            const approvedJobs = jobs.filter(j => j.status === 'approved');
+
+            if (pendingJobs.length === 0) {
+                pendingContainer.innerHTML = `<p style="font-size:12px; color:#94a3b8;">لا توجد وظائف معلقة حالياً.</p>`;
+            } else {
+                pendingJobs.forEach(job => {
+                    pendingContainer.innerHTML += `
+                        <div class="admin-job-row">
+                            <div class="admin-job-info">
+                                <h4>${job.title}</h4>
+                                <p>${job.company} - ${job.location}</p>
+                            </div>
+                            <div class="admin-actions-btns">
+                                <button class="btn-approve" onclick="approveJob(${job.id})">قبول ونشر</button>
+                                <button class="btn-edit" onclick="editJob(${job.id})">تعديل</button>
+                                <button class="btn-delete" onclick="deleteJob(${job.id})">حذف</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            approvedJobs.forEach(job => {
+                approvedContainer.innerHTML += `
+                    <div class="admin-job-row">
+                        <div class="admin-job-info">
+                            <h4>${job.title}</h4>
+                            <p>${job.company} - ${job.location}</p>
+                        </div>
+                        <div class="admin-actions-btns">
+                            <button class="btn-edit" onclick="editJob(${job.id})">تعديل</button>
+                            <button class="btn-delete" onclick="deleteJob(${job.id})">حذف</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function approveJob(id) {
+            let jobs = JSON.parse(localStorage.getItem('sadara_job_board_items')) || defaultJobsList;
+            jobs = jobs.map(j => j.id === id ? {...j, status: 'approved'} : j);
+            localStorage.setItem('sadara_job_board_items', JSON.stringify(jobs));
+            renderAdminDashboardLists();
+            renderJobsGrid();
+            alert('تم قبول ونشر الوظيفة بنجاح لتصبح مرئية للجميع!');
+        }
+
+        function deleteJob(id) {
+            if (confirm('هل أنت متأكد من حذف هذه الوظيفة نهائياً؟')) {
+                let jobs = JSON.parse(localStorage.getItem('sadara_job_board_items')) || defaultJobsList;
+                jobs = jobs.filter(j => j.id !== id);
+                localStorage.setItem('sadara_job_board_items', JSON.stringify(jobs));
+                renderAdminDashboardLists();
+                renderJobsGrid();
+            }
+        }
+
+        function editJob(id) {
+            let jobs = JSON.parse(localStorage.getItem('sadara_job_board_items')) || defaultJobsList;
+            let job = jobs.find(j => j.id === id);
+            if (!job) return;
+
+            const newTitle = prompt("تعديل عنوان الوظيفة:", job.title);
+            if (newTitle !== null) {
+                job.title = newTitle.trim();
+                const newCompany = prompt("تعديل اسم الشركة:", job.company);
+                if (newCompany !== null) job.company = newCompany.trim();
+
+                localStorage.setItem('sadara_job_board_items', JSON.stringify(jobs));
+                renderAdminDashboardLists();
+                renderJobsGrid();
+                alert('تم تحديث بيانات الوظيفة بنجاح!');
+            }
+        }
+
+        function setCategoryFilter(category, btn) {
+            currentCategoryFilter = category;
+            document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderJobsGrid();
         }
 
         function handleAdminBannerUpload(pos) {
-            const pin = prompt("هذه المساحة مخصصة للإعلانات المدفوعة (الأدمن فقط).\nأدخل الرمز السري للأدمن:");
+            const pin = prompt("مساحة إعلانات الأدمن المدفوعة.\nأدخل الرمز السري للأدمن:");
             if (pin === ADMIN_PIN_CODE) {
                 activeAdminBannerPosition = pos;
                 document.getElementById('adminBannerFileInput').click();
             } else if (pin !== null) {
-                alert("الرمز السري غير صحيح!");
+                alert("الرمز غير صحيح!");
             }
         }
 
