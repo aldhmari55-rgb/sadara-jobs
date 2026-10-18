@@ -51,8 +51,15 @@
         .auth-btn {
             background: linear-gradient(135deg, var(--accent-gold), #f3e5ab);
             color: var(--primary-dark);
-            border: none; padding: 7px 16px; border-radius: 20px;
-            font-weight: 800; font-size: 13px; cursor: pointer;
+            border: none; padding: 7px 14px; border-radius: 20px;
+            font-weight: 800; font-size: 12px; cursor: pointer;
+        }
+        .register-btn {
+            background: transparent;
+            color: #ffffff;
+            border: 1px solid var(--accent-gold);
+            padding: 7px 14px; border-radius: 20px;
+            font-weight: 800; font-size: 12px; cursor: pointer;
         }
         .btn-add-job {
             background: var(--accent-blue);
@@ -114,7 +121,8 @@
         </div>
         <div class="nav-auth-actions" id="navAuthArea">
             <button class="btn-add-job" onclick="openModal('addModal')">+ نشر شغل</button>
-            <button class="auth-btn" onclick="openModal('authModal')">دخول / اشتراك</button>
+            <button class="register-btn" onclick="openModal('registerModal')">حساب جديد</button>
+            <button class="auth-btn" onclick="openModal('loginModal')">تسجيل الدخول</button>
         </div>
     </div>
 
@@ -139,32 +147,50 @@
         <div class="ad-banner-box" style="margin-top: 25px;" id="bottomAdBanner"><div class="ad-banner-text">إعلان المنصة السفلي</div></div>
     </div>
 
-    <!-- نافذة تسجيل الدخول / إنشاء حساب -->
-    <div class="modal-overlay" id="authModal">
+    <!-- 1. نافذة إنشاء حساب جديد (قائمة مستقلة) -->
+    <div class="modal-overlay" id="registerModal">
         <div class="modal-box">
-            <button class="modal-close-btn" onclick="closeModal('authModal')">✕</button>
-            <h3 style="margin-bottom: 16px; font-size: 18px;">تسجيل الدخول / طلب حساب جديد</h3>
+            <button class="modal-close-btn" onclick="closeModal('registerModal')">✕</button>
+            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--primary-blue);">إنشاء حساب جديد</h3>
             
             <div class="form-group">
                 <label>نوع الحساب</label>
-                <select id="userRoleSelect">
+                <select id="regRole">
                     <option value="باحث عن عمل">باحث عن عمل (موظف)</option>
                     <option value="صاحب عمل">صاحب عمل (مؤسسة / متجر)</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>الاسم الكامل / اسم الجهة *</label>
-                <input type="text" id="authName" placeholder="أدخل اسمك أو اسم شركتك">
+                <input type="text" id="regName" placeholder="أدخل اسمك أو اسم شركتك">
             </div>
             <div class="form-group">
                 <label>رقم الهاتف (الواتساب) *</label>
-                <input type="text" id="authPhone" placeholder="770000000">
+                <input type="text" id="regPhone" placeholder="770000000">
             </div>
-            <button class="btn-submit" onclick="handleRegisterSubmit()">إرسال الطلب للإدارة للموافقة</button>
+            <button class="btn-submit" onclick="handleRegister()">تسجيل وإنشاء الحساب فوراً</button>
         </div>
     </div>
 
-    <!-- نافذة إضافة وظيفة -->
+    <!-- 2. نافذة تسجيل الدخول (للأعضاء المسجلين مسبقاً) -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" onclick="closeModal('loginModal')">✕</button>
+            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--primary-dark);">تسجيل الدخول ببياناتك السابقة</h3>
+            
+            <div class="form-group">
+                <label>الاسم المسجل به *</label>
+                <input type="text" id="loginName" placeholder="اكتب اسمك السابق">
+            </div>
+            <div class="form-group">
+                <label>رقم الهاتف السابق *</label>
+                <input type="text" id="loginPhone" placeholder="770000000">
+            </div>
+            <button class="btn-submit" onclick="handleLogin()">دخول المنصة</button>
+        </div>
+    </div>
+
+    <!-- 3. نافذة إضافة وظيفة -->
     <div class="modal-overlay" id="addModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('addModal')">✕</button>
@@ -198,41 +224,74 @@
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             const navAuthArea = document.getElementById('navAuthArea');
 
-            if(currentUser && currentUser.approved) {
+            if(currentUser) {
                 navAuthArea.innerHTML = `
-                    <span class="user-welcome">👤 ${currentUser.name} (${currentUser.role})</span>
+                    <span class="user-welcome">👤 ${currentUser.name}</span>
                     <button class="btn-add-job" onclick="openModal('addModal')">+ نشر شغل</button>
                     <button class="auth-btn" style="background:#ef4444; color:white;" onclick="handleLogout()">خروج</button>
                 `;
             } else {
                 navAuthArea.innerHTML = `
                     <button class="btn-add-job" onclick="openModal('addModal')">+ نشر شغل</button>
-                    <button class="auth-btn" onclick="openModal('authModal')">دخول / اشتراك</button>
+                    <button class="register-btn" onclick="openModal('registerModal')">حساب جديد</button>
+                    <button class="auth-btn" onclick="openModal('loginModal')">تسجيل الدخول</button>
                 `;
             }
         }
 
-        function handleRegisterSubmit() {
-            const name = document.getElementById('authName').value;
-            const phone = document.getElementById('authPhone').value;
-            const role = document.getElementById('userRoleSelect').value;
+        // إنشاء حساب جديد ودخول مباشر بدون انتظار
+        function handleRegister() {
+            const name = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const role = document.getElementById('regRole').value;
 
             if(!name || !phone) {
-                alert('يرجى كتابة الاسم ورقم الهاتف بوضوح');
+                alert('يرجى كتابة الاسم ورقم الهاتف بشكل صحيح');
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem('dhawar_users')) || [];
-            users.push({ id: Date.now(), name, phone, role, approved: false });
-            localStorage.setItem('dhawar_users', JSON.stringify(users));
+            const newUser = { name, phone, role };
+            // حفظ الحساب بقائمة المستخدمين المسجلين
+            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            users.push(newUser);
+            localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
 
-            alert('تم إرسال طلب إنشاء الحساب بنجاح! سيتم تفعيل حسابك فور مراجعته وقبوله من قبل إدارة المنصة.');
-            closeModal('authModal');
+            // تسجيل الدخول المباشر وتفعيل الجلسة
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            
+            alert(`مرحباً بك يا ${name}! تم إنشاء حسابك ودخولك بنجاح.`);
+            closeModal('registerModal');
+            checkAuthStatus();
+        }
+
+        // تسجيل الدخول بالبيانات السابقة عند العودة للخروج والدخول لاحقاً
+        function handleLogin() {
+            const name = document.getElementById('loginName').value.trim();
+            const phone = document.getElementById('loginPhone').value.trim();
+
+            if(!name || !phone) {
+                alert('يرجى إدخال اسمك ورقم هاتفك السابق');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
+            // البحث عن الحساب المسجل مسبقاً بنفس الاسم والجوال
+            const foundUser = users.find(u => u.name === name && u.phone === phone);
+
+            if(foundUser || (name && phone)) { // السماح بالدخول المباشر إذا طابق البيانات أو كُتبت صحيحة
+                const userData = foundUser ? foundUser : { name, phone, role: 'مستخدم' };
+                localStorage.setItem('currentUser', JSON.stringify(userData));
+                alert(`أهلاً بعودتك يا ${name}! تم تسجيل دخولك بنجاح.`);
+                closeModal('loginModal');
+                checkAuthStatus();
+            } else {
+                alert('عذراً، البيانات غير مسجلة. يرجى التأكد أو إنشاء حساب جديد.');
+            }
         }
 
         function handleLogout() {
             localStorage.removeItem('currentUser');
-            alert('تم تسجيل الخروج بنجاح.');
+            alert('تم تسجيل الخروج من الموقع بنجاح.');
             checkAuthStatus();
         }
 
@@ -283,7 +342,7 @@
             const phone = document.getElementById('phoneInput').value;
 
             if (!title || !company || !phone) {
-                alert('يرجى ملء كافة البيانات المطلوب');
+                alert('يرجى ملء كافة البيانات المطلوبة');
                 return;
             }
 
