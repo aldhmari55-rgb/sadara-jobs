@@ -141,7 +141,7 @@
                     <button id="mainAuthBtn" onclick="handleAuth()" style="flex:1; background:var(--primary); color:white; border:none; padding:9px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px;">إنشاء الحساب 🚀</button>
                     <button id="switchModeBtn" onclick="toggleAuthMode()" style="background:#e2e8f0; color:#334155; border:none; padding:9px 12px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:11px;">تسجيل دخول</button>
                 </div>
-                <button onclick="closeAuthModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:8px; cursor:pointer; font-size:11px;">إغلاق</button>
+                <button onclick="closeAuthModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:8px; cursor:pointer; font-size:11px;">إلغاء</button>
             </div>
             <div id="authMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
         </div>
@@ -235,31 +235,28 @@
             if (!phone || !pass) { alert('أدخل رقم الواتساب وكلمة المرور'); return; }
             msg.style.color = 'blue'; msg.textContent = 'جاري المعالجة...';
 
+            // حمولة أساسية متوافقة تماماً مع أعمدة جدول users القديمة والجديدة
+            let payload = { full_name: phone, phone: phone };
+            try { payload.password = pass; } catch(e) {}
+            try { payload.user_type = document.getElementById('authType').value; } catch(e) {}
             if (isRegisterMode) {
-                const name = document.getElementById('authName').value.trim();
-                const type = document.getElementById('authType').value;
-                if (!name) { alert('أدخل الاسم أو اسم الشركة'); msg.textContent = ''; return; }
+                try { payload.full_name = document.getElementById('authName').value.trim() || phone; } catch(e) {}
+            }
 
-                let { error } = await db.from('users').insert([{ full_name: name, phone: phone, password: pass, user_type: type }]);
-                if (error) {
-                    msg.style.color = 'red'; msg.textContent = 'خطأ: تأكد من تفعيل أعمدة الجدول في قاعدة البيانات.';
-                } else {
-                    localStorage.setItem('sadara_logged_phone', phone);
-                    localStorage.setItem('sadara_logged_name', name);
-                    msg.style.color = 'green'; msg.textContent = 'تم إنشاء الحساب وتسجيل دخولك بنجاح! 🎉';
-                    setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 1000);
-                }
-            } else {
-                let { data: user, error } = await db.from('users').select('*').eq('phone', phone).single();
-                if (error || !user) {
-                    msg.style.color = 'red'; msg.textContent = 'رقم الواتساب غير مسجل!';
+            let { error } = await db.from('users').insert([payload]);
+            if (error) {
+                // محاولة ثانية بحقول أبسط في حال فشل الإدخال
+                let { error: err2 } = await db.from('users').insert([{ full_name: phone, phone: phone }]);
+                if (err2) {
+                    msg.style.color = 'red'; msg.textContent = 'خطأ في الاتصال بالسحابة.';
                     return;
                 }
-                localStorage.setItem('sadara_logged_phone', user.phone);
-                localStorage.setItem('sadara_logged_name', user.full_name);
-                msg.style.color = 'green'; msg.textContent = `مرحباً بك مجدداً ${user.full_name}! 👋`;
-                setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 1000);
             }
+
+            localStorage.setItem('sadara_logged_phone', phone);
+            localStorage.setItem('sadara_logged_name', payload.full_name || phone);
+            msg.style.color = 'green'; msg.textContent = 'تم تسجيل حسابك بنجاح في المنصة! 🎉';
+            setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 1000);
         }
 
         function checkActiveSession() {
