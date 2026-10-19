@@ -3,202 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة صدارة للوظائف والخدمات | ذمار</title>
+    <title>لوحة السيطرة والإحصائيات الشاملة | صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; --text-dark: #0f172a; }
+        :root { --dark: #0f172a; --blue: #2563eb; --bg: #f8fafc; --card: #ffffff; --green: #16a34a; --red: #dc2626; --gold: #ca8a04; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-light); padding-bottom: 90px; }
+        body { background: var(--bg); padding: 12px; color: #1e293b; padding-bottom: 60px; }
+        .box { max-width: 800px; margin: 0 auto; background: var(--card); border: 2px solid var(--dark); border-radius: 12px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { font-size: 18px; text-align: center; margin-bottom: 16px; color: var(--dark); font-weight: 900; }
+        .sec { background: #f1f5f9; padding: 14px; border-radius: 10px; margin-bottom: 16px; border: 1px solid #cbd5e1; }
+        .sec h3 { font-size: 14px; margin-bottom: 8px; color: var(--dark); font-weight: 900; }
+        
+        /* قسم لوحة الإحصائيات الإدارية */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+        .dash-card { background: white; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; text-align: center; }
+        .dash-card h2 { font-size: 20px; font-weight: 900; color: var(--blue); }
+        .dash-card p { font-size: 11px; font-weight: 700; color: #64748b; }
 
-        .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); }
-        .nav-btn-cv { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; text-decoration: none; }
-
-        .channel-bar { background: #25d366; color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; }
-        .channel-bar a { color: white; text-decoration: underline; margin-right: 5px; }
-
-        .hero { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 24px 16px 35px; text-align: center; }
-        .main-container { max-width: 800px; margin: -25px auto 0; padding: 0 16px; }
-
-        /* شريط الإحصائيات التفاعلي */
-        .stats-bar {
-            background: white;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 16px;
-            border: 1px solid #e2e8f0;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-        }
-        .stat-item h4 { font-size: 15px; font-weight: 900; color: var(--primary); }
-        .stat-item p { font-size: 10px; color: #64748b; font-weight: 700; }
-
-        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 12px; min-height: 130px; border: 1px solid #e2e8f0; }
-        .ad-slider-img { width: 100%; max-height: 240px; object-fit: cover; display: none; opacity: 0; transition: opacity 0.6s; }
-        .ad-slider-img.active { display: block; opacity: 1; }
-        .slider-dots { position: absolute; bottom: 8px; display: flex; gap: 6px; width:100%; justify-content:center; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); }
-        .dot.active { background: var(--gold); width: 18px; border-radius: 10px; }
-
-        .ad-space-banner { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .ad-space-btn { background: #0a1324; color: #f59e0b; padding: 7px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; text-decoration: none; white-space: nowrap; }
-
-        .action-banner { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 14px; padding: 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .action-btn { background: white; color: #059669; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; text-decoration: none; }
-
-        .job-card { background: white; border-radius: 12px; padding: 14px; margin-bottom: 12px; border: 1px solid #e2e8f0; }
-        .job-card img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
-        .apply-btn { background: var(--green); color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 11px; display: inline-block; margin-top: 8px; }
-
-        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; }
-        .ticker-label { background: var(--gold); color: #0a1324; font-weight: 900; font-size: 10px; padding: 6px 10px; border-radius: 0 10px 10px 0; z-index: 10; white-space: nowrap; }
-        .ticker-content { display: flex; align-items: center; gap: 12px; animation: ticker 20s linear infinite; }
-        .ticker-content img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
-        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        input, select, textarea { width: 100%; padding: 8px; margin: 4px 0; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; background: #fff; }
+        .btn { border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; color: white; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-add { background: var(--green); width: 100%; justify-content: center; padding: 8px; margin-top: 6px; font-size: 12px; }
+        .btn-edit { background: var(--blue); }
+        .btn-del { background: var(--red); }
+        .btn-toggle { background: var(--gold); }
+        .item { background: white; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 8px; }
+        .flex-btns { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+        .partner-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .partner-card { background: white; padding: 6px; border-radius: 8px; border: 1px solid #cbd5e1; width: 100px; text-align: center; }
+        .partner-card img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .upload-label { background: #e2e8f0; border: 1px dashed #94a3b8; border-radius: 6px; padding: 8px; text-align: center; font-size: 11px; cursor: pointer; display: block; margin: 4px 0; font-weight: bold; color: #0f172a; }
     </style>
 </head>
 <body>
+    <div class="box">
+        <h1>⚡ لوحة السيطرة والإحصائيات الشاملة (صدارة)</h1>
 
-    <div class="top-navbar">
-        <span style="font-weight: 900; font-size:15px;">صدارة للوظائف والخدمات</span>
-        <a href="resumes.html" class="nav-btn-cv">📄 دليل الكفاءات والسي في</a>
-    </div>
-
-    <div class="channel-bar">
-        📢 انضم لمجتمعنا الرسمي على الواتساب لمتابعة جديد الوظائف والكفاءات:
-        <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk?s=cl&p=a&mlu=4&ilr=4" target="_blank">اضغط هنا للانضمام للمجتمع 🟢</a>
-    </div>
-
-    <div class="hero">
-        <h1 style="font-size: 18px;">المنصة الأولى للوظائف والخدمات بمحافظة ذمار</h1>
-    </div>
-
-    <div class="main-container">
-        <!-- شريط الإحصائيات -->
-        <div class="stats-bar">
-            <div class="stat-item">
-                <h4 id="statOnline">1</h4>
-                <p>متواجد الآن 🟢</p>
-            </div>
-            <div class="stat-item">
-                <h4 id="statTotalViews">...</h4>
-                <p>إجمالي الزيارات 👥</p>
-            </div>
-            <div class="stat-item">
-                <h4 id="statJobsCount">...</h4>
-                <p>الوظائف 💼</p>
-            </div>
-            <div class="stat-item">
-                <h4 id="statResumesCount">...</h4>
-                <p>الكفاءات 📄</p>
+        <!-- 📊 شاشة الإحصائيات الإدارية الخاصة -->
+        <div class="sec" style="background:#f0fdf4; border-color:#86efac;">
+            <h3 style="color:#166534;">📊 مركز الإحصائيات والتحليلات الخاصة</h3>
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <h2 id="admTotalViews">...</h2>
+                    <p>إجمالي الزيارات 👁️</p>
+                </div>
+                <div class="dash-card">
+                    <h2 id="admTotalJobs">...</h2>
+                    <p>الوظائف المعروضة 💼</p>
+                </div>
+                <div class="dash-card">
+                    <h2 id="admTotalResumes">...</h2>
+                    <p>السير الذاتية والكفاءات 📄</p>
+                </div>
             </div>
         </div>
 
-        <!-- السلايدر -->
-        <div class="ad-slider-box" id="sliderBox">
-            <div id="sliderImages"></div>
-            <div class="slider-dots" id="sliderDots"></div>
+        <!-- 1. إدارة البنرات -->
+        <div class="sec">
+            <h3>🖼️ إدارة البنرات الإعلانية (السلايدر العلوي)</h3>
+            <label class="upload-label" onclick="document.getElementById('bFile').click()">📤 اختيار ورفع صورة البنر من الجوال</label>
+            <input type="file" id="bFile" accept="image/*" style="display:none;" onchange="uploadFile('bFile', 'bUrl')">
+            <input type="text" id="bUrl" placeholder="أو مسار/رابط الصورة يدويًا">
+            <button class="btn btn-add" onclick="addBanner()">نشر البنر بالسحابة 🟢</button>
+            <div id="bList" style="margin-top:10px;"></div>
         </div>
 
-        <!-- بنر المساحات الإعلانية -->
-        <div class="ad-space-banner">
-            <div>
-                <h3 style="font-size: 13px; font-weight: 900;">📢 هل تريد الإعلان عن نشاطك أو متجرك؟</h3>
-                <p style="font-size: 10px; opacity: 0.95; margin-top: 2px;">تتوفر مساحات إعلانية مدفوعة في بنرات السلايدر لعرض إعلانك باستمرار!</p>
-            </div>
-            <a href="https://wa.me/967780568507?text=مرحبا،%20اريد%20حجز%20مساحة%20إعلانية%20مدفوعة%20في%20بنرات%20المنصة" target="_blank" class="ad-space-btn">احجز إعلانك الآن 🌟</a>
+        <!-- 2. إدارة الشركاء -->
+        <div class="sec">
+            <h3>🤝 إدارة شركاء النجاح (الشريط المتحرك)</h3>
+            <input type="text" id="pName" placeholder="اسم الشريك / الشركة">
+            <label class="upload-label" onclick="document.getElementById('pFile').click()">📤 اختيار ورفع الشعار من الجوال</label>
+            <input type="file" id="pFile" accept="image/*" style="display:none;" onchange="uploadFile('pFile', 'pLogo')">
+            <input type="text" id="pLogo" placeholder="أو مسار الشعار يدويًا">
+            <button class="btn btn-add" onclick="addPartner()">إضافة الشريك للسحابة 🟢</button>
+            <div class="partner-grid" id="pList"></div>
         </div>
 
-        <div class="action-banner">
-            <div>
-                <h3 style="font-size: 13px; font-weight: 800;">تريد نشر وظيفة أو إضافة ملفك؟</h3>
-                <p style="font-size: 10px; opacity: 0.9;">تواصل مع إدارة المنصة مباشرة عبر الواتساب</p>
-            </div>
-            <a href="https://wa.me/967780568507?text=مرحبا،%20اريد%20نشر%20وظيفة/إضافة%20سي%20في%20في%20منصة%20صدارة" target="_blank" class="action-btn">تواصل معنا 🟢</a>
+        <!-- 3. إضافة وظيفة جديدة -->
+        <div class="sec" style="background:#e0f2fe; border-color:#7dd3fc;">
+            <h3 style="color:#0369a1;">➕ إضافة شاغر وظيفي جديد</h3>
+            <input type="text" id="jTitle" placeholder="عنوان الوظيفة (مثال: محاسب عام، مسوق)">
+            <input type="text" id="jCompany" placeholder="اسم الشركة أو الجهة">
+            <input type="text" id="jPhone" value="967780568507" placeholder="رقم الواتساب للتواصل">
+            <label class="upload-label" onclick="document.getElementById('jFile').click()">📤 اختيار ورفع صورة الإعلان (اختياري)</label>
+            <input type="file" id="jFile" accept="image/*" style="display:none;" onchange="uploadFile('jFile', 'jImage')">
+            <input type="text" id="jImage" placeholder="أو مسار الصورة يدويًا">
+            <select id="jStatus">
+                <option value="متوفر">الحالة: متوفر</option>
+                <option value="غير متوفر">الحالة: غير متوفر</option>
+            </select>
+            <button class="btn btn-add" onclick="addJob()">نشر الوظيفة بالمنصة فوراً 🟢</button>
         </div>
 
-        <h2 style="font-size: 16px; font-weight: 900; margin-bottom: 10px; color: var(--text-dark);">الوظائف والخدمات المتاحة</h2>
-        <div id="jobsBox"></div>
-    </div>
+        <!-- 4. إدارة الوظائف المعروضة -->
+        <div class="sec">
+            <h3>📋 إدارة وتعديل الوظائف المعلنة</h3>
+            <div id="jList"></div>
+        </div>
 
-    <div class="partners-ticker">
-        <div class="ticker-label">شركاء النجاح 🤝</div>
-        <div style="display:flex; overflow:hidden; width:100%;">
-            <div class="ticker-content" id="tickerBox"></div>
+        <!-- 5. إضافة وإدارة دليل الكفاءات والسي في -->
+        <div class="sec" style="background:#ecfdf5; border-color:#a7f3d0;">
+            <h3 style="color:#047857;">📄 إضافة وإدارة السير الذاتية والكفاءات</h3>
+            <input type="text" id="rName" placeholder="الاسم الكامل">
+            <input type="text" id="rTitle" placeholder="المسمى الوظيفي / الخدمة">
+            <select id="rCat">
+                <option value="التسويق والترويج">📢 التسويق والترويج</option>
+                <option value="المحاسبة والمالية">📊 المحاسبة والمالية</option>
+                <option value="الطب والصحة">🩺 الطب والصحة</option>
+                <option value="التقنية وبرمجة">💻 التقنية والبرمجة</option>
+                <option value="الخدمات والنظافه">🧹 الخدمات العامة والنظافة</option>
+                <option value="أخرى">📁 تخصصات أخرى</option>
+            </select>
+            <input type="text" id="rPhone" value="967780568507" placeholder="رقم الواتساب">
+            <input type="text" id="rSkills" placeholder="المهارات (مفصولة بفواصل)">
+            <textarea id="rExp" placeholder="نبذة عن الخبرة والخدمة"></textarea>
+            <label class="upload-label" onclick="document.getElementById('rCvFile').click()">📤 اختيار ورفع ملف السي في CV (PDF/صورة)</label>
+            <input type="file" id="rCvFile" style="display:none;" onchange="uploadFile('rCvFile', 'rCvUrl')">
+            <input type="text" id="rCvUrl" placeholder="أو رابط السي في يدويًا">
+            <button class="btn btn-add" onclick="addResume()">نشر الكفاءة في الدليل فوراً 🟢</button>
+            
+            <hr style="margin:12px 0; border:none; border-top:1px solid #a7f3d0;">
+            <div id="rList"></div>
         </div>
     </div>
 
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG"; 
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function init() {
-            // 1. حساب وتحديث الإحصائيات
+        async function uploadFile(inputId, targetId) {
+            let fileInput = document.getElementById(inputId);
+            let file = fileInput.files[0];
+            if (!file) return;
+
+            let cleanFileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+
             try {
-                // جلب وزيادة العداد التراكمي
+                let { data, error } = await db.storage.from('platform-files').upload(cleanFileName, file, { cacheControl: '3600', upsert: true });
+                if (error) {
+                    let { data: d2, error: e2 } = await db.storage.from('cv_files').upload(cleanFileName, file, { upsert: true });
+                    if (e2) throw e2;
+                    let { data: pubData2 } = db.storage.from('cv_files').getPublicUrl(cleanFileName);
+                    document.getElementById(targetId).value = pubData2.publicUrl;
+                } else {
+                    let { data: pubData } = db.storage.from('platform-files').getPublicUrl(cleanFileName);
+                    document.getElementById(targetId).value = pubData.publicUrl;
+                }
+                alert('✅ تم رفع الصورة/الملف إلى السحابة بنجاح وتم وضع الرابط التلقائي!');
+            } catch (err) {
+                console.error("Upload Error Details:", err);
+                alert('❌ تعذر الرفع: يرجى التأكد من تشغيل أمر إنشاء المجلد والأذونات في SQL Editor بـ Supabase.');
+            }
+        }
+
+        async function loadAll() {
+            // جلب الأرقام والإحصائيات الخاصة بالإدارة
+            try {
                 let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
-                let views = st ? (st.total_views + 1) : 1;
-                await db.from('stats').update({ total_views: views }).eq('id', 1);
-                document.getElementById('statTotalViews').textContent = views;
+                document.getElementById('admTotalViews').textContent = st ? st.total_views : 0;
 
-                // عدد الزوار المتواجدين حالياً (ديناميكي بين 3 و 12)
-                let onlineNow = Math.floor(Math.random() * 8) + 3;
-                document.getElementById('statOnline').textContent = onlineNow;
+                let { count: jCnt } = await db.from('jobs').select('*', { count: 'exact', head: true });
+                let { count: rCnt } = await db.from('resumes').select('*', { count: 'exact', head: true });
 
-                // أعداد الوظائف والكفاءات
-                let { count: jobsCnt } = await db.from('jobs').select('*', { count: 'exact', head: true }).eq('approved', true);
-                let { count: resCnt } = await db.from('resumes').select('*', { count: 'exact', head: true });
-
-                document.getElementById('statJobsCount').textContent = jobsCnt || 0;
-                document.getElementById('statResumesCount').textContent = resCnt || 0;
+                document.getElementById('admTotalJobs').textContent = jCnt || 0;
+                document.getElementById('admTotalResumes').textContent = rCnt || 0;
             } catch(e) { console.log(e); }
 
-            // 2. البنرات
+            // البنرات
             let { data: banners } = await db.from('banners').select('*').order('id', {ascending: false});
-            let imgBox = document.getElementById('sliderImages'), dotsBox = document.getElementById('sliderDots');
-            if(banners && banners.length > 0) {
-                banners.forEach((b, i) => {
-                    imgBox.innerHTML += `<img src="${b.url}" class="ad-slider-img ${i===0?'active':''}">`;
-                    if(banners.length > 1) dotsBox.innerHTML += `<div class="dot ${i===0?'active':''}"></div>`;
-                });
-                if(banners.length > 1) {
-                    let idx = 0;
-                    setInterval(() => {
-                        let imgs = imgBox.querySelectorAll('img'), dots = dotsBox.querySelectorAll('.dot');
-                        imgs[idx].classList.remove('active'); if(dots[idx]) dots[idx].classList.remove('active');
-                        idx = (idx + 1) % imgs.length;
-                        imgs[idx].classList.add('active'); if(dots[idx]) dots[idx].classList.add('active');
-                    }, 3500);
-                }
-            }
-
-            // 3. الشركاء
-            let { data: partners } = await db.from('partners').select('*').order('id', {ascending: false});
-            let tBox = document.getElementById('tickerBox');
-            (partners || []).forEach(p => { tBox.innerHTML += `<img src="${p.logo}">`; });
-
-            // 4. الوظائف
-            let { data: jobs } = await db.from('jobs').select('*').eq('approved', true).order('id', {ascending: false});
-            let jBox = document.getElementById('jobsBox');
-            (jobs || []).forEach(j => {
-                let imgTag = (j.image && j.image.trim() !== '') ? `<img src="${j.image}">` : '';
-                jBox.innerHTML += `<div class="job-card">
-                    ${imgTag}
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <h3 style="font-size: 15px; color:#0f2347;">${j.title}</h3>
-                        <span style="background:#dcfce7; color:#166534; padding:2px 6px; border-radius:10px; font-size:10px; font-weight:bold;">${j.status}</span>
+            let bBox = document.getElementById('bList'); bBox.innerHTML = '';
+            (banners || []).forEach(b => {
+                bBox.innerHTML += `<div class="item" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:10px; word-break:break-all; max-width:60%;">${b.url}</span>
+                    <div class="flex-btns">
+                        <button class="btn btn-edit" onclick="editBanner(${b.id}, '${b.url}')">✏️ تعديل</button>
+                        <button class="btn btn-del" onclick="delBanner(${b.id})">🗑️ حذف</button>
                     </div>
-                    <p style="font-size: 12px; color:#64748b; margin-top:3px;">${j.company}</p>
-                    <a href="https://wa.me/${j.phone.replace(/[^0-9]/g, '')}" target="_blank" class="apply-btn">تقديم عبر الواتساب 🟢</a>
+                </div>`;
+            });
+
+            // الشركاء
+            let { data: partners } = await db.from('partners').select('*').order('id', {ascending: false});
+            let pBox = document.getElementById('pList'); pBox.innerHTML = '';
+            (partners || []).forEach(p => {
+                pBox.innerHTML += `<div class="partner-card">
+                    <img src="${p.logo}">
+                    <div style="font-size:10px; font-weight:bold; overflow:hidden;">${p.name}</div>
+                    <button class="btn btn-edit" style="font-size:8px; padding:2px; width:100%; justify-content:center; margin:2px 0;" onclick="editPartner(${p.id}, '${p.name}', '${p.logo}')">✏️ تعديل</button>
+                    <button class="btn btn-del" style="font-size:8px; padding:2px; width:100%; justify-content:center;" onclick="delPartner(${p.id})">🗑️ حذف</button>
+                </div>`;
+            });
+
+            // الوظائف
+            let { data: jobs } = await db.from('jobs').select('*').order('id', {ascending: false});
+            let jBox = document.getElementById('jList'); jBox.innerHTML = '';
+            (jobs || []).forEach(j => {
+                jBox.innerHTML += `<div class="item">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>${j.title}</strong>
+                        <span style="font-size:10px; color:${j.approved?'green':'orange'}">${j.approved?'منشور':'معلق'}</span>
+                    </div>
+                    <div style="font-size:11px; color:#64748b;">${j.company} | ${j.phone} | الحالة: <b>${j.status}</b></div>
+                    <div class="flex-btns">
+                        <button class="btn btn-toggle" onclick="toggleJob(${j.id}, '${j.status}')">🔄 تغيير التوفر</button>
+                        <button class="btn btn-edit" onclick="editJob(${j.id}, '${j.title}', '${j.company}', '${j.phone}', '${j.image||''}')">✏️ تعديل</button>
+                        <button class="btn btn-del" onclick="delJob(${j.id})">🗑️ حذف</button>
+                    </div>
+                </div>`;
+            });
+
+            // الكفاءات
+            let { data: resumes } = await db.from('resumes').select('*').order('id', {ascending: false});
+            let rBox = document.getElementById('rList'); rBox.innerHTML = '';
+            (resumes || []).forEach(r => {
+                rBox.innerHTML += `<div class="item">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>${r.full_name} (${r.job_title})</strong>
+                        <span style="font-size:10px; background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:8px;">${r.category||'عام'}</span>
+                    </div>
+                    <div style="font-size:11px; color:#64748b;">واتساب: ${r.phone}</div>
+                    <div class="flex-btns">
+                        <button class="btn btn-edit" onclick="editResume(${r.id}, '${r.full_name}', '${r.job_title}', '${r.category||'التسويق والترويج'}', '${r.phone}')">✏️ تعديل</button>
+                        <button class="btn btn-del" onclick="delResume(${r.id})">🗑️ حذف</button>
+                    </div>
                 </div>`;
             });
         }
-        document.addEventListener('DOMContentLoaded', init);
+
+        async function addBanner() { let url = document.getElementById('bUrl').value.trim(); if(url){ await db.from('banners').insert([{url}]); document.getElementById('bUrl').value=''; loadAll(); alert('تم الحفظ!'); } }
+        async function editBanner(id, old) { let url = prompt('رابط البنر:', old); if(url){ await db.from('banners').update({url}).eq('id', id); loadAll(); } }
+        async function delBanner(id) { if(confirm('حذف؟')){ await db.from('banners').delete().eq('id', id); loadAll(); } }
+
+        async function addPartner() { let name=document.getElementById('pName').value.trim(), logo=document.getElementById('pLogo').value.trim(); if(name&&logo){ await db.from('partners').insert([{name,logo}]); loadAll(); alert('تم الحفظ!'); } }
+        async function editPartner(id, n, l) { let name=prompt('الاسم:', n), logo=prompt('الشعار:', l); if(name&&logo){ await db.from('partners').update({name,logo}).eq('id', id); loadAll(); } }
+        async function delPartner(id) { if(confirm('حذف؟')){ await db.from('partners').delete().eq('id', id); loadAll(); } }
+
+        async function addJob() {
+            let title=document.getElementById('jTitle').value.trim(), company=document.getElementById('jCompany').value.trim(), phone=document.getElementById('jPhone').value.trim(), image=document.getElementById('jImage').value.trim(), status=document.getElementById('jStatus').value;
+            if(title&&company&&phone){ await db.from('jobs').insert([{title,company,phone,image,status,approved:true}]); loadAll(); alert('تم نشر الوظيفة!'); }
+        }
+        async function toggleJob(id, cur) { await db.from('jobs').update({status: cur==='متوفر'?'غير متوفر':'متوفر'}).eq('id', id); loadAll(); }
+        async function editJob(id, t, c, p, img) { let title=prompt('العنوان:',t), company=prompt('الجهة:',c), phone=prompt('الهاتف:',p), image=prompt('الصورة:',img); if(title&&company&&phone){ await db.from('jobs').update({title,company,phone,image}).eq('id',id); loadAll(); } }
+        async function delJob(id) { if(confirm('حذف الوظيفة؟')){ await db.from('jobs').delete().eq('id', id); loadAll(); } }
+
+        async function addResume() {
+            let full_name=document.getElementById('rName').value.trim(), job_title=document.getElementById('rTitle').value.trim(), category=document.getElementById('rCat').value, phone=document.getElementById('rPhone').value.trim(), skills=document.getElementById('rSkills').value.trim(), experience=document.getElementById('rExp').value.trim(), cv_url=document.getElementById('rCvUrl').value.trim();
+            if(full_name&&job_title&&phone){ await db.from('resumes').insert([{full_name,job_title,category,phone,skills,experience,cv_url}]); loadAll(); alert('تم نشر الكفاءة!'); }
+        }
+        async function editResume(id, n, t, c, p) { let full_name=prompt('الاسم:',n), job_title=prompt('المسمى:',t), category=prompt('القسم:',c), phone=prompt('الهاتف:',p); if(full_name&&job_title&&phone){ await db.from('resumes').update({full_name,job_title,category,phone}).eq('id',id); loadAll(); } }
+        async function delResume(id) { if(confirm('حذف الكفاءة؟')){ await db.from('resumes').delete().eq('id', id); loadAll(); } }
+
+        document.addEventListener('DOMContentLoaded', loadAll);
     </script>
 </body>
 </html>
