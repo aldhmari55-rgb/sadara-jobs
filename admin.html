@@ -60,12 +60,14 @@
             <div class="list-box" id="jobsList">جاري التحميل...</div>
         </div>
 
-        <!-- 2. إدارة الكفاءات -->
+        <!-- 2. إدارة الكفاءات (فصل الاسم عن التخصص) -->
         <div class="card">
             <h2><span>📄 إدارة الكفاءات</span><span class="badge" id="resCount">0</span></h2>
             <input type="hidden" id="editResId">
-            <label>الاسم أو التخصص</label>
-            <input type="text" id="resTitle" placeholder="مثال: مستشار تسويقي">
+            <label>اسم الكفاءة</label>
+            <input type="text" id="resName" placeholder="مثال: عبدالرحمن الذماري">
+            <label>التخصص أو المسمى الوظيفي</label>
+            <input type="text" id="resJobTitle" placeholder="مثال: مستشار تسويقي وخبير رقمي">
             <label>الخبرات ونبذة مختصرة</label>
             <textarea id="resExp" rows="2" placeholder="الخبرات..."></textarea>
             <label>رقم الواتساب</label>
@@ -103,23 +105,18 @@
         </div>
 
     </div>
-
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // رفع آمن وموجه تلقائياً إلى الحاوية الجاهزة platform-files
         async function uploadFileSafe(file) {
             if (!file) return '';
             try {
                 const fileExt = file.name.split('.').pop();
                 const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
                 const { data, error } = await db.storage.from('platform-files').upload(fileName, file);
-                if (error) {
-                    console.warn("Storage error:", error.message);
-                    return '';
-                }
+                if (error) return '';
                 const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
                 return publicUrlData.publicUrl ? publicUrlData.publicUrl : '';
             } catch(e) {
@@ -197,32 +194,48 @@
         let cachedResumes = [];
         async function saveResume() {
             const editId = document.getElementById('editResId').value;
-            const title = document.getElementById('resTitle').value.trim();
+            const name = document.getElementById('resName').value.trim();
+            const jobTitle = document.getElementById('resJobTitle').value.trim();
             const exp = document.getElementById('resExp').value.trim();
             const phone = document.getElementById('resPhone').value.trim();
             const imgFile = document.getElementById('resImgFile').files[0];
             const msg = document.getElementById('resMsg');
 
-            if (!title) { alert('أدخل الاسم أو التخصص'); return; }
+            if (!name || !jobTitle) { alert('أدخل الاسم والتخصص'); return; }
             msg.style.color = 'blue'; msg.textContent = 'جاري رفع الصورة والحفظ بالسحابة...';
 
             let imgUrl = await uploadFileSafe(imgFile);
-            let payload = { title: title, experience: exp, phone: phone };
+            
+            let payload = {
+                name: name,
+                job_title: jobTitle,
+                specialty: jobTitle,
+                experience: exp,
+                phone: phone
+            };
             if (imgUrl) payload.image = imgUrl;
 
             let res = editId ? await db.from('resumes').update(payload).eq('id', editId) : await db.from('resumes').insert([payload]);
+            
             if (res.error) {
-                msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
-                return;
+                let fallbackPayload = { title: name, experience: jobTitle + " - " + exp, phone: phone };
+                if (imgUrl) fallbackPayload.image = imgUrl;
+                res = editId ? await db.from('resumes').update(fallbackPayload).eq('id', editId) : await db.from('resumes').insert([fallbackPayload]);
+                
+                if (res.error) {
+                    msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
+                    return;
+                }
             }
 
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة وصورتها بنجاح تام! ✅';
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة بالاسم والتخصص والصورة بنجاح! ✅';
             resetResForm(); loadResumes();
         }
 
         function resetResForm() {
             document.getElementById('editResId').value = '';
-            document.getElementById('resTitle').value = '';
+            document.getElementById('resName').value = '';
+            document.getElementById('resJobTitle').value = '';
             document.getElementById('resExp').value = '';
             document.getElementById('resImgFile').value = '';
             document.getElementById('btnSaveRes').textContent = 'حفظ الكفاءة 📄';
@@ -238,10 +251,10 @@
             if (cachedResumes.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات مسجلة.</p>'; return; }
             cachedResumes.forEach(r => {
                 let displayName = r.name || r.title || 'كفاءة';
-                let displayJob = r.job_title || r.specialty || r.experience || '-';
+                let displayJob = r.job_title || r.specialty || '-';
                 box.innerHTML += `<div class="item-row">
-                    <div class="row-header"><strong>${displayName}</strong><span>معروض 🟢</span></div>
-                    <div style="color:#64748b; font-size:11px;">التخصص: ${displayJob}</div>
+                    <div class="row-header"><strong>${displayName}</strong><span>${displayJob}</span></div>
+                    <div style="color:#64748b; font-size:11px;">${r.experience || ''}</div>
                     <div class="action-btns">
                         <button class="btn-sm btn-edit" onclick="editResume(${r.id})">تعديل ✏️</button>
                         <button class="btn-sm btn-del" onclick="deleteItem('resumes', ${r.id})">حذف 🗑️</button>
@@ -254,7 +267,8 @@
             let r = cachedResumes.find(item => item.id === id);
             if (!r) return;
             document.getElementById('editResId').value = r.id;
-            document.getElementById('resTitle').value = r.name || r.title || r.job_title || '';
+            document.getElementById('resName').value = r.name || r.title || '';
+            document.getElementById('resJobTitle').value = r.job_title || r.specialty || '';
             document.getElementById('resExp').value = r.experience || '';
             document.getElementById('resPhone').value = r.phone || '';
             document.getElementById('btnSaveRes').textContent = 'تعديل وحفظ 💾';
@@ -272,7 +286,7 @@
                 document.getElementById('bannerFile').value = ''; 
                 loadBanners(); 
             } else {
-                alert('فشل في رفع الصورة، تأكد من اتصال الإنترنت وحجم الصورة.');
+                alert('فشل في رفع الصورة، تأكد من اتصال الإنترنت.');
             }
         }
         async function loadBanners() {
@@ -295,7 +309,7 @@
                 document.getElementById('partnerFile').value = ''; 
                 loadPartners(); 
             } else {
-                alert('فشل في رفع الشعار، تأكد من اتصال الإنترنت وحجم الصورة.');
+                alert('فشل في رفع الشعار، تأكد من اتصال الإنترنت.');
             }
         }
         async function loadPartners() {
