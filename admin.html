@@ -96,12 +96,6 @@
             <label>رقم التواصل (واتساب)</label>
             <input type="text" id="resPhone" value="967780568507">
 
-            <label>حالة الظهور والقبول</label>
-            <select id="resApproved">
-                <option value="true">مقبول / معروض 🟢</option>
-                <option value="false">مخفي / غير مقبول 🔴</option>
-            </select>
-
             <label>صورة شخصية / السيرة (صورة فقط)</label>
             <input type="file" id="resImgFile" accept="image/*">
 
@@ -245,7 +239,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ==================== 2. إدارة الكفاءات / السير الذاتية ====================
+        // ==================== 2. إدارة الكفاءات (السير الذاتية الذكية) ====================
         let cachedResumes = [];
 
         async function saveResume() {
@@ -254,7 +248,6 @@
             const title = document.getElementById('resTitle').value.trim();
             const exp = document.getElementById('resExp').value.trim();
             const phone = document.getElementById('resPhone').value.trim();
-            const approved = document.getElementById('resApproved').value === 'true';
             const imgFile = document.getElementById('resImgFile').files[0];
             const msg = document.getElementById('resMsg');
 
@@ -262,31 +255,42 @@
             msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
 
             let imgUrl = await uploadFile(imgFile, 'resume-images');
-            let payload = { name, job_title: title, experience: exp, phone, approved };
-            if (imgUrl) payload.image = imgUrl;
 
-            let error;
-            if (editId) {
-                let res = await db.from('resumes').update(payload).eq('id', editId);
-                error = res.error;
-            } else {
-                let res = await db.from('resumes').insert([payload]);
-                error = res.error;
+            // محاولة إرسال ذكية تتوافق مع هيكل جدولك في Supabase تلقائياً
+            let attempts = [
+                { title: name, job_title: title, experience: exp, phone: phone },
+                { name: name, job_title: title, experience: exp, phone: phone },
+                { full_name: name, job_title: title, experience: exp, phone: phone },
+                { title: name, phone: phone }
+            ];
+
+            let lastError = null;
+            let success = false;
+
+            for (let payload of attempts) {
+                if (imgUrl) payload.image = imgUrl;
+                
+                let res;
+                if (editId) {
+                    res = await db.from('resumes').update(payload).eq('id', editId);
+                } else {
+                    res = await db.from('resumes').insert([payload]);
+                }
+
+                if (!res.error) {
+                    success = true;
+                    break;
+                } else {
+                    lastError = res.error;
+                }
             }
 
-            // تجريب حقل بديل في حال اختلاف اسم العمود
-            if (error && error.message.includes('column')) {
-                delete payload.approved;
-                let res2 = editId ? await db.from('resumes').update(payload).eq('id', editId) : await db.from('resumes').insert([payload]);
-                error = res2.error;
-            }
-
-            if (error) {
-                msg.style.color = 'red'; msg.textContent = 'خطأ: ' + error.message;
-            } else {
+            if (success) {
                 msg.style.color = 'green'; msg.textContent = editId ? 'تم تعديل الكفاءة بنجاح! ✅' : 'تم إضافة الكفاءة بنجاح! ✅';
                 resetResForm();
                 loadResumes();
+            } else {
+                msg.style.color = 'red'; msg.textContent = 'خطأ: ' + (lastError ? lastError.message : 'فشل الحفظ');
             }
         }
 
@@ -309,18 +313,16 @@
             if (cachedResumes.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات حالياً.</p>'; return; }
 
             cachedResumes.forEach(r => {
-                let isApp = (r.approved !== false);
+                let displayName = r.name || r.title || r.full_name || 'بدون اسم';
+                let displayJob = r.job_title || r.specialty || '-';
                 box.innerHTML += `
                     <div class="item-row">
                         <div class="row-header">
-                            <strong>${r.name || 'بدون اسم'}</strong>
-                            <span class="badge-status ${isApp ? 'badge-active' : 'badge-closed'}">${isApp ? 'معروض 🟢' : 'مخفي 🔴'}</span>
+                            <strong>${displayName}</strong>
+                            <span class="badge-status badge-active">معروض 🟢</span>
                         </div>
-                        <div style="color:#64748b; font-size:11px;">التخصص: ${r.job_title || r.title || '-'}</div>
+                        <div style="color:#64748b; font-size:11px;">التخصص: ${displayJob}</div>
                         <div class="action-btns">
-                            <button class="btn-sm btn-toggle" onclick="toggleResumeApproved(${r.id}, ${isApp})">
-                                ${isApp ? 'إخفاء 🔴' : 'قبول وعرض 🟢'}
-                            </button>
                             <button class="btn-sm btn-edit" onclick="editResume(${r.id})">تعديل ✏️</button>
                             <button class="btn-sm btn-del" onclick="deleteItem('resumes', ${r.id})">حذف 🗑️</button>
                         </div>
@@ -328,21 +330,14 @@
             });
         }
 
-        async function toggleResumeApproved(id, currentApproved) {
-            let { error } = await db.from('resumes').update({ approved: !currentApproved }).eq('id', id);
-            if (error) alert('ملاحظة: ' + error.message);
-            loadResumes();
-        }
-
         function editResume(id) {
             let r = cachedResumes.find(item => item.id === id);
             if (!r) return;
             document.getElementById('editResId').value = r.id;
-            document.getElementById('resName').value = r.name || '';
-            document.getElementById('resTitle').value = r.job_title || r.title || '';
+            document.getElementById('resName').value = r.name || r.title || r.full_name || '';
+            document.getElementById('resTitle').value = r.job_title || r.specialty || '';
             document.getElementById('resExp').value = r.experience || '';
             document.getElementById('resPhone').value = r.phone || '967780568507';
-            document.getElementById('resApproved').value = (r.approved !== false) ? 'true' : 'false';
             document.getElementById('btnSaveRes').textContent = 'حفظ التعديلات 💾';
             document.getElementById('btnCancelRes').style.display = 'block';
             window.scrollTo({ top: 300, behavior: 'smooth' });
