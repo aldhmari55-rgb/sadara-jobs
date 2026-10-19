@@ -3,388 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الشاملة بروابط الثلاث أزرار | صدارة</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --admin-dark: #0f172a;
-            --admin-accent: #2563eb;
-            --bg-light: #f1f5f9;
-            --card-bg: #ffffff;
-            --text-dark: #1e293b;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --warning: #ca8a04;
-            --whatsapp: #25d366;
-            --border: #cbd5e1;
-            --radius: 12px;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background-color: var(--bg-light); color: var(--text-dark); padding: 15px; }
-
-        .admin-card-frame {
-            max-width: 720px; margin: 0 auto; background: var(--card-bg);
-            border: 2px solid var(--admin-dark); border-radius: var(--radius);
-            padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .header-title { text-align: center; border-bottom: 2px dashed var(--border); padding-bottom: 15px; margin-bottom: 20px; }
-        .header-title h1 { font-size: 20px; font-weight: 900; color: var(--admin-dark); }
-        .header-title span { font-size: 13px; color: var(--admin-accent); font-weight: 800; }
-
-        .section-box { background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; }
-        .section-box h3 { font-size: 15px; font-weight: 900; margin-bottom: 12px; color: var(--admin-dark); }
-
-        .admin-item { background: #ffffff; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
-        .item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-
-        /* شريط الثلاث أزرار الموحد */
-        .action-btns-3 { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-        .btn-action { border: none; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 12px; cursor: pointer; color: white; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
-        .btn-add { background: var(--success); }
-        .btn-edit { background: var(--admin-accent); }
-        .btn-delete { background: var(--danger); }
-        .btn-toggle { background: var(--warning); }
-        .btn-share { background: var(--whatsapp); color: white; }
-
-        .input-style { width: 100%; padding: 8px; margin: 6px 0; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; outline: none; }
-
-        .partner-logo-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-        .partner-logo-card { position: relative; width: 100px; text-align: center; background: white; padding: 8px; border-radius: 8px; border: 1px solid var(--border); }
-        .partner-logo-card img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; margin-bottom: 4px; }
-        
-        .job-thumb { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; margin-left: 10px; }
-        textarea.code-output { width: 100%; height: 120px; font-family: monospace; font-size: 11px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: #0f172a; color: #38bdf8; direction: ltr; text-align: left; margin-top: 8px; }
-    </style>
-</head>
-<body>
-
-    <div class="admin-card-frame">
-        <div class="header-title">
-            <span>لوحة التحكم ثلاثية الخيارات</span>
-            <h1>التحكم الشامل بثلاثة أزرار إدارية</h1>
-        </div>
-
-        <!-- 1. البنرات الإعلانية -->
-        <div class="section-box">
-            <h3>🖼️ إدارة البنرات الإعلانية (إضافة / تعديل / حذف)</h3>
-            <div style="background: white; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
-                <input type="text" id="newBannerUrl" class="input-style" placeholder="مسار أو رابط البنر الجديد (مثال: images/banner 1 .png)">
-                <button class="btn-action btn-add" style="width:100%; justify-content:center; padding:8px;" onclick="addBannerAdmin()">🟢 إضافة البنر لسلايدر المنصة</button>
-            </div>
-            <div id="adminBannersList" style="margin-top:10px;"></div>
-        </div>
-
-        <!-- 2. شركاء النجاح -->
-        <div class="section-box">
-            <h3>🤝 إدارة شركاء النجاح (إضافة / تعديل / حذف)</h3>
-            <div style="background: white; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
-                <input type="text" id="newPartnerName" class="input-style" placeholder="اسم الشريك أو الشركة">
-                <input type="text" id="newPartnerLogoUrl" class="input-style" placeholder="مسار الشعار (مثال: images/logo 1 .jpg)">
-                <button class="btn-action btn-add" style="width:100%; justify-content:center; padding:8px;" onclick="addPartnerAdmin()">🟢 إضافة الشريك للشريط المتحرك</button>
-            </div>
-            <div class="partner-logo-grid" id="adminPartnersList"></div>
-        </div>
-
-        <!-- 3. الوظائف والخدمات -->
-        <div class="section-box">
-            <h3>📋 إدارة الوظائف والخدمات (قبول / تعديل / حذف)</h3>
-            <div id="adminJobsList"></div>
-        </div>
-
-        <!-- 4. المزامنة الآلية والشاملة -->
-        <div class="section-box" style="background:#e0f2fe; border-color:#7dd3fc;">
-            <h3 style="color:#0369a1;">⚡ مولّد كود المنصة النهائي والتلقائي (index.html)</h3>
-            <p style="font-size:11px; color:#0369a1; margin-bottom:8px;">اضغط الزر لتنسخ كود index.html بالكامل المحدث بالتغيرات الأخيرة التي أجريتها لتلصقه في GitHub ويشاهده جميع الزوار فوراً:</p>
-            
-            <button class="btn-action btn-add" style="width:100%; justify-content:center; padding:10px; margin-bottom:10px;" onclick="generateFullIndexCode()">⚡ توليد ونسخ الكود بالكامل بضغطة زر</button>
-            
-            <label style="font-size:11px; font-weight:bold; color:#0369a1;">الجزء الأول من الكود:</label>
-            <textarea id="outputPart1" class="code-output" readonly onclick="this.select()"></textarea>
-
-            <label style="font-size:11px; font-weight:bold; color:#0369a1; margin-top:8px; display:block;">الجزء الثاني من الكود:</label>
-            <textarea id="outputPart2" class="code-output" readonly onclick="this.select()"></textarea>
-        </div>
-    </div>
-    <script>
-        var CHANNEL_LINK = "https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s";
-
-        function getJobs() { return JSON.parse(localStorage.getItem('dhawar_jobs_v7')) || [
-            { id: 101, title: 'خياط', company: 'لومار للخياطة', phone: '967770000000', image: '', status: 'غير متوفر', approved: true },
-            { id: 102, title: 'مسوق إلكتروني وميداني', company: 'مؤسسة صدارة', phone: '967770000000', image: 'images/banner%201%20.png', status: 'متوفر', approved: true }
-        ]; }
-
-        function getPartners() { return JSON.parse(localStorage.getItem('dhawar_partners_v7')) || [
-            { id: 1, name: 'شريك 1', logo: 'images/logo%201%20.jpg' },
-            { id: 2, name: 'شريك 2', logo: 'images/logo%202.jpg' },
-            { id: 3, name: 'شريك 3', logo: 'images/logo%203.png' }
-        ]; }
-
-        function getBanners() { return JSON.parse(localStorage.getItem('dhawar_banners_v7')) || [
-            "images/banner%201%20.png",
-            "images/banner%202.png"
-        ]; }
-
-        function renderAdminAll() {
-            // 1. عرض البنرات الثلاثية الأزرار
-            var banners = getBanners();
-            var bContainer = document.getElementById('adminBannersList');
-            bContainer.innerHTML = (banners.length === 0) ? '<p style="font-size:11px;">لا توجد بنرات معروضة حالياً.</p>' : '';
-            for(var i=0; i<banners.length; i++) {
-                bContainer.innerHTML += 
-                    '<div class="admin-item">' +
-                        '<div style="font-size:11px; font-weight:bold; word-break:break-all;">' + banners[i] + '</div>' +
-                        '<div class="action-btns-3">' +
-                            '<button class="btn-action btn-edit" onclick="editBanner(' + i + ')">✏️ تعديل الرابط</button>' +
-                            '<button class="btn-action btn-delete" onclick="deleteBanner(' + i + ')">🗑️ حذف البنر</button>' +
-                        '</div>' +
-                    '</div>';
-            }
-
-            // 2. عرض الشركاء الثلاثية الأزرار
-            var partners = getPartners();
-            var pContainer = document.getElementById('adminPartnersList');
-            pContainer.innerHTML = (partners.length === 0) ? '<p style="font-size:11px;">لا يوجد شركاء.</p>' : '';
-            for(var j=0; j<partners.length; j++) {
-                var p = partners[j];
-                pContainer.innerHTML += 
-                    '<div class="partner-logo-card">' +
-                        '<img src="' + p.logo + '">' +
-                        '<div style="font-size:10px; font-weight:bold; margin-bottom:4px;">' + p.name + '</div>' +
-                        '<button class="btn-action btn-edit" style="width:100%; font-size:9px; padding:2px; justify-content:center; margin-bottom:2px;" onclick="editPartner(' + p.id + ')">✏️ تعديل</button>' +
-                        '<button class="btn-action btn-delete" style="width:100%; font-size:9px; padding:2px; justify-content:center;" onclick="deletePartner(' + p.id + ')">🗑️ حذف</button>' +
-                    '</div>';
-            }
-
-            // 3. عرض الوظائف الثلاثية الأزرار
-            var jobs = getJobs();
-            var jContainer = document.getElementById('adminJobsList');
-            jContainer.innerHTML = (jobs.length === 0) ? '<p style="font-size:12px;">لا توجد وظائف.</p>' : '';
-            for(var k=0; k<jobs.length; k++) {
-                var job = jobs[k];
-                var approveBtn = (!job.approved) ? '<button class="btn-action btn-add" onclick="approveJob(' + job.id + ')">🟢 قبول ونشر</button>' : '<button class="btn-action btn-toggle" onclick="toggleJobStatus(' + job.id + ')">🔄 تغيير التوفر</button>';
-                
-                jContainer.innerHTML += 
-                    '<div class="admin-item">' +
-                        '<div class="item-header"><strong>' + job.title + '</strong><span style="font-size:11px; font-weight:bold; color:' + (job.approved ? 'green' : 'orange') + ';">' + (job.approved ? 'مقبول' : 'قيد المراجعة') + '</span></div>' +
-                        '<div style="font-size:11px; color:#64748b;">' + job.company + ' | ' + job.phone + ' | حالة: <b>' + job.status + '</b></div>' +
-                        '<div class="action-btns-3">' +
-                            approveBtn +
-                            '<button class="btn-action btn-edit" onclick="editJob(' + job.id + ')">✏️ تعديل البيانات</button>' +
-                            '<button class="btn-action btn-delete" onclick="deleteJob(' + job.id + ')">🗑️ حذف</button>' +
-                            '<button class="btn-action btn-share" onclick="shareToWhatsAppChannel(' + job.id + ')">📲 مشاركة للقناة</button>' +
-                        '</div>' +
-                    '</div>';
-            }
-        }
-
-        // عمليات البنرات الثلاث
-        function addBannerAdmin() {
-            var url = document.getElementById('newBannerUrl').value.trim();
-            if(!url) return alert('أدخل المسار أو الرابط أولاً');
-            var banners = getBanners();
-            banners.push(url);
-            localStorage.setItem('dhawar_banners_v7', JSON.stringify(banners));
-            document.getElementById('newBannerUrl').value = '';
-            renderAdminAll();
-        }
-
-        function editBanner(index) {
-            var banners = getBanners();
-            var newUrl = prompt('تعديل مسار/رابط البنر:', banners[index]);
-            if(newUrl !== null && newUrl.trim() !== '') {
-                banners[index] = newUrl.trim();
-                localStorage.setItem('dhawar_banners_v7', JSON.stringify(banners));
-                renderAdminAll();
-            }
-        }
-
-        function deleteBanner(index) {
-            if(confirm('هل أنت متأكد من حذف هذا البنر؟')) {
-                var banners = getBanners();
-                banners.splice(index, 1);
-                localStorage.setItem('dhawar_banners_v7', JSON.stringify(banners));
-                renderAdminAll();
-            }
-        }
-
-        // عمليات الشركاء الثلاث
-        function addPartnerAdmin() {
-            var name = document.getElementById('newPartnerName').value.trim();
-            var logo = document.getElementById('newPartnerLogoUrl').value.trim();
-            if(!name || !logo) return alert('أدخل الاسم والمسار');
-            var partners = getPartners();
-            partners.push({ id: Date.now(), name: name, logo: logo });
-            localStorage.setItem('dhawar_partners_v7', JSON.stringify(partners));
-            document.getElementById('newPartnerName').value = '';
-            document.getElementById('newPartnerLogoUrl').value = '';
-            renderAdminAll();
-        }
-
-        function editPartner(id) {
-            var partners = getPartners();
-            var p = partners.find(function(item) { return item.id === id; });
-            if(!p) return;
-
-            var newName = prompt('تعديل اسم الشريك:', p.name);
-            var newLogo = prompt('تعديل مسار الشعار:', p.logo);
-
-            if(newName && newLogo) {
-                p.name = newName.trim();
-                p.logo = newLogo.trim();
-                localStorage.setItem('dhawar_partners_v7', JSON.stringify(partners));
-                renderAdminAll();
-            }
-        }
-
-        function deletePartner(id) {
-            if(confirm('هل أنت متأكد من حذف هذا الشريك؟')) {
-                var partners = getPartners().filter(function(p) { return p.id !== id; });
-                localStorage.setItem('dhawar_partners_v7', JSON.stringify(partners));
-                renderAdminAll();
-            }
-        }
-
-        // عمليات الوظائف الثلاث
-        function approveJob(id) {
-            var jobs = getJobs().map(function(j) { if(j.id === id) j.approved = true; return j; });
-            localStorage.setItem('dhawar_jobs_v7', JSON.stringify(jobs));
-            renderAdminAll();
-            alert('تم قبول الوظيفة بنجاح!');
-        }
-
-        function toggleJobStatus(id) {
-            var jobs = getJobs().map(function(j) { if(j.id === id) j.status = (j.status === 'متوفر' ? 'غير متوفر' : 'متوفر'); return j; });
-            localStorage.setItem('dhawar_jobs_v7', JSON.stringify(jobs));
-            renderAdminAll();
-        }
-
-        function editJob(id) {
-            var jobs = getJobs();
-            var j = jobs.find(function(item) { return item.id === id; });
-            if(!j) return;
-
-            var newTitle = prompt('تعديل عنوان الوظيفة:', j.title);
-            var newCompany = prompt('تعديل الجهة/المكان:', j.company);
-            var newPhone = prompt('تعديل رقم الهاتف:', j.phone);
-            var newImg = prompt('تعديل مسار الصورة (اتركه فارغاً بغير صورة):', j.image || '');
-
-            if(newTitle && newCompany && newPhone) {
-                j.title = newTitle.trim();
-                j.company = newCompany.trim();
-                j.phone = newPhone.trim();
-                j.image = newImg ? newImg.trim() : '';
-                localStorage.setItem('dhawar_jobs_v7', JSON.stringify(jobs));
-                renderAdminAll();
-            }
-        }
-
-        function deleteJob(id) {
-            if(confirm('هل أنت متأكد من حذف هذه الوظيفة؟')) {
-                var jobs = getJobs().filter(function(j) { return j.id !== id; });
-                localStorage.setItem('dhawar_jobs_v7', JSON.stringify(jobs));
-                renderAdminAll();
-            }
-        }
-
-        function shareToWhatsAppChannel(jobId) {
-            var job = getJobs().find(function(j) { return j.id === jobId; });
-            if(!job) return;
-            var msg = "📢 *فرصة عمل جديدة - صدارة ذمار*\n\n💼 " + job.title + "\n🏢 " + job.company + "\n📍 الموقع: ذمار - اليمن\n📲 للتقديم: https://wa.me/" + job.phone + "\n\n🟢 انضم للقناة الرسمية:\n" + CHANNEL_LINK;
-            navigator.clipboard.writeText(msg);
-            alert('تم نسخ نص المشاركة بالعربي! فتح الواتساب الآن...');
-            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(msg), '_blank');
-        }
-
-        // توليد الملف النهائي بالكامل
-        function generateFullIndexCode() {
-            var bannersJson = JSON.stringify(getBanners(), null, 4);
-            var jobsJson = JSON.stringify(getJobs(), null, 4);
-            var partnersJson = JSON.stringify(getPartners(), null, 4);
-
-            var part1 = `<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة صدارة للوظائف والخدمات | ذمار</title>
+    <title>لوحة التحكم السحابية المباشرة | صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary:#0f2347; --gold:#d4af37; --green:#25d366; }
-        * { box-sizing: border-box; margin:0; padding:0; font-family:'Tajawal', sans-serif; }
-        body { background: #f8fafc; padding-bottom: 90px; }
-        .top-bar { background: #0a1324; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .hero { background: var(--primary); color: white; padding: 25px; text-align: center; }
-        .container { max-width: 800px; margin: -20px auto 0; padding: 0 16px; }
-        .slider { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .slider img { width: 100%; max-height: 220px; object-fit: cover; display: none; }
-        .slider img.active { display: block; }
-        .job-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 14px; border: 1px solid #e2e8f0; }
-        .job-card img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
-        .ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px; display: flex; align-items: center; z-index: 900; }
-        .ticker img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); margin-left: 15px; }
+        :root { --admin-dark: #0f172a; --admin-blue: #2563eb; --bg: #f8fafc; --card: #ffffff; --green: #16a34a; --red: #dc2626; --gold: #ca8a04; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); padding: 15px; color: #1e293b; }
+        .box { max-width: 700px; margin: 0 auto; background: var(--card); border: 2px solid var(--admin-dark); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { font-size: 20px; text-align: center; margin-bottom: 15px; color: var(--admin-dark); }
+        .sec { background: #f1f5f9; padding: 14px; border-radius: 10px; margin-bottom: 16px; border: 1px solid #cbd5e1; }
+        .sec h3 { font-size: 15px; margin-bottom: 10px; }
+        input { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; }
+        .btn { border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; color: white; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-add { background: var(--green); width: 100%; justify-content: center; padding: 8px; margin-top: 4px; }
+        .btn-edit { background: var(--admin-blue); }
+        .btn-del { background: var(--red); }
+        .btn-toggle { background: var(--gold); }
+        .item { background: white; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 8px; }
+        .flex-btns { display: flex; gap: 6px; margin-top: 6px; }
+        .partner-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+        .partner-card { background: white; padding: 8px; border-radius: 8px; border: 1px solid #cbd5e1; width: 95px; text-align: center; }
+        .partner-card img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
     </style>
 </head>
 <body>
-    <div class="top-bar"><b>صدارة للوظائف</b></div>
-    <div class="hero"><h1>المنصة الأولى للوظائف بمحافظة ذمار</h1></div>
-    <div class="container">
-        <div class="slider" id="sliderBox"></div>
-        <h2 style="margin-bottom:12px;">الوظائف والخدمات المتاحة</h2>
-        <div id="jobsList"></div>
+    <div class="box">
+        <h1>☁️ لوحة التحكم السحابية المباشرة (Supabase)</h1>
+
+        <!-- البنرات -->
+        <div class="sec">
+            <h3>🖼️ إدارة البنرات الإعلانية (سلايدر متحرك)</h3>
+            <input type="text" id="bUrl" placeholder="مسار البنر (مثال: images/banner 1 .png)">
+            <button class="btn btn-add" onclick="addBanner()">🟢 إضافة البنر المباشر للسحابة</button>
+            <div id="bList" style="margin-top:10px;"></div>
+        </div>
+
+        <!-- الشركاء -->
+        <div class="sec">
+            <h3>🤝 إدارة شركاء النجاح (الشريط المتحرك)</h3>
+            <input type="text" id="pName" placeholder="اسم الشريك / الشركة">
+            <input type="text" id="pLogo" placeholder="مسار الشعار (مثال: images/logo 1 .jpg)">
+            <button class="btn btn-add" onclick="addPartner()">🟢 إضافة الشريك المباشر للسحابة</button>
+            <div class="partner-grid" id="pList"></div>
+        </div>
+
+        <!-- الوظائف -->
+        <div class="sec">
+            <h3>📋 إدارة ومراجعة الوظائف والخدمات</h3>
+            <div id="jList"></div>
+        </div>
     </div>
-    <div class="ticker"><div style="background:var(--gold); padding:4px 10px; font-weight:bold; font-size:11px; border-radius:0 10px 10px 0;">شركاء النجاح</div><div style="display:flex; overflow:hidden; width:100%;"><div style="display:flex; animation:slide 15s linear infinite;" id="tickerBox"></div></div></div>`;
 
-            var part2 = `<script>
-        var SYSTEM_BANNERS = ${bannersJson};
-        var SYSTEM_JOBS = ${jobsJson};
-        var SYSTEM_PARTNERS = ${partnersJson};
+    <script>
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG"; 
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        function init() {
-            var sBox = document.getElementById('sliderBox');
-            sBox.innerHTML = '';
-            for(var i=0; i<SYSTEM_BANNERS.length; i++) {
-                sBox.innerHTML += '<img src="' + SYSTEM_BANNERS[i] + '" class="' + (i===0?'active':'') + '">';
-            }
-            var idx = 0;
-            setInterval(function() {
-                var imgs = sBox.querySelectorAll('img');
-                if(imgs.length <= 1) return;
-                imgs[idx].classList.remove('active');
-                idx = (idx + 1) % imgs.length;
-                imgs[idx].classList.add('active');
-            }, 3500);
+        async function loadAll() {
+            // البنرات
+            let { data: banners } = await db.from('banners').select('*').order('id', {ascending: false});
+            let bBox = document.getElementById('bList');
+            bBox.innerHTML = '';
+            (banners || []).forEach(b => {
+                bBox.innerHTML += `<div class="item">
+                    <div style="font-size:11px; font-weight:bold;">${b.url}</div>
+                    <div class="flex-btns">
+                        <button class="btn btn-edit" onclick="editBanner(${b.id}, '${b.url}')">✏️ تعديل</button>
+                        <button class="btn btn-del" onclick="delBanner(${b.id})">🗑️ حذف</button>
+                    </div>
+                </div>`;
+            });
 
-            var tBox = document.getElementById('tickerBox');
-            tBox.innerHTML = '';
-            for(var j=0; j<SYSTEM_PARTNERS.length; j++) {
-                tBox.innerHTML += '<img src="' + SYSTEM_PARTNERS[j].logo + '">';
-            }
+            // الشركاء
+            let { data: partners } = await db.from('partners').select('*').order('id', {ascending: false});
+            let pBox = document.getElementById('pList');
+            pBox.innerHTML = '';
+            (partners || []).forEach(p => {
+                pBox.innerHTML += `<div class="partner-card">
+                    <img src="${p.logo}">
+                    <div style="font-size:10px; font-weight:bold;">${p.name}</div>
+                    <button class="btn btn-edit" style="font-size:9px; padding:2px; width:100%; justify-content:center; margin:2px 0;" onclick="editPartner(${p.id}, '${p.name}', '${p.logo}')">✏️ تعديل</button>
+                    <button class="btn btn-del" style="font-size:9px; padding:2px; width:100%; justify-content:center;" onclick="delPartner(${p.id})">🗑️ حذف</button>
+                </div>`;
+            });
 
-            var jList = document.getElementById('jobsList');
-            jList.innerHTML = '';
-            for(var k=0; k<SYSTEM_JOBS.length; k++) {
-                var job = SYSTEM_JOBS[k];
-                if(!job.approved) continue;
-                var img = job.image ? '<img src="' + job.image + '">' : '';
-                jList.innerHTML += '<div class="job-card">' + img + '<h3>' + job.title + '</h3><p style="color:#64748b; font-size:13px;">' + job.company + '</p><a href="https://wa.me/' + job.phone + '" target="_blank" style="display:inline-block; margin-top:10px; background:var(--green); color:white; padding:6px 14px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:12px;">تقديم واتساب</a></div>';
-            }
+            // الوظائف
+            let { data: jobs } = await db.from('jobs').select('*').order('id', {ascending: false});
+            let jBox = document.getElementById('jList');
+            jBox.innerHTML = '';
+            (jobs || []).forEach(j => {
+                jBox.innerHTML += `<div class="item">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>${j.title}</strong>
+                        <span style="font-size:11px; font-weight:bold; color:${j.approved?'green':'orange'}">${j.approved?'مقبول':'قيد المراجعة'}</span>
+                    </div>
+                    <div style="font-size:11px; color:#64748b;">${j.company} | ${j.phone} | الحالة: <b>${j.status}</b></div>
+                    <div class="flex-btns">
+                        ${!j.approved ? `<button class="btn btn-add" style="width:auto; padding:4px 8px;" onclick="approveJob(${j.id})">🟢 قبول ونشر</button>` : `<button class="btn btn-toggle" onclick="toggleJob(${j.id}, '${j.status}')">🔄 توفر الوظيفة</button>`}
+                        <button class="btn btn-edit" onclick="editJob(${j.id}, '${j.title}', '${j.company}', '${j.phone}')">✏️ تعديل</button>
+                        <button class="btn btn-del" onclick="delJob(${j.id})">🗑️ حذف</button>
+                    </div>
+                </div>`;
+            });
         }
-        document.addEventListener('DOMContentLoaded', init);
-    <\/script>
-</body>
-</html>`;
 
-            document.getElementById('outputPart1').value = part1;
-            document.getElementById('outputPart2').value = part2;
-            alert('تم توليد الكود كاملاً بناءً على تعديلاتك الجديدة!');
+        async function addBanner() {
+            let url = document.getElementById('bUrl').value.trim();
+            if(url) { await db.from('banners').insert([{ url }]); document.getElementById('bUrl').value=''; loadAll(); }
+        }
+        async function editBanner(id, oldUrl) {
+            let url = prompt('تعديل مسار البنر:', oldUrl);
+            if(url) { await db.from('banners').update({ url }).eq('id', id); loadAll(); }
+        }
+        async function delBanner(id) {
+            if(confirm('حذف البنر؟')) { await db.from('banners').delete().eq('id', id); loadAll(); }
         }
 
-        document.addEventListener('DOMContentLoaded', renderAdminAll);
+        async function addPartner() {
+            let name = document.getElementById('pName').value.trim();
+            let logo = document.getElementById('pLogo').value.trim();
+            if(name && logo) { await db.from('partners').insert([{ name, logo }]); document.getElementById('pName').value=''; document.getElementById('pLogo').value=''; loadAll(); }
+        }
+        async function editPartner(id, oldName, oldLogo) {
+            let name = prompt('تعديل الاسم:', oldName);
+            let logo = prompt('تعديل اللوجو:', oldLogo);
+            if(name && logo) { await db.from('partners').update({ name, logo }).eq('id', id); loadAll(); }
+        }
+        async function delPartner(id) {
+            if(confirm('حذف الشريك؟')) { await db.from('partners').delete().eq('id', id); loadAll(); }
+        }
+
+        async function approveJob(id) { await db.from('jobs').update({ approved: true }).eq('id', id); loadAll(); }
+        async function toggleJob(id, cur) { await db.from('jobs').update({ status: cur === 'متوفر' ? 'غير متوفر' : 'متوفر' }).eq('id', id); loadAll(); }
+        async function editJob(id, t, c, p) {
+            let title = prompt('العنوان:', t);
+            let company = prompt('الجهة:', c);
+            let phone = prompt('الهاتف:', p);
+            if(title && company && phone) { await db.from('jobs').update({ title, company, phone }).eq('id', id); loadAll(); }
+        }
+        async function delJob(id) {
+            if(confirm('حذف الوظيفة؟')) { await db.from('jobs').delete().eq('id', id); loadAll(); }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAll);
     </script>
 </body>
 </html>
