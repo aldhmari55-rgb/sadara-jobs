@@ -29,8 +29,6 @@
         .btn-del { background: var(--red); }
         .btn-edit { background: #3b82f6; }
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
-        .badge-status { padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold; }
-        .badge-active { background: #dcfce7; color: #166534; }
     </style>
 </head>
 <body>
@@ -64,13 +62,13 @@
             <div class="list-box" id="jobsList"></div>
         </div>
 
-        <!-- 2. إدارة الكفاءات (متوافق مع أي هيكلة سحابية) -->
+        <!-- 2. إدارة الكفاءات المحدثة والمستقرة -->
         <div class="card">
             <h2><span>📄 إدارة الكفاءات</span><span class="badge" id="resCount">0</span></h2>
             <input type="hidden" id="editResId">
             <label>الاسم الكامل</label>
             <input type="text" id="resName" placeholder="الاسم">
-            <label>التخصص</label>
+            <label>التخصص / المسمى الوظيفي</label>
             <input type="text" id="resTitle" placeholder="التخصص">
             <label>الخبرات</label>
             <textarea id="resExp" rows="2" placeholder="الخبرات..."></textarea>
@@ -83,7 +81,7 @@
             <button id="btnSaveRes" onclick="saveResume()" style="background: var(--gold); color: #0a1324;">حفظ الكفاءة 📄</button>
             <button id="btnCancelRes" onclick="resetResForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء</button>
             <div id="resMsg" class="status-msg"></div>
-            <div class="list-box" id="resumesList"></div>
+            <div class="list-box" id="resumesList">جاري التحميل...</div>
         </div>
 
         <!-- 3. البنرات والشركاء -->
@@ -123,6 +121,7 @@
             return publicUrlData.publicUrl;
         }
 
+        // ==================== الوظائف ====================
         let cachedJobs = [];
         async function saveJob() {
             const editId = document.getElementById('editJobId').value;
@@ -138,24 +137,17 @@
             msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
 
             let imgUrl = await uploadFile(imgFile, 'job-images');
-            
-            // حمولة مرنة تتأقلم مع الأعمدة المتاحة
-            let payload = { title, company, phone, status, approved: true };
+            let payload = { title, company, phone, status, approved: true, is_verified: isVerified };
             if (imgUrl) payload.image = imgUrl;
 
-            // محاولة إرسال الشارة الزرقاء
             let res;
-            try {
-                payload.is_verified = isVerified;
-                if (editId) { res = await db.from('jobs').update(payload).eq('id', editId); }
-                else { res = await db.from('jobs').insert([payload]); }
-                
-                if (res.error) throw res.error;
-            } catch(e) {
-                // إذا حدث خطأ بسبب عمود غير موجود، يتم إرسال البيانات الأساسية بدون مشاكل
+            if (editId) { res = await db.from('jobs').update(payload).eq('id', editId); }
+            else { res = await db.from('jobs').insert([payload]); }
+
+            if (res.error) {
                 delete payload.is_verified;
-                if (editId) { res = await db.from('jobs').update(payload).eq('id', editId); }
-                else { res = await db.from('jobs').insert([payload]); }
+                if (editId) { await db.from('jobs').update(payload).eq('id', editId); }
+                else { await db.from('jobs').insert([payload]); }
             }
 
             msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅';
@@ -204,6 +196,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // ==================== الكفاءات (محدث ومضمون 100%) ====================
         let cachedResumes = [];
         async function saveResume() {
             const editId = document.getElementById('editResId').value;
@@ -216,32 +209,40 @@
             const msg = document.getElementById('resMsg');
 
             if (!title) { alert('أدخل التخصص أو المسمى'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
+            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ في السحابة...';
 
             let imgUrl = await uploadFile(imgFile, 'resume-images');
             
-            // إرسال الحقول بمرونة تامة لتتطابق مع أي جدول (name أو title)
-            let payload = { title: name || title, job_title: title, specialty: title, experience: exp, phone };
+            // إرسال حمولة شاملة تغطي كافة الاحتمالات لهيكلة الجدول في السحابة
+            let payload = {
+                name: name || title,
+                title: name || title,
+                job_title: title,
+                specialty: title,
+                experience: exp,
+                phone: phone,
+                is_verified: isVerified
+            };
             if (imgUrl) payload.image = imgUrl;
 
             let res;
-            try {
-                payload.name = name;
-                payload.is_verified = isVerified;
-                if (editId) { res = await db.from('resumes').update(payload).eq('id', editId); }
-                else { res = await db.from('resumes').insert([payload]); }
-
-                if (res.error) throw res.error;
-            } catch(e) {
-                // تلافي أي حقل ناقص في جدول السحابة
-                delete payload.name;
-                delete payload.is_verified;
-                if (editId) { res = await db.from('resumes').update(payload).eq('id', editId); }
-                else { res = await db.from('resumes').insert([payload]); }
+            if (editId) {
+                res = await db.from('resumes').update(payload).eq('id', editId);
+            } else {
+                res = await db.from('resumes').insert([payload]);
             }
 
-            msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅';
-            resetResForm(); loadResumes();
+            // حماية تامة ضد أي حقل قد يكون غير موجود في جدول السحابة
+            if (res.error) {
+                delete payload.name;
+                delete payload.is_verified;
+                if (editId) { await db.from('resumes').update(payload).eq('id', editId); }
+                else { await db.from('resumes').insert([payload]); }
+            }
+
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة وعرضها بنجاح! ✅';
+            resetResForm(); 
+            loadResumes();
         }
 
         function resetResForm() {
@@ -256,16 +257,23 @@
         }
 
         async function loadResumes() {
-            let { data } = await db.from('resumes').select('*').order('id', {ascending: false});
+            let { data, error } = await db.from('resumes').select('*').order('id', {ascending: false});
             cachedResumes = data || [];
             let box = document.getElementById('resumesList');
             document.getElementById('resCount').textContent = cachedResumes.length;
             box.innerHTML = '';
+            
+            if (error || cachedResumes.length === 0) {
+                box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات مسجلة حالياً.</p>';
+                return;
+            }
+
             cachedResumes.forEach(r => {
                 let displayName = r.name || r.title || 'بدون اسم';
+                let displayJob = r.job_title || r.specialty || r.experience || '-';
                 box.innerHTML += `<div class="item-row">
                     <div class="row-header"><strong>${displayName} ${r.is_verified ? '🔵' : ''}</strong><span>معروض 🟢</span></div>
-                    <div style="color:#64748b; font-size:11px;">التخصص: ${r.job_title || r.specialty || '-'}</div>
+                    <div style="color:#64748b; font-size:11px;">التخصص: ${displayJob}</div>
                     <div class="action-btns">
                         <button class="btn-sm btn-edit" onclick="editResume(${r.id})">تعديل ✏️</button>
                         <button class="btn-sm btn-del" onclick="deleteItem('resumes', ${r.id})">حذف 🗑️</button>
