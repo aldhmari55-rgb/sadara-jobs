@@ -235,28 +235,41 @@
             if (!phone || !pass) { alert('أدخل رقم الواتساب وكلمة المرور'); return; }
             msg.style.color = 'blue'; msg.textContent = 'جاري المعالجة...';
 
-            // حمولة أساسية متوافقة تماماً مع أعمدة جدول users القديمة والجديدة
-            let payload = { full_name: phone, phone: phone };
-            try { payload.password = pass; } catch(e) {}
-            try { payload.user_type = document.getElementById('authType').value; } catch(e) {}
             if (isRegisterMode) {
-                try { payload.full_name = document.getElementById('authName').value.trim() || phone; } catch(e) {}
-            }
+                const name = document.getElementById('authName').value.trim() || phone;
+                const type = document.getElementById('authType').value;
 
-            let { error } = await db.from('users').insert([payload]);
-            if (error) {
-                // محاولة ثانية بحقول أبسط في حال فشل الإدخال
-                let { error: err2 } = await db.from('users').insert([{ full_name: phone, phone: phone }]);
-                if (err2) {
-                    msg.style.color = 'red'; msg.textContent = 'خطأ في الاتصال بالسحابة.';
+                let { error } = await db.from('users').insert([{
+                    full_name: name,
+                    phone: phone,
+                    password: pass,
+                    user_type: type
+                }]);
+
+                if (error) {
+                    msg.style.color = 'red'; 
+                    msg.textContent = 'خطأ في الاتصال بالسحابة. تأكد من تطبيق أمر SQL المرفق.';
                     return;
                 }
-            }
 
-            localStorage.setItem('sadara_logged_phone', phone);
-            localStorage.setItem('sadara_logged_name', payload.full_name || phone);
-            msg.style.color = 'green'; msg.textContent = 'تم تسجيل حسابك بنجاح في المنصة! 🎉';
-            setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 1000);
+                localStorage.setItem('sadara_logged_phone', phone);
+                localStorage.setItem('sadara_logged_name', name);
+                msg.style.color = 'green'; 
+                msg.textContent = 'تم إنشاء الحساب بنجاح! 🎉';
+                setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 1000);
+            } else {
+                let { data: user, error } = await db.from('users').select('*').eq('phone', phone).single();
+                if (error || !user) {
+                    msg.style.color = 'red'; 
+                    msg.textContent = 'رقم الواتساب غير مسجل!';
+                    return;
+                }
+                localStorage.setItem('sadara_logged_phone', user.phone);
+                localStorage.setItem('sadara_logged_name', user.full_name || phone);
+                msg.style.color = 'green'; 
+                msg.textContent = `مرحباً بك مجدداً ${user.full_name || phone}! 👋`;
+                setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 1000);
+            }
         }
 
         function checkActiveSession() {
