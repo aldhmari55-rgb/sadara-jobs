@@ -47,6 +47,21 @@
         .ad-space-banner { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
         .ad-space-btn { background: #0a1324; color: #f59e0b; padding: 7px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; text-decoration: none; white-space: nowrap; }
 
+        /* حاوية الإعلانات الخارجية المدمجة */
+        .external-ad-container {
+            margin: 12px 0;
+            text-align: center;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 4px;
+            min-height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         .action-banner { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 14px; padding: 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
         .action-btn { background: white; color: #059669; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; text-decoration: none; }
 
@@ -98,6 +113,20 @@
             </div>
         </div>
 
+        <!-- 💰 إعلان البنر العلوي الجديد 728x90 -->
+        <div class="external-ad-container">
+            <script>
+              atOptions = {
+                'key' : 'd217ccef51617e77070d26190fd2a8fc',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+              };
+            </script>
+            <script src="https://bicea.org/22/d217ccef51617e77070d26190fd2a8fc"></script>
+        </div>
+
         <!-- السلايدر -->
         <div class="ad-slider-box" id="sliderBox">
             <div id="sliderImages"></div>
@@ -113,6 +142,11 @@
             <a href="https://wa.me/967780568507?text=مرحبا،%20اريد%20حجز%20مساحة%20إعلانية%20مدفوعة%20في%20بنرات%20المنصة" target="_blank" class="ad-space-btn">احجز إعلانك الآن 🌟</a>
         </div>
 
+        <!-- 💰 الإعلان الأهلي الأصلي Native Container -->
+        <div class="external-ad-container">
+            <script async="async" data-cfasync="false" src="https://bicea.org/21/f799bdedb2111fc82b52adfe61d93516"></script>
+            <div id="container-f799bdedb2111fc82b52adfe61d93516"></div>
+        </div>
         <div class="action-banner">
             <div>
                 <h3 style="font-size: 13px; font-weight: 800;">تريد نشر وظيفة أو إضافة ملفك؟</h3>
@@ -140,17 +174,14 @@
         async function init() {
             // 1. حساب وتحديث الإحصائيات
             try {
-                // جلب وزيادة العداد التراكمي
                 let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
                 let views = st ? (st.total_views + 1) : 1;
                 await db.from('stats').update({ total_views: views }).eq('id', 1);
                 document.getElementById('statTotalViews').textContent = views;
 
-                // عدد الزوار المتواجدين حالياً (ديناميكي بين 3 و 12)
                 let onlineNow = Math.floor(Math.random() * 8) + 3;
                 document.getElementById('statOnline').textContent = onlineNow;
 
-                // أعداد الوظائف والكفاءات
                 let { count: jobsCnt } = await db.from('jobs').select('*', { count: 'exact', head: true }).eq('approved', true);
                 let { count: resCnt } = await db.from('resumes').select('*', { count: 'exact', head: true });
 
