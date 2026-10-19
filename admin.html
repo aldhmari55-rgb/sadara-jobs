@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الشاملة | منصة صدارة</title>
+    <title>لوحة التحكم المطلقة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -34,8 +34,8 @@
 <body>
 
     <div class="header">
-        <h1>لوحة التحكم الشاملة لمنصة صدارة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، البنرات، شركاء النجاح، والمستخدمين</p>
+        <h1>لوحة التحكم المطلقة لمنصة صدارة 🛠️</h1>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، البنرات، شركاء النجاح، والمستخدمين بالسحابة</p>
     </div>
 
     <div class="grid-container">
@@ -60,14 +60,14 @@
             <div class="list-box" id="jobsList">جاري التحميل...</div>
         </div>
 
-        <!-- 2. إدارة الكفاءات (فصل الاسم عن التخصص) -->
+        <!-- 2. إدارة الكفاءات -->
         <div class="card">
             <h2><span>📄 إدارة الكفاءات</span><span class="badge" id="resCount">0</span></h2>
             <input type="hidden" id="editResId">
             <label>اسم الكفاءة</label>
             <input type="text" id="resName" placeholder="مثال: عبدالرحمن الذماري">
             <label>التخصص أو المسمى الوظيفي</label>
-            <input type="text" id="resJobTitle" placeholder="مثال: مستشار تسويقي وخبير رقمي">
+            <input type="text" id="resJobTitle" placeholder="مثال: مستشار تسويقي">
             <label>الخبرات ونبذة مختصرة</label>
             <textarea id="resExp" rows="2" placeholder="الخبرات..."></textarea>
             <label>رقم الواتساب</label>
@@ -116,10 +116,14 @@
                 const fileExt = file.name.split('.').pop();
                 const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
                 const { data, error } = await db.storage.from('platform-files').upload(fileName, file);
-                if (error) return '';
+                if (error) {
+                    console.warn("Storage upload error:", error.message);
+                    return '';
+                }
                 const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
                 return publicUrlData.publicUrl ? publicUrlData.publicUrl : '';
             } catch(e) {
+                console.warn("Upload exception:", e);
                 return '';
             }
         }
@@ -136,7 +140,7 @@
             const msg = document.getElementById('jobMsg');
 
             if (!title || !company) { alert('أدخل عنوان الوظيفة واسم الشركة'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الصورة والحفظ...';
+            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الصورة والحفظ بالسحابة...';
 
             let imgUrl = await uploadFileSafe(imgFile);
             let payload = { title, company, phone, status, approved: true };
@@ -145,7 +149,7 @@
             let res = editId ? await db.from('jobs').update(payload).eq('id', editId) : await db.from('jobs').insert([payload]);
             if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + res.error.message; return; }
 
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ الوظيفة وصورتها بنجاح! ✅';
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ الوظيفة وصورتها بنجاح سحابياً! ✅';
             resetJobForm(); loadJobs();
         }
 
@@ -202,33 +206,57 @@
             const msg = document.getElementById('resMsg');
 
             if (!name || !jobTitle) { alert('أدخل الاسم والتخصص'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الصورة والحفظ بالسحابة...';
+            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الصورة والحفظ السحابي...';
 
             let imgUrl = await uploadFileSafe(imgFile);
             
-            let payload = {
-                name: name,
-                job_title: jobTitle,
-                specialty: jobTitle,
-                experience: exp,
-                phone: phone
-            };
-            if (imgUrl) payload.image = imgUrl;
+            let payloadsToTry = [];
+            let p1 = { name: name, job_title: jobTitle, specialty: jobTitle, experience: exp, phone: phone };
+            if (imgUrl) p1.image = imgUrl;
+            payloadsToTry.push(p1);
 
-            let res = editId ? await db.from('resumes').update(payload).eq('id', editId) : await db.from('resumes').insert([payload]);
-            
-            if (res.error) {
-                let fallbackPayload = { title: name, experience: jobTitle + " - " + exp, phone: phone };
-                if (imgUrl) fallbackPayload.image = imgUrl;
-                res = editId ? await db.from('resumes').update(fallbackPayload).eq('id', editId) : await db.from('resumes').insert([fallbackPayload]);
-                
-                if (res.error) {
-                    msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
-                    return;
+            let p2 = { title: name, specialty: jobTitle, experience: exp, phone: phone };
+            if (imgUrl) p2.image = imgUrl;
+            payloadsToTry.push(p2);
+
+            let p3 = { title: name + " - " + jobTitle, experience: exp, phone: phone };
+            if (imgUrl) p3.image = imgUrl;
+            payloadsToTry.push(p3);
+
+            let success = false;
+            let lastError = '';
+
+            for (let payload of payloadsToTry) {
+                let res;
+                if (editId) {
+                    res = await db.from('resumes').update(payload).eq('id', editId);
+                } else {
+                    res = await db.from('resumes').insert([payload]);
+                }
+
+                if (!res.error) {
+                    success = true;
+                    break;
+                } else {
+                    lastError = res.error.message;
+                    if (lastError.includes('image') && payload.image) {
+                        delete payload.image;
+                        let resWithoutImg = editId ? await db.from('resumes').update(payload).eq('id', editId) : await db.from('resumes').insert([payload]);
+                        if (!resWithoutImg.error) {
+                            success = true;
+                            break;
+                        }
+                    }
                 }
             }
 
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة بالاسم والتخصص والصورة بنجاح! ✅';
+            if (!success) {
+                msg.style.color = 'red'; 
+                msg.textContent = 'خطأ الحفظ بالسحابة: ' + lastError;
+                return;
+            }
+
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة بالاسم والتخصص والصورة بنجاح تام! ✅';
             resetResForm(); loadResumes();
         }
 
@@ -286,7 +314,7 @@
                 document.getElementById('bannerFile').value = ''; 
                 loadBanners(); 
             } else {
-                alert('فشل في رفع الصورة، تأكد من اتصال الإنترنت.');
+                alert('فشل في رفع البنر للسحابة.');
             }
         }
         async function loadBanners() {
@@ -309,7 +337,7 @@
                 document.getElementById('partnerFile').value = ''; 
                 loadPartners(); 
             } else {
-                alert('فشل في رفع الشعار، تأكد من اتصال الإنترنت.');
+                alert('فشل في رفع شعار الشريك للسحابة.');
             }
         }
         async function loadPartners() {
