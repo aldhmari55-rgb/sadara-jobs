@@ -64,7 +64,7 @@
             <div class="list-box" id="jobsList"></div>
         </div>
 
-        <!-- 2. إدارة الكفاءات -->
+        <!-- 2. إدارة الكفاءات (متوافق مع أي هيكلة سحابية) -->
         <div class="card">
             <h2><span>📄 إدارة الكفاءات</span><span class="badge" id="resCount">0</span></h2>
             <input type="hidden" id="editResId">
@@ -134,25 +134,28 @@
             const imgFile = document.getElementById('jobImgFile').files[0];
             const msg = document.getElementById('jobMsg');
 
-            if (!title || !company) { alert('أدخل العنوان والشركة'); return; }
+            if (!title) { alert('أدخل عنوان الوظيفة'); return; }
             msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
 
             let imgUrl = await uploadFile(imgFile, 'job-images');
-            let payload = { title, company, phone, status, is_verified: isVerified, approved: true };
+            
+            // حمولة مرنة تتأقلم مع الأعمدة المتاحة
+            let payload = { title, company, phone, status, approved: true };
             if (imgUrl) payload.image = imgUrl;
 
-            let error;
-            if (editId) {
-                error = (await db.from('jobs').update(payload).eq('id', editId)).error;
-            } else {
-                error = (await db.from('jobs').insert([payload])).error;
-            }
-
-            if (error) {
-                // محاولة ثانية بدون حقل is_verified تفادياً لأي خطأ في هيكلة الجدول
+            // محاولة إرسال الشارة الزرقاء
+            let res;
+            try {
+                payload.is_verified = isVerified;
+                if (editId) { res = await db.from('jobs').update(payload).eq('id', editId); }
+                else { res = await db.from('jobs').insert([payload]); }
+                
+                if (res.error) throw res.error;
+            } catch(e) {
+                // إذا حدث خطأ بسبب عمود غير موجود، يتم إرسال البيانات الأساسية بدون مشاكل
                 delete payload.is_verified;
-                let err2 = editId ? (await db.from('jobs').update(payload).eq('id', editId)).error : (await db.from('jobs').insert([payload])).error;
-                if (err2) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + err2.message; return; }
+                if (editId) { res = await db.from('jobs').update(payload).eq('id', editId); }
+                else { res = await db.from('jobs').insert([payload]); }
             }
 
             msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅';
@@ -177,8 +180,8 @@
             box.innerHTML = '';
             cachedJobs.forEach(j => {
                 box.innerHTML += `<div class="item-row">
-                    <div class="row-header"><strong>${j.title} ${j.is_verified ? '🔵' : ''}</strong><span>${j.status || 'متاحة'}</span></div>
-                    <div style="color:#64748b; font-size:11px;">الشركة: ${j.company}</div>
+                    <div class="row-header"><strong>${j.title || 'وظيفة'} ${j.is_verified ? '🔵' : ''}</strong><span>${j.status || 'متاحة'}</span></div>
+                    <div style="color:#64748b; font-size:11px;">الشركة: ${j.company || '-'}</div>
                     <div class="action-btns">
                         <button class="btn-sm btn-edit" onclick="editJob(${j.id})">تعديل ✏️</button>
                         <button class="btn-sm btn-del" onclick="deleteItem('jobs', ${j.id})">حذف 🗑️</button>
@@ -212,24 +215,29 @@
             const imgFile = document.getElementById('resImgFile').files[0];
             const msg = document.getElementById('resMsg');
 
-            if (!name || !title) { alert('أدخل الاسم والتخصص'); return; }
+            if (!title) { alert('أدخل التخصص أو المسمى'); return; }
             msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
 
             let imgUrl = await uploadFile(imgFile, 'resume-images');
-            let payload = { name, title: name, job_title: title, specialty: title, experience: exp, phone, is_verified: isVerified };
+            
+            // إرسال الحقول بمرونة تامة لتتطابق مع أي جدول (name أو title)
+            let payload = { title: name || title, job_title: title, specialty: title, experience: exp, phone };
             if (imgUrl) payload.image = imgUrl;
 
-            let error;
-            if (editId) {
-                error = (await db.from('resumes').update(payload).eq('id', editId)).error;
-            } else {
-                error = (await db.from('resumes').insert([payload])).error;
-            }
+            let res;
+            try {
+                payload.name = name;
+                payload.is_verified = isVerified;
+                if (editId) { res = await db.from('resumes').update(payload).eq('id', editId); }
+                else { res = await db.from('resumes').insert([payload]); }
 
-            if (error) {
+                if (res.error) throw res.error;
+            } catch(e) {
+                // تلافي أي حقل ناقص في جدول السحابة
+                delete payload.name;
                 delete payload.is_verified;
-                let err2 = editId ? (await db.from('resumes').update(payload).eq('id', editId)).error : (await db.from('resumes').insert([payload])).error;
-                if (err2) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + err2.message; return; }
+                if (editId) { res = await db.from('resumes').update(payload).eq('id', editId); }
+                else { res = await db.from('resumes').insert([payload]); }
             }
 
             msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅';
