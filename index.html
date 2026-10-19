@@ -13,7 +13,9 @@
         body { background: var(--bg-light); padding-bottom: 90px; }
 
         .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); }
-        .nav-btn-cv { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; text-decoration: none; }
+        .nav-btns-group { display: flex; align-items: center; gap: 6px; }
+        .nav-btn-cv { background: var(--gold); color: #0a1324; padding: 6px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; text-decoration: none; }
+        .nav-btn-auth { background: #1e293b; color: white; border: 1px solid var(--gold); padding: 5px 9px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none; }
 
         .channel-bar { background: #25d366; color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; }
         .channel-bar a { color: white; text-decoration: underline; margin-right: 5px; }
@@ -59,13 +61,22 @@
         .ticker-content { display: flex; align-items: center; gap: 12px; animation: ticker 20s linear infinite; }
         .ticker-content img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* النافذة المنبثقة للتسجيل */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 90%; max-width: 380px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
+        .modal-card input, .modal-card select { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
     </style>
 </head>
 <body>
 
     <div class="top-navbar">
         <span style="font-weight: 900; font-size:15px;">صدارة للوظائف والخدمات</span>
-        <a href="resumes.html" class="nav-btn-cv">📄 دليل الكفاءات والسي في</a>
+        <div class="nav-btns-group">
+            <button class="nav-btn-auth" onclick="openAuthModal()">تسجيل 👤</button>
+            <a href="resumes.html" class="nav-btn-cv">📄 دليل الكفاءات والسي في</a>
+        </div>
     </div>
 
     <div class="channel-bar">
@@ -131,10 +142,45 @@
         </div>
     </div>
 
+    <!-- نافذة التسجيل المنبثقة البسيطة -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-card">
+            <h3 style="color:var(--primary); font-size:15px; margin-bottom:10px;">انضم لشبكة صدارة 🚀</h3>
+            
+            <label>نوع الحساب</label>
+            <select id="userType">
+                <option value="شركة/صاحب عمل">شركة / صاحب عمل 🏢</option>
+                <option value="باحث عن عمل">باحث عن عمل / فرد 👤</option>
+            </select>
+
+            <label>الاسم الكامل / اسم الشركة</label>
+            <input type="text" id="userName" placeholder="مثال: شركة صدارة / أحمد">
+
+            <label>البريد الإلكتروني (اختياري)</label>
+            <input type="email" id="userEmail" placeholder="example@mail.com">
+
+            <label>رقم الواتساب</label>
+            <input type="tel" id="userPhone" placeholder="770000000">
+
+            <button onclick="registerUser()" style="width:100%; background:var(--green); color:white; border:none; padding:9px; border-radius:8px; font-weight:bold; margin-top:14px; cursor:pointer; font-size:12px;">حفظ وتأكيد الحساب 📱</button>
+            <button onclick="closeAuthModal()" style="width:100%; background:#64748b; color:white; border:none; padding:7px; border-radius:8px; margin-top:6px; cursor:pointer; font-size:11px;">إلغاء</button>
+            <div id="authMsg" style="font-size:11px; margin-top:8px; text-align:center;"></div>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // الشارة الزرقاء الموثقة (Blue Tick Badge SVG)
+        function getBlueBadgeHTML() {
+            return `<span title="جهة موثوقة" style="display:inline-flex; align-items:center; vertical-align:middle; margin-right:3px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#1877F2"/>
+                </svg>
+            </span>`;
+        }
 
         async function init() {
             // 1. حساب وتحديث الإحصائيات
@@ -183,17 +229,41 @@
             let jBox = document.getElementById('jobsBox');
             (jobs || []).forEach(j => {
                 let imgTag = (j.image && j.image.trim() !== '') ? `<img src="${j.image}">` : '';
+                let verifiedBadge = j.is_verified ? getBlueBadgeHTML() : '';
+                
                 jBox.innerHTML += `<div class="job-card">
                     ${imgTag}
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <h3 style="font-size: 15px; color:#0f2347;">${j.title}</h3>
                         <span style="background:#dcfce7; color:#166534; padding:2px 6px; border-radius:10px; font-size:10px; font-weight:bold;">${j.status}</span>
                     </div>
-                    <p style="font-size: 12px; color:#64748b; margin-top:3px;">${j.company}</p>
+                    <p style="font-size: 12px; color:#64748b; margin-top:3px;">${j.company || 'جهة عمل'} ${verifiedBadge}</p>
                     <a href="https://wa.me/${j.phone.replace(/[^0-9]/g, '')}" target="_blank" class="apply-btn">تقديم عبر الواتساب 🟢</a>
                 </div>`;
             });
         }
+
+        // إدارية نافذة التسجيل
+        function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
+        function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+
+        async function registerUser() {
+            const type = document.getElementById('userType').value;
+            const name = document.getElementById('userName').value.trim();
+            const email = document.getElementById('userEmail').value.trim();
+            const phone = document.getElementById('userPhone').value.trim();
+            const msg = document.getElementById('authMsg');
+
+            if (!name || !phone) { alert('أدخل الاسم ورقم الواتساب'); return; }
+            msg.style.color = 'blue'; msg.textContent = 'جاري التسجيل...';
+
+            await db.from('users').insert([{ full_name: name, email: email, phone: phone, user_type: type }]);
+            localStorage.setItem('sadara_user', name);
+
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ حسابك بنجاح! 🎉';
+            setTimeout(() => { closeAuthModal(); }, 1000);
+        }
+
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
