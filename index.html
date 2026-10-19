@@ -21,12 +21,35 @@
         .hero { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 24px 16px 40px; text-align: center; }
         .main-container { max-width: 800px; margin: -25px auto 0; padding: 0 16px; }
 
-        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 16px; min-height: 130px; border: 1px solid #e2e8f0; }
+        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 12px; min-height: 130px; border: 1px solid #e2e8f0; }
         .ad-slider-img { width: 100%; max-height: 240px; object-fit: cover; display: none; opacity: 0; transition: opacity 0.6s; }
         .ad-slider-img.active { display: block; opacity: 1; }
         .slider-dots { position: absolute; bottom: 8px; display: flex; gap: 6px; width:100%; justify-content:center; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); }
         .dot.active { background: var(--gold); width: 18px; border-radius: 10px; }
+
+        /* بنر حجز المساحات الإعلانية المدفوعة */
+        .ad-space-banner {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.2);
+        }
+        .ad-space-btn {
+            background: #0a1324;
+            color: #f59e0b;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 11px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
 
         .action-banner { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 14px; padding: 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
         .action-btn { background: white; color: #059669; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; text-decoration: none; }
@@ -64,6 +87,15 @@
         <div class="ad-slider-box" id="sliderBox">
             <div id="sliderImages"></div>
             <div class="slider-dots" id="sliderDots"></div>
+        </div>
+
+        <!-- بنر حجز المساحات الإعلانية المدفوعة -->
+        <div class="ad-space-banner">
+            <div>
+                <h3 style="font-size: 13px; font-weight: 900;">📢 هل تريد الإعلان عن نشاطك أو متجرك؟</h3>
+                <p style="font-size: 10px; opacity: 0.95; margin-top: 2px;">تتوفر مساحات إعلانية مدفوعة في بنرات السلايدر لعرض إعلانك باستمرار!</p>
+            </div>
+            <a href="https://wa.me/967780568507?text=مرحبا،%20اريد%20حجز%20مساحة%20إعلانية%20مدفوعة%20في%20بنرات%20المنصة" target="_blank" class="ad-space-btn">احجز إعلانك الآن 🌟</a>
         </div>
 
         <!-- بنر تحفيزي للتواصل وتلقي الطلبات -->
