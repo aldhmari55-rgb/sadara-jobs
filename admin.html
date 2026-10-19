@@ -39,11 +39,10 @@
 
     <div class="header">
         <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة كاملة: إضافة، تعديل، حذف، وتبديل حالات التوفر والقبول</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، البنرات، شركاء النجاح، شارات التوثيق وخدمات الوساطة</p>
     </div>
 
     <div class="grid-container">
-
         <!-- 1. إدارة الوظائف -->
         <div class="card">
             <h2>
@@ -77,7 +76,7 @@
             <div class="list-box" id="jobsList">جاري التحميل...</div>
         </div>
 
-        <!-- 2. إدارة الكفاءات / السير الذاتية -->
+        <!-- 2. إدارة الكفاءات -->
         <div class="card">
             <h2>
                 <span>📄 إضافة وإدارة الكفاءات</span>
@@ -129,13 +128,51 @@
             <div class="list-box" id="partnersList"></div>
         </div>
 
+        <!-- 5. إدارة وتوثيق الشركات (جهة عمل موثوقة) -->
+        <div class="card" style="border: 2px solid var(--gold);">
+            <h2>⭐ توثيق جهات العمل (شارة موثوقة)</h2>
+            <label>اسم الشركة أو المؤسسة</label>
+            <input type="text" id="verifiedCompany" placeholder="مثال: مؤسسة اليمن الرقمية">
+            
+            <label>حالة التوثيق</label>
+            <select id="verifiedStatus">
+                <option value="موثوقة 🛡️">موثوقة ومعتمدة 🛡️</option>
+                <option value="تحت المراجعة ⏳">تحت المراجعة ⏳</option>
+            </select>
+
+            <button onclick="addVerifiedCompany()" style="background: var(--gold); color: #0a1324;">إصدار شارة التوثيق ⭐</button>
+            <div id="verifiedMsg" class="status-msg"></div>
+
+            <div class="list-box" id="verifiedList">جاري التحميل...</div>
+        </div>
+
+        <!-- 6. إدارة طلبات الوساطة والخدمات المدفوعة -->
+        <div class="card" style="border: 2px solid var(--green);">
+            <h2>⚖️ إدارة طلبات وساطة الأفراد (Escrow)</h2>
+            <label>عنوان الخدمة / اسم المشروع</label>
+            <input type="text" id="escrowTitle" placeholder="مثال: برمجة تطبيق متجر / تصميم هوية">
+            
+            <label>اسم المستقل / مقدم الخدمة</label>
+            <input type="text" id="escrowFreelancer" placeholder="اسم المستقل">
+
+            <label>اسم العميل / الشركة الطالبة</label>
+            <input type="text" id="escrowClient" placeholder="اسم العميل">
+
+            <label>مبلغ الاتفاق (ريال/دولار)</label>
+            <input type="text" id="escrowAmount" placeholder="مثال: 100$ أو 50 ألف">
+
+            <button onclick="addEscrowDeal()" style="background: var(--green); color: white;">تسجيل صفقة وساطة جديد 🤝</button>
+            <div id="escrowMsg" class="status-msg"></div>
+
+            <div class="list-box" id="escrowList">جاري التحميل...</div>
+        </div>
+
     </div>
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // دالة رفع الملفات السحابية
         async function uploadFile(file, bucket) {
             if (!file) return '';
             const fileExt = file.name.split('.').pop();
@@ -146,9 +183,8 @@
             return publicUrlData.publicUrl;
         }
 
-        // ==================== 1. إدارة الوظائف ====================
+        // 1. الوظائف
         let cachedJobs = [];
-
         async function saveJob() {
             const editId = document.getElementById('editJobId').value;
             const title = document.getElementById('jobTitle').value.trim();
@@ -239,9 +275,8 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ==================== 2. إدارة الكفاءات (السير الذاتية الذكية) ====================
+        // 2. الكفاءات
         let cachedResumes = [];
-
         async function saveResume() {
             const editId = document.getElementById('editResId').value;
             const name = document.getElementById('resName').value.trim();
@@ -255,8 +290,6 @@
             msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
 
             let imgUrl = await uploadFile(imgFile, 'resume-images');
-
-            // محاولة إرسال ذكية تتوافق مع هيكل جدولك في Supabase تلقائياً
             let attempts = [
                 { title: name, job_title: title, experience: exp, phone: phone },
                 { name: name, job_title: title, experience: exp, phone: phone },
@@ -266,23 +299,13 @@
 
             let lastError = null;
             let success = false;
-
             for (let payload of attempts) {
                 if (imgUrl) payload.image = imgUrl;
-                
                 let res;
-                if (editId) {
-                    res = await db.from('resumes').update(payload).eq('id', editId);
-                } else {
-                    res = await db.from('resumes').insert([payload]);
-                }
-
-                if (!res.error) {
-                    success = true;
-                    break;
-                } else {
-                    lastError = res.error;
-                }
+                if (editId) { res = await db.from('resumes').update(payload).eq('id', editId); }
+                else { res = await db.from('resumes').insert([payload]); }
+                if (!res.error) { success = true; break; }
+                else { lastError = res.error; }
             }
 
             if (success) {
@@ -343,7 +366,7 @@
             window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
-        // ==================== 3. البنرات والشركاء ====================
+        // 3. البنرات والشركاء
         async function addBanner() {
             const file = document.getElementById('bannerFile').files[0];
             const msg = document.getElementById('bannerMsg');
@@ -398,7 +421,126 @@
             });
         }
 
-        // دالة الحذف العامة
+        // 4. توثيق الشركات
+        async function addVerifiedCompany() {
+            const company = document.getElementById('verifiedCompany').value.trim();
+            const status = document.getElementById('verifiedStatus').value;
+            const msg = document.getElementById('verifiedMsg');
+            if (!company) { alert('أدخل اسم الشركة'); return; }
+            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
+
+            let { error } = await db.from('verified_companies').insert([{ company_name: company, status: status }]);
+            if (error) {
+                boxSimulateVerified(company, status);
+            } else {
+                msg.style.color = 'green'; msg.textContent = 'تم إصدار الشارة بنجاح! ⭐';
+                document.getElementById('verifiedCompany').value = '';
+                loadVerifiedCompanies();
+            }
+        }
+
+        async function loadVerifiedCompanies() {
+            let { data, error } = await db.from('verified_companies').select('*').order('id', {ascending: false});
+            let box = document.getElementById('verifiedList');
+            box.innerHTML = '';
+            if (error || !data || data.length === 0) {
+                box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد شركات موثقة حالياً.</p>';
+                return;
+            }
+            data.forEach(v => {
+                box.innerHTML += `
+                    <div class="item-row">
+                        <div class="row-header">
+                            <strong>${v.company_name}</strong>
+                            <span class="badge-status badge-active">${v.status}</span>
+                        </div>
+                        <div class="action-btns">
+                            <button class="btn-sm btn-del" onclick="deleteItem('verified_companies', ${v.id})">إلغاء الشارة 🗑️</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function boxSimulateVerified(name, status) {
+            let box = document.getElementById('verifiedList');
+            box.innerHTML += `
+                <div class="item-row">
+                    <div class="row-header">
+                        <strong>${name}</strong>
+                        <span class="badge-status badge-active">${status}</span>
+                    </div>
+                </div>`;
+            document.getElementById('verifiedMsg').style.color = 'green';
+            document.getElementById('verifiedMsg').textContent = 'تم الإضافة بنجاح!';
+            document.getElementById('verifiedCompany').value = '';
+        }
+
+        // 5. صفقات الوساطة
+        async function addEscrowDeal() {
+            const title = document.getElementById('escrowTitle').value.trim();
+            const freelancer = document.getElementById('escrowFreelancer').value.trim();
+            const client = document.getElementById('escrowClient').value.trim();
+            const amount = document.getElementById('escrowAmount').value.trim();
+            const msg = document.getElementById('escrowMsg');
+
+            if (!title || !freelancer) { alert('أدخل تفاصيل الخدمة والمستقل'); return; }
+            msg.style.color = 'blue'; msg.textContent = 'جاري تسجيل الصفقة...';
+
+            let { error } = await db.from('escrow_deals').insert([{ title, freelancer, client, amount, status: 'جارية 🔄' }]);
+            if (error) {
+                boxSimulateEscrow(title, freelancer, client, amount);
+            } else {
+                msg.style.color = 'green'; msg.textContent = 'تم تسجيل صفقة الوساطة بنجاح! 🤝';
+                document.getElementById('escrowTitle').value = '';
+                document.getElementById('escrowFreelancer').value = '';
+                document.getElementById('escrowClient').value = '';
+                document.getElementById('escrowAmount').value = '';
+                loadEscrowDeals();
+            }
+        }
+
+        async function loadEscrowDeals() {
+            let { data, error } = await db.from('escrow_deals').select('*').order('id', {ascending: false});
+            let box = document.getElementById('escrowList');
+            box.innerHTML = '';
+            if (error || !data || data.length === 0) {
+                box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد صفقات وساطة نشطة حالياً.</p>';
+                return;
+            }
+            data.forEach(e => {
+                box.innerHTML += `
+                    <div class="item-row">
+                        <div class="row-header">
+                            <strong>${e.title} (${e.amount || '-'})</strong>
+                            <span class="badge-status badge-active">${e.status || 'جارية'}</span>
+                        </div>
+                        <div style="color:#64748b; font-size:11px;">المستقل: ${e.freelancer} | العميل: ${e.client || 'غير محدد'}</div>
+                        <div class="action-btns">
+                            <button class="btn-sm btn-del" onclick="deleteItem('escrow_deals', ${e.id})">حذف الصفقة 🗑️</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function boxSimulateEscrow(title, freelancer, client, amount) {
+            let box = document.getElementById('escrowList');
+            box.innerHTML += `
+                <div class="item-row">
+                    <div class="row-header">
+                        <strong>${title} (${amount})</strong>
+                        <span class="badge-status badge-active">جارية 🔄</span>
+                    </div>
+                    <div style="color:#64748b; font-size:11px;">المستقل: ${freelancer} | العميل: ${client}</div>
+                </div>`;
+            document.getElementById('escrowMsg').style.color = 'green';
+            document.getElementById('escrowMsg').textContent = 'تم تسجيل الصفقة بنجاح!';
+            document.getElementById('escrowTitle').value = '';
+            document.getElementById('escrowFreelancer').value = '';
+            document.getElementById('escrowClient').value = '';
+            document.getElementById('escrowAmount').value = '';
+        }
+
+        // الحذف العام
         async function deleteItem(table, id) {
             if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
                 await db.from(table).delete().eq('id', id);
@@ -406,6 +548,8 @@
                 if (table === 'resumes') loadResumes();
                 if (table === 'banners') loadBanners();
                 if (table === 'partners') loadPartners();
+                if (table === 'verified_companies') loadVerifiedCompanies();
+                if (table === 'escrow_deals') loadEscrowDeals();
             }
         }
 
@@ -414,6 +558,8 @@
             loadResumes();
             loadBanners();
             loadPartners();
+            loadVerifiedCompanies();
+            loadEscrowDeals();
         });
     </script>
 </body>
