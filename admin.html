@@ -62,7 +62,7 @@
             <div class="list-box" id="jobsList"></div>
         </div>
 
-        <!-- 2. إدارة الكفاءات المحدثة والمستقرة -->
+        <!-- 2. إدارة الكفاءات المحسنة -->
         <div class="card">
             <h2><span>📄 إدارة الكفاءات</span><span class="badge" id="resCount">0</span></h2>
             <input type="hidden" id="editResId">
@@ -121,7 +121,6 @@
             return publicUrlData.publicUrl;
         }
 
-        // ==================== الوظائف ====================
         let cachedJobs = [];
         async function saveJob() {
             const editId = document.getElementById('editJobId').value;
@@ -140,14 +139,10 @@
             let payload = { title, company, phone, status, approved: true, is_verified: isVerified };
             if (imgUrl) payload.image = imgUrl;
 
-            let res;
-            if (editId) { res = await db.from('jobs').update(payload).eq('id', editId); }
-            else { res = await db.from('jobs').insert([payload]); }
-
+            let res = editId ? await db.from('jobs').update(payload).eq('id', editId) : await db.from('jobs').insert([payload]);
             if (res.error) {
-                delete payload.is_verified;
-                if (editId) { await db.from('jobs').update(payload).eq('id', editId); }
-                else { await db.from('jobs').insert([payload]); }
+                msg.style.color = 'red'; msg.textContent = 'خطأ: ' + res.error.message;
+                return;
             }
 
             msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅';
@@ -196,7 +191,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ==================== الكفاءات (محدث ومضمون 100%) ====================
         let cachedResumes = [];
         async function saveResume() {
             const editId = document.getElementById('editResId').value;
@@ -209,11 +203,10 @@
             const msg = document.getElementById('resMsg');
 
             if (!title) { alert('أدخل التخصص أو المسمى'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ في السحابة...';
+            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ الفعلي بالسحابة...';
 
             let imgUrl = await uploadFile(imgFile, 'resume-images');
             
-            // إرسال حمولة شاملة تغطي كافة الاحتمالات لهيكلة الجدول في السحابة
             let payload = {
                 name: name || title,
                 title: name || title,
@@ -225,22 +218,15 @@
             };
             if (imgUrl) payload.image = imgUrl;
 
-            let res;
-            if (editId) {
-                res = await db.from('resumes').update(payload).eq('id', editId);
-            } else {
-                res = await db.from('resumes').insert([payload]);
-            }
+            let res = editId ? await db.from('resumes').update(payload).eq('id', editId) : await db.from('resumes').insert([payload]);
 
-            // حماية تامة ضد أي حقل قد يكون غير موجود في جدول السحابة
             if (res.error) {
-                delete payload.name;
-                delete payload.is_verified;
-                if (editId) { await db.from('resumes').update(payload).eq('id', editId); }
-                else { await db.from('resumes').insert([payload]); }
+                msg.style.color = 'red'; 
+                msg.textContent = 'خطأ سحابي: ' + res.error.message;
+                return;
             }
 
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة وعرضها بنجاح! ✅';
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة ورفعها بنجاح تام! ✅';
             resetResForm(); 
             loadResumes();
         }
@@ -270,7 +256,7 @@
 
             cachedResumes.forEach(r => {
                 let displayName = r.name || r.title || 'بدون اسم';
-                let displayJob = r.job_title || r.specialty || r.experience || '-';
+                let displayJob = r.job_title || r.specialty || '-';
                 box.innerHTML += `<div class="item-row">
                     <div class="row-header"><strong>${displayName} ${r.is_verified ? '🔵' : ''}</strong><span>معروض 🟢</span></div>
                     <div style="color:#64748b; font-size:11px;">التخصص: ${displayJob}</div>
