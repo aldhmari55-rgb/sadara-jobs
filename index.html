@@ -29,7 +29,7 @@
 <body>
 
     <div class="top-navbar">
-        <span style="font-weight: 900;">صدارة للوظائف</span>
+        <span style="font-weight: 900;">صدارة للوظائف والخدمات</span>
     </div>
 
     <div class="hero">
@@ -43,7 +43,7 @@
     </div>
 
     <div class="partners-ticker">
-        <div class="ticker-label">شركاء النجاح</div>
+        <div class="ticker-label">شركاء النجاح 🤝</div>
         <div style="display:flex; overflow:hidden; width:100%;">
             <div class="ticker-content" id="tickerBox"></div>
         </div>
@@ -85,11 +85,16 @@
             jBox.innerHTML = '';
             (jobs || []).forEach(j => {
                 let imgTag = (j.image && j.image.trim() !== '') ? `<img src="${j.image}">` : '';
+                let statusBadge = (j.status === 'متوفر') ? '<span style="background:#dcfce7; color:#166534; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:bold;">متوفر</span>' : '<span style="background:#fee2e2; color:#991b1b; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:bold;">غير متوفر</span>';
+                
                 jBox.innerHTML += `<div class="job-card">
                     ${imgTag}
-                    <h3 style="font-size: 16px; color:#0f2347;">${j.title}</h3>
-                    <p style="font-size: 13px; color:#64748b;">${j.company}</p>
-                    <a href="https://wa.me/${j.phone}" target="_blank" class="apply-btn">تقديم عبر الواتساب</a>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="font-size: 16px; color:#0f2347;">${j.title}</h3>
+                        ${statusBadge}
+                    </div>
+                    <p style="font-size: 13px; color:#64748b; margin-top:4px;">${j.company}</p>
+                    <a href="https://wa.me/${j.phone}" target="_blank" class="apply-btn">تقديم عبر الواتساب 🟢</a>
                 </div>`;
             });
         }
