@@ -161,7 +161,7 @@
             }
         }
 
-        // 2. إضافة سيرة ذاتية
+        // 2. إضافة سيرة ذاتية (معدلة بدون حقل approved المتسبب في الخطأ)
         async function addResume() {
             const name = document.getElementById('resName').value.trim();
             const title = document.getElementById('resTitle').value.trim();
@@ -183,8 +183,7 @@
                 experience: exp,
                 phone: phone,
                 image: imgUrl,
-                file_url: pdfUrl,
-                approved: true
+                file_url: pdfUrl
             }]);
 
             if (error) {
