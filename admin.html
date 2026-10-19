@@ -3,258 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة السيطرة والإحصائيات الشاملة | صدارة</title>
+    <title>لوحة إدارة منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --dark: #0f172a; --blue: #2563eb; --bg: #f8fafc; --card: #ffffff; --green: #16a34a; --red: #dc2626; --gold: #ca8a04; }
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg: #f8fafc; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); padding: 12px; color: #1e293b; padding-bottom: 60px; }
-        .box { max-width: 800px; margin: 0 auto; background: var(--card); border: 2px solid var(--dark); border-radius: 12px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h1 { font-size: 18px; text-align: center; margin-bottom: 16px; color: var(--dark); font-weight: 900; }
-        .sec { background: #f1f5f9; padding: 14px; border-radius: 10px; margin-bottom: 16px; border: 1px solid #cbd5e1; }
-        .sec h3 { font-size: 14px; margin-bottom: 8px; color: var(--dark); font-weight: 900; }
-        
-        /* قسم لوحة الإحصائيات الإدارية */
-        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
-        .dash-card { background: white; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; text-align: center; }
-        .dash-card h2 { font-size: 20px; font-weight: 900; color: var(--blue); }
-        .dash-card p { font-size: 11px; font-weight: 700; color: #64748b; }
-
-        input, select, textarea { width: 100%; padding: 8px; margin: 4px 0; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; background: #fff; }
-        .btn { border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; color: white; display: inline-flex; align-items: center; gap: 4px; }
-        .btn-add { background: var(--green); width: 100%; justify-content: center; padding: 8px; margin-top: 6px; font-size: 12px; }
-        .btn-edit { background: var(--blue); }
-        .btn-del { background: var(--red); }
-        .btn-toggle { background: var(--gold); }
-        .item { background: white; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 8px; }
-        .flex-btns { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
-        .partner-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-        .partner-card { background: white; padding: 6px; border-radius: 8px; border: 1px solid #cbd5e1; width: 100px; text-align: center; }
-        .partner-card img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-        .upload-label { background: #e2e8f0; border: 1px dashed #94a3b8; border-radius: 6px; padding: 8px; text-align: center; font-size: 11px; cursor: pointer; display: block; margin: 4px 0; font-weight: bold; color: #0f172a; }
+        body { background: var(--bg); padding: 15px; color: #0f172a; }
+        .header { background: var(--primary); color: white; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid var(--gold); }
+        .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 900px; margin: 0 auto; }
+        @media(min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; } }
+        .card { background: white; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .card h2 { font-size: 16px; margin-bottom: 12px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 6px; }
+        label { font-size: 12px; font-weight: bold; display: block; margin-top: 8px; color: #475569; }
+        input, select, textarea { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
+        input[type="file"] { background: #f1f5f9; cursor: pointer; }
+        button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #1e3a8a; }
+        .status-msg { margin-top: 8px; font-size: 11px; font-weight: bold; text-align: center; }
+        .list-box { margin-top: 15px; max-height: 250px; overflow-y: auto; }
+        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #f1f5f9; font-size: 12px; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; width: auto; margin-top: 0; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h1>⚡ لوحة السيطرة والإحصائيات الشاملة (صدارة)</h1>
 
-        <!-- 📊 شاشة الإحصائيات الإدارية الخاصة -->
-        <div class="sec" style="background:#f0fdf4; border-color:#86efac;">
-            <h3 style="color:#166534;">📊 مركز الإحصائيات والتحليلات الخاصة</h3>
-            <div class="dashboard-grid">
-                <div class="dash-card">
-                    <h2 id="admTotalViews">...</h2>
-                    <p>إجمالي الزيارات 👁️</p>
-                </div>
-                <div class="dash-card">
-                    <h2 id="admTotalJobs">...</h2>
-                    <p>الوظائف المعروضة 💼</p>
-                </div>
-                <div class="dash-card">
-                    <h2 id="admTotalResumes">...</h2>
-                    <p>السير الذاتية والكفاءات 📄</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 1. إدارة البنرات -->
-        <div class="sec">
-            <h3>🖼️ إدارة البنرات الإعلانية (السلايدر العلوي)</h3>
-            <label class="upload-label" onclick="document.getElementById('bFile').click()">📤 اختيار ورفع صورة البنر من الجوال</label>
-            <input type="file" id="bFile" accept="image/*" style="display:none;" onchange="uploadFile('bFile', 'bUrl')">
-            <input type="text" id="bUrl" placeholder="أو مسار/رابط الصورة يدويًا">
-            <button class="btn btn-add" onclick="addBanner()">نشر البنر بالسحابة 🟢</button>
-            <div id="bList" style="margin-top:10px;"></div>
-        </div>
-
-        <!-- 2. إدارة الشركاء -->
-        <div class="sec">
-            <h3>🤝 إدارة شركاء النجاح (الشريط المتحرك)</h3>
-            <input type="text" id="pName" placeholder="اسم الشريك / الشركة">
-            <label class="upload-label" onclick="document.getElementById('pFile').click()">📤 اختيار ورفع الشعار من الجوال</label>
-            <input type="file" id="pFile" accept="image/*" style="display:none;" onchange="uploadFile('pFile', 'pLogo')">
-            <input type="text" id="pLogo" placeholder="أو مسار الشعار يدويًا">
-            <button class="btn btn-add" onclick="addPartner()">إضافة الشريك للسحابة 🟢</button>
-            <div class="partner-grid" id="pList"></div>
-        </div>
-
-        <!-- 3. إضافة وظيفة جديدة -->
-        <div class="sec" style="background:#e0f2fe; border-color:#7dd3fc;">
-            <h3 style="color:#0369a1;">➕ إضافة شاغر وظيفي جديد</h3>
-            <input type="text" id="jTitle" placeholder="عنوان الوظيفة (مثال: محاسب عام، مسوق)">
-            <input type="text" id="jCompany" placeholder="اسم الشركة أو الجهة">
-            <input type="text" id="jPhone" value="967780568507" placeholder="رقم الواتساب للتواصل">
-            <label class="upload-label" onclick="document.getElementById('jFile').click()">📤 اختيار ورفع صورة الإعلان (اختياري)</label>
-            <input type="file" id="jFile" accept="image/*" style="display:none;" onchange="uploadFile('jFile', 'jImage')">
-            <input type="text" id="jImage" placeholder="أو مسار الصورة يدويًا">
-            <select id="jStatus">
-                <option value="متوفر">الحالة: متوفر</option>
-                <option value="غير متوفر">الحالة: غير متوفر</option>
-            </select>
-            <button class="btn btn-add" onclick="addJob()">نشر الوظيفة بالمنصة فوراً 🟢</button>
-        </div>
-
-        <!-- 4. إدارة الوظائف المعروضة -->
-        <div class="sec">
-            <h3>📋 إدارة وتعديل الوظائف المعلنة</h3>
-            <div id="jList"></div>
-        </div>
-
-        <!-- 5. إضافة وإدارة دليل الكفاءات والسي في -->
-        <div class="sec" style="background:#ecfdf5; border-color:#a7f3d0;">
-            <h3 style="color:#047857;">📄 إضافة وإدارة السير الذاتية والكفاءات</h3>
-            <input type="text" id="rName" placeholder="الاسم الكامل">
-            <input type="text" id="rTitle" placeholder="المسمى الوظيفي / الخدمة">
-            <select id="rCat">
-                <option value="التسويق والترويج">📢 التسويق والترويج</option>
-                <option value="المحاسبة والمالية">📊 المحاسبة والمالية</option>
-                <option value="الطب والصحة">🩺 الطب والصحة</option>
-                <option value="التقنية وبرمجة">💻 التقنية والبرمجة</option>
-                <option value="الخدمات والنظافه">🧹 الخدمات العامة والنظافة</option>
-                <option value="أخرى">📁 تخصصات أخرى</option>
-            </select>
-            <input type="text" id="rPhone" value="967780568507" placeholder="رقم الواتساب">
-            <input type="text" id="rSkills" placeholder="المهارات (مفصولة بفواصل)">
-            <textarea id="rExp" placeholder="نبذة عن الخبرة والخدمة"></textarea>
-            <label class="upload-label" onclick="document.getElementById('rCvFile').click()">📤 اختيار ورفع ملف السي في CV (PDF/صورة)</label>
-            <input type="file" id="rCvFile" style="display:none;" onchange="uploadFile('rCvFile', 'rCvUrl')">
-            <input type="text" id="rCvUrl" placeholder="أو رابط السي في يدويًا">
-            <button class="btn btn-add" onclick="addResume()">نشر الكفاءة في الدليل فوراً 🟢</button>
-            
-            <hr style="margin:12px 0; border:none; border-top:1px solid #a7f3d0;">
-            <div id="rList"></div>
-        </div>
+    <div class="header">
+        <h1>لوحة تحكم منصة صدارة للوظائف 🛠️</h1>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، السير الذاتية، البنرات والشركاء</p>
     </div>
 
+    <div class="grid-container">
+
+        <!-- 1. إضافة وظيفة جديدة -->
+        <div class="card">
+            <h2>💼 إضافة وظيفة جديدة</h2>
+            <label>عنوان الوظيفة / الخدمة</label>
+            <input type="text" id="jobTitle" placeholder="مثال: مطلوب محاسب خبرة">
+            
+            <label>اسم الشركة / الجهة</label>
+            <input type="text" id="jobCompany" placeholder="مثال: شركة صدارة">
+            
+            <label>رقم التواصل (واتساب)</label>
+            <input type="text" id="jobPhone" value="967780568507">
+            
+            <label>حالة الوظيفة</label>
+            <select id="jobStatus">
+                <option value="متاحة">متاحة 🟢</option>
+                <option value="مغلقة">مغلقة 🔴</option>
+            </select>
+
+            <label>صورة الوظيفة (اختياري)</label>
+            <input type="file" id="jobImgFile" accept="image/*">
+
+            <button onclick="addJob()">نشر الوظيفة الآن 🚀</button>
+            <div id="jobMsg" class="status-msg"></div>
+        </div>
+
+        <!-- 2. إضافة سيرة ذاتية (كفاءة) -->
+        <div class="card">
+            <h2>📄 إضافة سيرة ذاتية / كفاءة</h2>
+            <label>الاسم الكامل</label>
+            <input type="text" id="resName" placeholder="مثال: عبدالرحمن الذماري">
+            
+            <label>المسمى الوظيفي / التخصص</label>
+            <input type="text" id="resTitle" placeholder="مثال: مستشار تسويق ومدرب">
+            
+            <label>الخبرات / نبذة مختصرة</label>
+            <textarea id="resExp" rows="2" placeholder="خبرة سنتين في المجال..."></textarea>
+            
+            <label>رقم الواتساب للتواصل</label>
+            <input type="text" id="resPhone" value="967780568507">
+
+            <label>صورة الشخص / الشعار (اختياري)</label>
+            <input type="file" id="resImgFile" accept="image/*">
+
+            <label>ملف الـ CV بصيغة PDF (اختياري)</label>
+            <input type="file" id="resPdfFile" accept=".pdf">
+
+            <button onclick="addResume()" style="background: var(--gold); color: #0a1324;">إضافة السيرة الذاتية 📄</button>
+            <div id="resMsg" class="status-msg"></div>
+        </div>
+
+        <!-- 3. رفع بنر للسلايدر المتحرك -->
+        <div class="card">
+            <h2>🖼️ إضافة بنر للسلايدر العلوي</h2>
+            <label>اختر صورة البنر</label>
+            <input type="file" id="bannerFile" accept="image/*">
+            <button onclick="addBanner()">رفع البنر للسلايدر 📤</button>
+            <div id="bannerMsg" class="status-msg"></div>
+            
+            <div class="list-box" id="bannersList"></div>
+        </div>
+
+        <!-- 4. إضافة شعار شركاء النجاح -->
+        <div class="card">
+            <h2>🤝 إضافة شعار شريك نجاح</h2>
+            <label>اختر صورة الشعار</label>
+            <input type="file" id="partnerFile" accept="image/*">
+            <button onclick="addPartner()">إضافة للشريط المتحرك 🔄</button>
+            <div id="partnerMsg" class="status-msg"></div>
+
+            <div class="list-box" id="partnersList"></div>
+        </div>
+
+    </div>
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG"; 
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function uploadFile(inputId, targetId) {
-            let fileInput = document.getElementById(inputId);
-            let file = fileInput.files[0];
-            if (!file) return;
+        // دالة رفع الملفات إلى Supabase Storage
+        async function uploadFile(file, bucket) {
+            if (!file) return '';
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const { data, error } = await db.storage.from(bucket).upload(fileName, file);
+            
+            if (error) {
+                console.error("Upload Error:", error);
+                return '';
+            }
+            const { data: publicUrlData } = db.storage.from(bucket).getPublicUrl(fileName);
+            return publicUrlData.publicUrl;
+        }
 
-            let cleanFileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+        // 1. نشر وظيفة
+        async function addJob() {
+            const title = document.getElementById('jobTitle').value.trim();
+            const company = document.getElementById('jobCompany').value.trim();
+            const phone = document.getElementById('jobPhone').value.trim();
+            const status = document.getElementById('jobStatus').value;
+            const imgFile = document.getElementById('jobImgFile').files[0];
+            const msg = document.getElementById('jobMsg');
 
-            try {
-                let { data, error } = await db.storage.from('platform-files').upload(cleanFileName, file, { cacheControl: '3600', upsert: true });
-                if (error) {
-                    let { data: d2, error: e2 } = await db.storage.from('cv_files').upload(cleanFileName, file, { upsert: true });
-                    if (e2) throw e2;
-                    let { data: pubData2 } = db.storage.from('cv_files').getPublicUrl(cleanFileName);
-                    document.getElementById(targetId).value = pubData2.publicUrl;
-                } else {
-                    let { data: pubData } = db.storage.from('platform-files').getPublicUrl(cleanFileName);
-                    document.getElementById(targetId).value = pubData.publicUrl;
-                }
-                alert('✅ تم رفع الصورة/الملف إلى السحابة بنجاح وتم وضع الرابط التلقائي!');
-            } catch (err) {
-                console.error("Upload Error Details:", err);
-                alert('❌ تعذر الرفع: يرجى التأكد من تشغيل أمر إنشاء المجلد والأذونات في SQL Editor بـ Supabase.');
+            if (!title || !company) { alert('الرجاء كتابة العنوان واسم الشركة'); return; }
+            msg.style.color = 'blue'; msg.textContent = 'جاري النشر والرفع...';
+
+            let imgUrl = await uploadFile(imgFile, 'job-images');
+
+            const { error } = await db.from('jobs').insert([{
+                title: title,
+                company: company,
+                phone: phone,
+                status: status,
+                image: imgUrl,
+                approved: true
+            }]);
+
+            if (error) {
+                msg.style.color = 'red'; msg.textContent = 'حدث خطأ: ' + error.message;
+            } else {
+                msg.style.color = 'green'; msg.textContent = 'تم نشر الوظيفة بنجاح! ✅';
+                document.getElementById('jobTitle').value = '';
+                document.getElementById('jobCompany').value = '';
+                document.getElementById('jobImgFile').value = '';
             }
         }
 
-        async function loadAll() {
-            // جلب الأرقام والإحصائيات الخاصة بالإدارة
-            try {
-                let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
-                document.getElementById('admTotalViews').textContent = st ? st.total_views : 0;
-
-                let { count: jCnt } = await db.from('jobs').select('*', { count: 'exact', head: true });
-                let { count: rCnt } = await db.from('resumes').select('*', { count: 'exact', head: true });
-
-                document.getElementById('admTotalJobs').textContent = jCnt || 0;
-                document.getElementById('admTotalResumes').textContent = rCnt || 0;
-            } catch(e) { console.log(e); }
-
-            // البنرات
-            let { data: banners } = await db.from('banners').select('*').order('id', {ascending: false});
-            let bBox = document.getElementById('bList'); bBox.innerHTML = '';
-            (banners || []).forEach(b => {
-                bBox.innerHTML += `<div class="item" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:10px; word-break:break-all; max-width:60%;">${b.url}</span>
-                    <div class="flex-btns">
-                        <button class="btn btn-edit" onclick="editBanner(${b.id}, '${b.url}')">✏️ تعديل</button>
-                        <button class="btn btn-del" onclick="delBanner(${b.id})">🗑️ حذف</button>
-                    </div>
-                </div>`;
-            });
-
-            // الشركاء
-            let { data: partners } = await db.from('partners').select('*').order('id', {ascending: false});
-            let pBox = document.getElementById('pList'); pBox.innerHTML = '';
-            (partners || []).forEach(p => {
-                pBox.innerHTML += `<div class="partner-card">
-                    <img src="${p.logo}">
-                    <div style="font-size:10px; font-weight:bold; overflow:hidden;">${p.name}</div>
-                    <button class="btn btn-edit" style="font-size:8px; padding:2px; width:100%; justify-content:center; margin:2px 0;" onclick="editPartner(${p.id}, '${p.name}', '${p.logo}')">✏️ تعديل</button>
-                    <button class="btn btn-del" style="font-size:8px; padding:2px; width:100%; justify-content:center;" onclick="delPartner(${p.id})">🗑️ حذف</button>
-                </div>`;
-            });
-
-            // الوظائف
-            let { data: jobs } = await db.from('jobs').select('*').order('id', {ascending: false});
-            let jBox = document.getElementById('jList'); jBox.innerHTML = '';
-            (jobs || []).forEach(j => {
-                jBox.innerHTML += `<div class="item">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <strong>${j.title}</strong>
-                        <span style="font-size:10px; color:${j.approved?'green':'orange'}">${j.approved?'منشور':'معلق'}</span>
-                    </div>
-                    <div style="font-size:11px; color:#64748b;">${j.company} | ${j.phone} | الحالة: <b>${j.status}</b></div>
-                    <div class="flex-btns">
-                        <button class="btn btn-toggle" onclick="toggleJob(${j.id}, '${j.status}')">🔄 تغيير التوفر</button>
-                        <button class="btn btn-edit" onclick="editJob(${j.id}, '${j.title}', '${j.company}', '${j.phone}', '${j.image||''}')">✏️ تعديل</button>
-                        <button class="btn btn-del" onclick="delJob(${j.id})">🗑️ حذف</button>
-                    </div>
-                </div>`;
-            });
-
-            // الكفاءات
-            let { data: resumes } = await db.from('resumes').select('*').order('id', {ascending: false});
-            let rBox = document.getElementById('rList'); rBox.innerHTML = '';
-            (resumes || []).forEach(r => {
-                rBox.innerHTML += `<div class="item">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <strong>${r.full_name} (${r.job_title})</strong>
-                        <span style="font-size:10px; background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:8px;">${r.category||'عام'}</span>
-                    </div>
-                    <div style="font-size:11px; color:#64748b;">واتساب: ${r.phone}</div>
-                    <div class="flex-btns">
-                        <button class="btn btn-edit" onclick="editResume(${r.id}, '${r.full_name}', '${r.job_title}', '${r.category||'التسويق والترويج'}', '${r.phone}')">✏️ تعديل</button>
-                        <button class="btn btn-del" onclick="delResume(${r.id})">🗑️ حذف</button>
-                    </div>
-                </div>`;
-            });
-        }
-
-        async function addBanner() { let url = document.getElementById('bUrl').value.trim(); if(url){ await db.from('banners').insert([{url}]); document.getElementById('bUrl').value=''; loadAll(); alert('تم الحفظ!'); } }
-        async function editBanner(id, old) { let url = prompt('رابط البنر:', old); if(url){ await db.from('banners').update({url}).eq('id', id); loadAll(); } }
-        async function delBanner(id) { if(confirm('حذف؟')){ await db.from('banners').delete().eq('id', id); loadAll(); } }
-
-        async function addPartner() { let name=document.getElementById('pName').value.trim(), logo=document.getElementById('pLogo').value.trim(); if(name&&logo){ await db.from('partners').insert([{name,logo}]); loadAll(); alert('تم الحفظ!'); } }
-        async function editPartner(id, n, l) { let name=prompt('الاسم:', n), logo=prompt('الشعار:', l); if(name&&logo){ await db.from('partners').update({name,logo}).eq('id', id); loadAll(); } }
-        async function delPartner(id) { if(confirm('حذف؟')){ await db.from('partners').delete().eq('id', id); loadAll(); } }
-
-        async function addJob() {
-            let title=document.getElementById('jTitle').value.trim(), company=document.getElementById('jCompany').value.trim(), phone=document.getElementById('jPhone').value.trim(), image=document.getElementById('jImage').value.trim(), status=document.getElementById('jStatus').value;
-            if(title&&company&&phone){ await db.from('jobs').insert([{title,company,phone,image,status,approved:true}]); loadAll(); alert('تم نشر الوظيفة!'); }
-        }
-        async function toggleJob(id, cur) { await db.from('jobs').update({status: cur==='متوفر'?'غير متوفر':'متوفر'}).eq('id', id); loadAll(); }
-        async function editJob(id, t, c, p, img) { let title=prompt('العنوان:',t), company=prompt('الجهة:',c), phone=prompt('الهاتف:',p), image=prompt('الصورة:',img); if(title&&company&&phone){ await db.from('jobs').update({title,company,phone,image}).eq('id',id); loadAll(); } }
-        async function delJob(id) { if(confirm('حذف الوظيفة؟')){ await db.from('jobs').delete().eq('id', id); loadAll(); } }
-
+        // 2. إضافة سيرة ذاتية
         async function addResume() {
-            let full_name=document.getElementById('rName').value.trim(), job_title=document.getElementById('rTitle').value.trim(), category=document.getElementById('rCat').value, phone=document.getElementById('rPhone').value.trim(), skills=document.getElementById('rSkills').value.trim(), experience=document.getElementById('rExp').value.trim(), cv_url=document.getElementById('rCvUrl').value.trim();
-            if(full_name&&job_title&&phone){ await db.from('resumes').insert([{full_name,job_title,category,phone,skills,experience,cv_url}]); loadAll(); alert('تم نشر الكفاءة!'); }
-        }
-        async function editResume(id, n, t, c, p) { let full_name=prompt('الاسم:',n), job_title=prompt('المسمى:',t), category=prompt('القسم:',c), phone=prompt('الهاتف:',p); if(full_name&&job_title&&phone){ await db.from('resumes').update({full_name,job_title,category,phone}).eq('id',id); loadAll(); } }
-        async function delResume(id) { if(confirm('حذف الكفاءة؟')){ await db.from('resumes').delete().eq('id', id); loadAll(); } }
+            const name = document.getElementById('resName').value.trim();
+            const title = document.getElementById('resTitle').value.trim();
+            const exp = document.getElementById('resExp').value.trim();
+            const phone = document.getElementById('resPhone').value.trim();
+            const imgFile = document.getElementById('resImgFile').files[0];
+            const pdfFile = document.getElementById('resPdfFile').files[0];
+            const msg = document.getElementById('resMsg');
 
-        document.addEventListener('DOMContentLoaded', loadAll);
+            if (!name || !title) { alert('الرجاء كتابة الاسم والتخصص'); return; }
+            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الملفات والسيرة الذاتية...';
+
+            let imgUrl = await uploadFile(imgFile, 'resume-images');
+            let pdfUrl = await uploadFile(pdfFile, 'resume-pdfs');
+
+            const { error } = await db.from('resumes').insert([{
+                name: name,
+                job_title: title,
+                experience: exp,
+                phone: phone,
+                image: imgUrl,
+                file_url: pdfUrl,
+                approved: true
+            }]);
+
+            if (error) {
+                msg.style.color = 'red'; msg.textContent = 'حدث خطأ: ' + error.message;
+            } else {
+                msg.style.color = 'green'; msg.textContent = 'تم إضافة السيرة الذاتية بنجاح! ✅';
+                document.getElementById('resName').value = '';
+                document.getElementById('resTitle').value = '';
+                document.getElementById('resExp').value = '';
+                document.getElementById('resImgFile').value = '';
+                document.getElementById('resPdfFile').value = '';
+            }
+        }
+
+        // 3. إضافة بنر للسلايدر
+        async function addBanner() {
+            const file = document.getElementById('bannerFile').files[0];
+            const msg = document.getElementById('bannerMsg');
+            if (!file) { alert('اختر صورة البنر أولاً'); return; }
+
+            msg.style.color = 'blue'; msg.textContent = 'جاري الرفع...';
+            let url = await uploadFile(file, 'banners');
+
+            if (url) {
+                await db.from('banners').insert([{ url: url }]);
+                msg.style.color = 'green'; msg.textContent = 'تم رفع البنر بنجاح! ✅';
+                document.getElementById('bannerFile').value = '';
+                loadBanners();
+            } else {
+                msg.style.color = 'red'; msg.textContent = 'فشل رفع البنر';
+            }
+        }
+
+        // 4. إضافة شريك
+        async function addPartner() {
+            const file = document.getElementById('partnerFile').files[0];
+            const msg = document.getElementById('partnerMsg');
+            if (!file) { alert('اختر صورة الشعار أولاً'); return; }
+
+            msg.style.color = 'blue'; msg.textContent = 'جاري الرفع...';
+            let url = await uploadFile(file, 'partners');
+
+            if (url) {
+                await db.from('partners').insert([{ logo: url }]);
+                msg.style.color = 'green'; msg.textContent = 'تم إضافة الشريك بنجاح! ✅';
+                document.getElementById('partnerFile').value = '';
+                loadPartners();
+            } else {
+                msg.style.color = 'red'; msg.textContent = 'فشل الرفع';
+            }
+        }
+
+        // دوان جلب وحذف البنرات والشركاء
+        async function loadBanners() {
+            let { data } = await db.from('banners').select('*').order('id', {ascending: false});
+            let box = document.getElementById('bannersList');
+            box.innerHTML = '';
+            (data || []).forEach(b => {
+                box.innerHTML += `<div class="item-row">
+                    <img src="${b.url}" style="height:30px; border-radius:4px;">
+                    <button class="btn-del" onclick="deleteItem('banners', ${b.id})">حذف</button>
+                </div>`;
+            });
+        }
+
+        async function loadPartners() {
+            let { data } = await db.from('partners').select('*').order('id', {ascending: false});
+            let box = document.getElementById('partnersList');
+            box.innerHTML = '';
+            (data || []).forEach(p => {
+                box.innerHTML += `<div class="item-row">
+                    <img src="${p.logo}" style="height:25px; border-radius:50%;">
+                    <button class="btn-del" onclick="deleteItem('partners', ${p.id})">حذف</button>
+                </div>`;
+            });
+        }
+
+        async function deleteItem(table, id) {
+            if (confirm('هل أنت تأكد من الحذف؟')) {
+                await db.from(table).delete().eq('id', id);
+                if (table === 'banners') loadBanners();
+                if (table === 'partners') loadPartners();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBanners();
+            loadPartners();
+        });
     </script>
 </body>
 </html>
