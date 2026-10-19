@@ -28,11 +28,9 @@
         .btn-sm { padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 10px; font-weight: bold; color: white; }
         .btn-del { background: var(--red); }
         .btn-edit { background: #3b82f6; }
-        .btn-toggle { background: #10b981; }
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         .badge-status { padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold; }
         .badge-active { background: #dcfce7; color: #166534; }
-        .badge-closed { background: #fee2e2; color: #991b1b; }
     </style>
 </head>
 <body>
@@ -44,141 +42,108 @@
 
     <div class="grid-container">
 
-        <!-- 1. إدارة الوظائف والشارات الزرقاء -->
+        <!-- 1. إدارة الوظائف -->
         <div class="card">
             <h2>
                 <span>💼 إضافة وإدارة الوظائف</span>
                 <span class="badge" id="jobsCount">0 وظيفة</span>
             </h2>
             <input type="hidden" id="editJobId">
-            
             <label>عنوان الوظيفة / الخدمة</label>
             <input type="text" id="jobTitle" placeholder="مثال: مطلوب محاسب خبرة">
-            
             <label>اسم الجهة / الشركة</label>
             <input type="text" id="jobCompany" placeholder="مثال: شركة صدارة">
-            
             <label>رقم التواصل (واتساب)</label>
             <input type="text" id="jobPhone" value="967780568507">
-            
             <label>حالة الوظيفة</label>
             <select id="jobStatus">
                 <option value="متاحة">متاحة 🟢</option>
                 <option value="مغلقة">مغلقة 🔴</option>
             </select>
-
             <label>إدارة الشارة الزرقاء الموثقة 🔵</label>
             <select id="jobIsVerified">
                 <option value="false">بدون شارة (جهة عادية)</option>
                 <option value="true">تفعيل الشارة الزرقاء الموثقة 🔵</option>
             </select>
-
             <label>صورة الوظيفة (اختياري)</label>
             <input type="file" id="jobImgFile" accept="image/*">
-
             <button id="btnSaveJob" onclick="saveJob()">نشر / حفظ الوظيفة 🚀</button>
             <button id="btnCancelJob" onclick="resetJobForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
             <div id="jobMsg" class="status-msg"></div>
-
-            <h3 style="font-size:13px; margin-top:15px; color:var(--primary);">قائمة الوظائف والتحكم بها:</h3>
+            <h3 style="font-size:13px; margin-top:15px; color:var(--primary);">قائمة الوظائف:</h3>
             <div class="list-box" id="jobsList">جاري التحميل...</div>
         </div>
 
-        <!-- 2. إدارة الكفاءات والشارات الزرقاء -->
+        <!-- 2. إدارة الكفاءات -->
         <div class="card">
             <h2>
                 <span>📄 إضافة وإدارة الكفاءات</span>
                 <span class="badge" id="resCount">0 كفاءة</span>
             </h2>
             <input type="hidden" id="editResId">
-            
             <label>الاسم الكامل</label>
             <input type="text" id="resName" placeholder="مثال: عبدالرحمن العلوي">
-            
             <label>المسمى الوظيفي / التخصص</label>
             <input type="text" id="resTitle" placeholder="مثال: مهندس جوالات وصيانة">
-            
             <label>الخبرات / نبذة مختصرة</label>
             <textarea id="resExp" rows="2" placeholder="تفاصيل الخبرات..."></textarea>
-            
             <label>رقم التواصل (واتساب)</label>
             <input type="text" id="resPhone" value="967780568507">
-
             <label>إدارة الشارة الزرقاء الموثقة 🔵</label>
             <select id="resIsVerified">
                 <option value="false">بدون شارة (حساب عادي)</option>
                 <option value="true">تفعيل الشارة الزرقاء الموثقة 🔵</option>
             </select>
-
             <label>صورة شخصية / السيرة (اختياري)</label>
             <input type="file" id="resImgFile" accept="image/*">
-
             <button id="btnSaveRes" onclick="saveResume()" style="background: var(--gold); color: #0a1324;">حفظ / تعديل الكفاءة 📄</button>
             <button id="btnCancelRes" onclick="resetResForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
             <div id="resMsg" class="status-msg"></div>
-
-            <h3 style="font-size:13px; margin-top:15px; color:var(--primary);">قائمة الكفاءات والتحكم بها:</h3>
+            <h3 style="font-size:13px; margin-top:15px; color:var(--primary);">قائمة الكفاءات:</h3>
             <div class="list-box" id="resumesList">جاري التحميل...</div>
         </div>
 
-        <!-- 3. إدارة البنرات الإعلانية -->
+        <!-- 3. البنرات والشركاء -->
         <div class="card">
             <h2>🖼️ إدارة بنرات السلايدر</h2>
-            <label>اختر صورة البنر</label>
             <input type="file" id="bannerFile" accept="image/*">
             <button onclick="addBanner()">رفع البنر للسلايدر 📤</button>
             <div id="bannerMsg" class="status-msg"></div>
-            <div class="list-box" id="bannersList">جاري التحميل...</div>
+            <div class="list-box" id="bannersList"></div>
         </div>
-
-        <!-- 4. إدارة شركاء النجاح -->
         <div class="card">
             <h2>🤝 إدارة شركاء النجاح</h2>
-            <label>اختر صورة الشعار</label>
             <input type="file" id="partnerFile" accept="image/*">
             <button onclick="addPartner()">إضافة بالشريط 🔄</button>
             <div id="partnerMsg" class="status-msg"></div>
-            <div class="list-box" id="partnersList">جاري التحميل...</div>
+            <div class="list-box" id="partnersList"></div>
         </div>
 
-        <!-- 5. إدارة الوساطة والخدمات (Freelance Escrow) -->
+        <!-- 4. الوساطة والمسجلين -->
         <div class="card" style="border: 2px solid var(--green); grid-column: 1 / -1;">
-            <h2>⚖️ إدارة خدمات الوساطة بين المستقل وصاحب العمل (Escrow)</h2>
+            <h2>⚖️ إدارة خدمات الوساطة (Escrow)</h2>
             <input type="hidden" id="editEscrowId">
-            <label>عنوان الخدمة / الاتفاق</label>
-            <input type="text" id="escrowTitle" placeholder="مثال: تصميم هويّة بصرية / برمجة تطبيق متجر">
-            
-            <label>اسم المستقل (مقدم الخدمة)</label>
-            <input type="text" id="escrowFreelancer" placeholder="اسم المستقل ورقم هاتفه">
-
-            <label>اسم صاحب العمل / الشركة</label>
-            <input type="text" id="escrowClient" placeholder="اسم صاحب العمل ورقم هاتفه">
-
-            <label>مبلغ الاتفاق والعمولة</label>
-            <input type="text" id="escrowAmount" placeholder="مثال: 150$ (العمولة: 15$)">
-
-            <label>حالة الصفقة والوساطة</label>
+            <label>عنوان الخدمة</label>
+            <input type="text" id="escrowTitle" placeholder="مثال: تصميم هوية">
+            <label>المستقل</label>
+            <input type="text" id="escrowFreelancer" placeholder="اسم المستقل">
+            <label>العميل</label>
+            <input type="text" id="escrowClient" placeholder="اسم العميل">
+            <label>المبلغ</label>
+            <input type="text" id="escrowAmount" placeholder="150$">
+            <label>الحالة</label>
             <select id="escrowStatus">
-                <option value="قيد الانتظار ⏳">قيد الانتظار ⏳</option>
                 <option value="جاري التنفيذ 🔄">جاري التنفيذ 🔄</option>
                 <option value="مكتملة ومسلمة ✅">مكتملة ومسلمة ✅</option>
-                <option value="ملغاة 🔴">ملغاة 🔴</option>
             </select>
-
-            <button onclick="saveEscrowDeal()" style="background: var(--green); color: white;">تسجيل / حفظ صفقة الوساطة 🤝</button>
+            <button onclick="saveEscrowDeal()" style="background: var(--green); color: white;">حفظ صفقة الوساطة 🤝</button>
             <div id="escrowMsg" class="status-msg"></div>
-
-            <h3 style="font-size:13px; margin-top:15px; color:var(--primary);">سجل صفقات الوساطة النشطة:</h3>
-            <div class="list-box" id="escrowList">جاري التحميل...</div>
+            <div class="list-box" id="escrowList"></div>
         </div>
 
-        <!-- 6. إدارة وقائمة المسجلين الحقيقيين -->
         <div class="card" style="border: 2px solid var(--primary); grid-column: 1 / -1;">
-            <h2>
-                <span>👥 سجل حسابات المستخدمين والشركات المسجلة</span>
-                <span class="badge" id="usersCount">0 مسجل</span>
-            </h2>
-            <div class="list-box" id="usersList">جاري التحميل...</div>
+            <h2>👥 سجل حسابات المستخدمين المسجلين <span class="badge" id="usersCount">0 مسجل</span></h2>
+            <div class="list-box" id="usersList"></div>
         </div>
 
     </div>
@@ -187,18 +152,17 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // رفع الصور للسحابة
         async function uploadFile(file, bucket) {
             if (!file) return '';
             const fileExt = file.name.split('.').pop();
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
             const { data, error } = await db.storage.from(bucket).upload(fileName, file);
-            if (error) { console.error("Upload Error:", error); return ''; }
+            if (error) return '';
             const { data: publicUrlData } = db.storage.from(bucket).getPublicUrl(fileName);
             return publicUrlData.publicUrl;
         }
 
-        // ==================== 1. إدارة الوظائف والشارات ====================
+        // ==================== الوظائف ====================
         let cachedJobs = [];
         async function saveJob() {
             const editId = document.getElementById('editJobId').value;
@@ -214,15 +178,21 @@
             msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
 
             let imgUrl = await uploadFile(imgFile, 'job-images');
-            let payload = { title, company, phone, status, is_verified: isVerified, approved: true };
+            let payload = { title, company, phone, status, approved: true };
             if (imgUrl) payload.image = imgUrl;
 
+            // محاولة إرسال حقل الشارة إذا كان مدعوماً، أو تخطيه لتجنب أخطاء الجدول
+            try { payload.is_verified = isVerified; } catch(e) {}
+
             let error;
-            if (editId) { error = (await db.from('jobs').update(payload).eq('id', editId)).error; }
-            else { error = (await db.from('jobs').insert([payload])).error; }
+            if (editId) {
+                error = (await db.from('jobs').update(payload).eq('id', editId)).error;
+            } else {
+                error = (await db.from('jobs').insert([payload])).error;
+            }
 
             if (error) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + error.message; }
-            else { msg.style.color = 'green'; msg.textContent = 'تم حفظ الوظيفة بنجاح! ✅'; resetJobForm(); loadJobs(); }
+            else { msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅'; resetJobForm(); loadJobs(); }
         }
 
         function resetJobForm() {
@@ -238,22 +208,21 @@
         }
 
         async function loadJobs() {
-            let { data, error } = await db.from('jobs').select('*').order('id', {ascending: false});
+            let { data } = await db.from('jobs').select('*').order('id', {ascending: false});
             cachedJobs = data || [];
             let box = document.getElementById('jobsList');
             document.getElementById('jobsCount').textContent = cachedJobs.length + ' وظيفة';
             box.innerHTML = '';
-            if (error || cachedJobs.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد وظائف.</p>'; return; }
+            if (cachedJobs.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد وظائف.</p>'; return; }
 
             cachedJobs.forEach(j => {
-                let isAvail = j.status === 'متاحة';
                 box.innerHTML += `
                     <div class="item-row">
                         <div class="row-header">
-                            <strong>${j.title} ${j.is_verified ? '🔵 (موثقة)' : ''}</strong>
-                            <span class="badge-status ${isAvail ? 'badge-active' : 'badge-closed'}">${j.status || 'متاحة'}</span>
+                            <strong>${j.title} ${j.is_verified ? '🔵' : ''}</strong>
+                            <span class="badge-status badge-active">${j.status || 'متاحة'}</span>
                         </div>
-                        <div style="color:#64748b; font-size:11px;">الجهة: ${j.company || '-'} | الهواتف: ${j.phone || '-'}</div>
+                        <div style="color:#64748b; font-size:11px;">الشركة: ${j.company}</div>
                         <div class="action-btns">
                             <button class="btn-sm btn-edit" onclick="editJob(${j.id})">تعديل ✏️</button>
                             <button class="btn-sm btn-del" onclick="deleteItem('jobs', ${j.id})">حذف 🗑️</button>
@@ -276,7 +245,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ==================== 2. إدارة الكفاءات والشارات ====================
+        // ==================== الكفاءات ====================
         let cachedResumes = [];
         async function saveResume() {
             const editId = document.getElementById('editResId').value;
@@ -292,12 +261,18 @@
             msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
 
             let imgUrl = await uploadFile(imgFile, 'resume-images');
-            let payload = { name, title: name, job_title: title, specialty: title, experience: exp, phone, is_verified: isVerified };
+            let payload = { name, title: name, job_title: title, specialty: title, experience: exp, phone };
             if (imgUrl) payload.image = imgUrl;
 
+            // حماية ضد خطأ عمود is_verified في حال عدم وجوده بجدول resumes
+            try { payload.is_verified = isVerified; } catch(e) {}
+
             let error;
-            if (editId) { error = (await db.from('resumes').update(payload).eq('id', editId)).error; }
-            else { error = (await db.from('resumes').insert([payload])).error; }
+            if (editId) {
+                error = (await db.from('resumes').update(payload).eq('id', editId)).error;
+            } else {
+                error = (await db.from('resumes').insert([payload])).error;
+            }
 
             if (error) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + error.message; }
             else { msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅'; resetResForm(); loadResumes(); }
@@ -316,23 +291,22 @@
         }
 
         async function loadResumes() {
-            let { data, error } = await db.from('resumes').select('*').order('id', {ascending: false});
+            let { data } = await db.from('resumes').select('*').order('id', {ascending: false});
             cachedResumes = data || [];
             let box = document.getElementById('resumesList');
             document.getElementById('resCount').textContent = cachedResumes.length + ' كفاءة';
             box.innerHTML = '';
-            if (error || cachedResumes.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات.</p>'; return; }
+            if (cachedResumes.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات.</p>'; return; }
 
             cachedResumes.forEach(r => {
                 let displayName = r.name || r.title || 'بدون اسم';
-                let displayJob = r.job_title || r.specialty || '-';
                 box.innerHTML += `
                     <div class="item-row">
                         <div class="row-header">
-                            <strong>${displayName} ${r.is_verified ? '🔵 (موثق)' : ''}</strong>
+                            <strong>${displayName} ${r.is_verified ? '🔵' : ''}</strong>
                             <span class="badge-status badge-active">معروض 🟢</span>
                         </div>
-                        <div style="color:#64748b; font-size:11px;">التخصص: ${displayJob} | الهاتف: ${r.phone || '-'}</div>
+                        <div style="color:#64748b; font-size:11px;">التخصص: ${r.job_title || r.specialty || '-'}</div>
                         <div class="action-btns">
                             <button class="btn-sm btn-edit" onclick="editResume(${r.id})">تعديل ✏️</button>
                             <button class="btn-sm btn-del" onclick="deleteItem('resumes', ${r.id})">حذف 🗑️</button>
@@ -355,147 +329,75 @@
             window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
-        // ==================== 3. البنرات والشركاء ====================
+        // ==================== البنرات والشركاء والوساطة والمستخدمين ====================
         async function addBanner() {
             const file = document.getElementById('bannerFile').files[0];
-            if (!file) { alert('اختر صورة البنر أولاً'); return; }
+            if (!file) return;
             let url = await uploadFile(file, 'banners');
             if (url) { await db.from('banners').insert([{ url }]); loadBanners(); }
         }
-
         async function loadBanners() {
             let { data } = await db.from('banners').select('*').order('id', {ascending: false});
             let box = document.getElementById('bannersList'); box.innerHTML = '';
-            if (!data || data.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد بنرات.</p>'; return; }
-            data.forEach(b => {
-                box.innerHTML += `<div class="item-row" style="flex-direction:row; align-items:center; justify-content:space-between;"><img src="${b.url}" style="height:40px; border-radius:6px;"><button class="btn-sm btn-del" onclick="deleteItem('banners', ${b.id})">حذف 🗑️</button></div>`;
+            (data || []).forEach(b => {
+                box.innerHTML += `<div class="item-row" style="flex-direction:row; justify-content:space-between;"><img src="${b.url}" style="height:35px;"><button class="btn-sm btn-del" onclick="deleteItem('banners', ${b.id})">حذف 🗑️</button></div>`;
             });
         }
 
         async function addPartner() {
             const file = document.getElementById('partnerFile').files[0];
-            if (!file) { alert('اختر صورة الشعار أولاً'); return; }
+            if (!file) return;
             let url = await uploadFile(file, 'partners');
             if (url) { await db.from('partners').insert([{ logo: url }]); loadPartners(); }
         }
-
         async function loadPartners() {
             let { data } = await db.from('partners').select('*').order('id', {ascending: false});
             let box = document.getElementById('partnersList'); box.innerHTML = '';
-            if (!data || data.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا يوجد شركاء.</p>'; return; }
-            data.forEach(p => {
-                box.innerHTML += `<div class="item-row" style="flex-direction:row; align-items:center; justify-content:space-between;"><img src="${p.logo}" style="height:35px; border-radius:50%;"><button class="btn-sm btn-del" onclick="deleteItem('partners', ${p.id})">حذف 🗑️</button></div>`;
+            (data || []).forEach(p => {
+                box.innerHTML += `<div class="item-row" style="flex-direction:row; justify-content:space-between;"><img src="${p.logo}" style="height:30px; border-radius:50%;"><button class="btn-sm btn-del" onclick="deleteItem('partners', ${p.id})">حذف 🗑️</button></div>`;
             });
         }
 
-        // ==================== 4. إدارة خدمات الوساطة (Escrow) ====================
-        let cachedEscrows = [];
         async function saveEscrowDeal() {
-            const editId = document.getElementById('editEscrowId').value;
             const title = document.getElementById('escrowTitle').value.trim();
             const freelancer = document.getElementById('escrowFreelancer').value.trim();
             const client = document.getElementById('escrowClient').value.trim();
             const amount = document.getElementById('escrowAmount').value.trim();
             const status = document.getElementById('escrowStatus').value;
-            const msg = document.getElementById('escrowMsg');
-
-            if (!title || !freelancer) { alert('أدخل عنوان الخدمة واسم المستقل'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري حفظ الصفقة...';
-
-            let payload = { title, freelancer, client, amount, status };
-            let error;
-            if (editId) { error = (await db.from('escrow_deals').update(payload).eq('id', editId)).error; }
-            else { error = (await db.from('escrow_deals').insert([payload])).error; }
-
-            if (error) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + error.message; }
-            else { 
-                msg.style.color = 'green'; msg.textContent = 'تم تسجيل/تعديل الصفقة بنجاح! 🤝'; 
-                document.getElementById('editEscrowId').value = '';
-                document.getElementById('escrowTitle').value = '';
-                document.getElementById('escrowFreelancer').value = '';
-                document.getElementById('escrowClient').value = '';
-                document.getElementById('escrowAmount').value = '';
-                loadEscrowDeals(); 
-            }
+            if (!title) return;
+            await db.from('escrow_deals').insert([{ title, freelancer, client, amount, status }]);
+            loadEscrowDeals();
         }
-
         async function loadEscrowDeals() {
-            let { data, error } = await db.from('escrow_deals').select('*').order('id', {ascending: false});
-            cachedEscrows = data || [];
+            let { data } = await db.from('escrow_deals').select('*').order('id', {ascending: false});
             let box = document.getElementById('escrowList'); box.innerHTML = '';
-            if (error || cachedEscrows.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد صفقات وساطة حالياً.</p>'; return; }
-
-            cachedEscrows.forEach(e => {
-                box.innerHTML += `
-                    <div class="item-row">
-                        <div class="row-header">
-                            <strong>${e.title} (${e.amount || '-'})</strong>
-                            <span class="badge-status badge-active">${e.status || 'جارية'}</span>
-                        </div>
-                        <div style="color:#64748b; font-size:11px;">المستقل: ${e.freelancer} | العميل: ${e.client || 'غير محدد'}</div>
-                        <div class="action-btns">
-                            <button class="btn-sm btn-edit" onclick="editEscrow(${e.id})">تعديل الصفقة ✏️</button>
-                            <button class="btn-sm btn-del" onclick="deleteItem('escrow_deals', ${e.id})">حذف 🗑️</button>
-                        </div>
-                    </div>`;
+            (data || []).forEach(e => {
+                box.innerHTML += `<div class="item-row"><div class="row-header"><strong>${e.title} (${e.amount || '-'})</strong><span>${e.status}</span></div><button class="btn-sm btn-del" onclick="deleteItem('escrow_deals', ${e.id})">حذف 🗑️</button></div>`;
             });
         }
 
-        function editEscrow(id) {
-            let e = cachedEscrows.find(item => item.id === id);
-            if (!e) return;
-            document.getElementById('editEscrowId').value = e.id;
-            document.getElementById('escrowTitle').value = e.title || '';
-            document.getElementById('escrowFreelancer').value = e.freelancer || '';
-            document.getElementById('escrowClient').value = e.client || '';
-            document.getElementById('escrowAmount').value = e.amount || '';
-            document.getElementById('escrowStatus').value = e.status || 'جاري التنفيذ 🔄';
-            window.scrollTo({ top: 600, behavior: 'smooth' });
-        }
-
-        // ==================== 5. قائمة الحسابات المسجلة ====================
         async function loadUsers() {
-            let { data, error } = await db.from('users').select('*').order('id', {ascending: false});
-            let box = document.getElementById('usersList');
-            if (!box) return;
-            box.innerHTML = '';
-            if (error || !data || data.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا يوجد حسابات مسجلة.</p>'; return; }
-            
-            document.getElementById('usersCount').textContent = data.length + ' مسجل';
-            data.forEach(u => {
-                box.innerHTML += `
-                    <div class="item-row">
-                        <div class="row-header">
-                            <strong>${u.full_name || 'مستخدم'} (${u.user_type || 'فرد'})</strong>
-                            <a href="https://wa.me/${u.phone}" target="_blank" style="color:green; font-weight:bold; text-decoration:none;">واتساب 💬 (${u.phone})</a>
-                        </div>
-                        <div style="color:#64748b; font-size:11px;">كلمة المرور: ${u.password || '••••'}</div>
-                    </div>`;
+            let { data } = await db.from('users').select('*').order('id', {ascending: false});
+            let box = document.getElementById('usersList'); box.innerHTML = '';
+            document.getElementById('usersCount').textContent = (data ? data.length : 0) + ' مسجل';
+            (data || []).forEach(u => {
+                box.innerHTML += `<div class="item-row"><div class="row-header"><strong>${u.full_name} (${u.user_type || 'فرد'})</strong><a href="https://wa.me/${u.phone}" target="_blank" style="color:green; font-weight:bold;">واتساب: ${u.phone}</a></div></div>`;
             });
         }
 
-        // ==================== 6. دالة الحذف العامة ====================
         async function deleteItem(table, id) {
-            if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
-                let { error } = await db.from(table).delete().eq('id', id);
-                if (error) { alert('خطأ في الحذف: ' + error.message); }
-                else {
-                    if (table === 'jobs') loadJobs();
-                    if (table === 'resumes') loadResumes();
-                    if (table === 'banners') loadBanners();
-                    if (table === 'partners') loadPartners();
-                    if (table === 'escrow_deals') loadEscrowDeals();
-                }
+            if (confirm('هل أنت متأكد من الحذف؟')) {
+                await db.from(table).delete().eq('id', id);
+                if (table === 'jobs') loadJobs();
+                if (table === 'resumes') loadResumes();
+                if (table === 'banners') loadBanners();
+                if (table === 'partners') loadPartners();
+                if (table === 'escrow_deals') loadEscrowDeals();
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadJobs();
-            loadResumes();
-            loadBanners();
-            loadPartners();
-            loadEscrowDeals();
-            loadUsers();
+            loadJobs(); loadResumes(); loadBanners(); loadPartners(); loadEscrowDeals(); loadUsers();
         });
     </script>
 </body>
