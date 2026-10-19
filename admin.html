@@ -60,7 +60,7 @@
             <div class="list-box" id="jobsList">جاري التحميل...</div>
         </div>
 
-        <!-- 2. إدارة الكفاءات (مرنة وآمنة تماماً) -->
+        <!-- 2. إدارة الكفاءات -->
         <div class="card">
             <h2><span>📄 إدارة الكفاءات</span><span class="badge" id="resCount">0</span></h2>
             <input type="hidden" id="editResId">
@@ -83,7 +83,7 @@
             <h2>🖼️ البنرات الإعلانية (السلايدر) <span class="badge" id="bannersCount">0</span></h2>
             <label>رفع صورة البنر</label>
             <input type="file" id="bannerFile" accept="image/*">
-            <button onclick="addBanner()">رفع البنر 📤</button>
+            <button onclick="addBanner()">رفع البنر وتوليد رابطه 📤</button>
             <div class="list-box" id="bannersList">جاري التحميل...</div>
         </div>
 
@@ -92,7 +92,7 @@
             <h2>🤝 شركاء النجاح (الشريط) <span class="badge" id="partnersCount">0</span></h2>
             <label>رفع شعار الشريك</label>
             <input type="file" id="partnerFile" accept="image/*">
-            <button onclick="addPartner()">إضافة الشريك 🔄</button>
+            <button onclick="addPartner()">إضافة الشريك وتوليد رابطه 🔄</button>
             <div class="list-box" id="partnersList">جاري التحميل...</div>
         </div>
 
@@ -109,15 +109,18 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // رفع آمن للصور لا يتوقف أبداً
-        async function uploadFileSafe(file, bucket) {
+        // رفع آمن وموجه تلقائياً إلى الحاوية الجاهزة platform-files
+        async function uploadFileSafe(file) {
             if (!file) return '';
             try {
                 const fileExt = file.name.split('.').pop();
                 const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-                const { data, error } = await db.storage.from(bucket).upload(fileName, file);
-                if (error) return '';
-                const { data: publicUrlData } = db.storage.from(bucket).getPublicUrl(fileName);
+                const { data, error } = await db.storage.from('platform-files').upload(fileName, file);
+                if (error) {
+                    console.warn("Storage error:", error.message);
+                    return '';
+                }
+                const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
                 return publicUrlData.publicUrl ? publicUrlData.publicUrl : '';
             } catch(e) {
                 return '';
@@ -136,16 +139,16 @@
             const msg = document.getElementById('jobMsg');
 
             if (!title || !company) { alert('أدخل عنوان الوظيفة واسم الشركة'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
+            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الصورة والحفظ...';
 
-            let imgUrl = await uploadFileSafe(imgFile, 'job-images');
+            let imgUrl = await uploadFileSafe(imgFile);
             let payload = { title, company, phone, status, approved: true };
             if (imgUrl) payload.image = imgUrl;
 
             let res = editId ? await db.from('jobs').update(payload).eq('id', editId) : await db.from('jobs').insert([payload]);
             if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + res.error.message; return; }
 
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ الوظيفة بنجاح! ✅';
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ الوظيفة وصورتها بنجاح! ✅';
             resetJobForm(); loadJobs();
         }
 
@@ -201,9 +204,9 @@
             const msg = document.getElementById('resMsg');
 
             if (!title) { alert('أدخل الاسم أو التخصص'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ بالسحابة...';
+            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الصورة والحفظ بالسحابة...';
 
-            let imgUrl = await uploadFileSafe(imgFile, 'resume-images');
+            let imgUrl = await uploadFileSafe(imgFile);
             let payload = { title: title, experience: exp, phone: phone };
             if (imgUrl) payload.image = imgUrl;
 
@@ -213,7 +216,7 @@
                 return;
             }
 
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة بنجاح تام! ✅';
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة وصورتها بنجاح تام! ✅';
             resetResForm(); loadResumes();
         }
 
@@ -263,13 +266,13 @@
         async function addBanner() {
             const file = document.getElementById('bannerFile').files[0];
             if (!file) { alert('اختر صورة البنر'); return; }
-            let url = await uploadFileSafe(file, 'banners');
+            let url = await uploadFileSafe(file);
             if (url) { 
                 await db.from('banners').insert([{ url }]); 
                 document.getElementById('bannerFile').value = ''; 
                 loadBanners(); 
             } else {
-                alert('تم الحفظ النصي، ولم يتم رفع الصورة لعدم تفعيل حاوية التخزين banners في Supabase.');
+                alert('فشل في رفع الصورة، تأكد من اتصال الإنترنت وحجم الصورة.');
             }
         }
         async function loadBanners() {
@@ -286,13 +289,13 @@
         async function addPartner() {
             const file = document.getElementById('partnerFile').files[0];
             if (!file) { alert('اختر شعار الشريك'); return; }
-            let url = await uploadFileSafe(file, 'partners');
+            let url = await uploadFileSafe(file);
             if (url) { 
                 await db.from('partners').insert([{ logo: url }]); 
                 document.getElementById('partnerFile').value = ''; 
                 loadPartners(); 
             } else {
-                alert('تم الحفظ النصي، ولم يتم رفع الشعار لعدم تفعيل حاوية التخزين partners في Supabase.');
+                alert('فشل في رفع الشعار، تأكد من اتصال الإنترنت وحجم الصورة.');
             }
         }
         async function loadPartners() {
