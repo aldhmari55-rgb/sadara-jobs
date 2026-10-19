@@ -39,10 +39,11 @@
 
     <div class="header">
         <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، البنرات، شركاء النجاح، شارات التوثيق وخدمات الوساطة</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، الشارات الزرقاء، المستخدمين والوساطة</p>
     </div>
 
     <div class="grid-container">
+
         <!-- 1. إدارة الوظائف -->
         <div class="card">
             <h2>
@@ -63,6 +64,12 @@
             <select id="jobStatus">
                 <option value="متاحة">متاحة 🟢</option>
                 <option value="مغلقة">مغلقة 🔴</option>
+            </select>
+
+            <label>إظهار الشارة الزرقاء الموثقة 🔵</label>
+            <select id="jobIsVerified">
+                <option value="false">لا (جهة عادية)</option>
+                <option value="true">نعم (جهة موثوقة ☑️)</option>
             </select>
 
             <label>صورة الوظيفة (اختياري)</label>
@@ -95,6 +102,12 @@
             <label>رقم التواصل (واتساب)</label>
             <input type="text" id="resPhone" value="967780568507">
 
+            <label>إظهار الشارة الزرقاء الموثقة 🔵</label>
+            <select id="resIsVerified">
+                <option value="false">لا (حساب عادي)</option>
+                <option value="true">نعم (مستقل موثوق ☑️)</option>
+            </select>
+
             <label>صورة شخصية / السيرة (صورة فقط)</label>
             <input type="file" id="resImgFile" accept="image/*">
 
@@ -113,7 +126,6 @@
             <input type="file" id="bannerFile" accept="image/*">
             <button onclick="addBanner()">رفع البنر للسلايدر 📤</button>
             <div id="bannerMsg" class="status-msg"></div>
-            
             <div class="list-box" id="bannersList"></div>
         </div>
 
@@ -124,46 +136,31 @@
             <input type="file" id="partnerFile" accept="image/*">
             <button onclick="addPartner()">إضافة للشريط 🔄</button>
             <div id="partnerMsg" class="status-msg"></div>
-
             <div class="list-box" id="partnersList"></div>
         </div>
 
-        <!-- 5. إدارة وتوثيق الشركات (جهة عمل موثوقة) -->
-        <div class="card" style="border: 2px solid var(--gold);">
-            <h2>⭐ توثيق جهات العمل (شارة موثوقة)</h2>
-            <label>اسم الشركة أو المؤسسة</label>
-            <input type="text" id="verifiedCompany" placeholder="مثال: مؤسسة اليمن الرقمية">
-            
-            <label>حالة التوثيق</label>
-            <select id="verifiedStatus">
-                <option value="موثوقة 🛡️">موثوقة ومعتمدة 🛡️</option>
-                <option value="تحت المراجعة ⏳">تحت المراجعة ⏳</option>
-            </select>
-
-            <button onclick="addVerifiedCompany()" style="background: var(--gold); color: #0a1324;">إصدار شارة التوثيق ⭐</button>
-            <div id="verifiedMsg" class="status-msg"></div>
-
-            <div class="list-box" id="verifiedList">جاري التحميل...</div>
+        <!-- 5. قائمة المسجلين (شركات وأفراد) -->
+        <div class="card" style="border: 2px solid var(--primary); grid-column: 1 / -1;">
+            <h2>
+                <span>👥 قائمة المسجلين والمستخدمين (شركات وأفراد)</span>
+                <span class="badge" id="usersCount">0 مسجل</span>
+            </h2>
+            <div class="list-box" id="usersList">جاري التحميل...</div>
         </div>
 
-        <!-- 6. إدارة طلبات الوساطة والخدمات المدفوعة -->
-        <div class="card" style="border: 2px solid var(--green);">
+        <!-- 6. إدارة صفقات الوساطة -->
+        <div class="card" style="border: 2px solid var(--green); grid-column: 1 / -1;">
             <h2>⚖️ إدارة طلبات وساطة الأفراد (Escrow)</h2>
             <label>عنوان الخدمة / اسم المشروع</label>
             <input type="text" id="escrowTitle" placeholder="مثال: برمجة تطبيق متجر / تصميم هوية">
-            
             <label>اسم المستقل / مقدم الخدمة</label>
             <input type="text" id="escrowFreelancer" placeholder="اسم المستقل">
-
             <label>اسم العميل / الشركة الطالبة</label>
             <input type="text" id="escrowClient" placeholder="اسم العميل">
-
             <label>مبلغ الاتفاق (ريال/دولار)</label>
             <input type="text" id="escrowAmount" placeholder="مثال: 100$ أو 50 ألف">
-
-            <button onclick="addEscrowDeal()" style="background: var(--green); color: white;">تسجيل صفقة وساطة جديد 🤝</button>
+            <button onclick="addEscrowDeal()" style="background: var(--green); color: white;">تسجيل صفقة وساطة جديدة 🤝</button>
             <div id="escrowMsg" class="status-msg"></div>
-
             <div class="list-box" id="escrowList">جاري التحميل...</div>
         </div>
 
@@ -183,7 +180,7 @@
             return publicUrlData.publicUrl;
         }
 
-        // 1. الوظائف
+        // الوظائف
         let cachedJobs = [];
         async function saveJob() {
             const editId = document.getElementById('editJobId').value;
@@ -191,32 +188,23 @@
             const company = document.getElementById('jobCompany').value.trim();
             const phone = document.getElementById('jobPhone').value.trim();
             const status = document.getElementById('jobStatus').value;
+            const isVerified = document.getElementById('jobIsVerified').value === 'true';
             const imgFile = document.getElementById('jobImgFile').files[0];
             const msg = document.getElementById('jobMsg');
 
             if (!title || !company) { alert('أدخل العنوان واسم الشركة'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ والرفع...';
+            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
 
             let imgUrl = await uploadFile(imgFile, 'job-images');
-            let payload = { title, company, phone, status, approved: true };
+            let payload = { title, company, phone, status, is_verified: isVerified, approved: true };
             if (imgUrl) payload.image = imgUrl;
 
             let error;
-            if (editId) {
-                let res = await db.from('jobs').update(payload).eq('id', editId);
-                error = res.error;
-            } else {
-                let res = await db.from('jobs').insert([payload]);
-                error = res.error;
-            }
+            if (editId) { error = (await db.from('jobs').update(payload).eq('id', editId)).error; }
+            else { error = (await db.from('jobs').insert([payload])).error; }
 
-            if (error) {
-                msg.style.color = 'red'; msg.textContent = 'خطأ: ' + error.message;
-            } else {
-                msg.style.color = 'green'; msg.textContent = editId ? 'تم تعديل الوظيفة بنجاح! ✅' : 'تم نشر الوظيفة بنجاح! ✅';
-                resetJobForm();
-                loadJobs();
-            }
+            if (error) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + error.message; }
+            else { msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅'; resetJobForm(); loadJobs(); }
         }
 
         function resetJobForm() {
@@ -234,32 +222,23 @@
             let box = document.getElementById('jobsList');
             document.getElementById('jobsCount').textContent = cachedJobs.length + ' وظيفة';
             box.innerHTML = '';
-            if (cachedJobs.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد وظائف حالياً.</p>'; return; }
+            if (cachedJobs.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد وظائف.</p>'; return; }
 
             cachedJobs.forEach(j => {
                 let isAvail = j.status === 'متاحة';
                 box.innerHTML += `
                     <div class="item-row">
                         <div class="row-header">
-                            <strong>${j.title}</strong>
+                            <strong>${j.title} ${j.is_verified ? '🔵' : ''}</strong>
                             <span class="badge-status ${isAvail ? 'badge-active' : 'badge-closed'}">${j.status || 'غير محدد'}</span>
                         </div>
                         <div style="color:#64748b; font-size:11px;">الجهة: ${j.company || '-'}</div>
                         <div class="action-btns">
-                            <button class="btn-sm btn-toggle" onclick="toggleJobStatus(${j.id}, '${j.status}')">
-                                ${isAvail ? 'تغيير إلى مغلقة 🔴' : 'تغيير إلى متاحة 🟢'}
-                            </button>
                             <button class="btn-sm btn-edit" onclick="editJob(${j.id})">تعديل ✏️</button>
                             <button class="btn-sm btn-del" onclick="deleteItem('jobs', ${j.id})">حذف 🗑️</button>
                         </div>
                     </div>`;
             });
-        }
-
-        async function toggleJobStatus(id, currentStatus) {
-            let newStatus = (currentStatus === 'متاحة') ? 'مغلقة' : 'متاحة';
-            await db.from('jobs').update({ status: newStatus }).eq('id', id);
-            loadJobs();
         }
 
         function editJob(id) {
@@ -270,12 +249,13 @@
             document.getElementById('jobCompany').value = j.company || '';
             document.getElementById('jobPhone').value = j.phone || '967780568507';
             document.getElementById('jobStatus').value = j.status || 'متاحة';
+            document.getElementById('jobIsVerified').value = j.is_verified ? 'true' : 'false';
             document.getElementById('btnSaveJob').textContent = 'حفظ التعديلات 💾';
             document.getElementById('btnCancelJob').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 2. الكفاءات
+        // الكفاءات
         let cachedResumes = [];
         async function saveResume() {
             const editId = document.getElementById('editResId').value;
@@ -283,38 +263,23 @@
             const title = document.getElementById('resTitle').value.trim();
             const exp = document.getElementById('resExp').value.trim();
             const phone = document.getElementById('resPhone').value.trim();
+            const isVerified = document.getElementById('resIsVerified').value === 'true';
             const imgFile = document.getElementById('resImgFile').files[0];
             const msg = document.getElementById('resMsg');
 
-            if (!name || !title) { alert('أدخل الاسم والمسمى الوظيفي'); return; }
+            if (!name || !title) { alert('أدخل الاسم والتخصص'); return; }
             msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
 
             let imgUrl = await uploadFile(imgFile, 'resume-images');
-            let attempts = [
-                { title: name, job_title: title, experience: exp, phone: phone },
-                { name: name, job_title: title, experience: exp, phone: phone },
-                { full_name: name, job_title: title, experience: exp, phone: phone },
-                { title: name, phone: phone }
-            ];
+            let payload = { name, title, job_title: title, experience: exp, phone, is_verified: isVerified };
+            if (imgUrl) payload.image = imgUrl;
 
-            let lastError = null;
-            let success = false;
-            for (let payload of attempts) {
-                if (imgUrl) payload.image = imgUrl;
-                let res;
-                if (editId) { res = await db.from('resumes').update(payload).eq('id', editId); }
-                else { res = await db.from('resumes').insert([payload]); }
-                if (!res.error) { success = true; break; }
-                else { lastError = res.error; }
-            }
+            let error;
+            if (editId) { error = (await db.from('resumes').update(payload).eq('id', editId)).error; }
+            else { error = (await db.from('resumes').insert([payload])).error; }
 
-            if (success) {
-                msg.style.color = 'green'; msg.textContent = editId ? 'تم تعديل الكفاءة بنجاح! ✅' : 'تم إضافة الكفاءة بنجاح! ✅';
-                resetResForm();
-                loadResumes();
-            } else {
-                msg.style.color = 'red'; msg.textContent = 'خطأ: ' + (lastError ? lastError.message : 'فشل الحفظ');
-            }
+            if (error) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + error.message; }
+            else { msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅'; resetResForm(); loadResumes(); }
         }
 
         function resetResForm() {
@@ -333,18 +298,16 @@
             let box = document.getElementById('resumesList');
             document.getElementById('resCount').textContent = cachedResumes.length + ' كفاءة';
             box.innerHTML = '';
-            if (cachedResumes.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات حالياً.</p>'; return; }
+            if (cachedResumes.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات.</p>'; return; }
 
             cachedResumes.forEach(r => {
-                let displayName = r.name || r.title || r.full_name || 'بدون اسم';
-                let displayJob = r.job_title || r.specialty || '-';
+                let displayName = r.name || r.title || 'بدون اسم';
                 box.innerHTML += `
                     <div class="item-row">
                         <div class="row-header">
-                            <strong>${displayName}</strong>
+                            <strong>${displayName} ${r.is_verified ? '🔵' : ''}</strong>
                             <span class="badge-status badge-active">معروض 🟢</span>
                         </div>
-                        <div style="color:#64748b; font-size:11px;">التخصص: ${displayJob}</div>
                         <div class="action-btns">
                             <button class="btn-sm btn-edit" onclick="editResume(${r.id})">تعديل ✏️</button>
                             <button class="btn-sm btn-del" onclick="deleteItem('resumes', ${r.id})">حذف 🗑️</button>
@@ -357,209 +320,99 @@
             let r = cachedResumes.find(item => item.id === id);
             if (!r) return;
             document.getElementById('editResId').value = r.id;
-            document.getElementById('resName').value = r.name || r.title || r.full_name || '';
+            document.getElementById('resName').value = r.name || r.title || '';
             document.getElementById('resTitle').value = r.job_title || r.specialty || '';
             document.getElementById('resExp').value = r.experience || '';
             document.getElementById('resPhone').value = r.phone || '967780568507';
+            document.getElementById('resIsVerified').value = r.is_verified ? 'true' : 'false';
             document.getElementById('btnSaveRes').textContent = 'حفظ التعديلات 💾';
             document.getElementById('btnCancelRes').style.display = 'block';
             window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
-        // 3. البنرات والشركاء
-        async function addBanner() {
-            const file = document.getElementById('bannerFile').files[0];
-            const msg = document.getElementById('bannerMsg');
-            if (!file) { alert('اختر صورة البنر'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الرفع...';
-            let url = await uploadFile(file, 'banners');
-            if (url) {
-                await db.from('banners').insert([{ url: url }]);
-                msg.style.color = 'green'; msg.textContent = 'تم رفع البنر بنجاح! ✅';
-                document.getElementById('bannerFile').value = '';
-                loadBanners();
-            }
+        // قائمة المسجلين
+        async function loadUsers() {
+            let { data } = await db.from('users').select('*').order('id', {ascending: false});
+            let box = document.getElementById('usersList');
+            if (!box) return;
+            box.innerHTML = '';
+            if (!data || data.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا يوجد مسجلين جدد.</p>'; return; }
+            document.getElementById('usersCount').textContent = data.length + ' مسجل';
+            data.forEach(u => {
+                box.innerHTML += `
+                    <div class="item-row">
+                        <div class="row-header">
+                            <strong>${u.full_name} (${u.user_type || 'فرد'})</strong>
+                            <a href="https://wa.me/${u.phone}" target="_blank" style="color:green; font-weight:bold; text-decoration:none;">واتساب 💬 (${u.phone})</a>
+                        </div>
+                        <div style="color:#64748b; font-size:11px;">البريد: ${u.email || 'غير محدد'}</div>
+                    </div>`;
+            });
         }
 
-        async function addPartner() {
-            const file = document.getElementById('partnerFile').files[0];
-            const msg = document.getElementById('partnerMsg');
-            if (!file) { alert('اختر صورة الشعار'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الرفع...';
-            let url = await uploadFile(file, 'partners');
-            if (url) {
-                await db.from('partners').insert([{ logo: url }]);
-                msg.style.color = 'green'; msg.textContent = 'تم إضافة الشريك بنجاح! ✅';
-                document.getElementById('partnerFile').value = '';
-                loadPartners();
-            }
+        // البنرات والشركاء والوساطة والحذف
+        async function addBanner() {
+            const file = document.getElementById('bannerFile').files[0];
+            if (!file) return;
+            let url = await uploadFile(file, 'banners');
+            if (url) { await db.from('banners').insert([{ url }]); loadBanners(); }
         }
 
         async function loadBanners() {
             let { data } = await db.from('banners').select('*').order('id', {ascending: false});
-            let box = document.getElementById('bannersList');
-            box.innerHTML = '';
+            let box = document.getElementById('bannersList'); box.innerHTML = '';
             (data || []).forEach(b => {
-                box.innerHTML += `
-                    <div class="item-row" style="flex-direction:row; align-items:center;">
-                        <img src="${b.url}" style="height:35px; border-radius:4px; object-fit:cover;">
-                        <button class="btn-sm btn-del" onclick="deleteItem('banners', ${b.id})">حذف 🗑️</button>
-                    </div>`;
+                box.innerHTML += `<div class="item-row" style="flex-direction:row; align-items:center;"><img src="${b.url}" style="height:35px;"><button class="btn-sm btn-del" onclick="deleteItem('banners', ${b.id})">حذف 🗑️</button></div>`;
             });
+        }
+
+        async function addPartner() {
+            const file = document.getElementById('partnerFile').files[0];
+            if (!file) return;
+            let url = await uploadFile(file, 'partners');
+            if (url) { await db.from('partners').insert([{ logo: url }]); loadPartners(); }
         }
 
         async function loadPartners() {
             let { data } = await db.from('partners').select('*').order('id', {ascending: false});
-            let box = document.getElementById('partnersList');
-            box.innerHTML = '';
+            let box = document.getElementById('partnersList'); box.innerHTML = '';
             (data || []).forEach(p => {
-                box.innerHTML += `
-                    <div class="item-row" style="flex-direction:row; align-items:center;">
-                        <img src="${p.logo}" style="height:30px; border-radius:50%; object-fit:cover;">
-                        <button class="btn-sm btn-del" onclick="deleteItem('partners', ${p.id})">حذف 🗑️</button>
-                    </div>`;
+                box.innerHTML += `<div class="item-row" style="flex-direction:row; align-items:center;"><img src="${p.logo}" style="height:30px; border-radius:50%;"><button class="btn-sm btn-del" onclick="deleteItem('partners', ${p.id})">حذف 🗑️</button></div>`;
             });
         }
 
-        // 4. توثيق الشركات
-        async function addVerifiedCompany() {
-            const company = document.getElementById('verifiedCompany').value.trim();
-            const status = document.getElementById('verifiedStatus').value;
-            const msg = document.getElementById('verifiedMsg');
-            if (!company) { alert('أدخل اسم الشركة'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
-
-            let { error } = await db.from('verified_companies').insert([{ company_name: company, status: status }]);
-            if (error) {
-                boxSimulateVerified(company, status);
-            } else {
-                msg.style.color = 'green'; msg.textContent = 'تم إصدار الشارة بنجاح! ⭐';
-                document.getElementById('verifiedCompany').value = '';
-                loadVerifiedCompanies();
-            }
-        }
-
-        async function loadVerifiedCompanies() {
-            let { data, error } = await db.from('verified_companies').select('*').order('id', {ascending: false});
-            let box = document.getElementById('verifiedList');
-            box.innerHTML = '';
-            if (error || !data || data.length === 0) {
-                box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد شركات موثقة حالياً.</p>';
-                return;
-            }
-            data.forEach(v => {
-                box.innerHTML += `
-                    <div class="item-row">
-                        <div class="row-header">
-                            <strong>${v.company_name}</strong>
-                            <span class="badge-status badge-active">${v.status}</span>
-                        </div>
-                        <div class="action-btns">
-                            <button class="btn-sm btn-del" onclick="deleteItem('verified_companies', ${v.id})">إلغاء الشارة 🗑️</button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function boxSimulateVerified(name, status) {
-            let box = document.getElementById('verifiedList');
-            box.innerHTML += `
-                <div class="item-row">
-                    <div class="row-header">
-                        <strong>${name}</strong>
-                        <span class="badge-status badge-active">${status}</span>
-                    </div>
-                </div>`;
-            document.getElementById('verifiedMsg').style.color = 'green';
-            document.getElementById('verifiedMsg').textContent = 'تم الإضافة بنجاح!';
-            document.getElementById('verifiedCompany').value = '';
-        }
-
-        // 5. صفقات الوساطة
         async function addEscrowDeal() {
             const title = document.getElementById('escrowTitle').value.trim();
             const freelancer = document.getElementById('escrowFreelancer').value.trim();
             const client = document.getElementById('escrowClient').value.trim();
             const amount = document.getElementById('escrowAmount').value.trim();
-            const msg = document.getElementById('escrowMsg');
-
-            if (!title || !freelancer) { alert('أدخل تفاصيل الخدمة والمستقل'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري تسجيل الصفقة...';
-
-            let { error } = await db.from('escrow_deals').insert([{ title, freelancer, client, amount, status: 'جارية 🔄' }]);
-            if (error) {
-                boxSimulateEscrow(title, freelancer, client, amount);
-            } else {
-                msg.style.color = 'green'; msg.textContent = 'تم تسجيل صفقة الوساطة بنجاح! 🤝';
-                document.getElementById('escrowTitle').value = '';
-                document.getElementById('escrowFreelancer').value = '';
-                document.getElementById('escrowClient').value = '';
-                document.getElementById('escrowAmount').value = '';
-                loadEscrowDeals();
-            }
+            if (!title || !freelancer) return;
+            await db.from('escrow_deals').insert([{ title, freelancer, client, amount, status: 'جارية 🔄' }]);
+            loadEscrowDeals();
         }
 
         async function loadEscrowDeals() {
-            let { data, error } = await db.from('escrow_deals').select('*').order('id', {ascending: false});
-            let box = document.getElementById('escrowList');
-            box.innerHTML = '';
-            if (error || !data || data.length === 0) {
-                box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد صفقات وساطة نشطة حالياً.</p>';
-                return;
-            }
+            let { data } = await db.from('escrow_deals').select('*').order('id', {ascending: false});
+            let box = document.getElementById('escrowList'); box.innerHTML = '';
+            if (!data || data.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد صفقات وساطة.</p>'; return; }
             data.forEach(e => {
-                box.innerHTML += `
-                    <div class="item-row">
-                        <div class="row-header">
-                            <strong>${e.title} (${e.amount || '-'})</strong>
-                            <span class="badge-status badge-active">${e.status || 'جارية'}</span>
-                        </div>
-                        <div style="color:#64748b; font-size:11px;">المستقل: ${e.freelancer} | العميل: ${e.client || 'غير محدد'}</div>
-                        <div class="action-btns">
-                            <button class="btn-sm btn-del" onclick="deleteItem('escrow_deals', ${e.id})">حذف الصفقة 🗑️</button>
-                        </div>
-                    </div>`;
+                box.innerHTML += `<div class="item-row"><div class="row-header"><strong>${e.title} (${e.amount || '-'})</strong><span>${e.status}</span></div><div style="color:#64748b; font-size:11px;">المستقل: ${e.freelancer} | العميل: ${e.client || '-'}</div><button class="btn-sm btn-del" onclick="deleteItem('escrow_deals', ${e.id})">حذف 🗑️</button></div>`;
             });
         }
 
-        function boxSimulateEscrow(title, freelancer, client, amount) {
-            let box = document.getElementById('escrowList');
-            box.innerHTML += `
-                <div class="item-row">
-                    <div class="row-header">
-                        <strong>${title} (${amount})</strong>
-                        <span class="badge-status badge-active">جارية 🔄</span>
-                    </div>
-                    <div style="color:#64748b; font-size:11px;">المستقل: ${freelancer} | العميل: ${client}</div>
-                </div>`;
-            document.getElementById('escrowMsg').style.color = 'green';
-            document.getElementById('escrowMsg').textContent = 'تم تسجيل الصفقة بنجاح!';
-            document.getElementById('escrowTitle').value = '';
-            document.getElementById('escrowFreelancer').value = '';
-            document.getElementById('escrowClient').value = '';
-            document.getElementById('escrowAmount').value = '';
-        }
-
-        // الحذف العام
         async function deleteItem(table, id) {
-            if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
+            if (confirm('هل أنت متأكد من الحذف؟')) {
                 await db.from(table).delete().eq('id', id);
                 if (table === 'jobs') loadJobs();
                 if (table === 'resumes') loadResumes();
                 if (table === 'banners') loadBanners();
                 if (table === 'partners') loadPartners();
-                if (table === 'verified_companies') loadVerifiedCompanies();
                 if (table === 'escrow_deals') loadEscrowDeals();
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadJobs();
-            loadResumes();
-            loadBanners();
-            loadPartners();
-            loadVerifiedCompanies();
-            loadEscrowDeals();
+            loadJobs(); loadResumes(); loadBanners(); loadPartners(); loadUsers(); loadEscrowDeals();
         });
     </script>
 </body>
