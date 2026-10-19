@@ -5,95 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة صدارة للوظائف والخدمات | ذمار</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --primary:#0f2347; --gold:#d4af37; --green:#25d366; }
-        * { box-sizing: border-box; margin:0; padding:0; font-family:'Tajawal', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: #f8fafc; padding-bottom: 90px; }
-        .top-bar { background: #0a1324; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .top-navbar { background: #0a1324; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
         .hero { background: var(--primary); color: white; padding: 25px; text-align: center; }
-        .container { max-width: 800px; margin: -20px auto 0; padding: 0 16px; }
-        .slider { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .slider img { width: 100%; max-height: 220px; object-fit: cover; display: none; }
-        .slider img.active { display: block; }
+        .main-container { max-width: 800px; margin: -20px auto 0; padding: 0 16px; }
+        .ad-slider-box { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); min-height: 120px; display: flex; align-items: center; justify-content: center; }
+        .ad-slider-img { width: 100%; max-height: 240px; object-fit: cover; display: none; }
+        .ad-slider-img.active { display: block; }
         .job-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 14px; border: 1px solid #e2e8f0; }
         .job-card img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
-        .ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px; display: flex; align-items: center; z-index: 900; }
-        .ticker img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); margin-left: 15px; }
+        .apply-btn { background: var(--green); color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px; display: inline-block; margin-top: 10px; }
+        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; }
+        .ticker-label { background: var(--gold); color: #0a1324; font-weight: 900; font-size: 11px; padding: 6px 12px; border-radius: 0 12px 12px 0; z-index: 10; }
+        .ticker-content { display: flex; align-items: center; gap: 15px; animation: ticker 20s linear infinite; }
+        .ticker-content img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     </style>
 </head>
 <body>
-    <div class="top-bar"><b>صدارة للوظائف</b></div>
-    <div class="hero"><h1>المنصة الأولى للوظائف بمحافظة ذمار</h1></div>
-    <div class="container">
-        <div class="slider" id="sliderBox"></div>
-        <h2 style="margin-bottom:12px;">الوظائف والخدمات المتاحة</h2>
-        <div id="jobsList"></div>
-    </div>
-    <div class="ticker"><div style="background:var(--gold); padding:4px 10px; font-weight:bold; font-size:11px; border-radius:0 10px 10px 0;">شركاء النجاح</div><div style="display:flex; overflow:hidden; width:100%;"><div style="display:flex; animation:slide 15s linear infinite;" id="tickerBox"></div></div></div><script>
-        var SYSTEM_BANNERS = [
-    "images/banner%201%20.png",
-    "images/banner%202.png"
-];
-        var SYSTEM_JOBS = [
-    {
-        "id": 102,
-        "title": "مسوق إلكتروني وميداني",
-        "company": "مؤسسة صدارة",
-        "phone": "780568507",
-        "image": "",
-        "status": "متوفر",
-        "approved": true
-    }
-];
-        var SYSTEM_PARTNERS = [
-    {
-        "id": 1,
-        "name": "شريك1",
-        "logo": "images/logo%201%20.jpg"
-    },
-    {
-        "id": 2,
-        "name": "شريك 2",
-        "logo": "images/logo%202.jpg"
-    },
-    {
-        "id": 3,
-        "name": "شريك 3",
-        "logo": "images/logo%203.png"
-    }
-];
 
-        function init() {
-            var sBox = document.getElementById('sliderBox');
+    <div class="top-navbar">
+        <span style="font-weight: 900;">صدارة للوظائف</span>
+    </div>
+
+    <div class="hero">
+        <h1 style="font-size: 20px;">المنصة الأولى للوظائف بمحافظة ذمار</h1>
+    </div>
+
+    <div class="main-container">
+        <div class="ad-slider-box" id="sliderBox"></div>
+        <h2 style="font-size: 18px; margin-bottom: 12px; color: #0f172a;">الوظائف والخدمات المتاحة</h2>
+        <div id="jobsBox"></div>
+    </div>
+
+    <div class="partners-ticker">
+        <div class="ticker-label">شركاء النجاح</div>
+        <div style="display:flex; overflow:hidden; width:100%;">
+            <div class="ticker-content" id="tickerBox"></div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function initPlatform() {
+            // 1. جلب البنرات
+            let { data: banners } = await db.from('banners').select('*');
+            let sBox = document.getElementById('sliderBox');
             sBox.innerHTML = '';
-            for(var i=0; i<SYSTEM_BANNERS.length; i++) {
-                sBox.innerHTML += '<img src="' + SYSTEM_BANNERS[i] + '" class="' + (i===0?'active':'') + '">';
-            }
-            var idx = 0;
-            setInterval(function() {
-                var imgs = sBox.querySelectorAll('img');
+            (banners || []).forEach((b, i) => {
+                sBox.innerHTML += `<img src="${b.url}" class="ad-slider-img ${i===0?'active':''}">`;
+            });
+            let idx = 0;
+            setInterval(() => {
+                let imgs = sBox.querySelectorAll('img');
                 if(imgs.length <= 1) return;
                 imgs[idx].classList.remove('active');
                 idx = (idx + 1) % imgs.length;
                 imgs[idx].classList.add('active');
             }, 3500);
 
-            var tBox = document.getElementById('tickerBox');
+            // 2. جلب الشركاء
+            let { data: partners } = await db.from('partners').select('*');
+            let tBox = document.getElementById('tickerBox');
             tBox.innerHTML = '';
-            for(var j=0; j<SYSTEM_PARTNERS.length; j++) {
-                tBox.innerHTML += '<img src="' + SYSTEM_PARTNERS[j].logo + '">';
-            }
+            (partners || []).forEach(p => {
+                tBox.innerHTML += `<img src="${p.logo}" alt="${p.name}">`;
+            });
 
-            var jList = document.getElementById('jobsList');
-            jList.innerHTML = '';
-            for(var k=0; k<SYSTEM_JOBS.length; k++) {
-                var job = SYSTEM_JOBS[k];
-                if(!job.approved) continue;
-                var img = job.image ? '<img src="' + job.image + '">' : '';
-                jList.innerHTML += '<div class="job-card">' + img + '<h3>' + job.title + '</h3><p style="color:#64748b; font-size:13px;">' + job.company + '</p><a href="https://wa.me/' + job.phone + '" target="_blank" style="display:inline-block; margin-top:10px; background:var(--green); color:white; padding:6px 14px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:12px;">تقديم واتساب</a></div>';
-            }
+            // 3. جلب الوظائف
+            let { data: jobs } = await db.from('jobs').select('*').eq('approved', true).order('id', {ascending: false});
+            let jBox = document.getElementById('jobsBox');
+            jBox.innerHTML = '';
+            (jobs || []).forEach(j => {
+                let imgTag = (j.image && j.image.trim() !== '') ? `<img src="${j.image}">` : '';
+                jBox.innerHTML += `<div class="job-card">
+                    ${imgTag}
+                    <h3 style="font-size: 16px; color:#0f2347;">${j.title}</h3>
+                    <p style="font-size: 13px; color:#64748b;">${j.company}</p>
+                    <a href="https://wa.me/${j.phone}" target="_blank" class="apply-btn">تقديم عبر الواتساب</a>
+                </div>`;
+            });
         }
-        document.addEventListener('DOMContentLoaded', init);
+
+        document.addEventListener('DOMContentLoaded', initPlatform);
     </script>
 </body>
 </html>
