@@ -116,22 +116,28 @@
         </div>
     </div>
 
+    <!-- نافذة الحسابات الذكية (تسجيل جديد / دخول) -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-card">
-            <div id="authViewMode">
-                <h3 style="color:var(--primary); font-size:15px; margin-bottom:5px;">تسجيل حساب جديد 🚀</h3>
-                
-                <label>رقم الواتساب</label>
-                <input type="tel" id="authPhone" placeholder="770000000">
+            <h3 style="color:var(--primary); font-size:15px; margin-bottom:5px;" id="modalTitle">أهلاً بك! انضم لمنصة صدارة 🚀</h3>
+            <p style="font-size:11px; color:#64748b; margin-bottom:10px;" id="modalSubtitle">يرجى تسجيل حسابك الجديد للمتابعة.</p>
+            
+            <label>رقم الواتساب</label>
+            <input type="tel" id="authPhone" placeholder="770000000">
 
+            <div id="nameFieldBox">
                 <label>الاسم الكامل / اسم الشركة</label>
-                <input type="text" id="authName" placeholder="مثال: شركة صدارة">
-
-                <div style="display:flex; gap:6px; margin-top:14px;">
-                    <button onclick="registerUser()" style="flex:1; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px;">تسجيل وحفظ الحساب 📱</button>
-                </div>
-                <button onclick="closeAuthModal()" style="width:100%; background:#64748b; color:white; border:none; padding:7px; border-radius:8px; margin-top:8px; cursor:pointer; font-size:11px;">إغلاق</button>
+                <input type="text" id="authName" placeholder="مثال: شركة صدارة / أحمد">
             </div>
+
+            <label>كلمة المرور (4 أرقام فقط)</label>
+            <input type="password" id="authPass" maxlength="4" placeholder="1234">
+
+            <div style="display:flex; gap:6px; margin-top:14px;">
+                <button id="mainAuthBtn" onclick="processAuth()" style="flex:1; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px;">إنشاء وحفظ الحساب 📱</button>
+            </div>
+            <button onclick="switchMode()" id="switchBtnText" style="width:100%; background:#f1f5f9; color:#0f2347; border:none; padding:7px; border-radius:8px; margin-top:6px; cursor:pointer; font-size:11px; font-weight:bold;">لديك حساب مسجل؟ تسجيل الدخول</button>
+            <button onclick="closeAuthModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:10px;">إلغاء</button>
             <div id="authMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
         </div>
     </div>
@@ -140,6 +146,8 @@
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let isLoginMode = false; // الوضع الافتراضي لزائر جديد هو تسجيل حساب جديد
 
         function getBlueBadgeHTML() {
             return `<span title="جهة موثوقة" style="display:inline-flex; align-items:center; vertical-align:middle; margin-right:3px;">
@@ -151,6 +159,12 @@
 
         async function init() {
             checkActiveSession();
+            
+            // إذا كان الزائر يزور المنصة لأول مرة (وليس لديه جلسة مسجلة)، اطلب منه تسجيل حساب جديد تلقائياً
+            if (!localStorage.getItem('sadara_logged_phone')) {
+                setTimeout(() => { openAuthModal(); }, 800);
+            }
+
             try {
                 let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
                 let views = st ? (st.total_views + 1) : 1;
@@ -206,27 +220,87 @@
         function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
         function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
 
-        async function registerUser() {
+        // التبديل الذكي بين وضع (تسجيل حساب جديد) و (تسجيل الدخول)
+        function switchMode() {
+            isLoginMode = !isLoginMode;
+            const nameBox = document.getElementById('nameFieldBox');
+            const title = document.getElementById('modalTitle');
+            const subtitle = document.getElementById('modalSubtitle');
+            const btn = document.getElementById('mainAuthBtn');
+            const switchBtn = document.getElementById('switchBtnText');
+
+            if (isLoginMode) {
+                nameBox.style.display = 'none';
+                title.textContent = 'تسجيل الدخول 🔐';
+                subtitle.textContent = 'أدخل رقم الواتساب وكلمة المرور (4 أرقام).';
+                btn.textContent = 'تسجيل الدخول 🚀';
+                btn.style.background = 'var(--primary)';
+                switchBtn.textContent = 'ليس لديك حساب؟ سجل حساب جديد';
+            } else {
+                nameBox.style.display = 'block';
+                title.textContent = 'أهلاً بك! انضم لمنصة صدارة 🚀';
+                subtitle.textContent = 'يرجى تسجيل حسابك الجديد للمتابعة.';
+                btn.textContent = 'إنشاء وحفظ الحساب 📱';
+                btn.style.background = 'var(--green)';
+                switchBtn.textContent = 'لديك حساب مسجل؟ تسجيل الدخول';
+            }
+        }
+
+        async function processAuth() {
             const phone = document.getElementById('authPhone').value.trim();
-            const name = document.getElementById('authName').value.trim();
+            const pass = document.getElementById('authPass').value.trim();
             const msg = document.getElementById('authMsg');
 
-            if (!phone || !name) { alert('أدخل الاسم ورقم الواتساب'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ في السحابة...';
+            if (!phone || !pass) { alert('يرجى إدخال رقم الواتساب وكلمة المرور'); return; }
+            if (pass.length !== 4) { alert('كلمة المرور يجب أن تكون من 4 أرقام فقط'); return; }
 
-            let { error } = await db.from('users').insert([{ full_name: name, phone: phone }]);
+            msg.style.color = 'blue'; msg.textContent = 'جاري التحقق والمزامنة السحابية...';
 
-            if (error) {
-                msg.style.color = 'red'; 
-                msg.textContent = 'حدث خطأ. تأكد من اتصال الإنترنت.';
-                return;
+            if (!isLoginMode) {
+                // وضع إنشاء حساب جديد
+                const name = document.getElementById('authName').value.trim();
+                if (!name) { alert('أدخل الاسم الكامل أو اسم الشركة'); msg.textContent = ''; return; }
+
+                let { error } = await db.from('users').insert([{
+                    full_name: name,
+                    phone: phone,
+                    password: pass
+                }]);
+
+                if (error) {
+                    msg.style.color = 'red';
+                    msg.textContent = 'رقم الواتساب مسجل مسبقاً، جرب تسجيل الدخول!';
+                    return;
+                }
+
+                localStorage.setItem('sadara_logged_phone', phone);
+                localStorage.setItem('sadara_logged_name', name);
+                msg.style.color = 'green';
+                msg.textContent = 'تم إنشاء الحساب وحفظه بنجاح! 🎉';
+                setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 1000);
+
+            } else {
+                // وضع تسجيل الدخول
+                let { data: user, error } = await db.from('users').select('*').eq('phone', phone).single();
+
+                if (error || !user) {
+                    msg.style.color = 'red';
+                    msg.textContent = 'رقم الواتساب غير مسجل، أنشئ حساباً جديداً!';
+                    return;
+                }
+
+                if (user.password && user.password !== pass) {
+                    msg.style.color = 'red';
+                    msg.textContent = 'كلمة المرور غير صحيحة!';
+                    return;
+                }
+
+                localStorage.setItem('sadara_logged_phone', user.phone);
+                localStorage.setItem('sadara_logged_name', user.full_name || phone);
+                msg.style.color = 'green';
+                msg.textContent = `مرحباً بك مجدداً ${user.full_name || phone}! 👋`;
+                setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 1000);
             }
-
-            localStorage.setItem('sadara_logged_phone', phone);
-            localStorage.setItem('sadara_logged_name', name);
-            msg.style.color = 'green'; 
-            msg.textContent = 'تم تسجيل حسابك بنجاح! 🎉';
-            setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 1000);
         }
 
         function checkActiveSession() {
@@ -243,6 +317,7 @@
             localStorage.removeItem('sadara_logged_phone');
             localStorage.removeItem('sadara_logged_name');
             checkActiveSession();
+            openAuthModal(); // إظهار نافذة التسجيل مجدداً عند تسجيل الخروج
         }
 
         document.addEventListener('DOMContentLoaded', init);
