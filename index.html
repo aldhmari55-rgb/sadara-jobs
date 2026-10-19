@@ -196,10 +196,8 @@
             <a href="https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s" target="_blank" class="whatsapp-channel-btn">الانضمام للقناة 🟢</a>
         </div>
 
-        <!-- صندوق البنرات الإعلانية الممولة المتحركة الموحدة -->
-        <div class="ad-slider-box" id="bannerSliderContainer">
-            <!-- تتغير الصور المرفوعة عبر النظام هنا -->
-        </div>
+        <!-- صندوق البنرات الإعلانية المتحركة الموحدة -->
+        <div class="ad-slider-box" id="bannerSliderContainer"></div>
 
         <div class="jobs-section-header">
             <h2 class="jobs-section-title">الوظائف والخدمات المتاحة</h2>
@@ -299,48 +297,46 @@
                 <input type="text" id="phoneInput" placeholder="770000000">
             </div>
             <div class="form-group">
-                <label>رابط صورة الإعلان (GitHub أو رابط مباشر) *</label>
-                <input type="text" id="jobImageUrlInput" placeholder="https://raw.githubusercontent.com/..." style="margin-bottom:5px;">
+                <label>رابط أو اسم صورة الإعلان من المجلد *</label>
+                <input type="text" id="jobImageUrlInput" placeholder="images/banner 1 .png" style="margin-bottom:5px;">
             </div>
             <button class="btn-submit" onclick="submitNewJob()">إرسال للمراجعة والاعتماد</button>
         </div>
     </div>
     <script>
-        // 1. البنرات الإعلانية الممولة الموحدة لجميع الزوار (يمكنك استبدالها بروابط صورك المرفوعة على GitHub)
+        // 1. مصفوفة البنرات الإعلانية المتحركة المرتبطة بمجلد الصور المرفوع
         var SYSTEM_BANNERS = [
-            "https://via.placeholder.com/800x240/0f2347/ffffff?text=فرصة+عمل+-+مسوق+إلكتروني",
-            "https://via.placeholder.com/800x240/d4af37/000000?text=اعلن+معنا+في+منصة+صدارة"
+            "images/banner%201%20.png",
+            "images/banner%202.png"
         ];
 
         // 2. الوظائف الموحدة لجميع الأجهزة
         var SYSTEM_JOBS = [
-            { id: 101, title: 'خياط', company: 'لومار للخياطة', phone: '967770000000', image: 'https://via.placeholder.com/600x300/0f2347/ffffff?text=لومار+للخياطة', status: 'غير متوفر', approved: true },
-            { id: 102, title: 'مسوق إلكتروني وميداني', company: 'مؤسسة صدارة', phone: '967770000000', image: 'https://via.placeholder.com/600x300/2563eb/ffffff?text=مسوق+إلكتروني+وميداني', status: 'متوفر', approved: true },
+            { id: 101, title: 'خياط', company: 'لومار للخياطة', phone: '967770000000', image: 'images/logo%203.png', status: 'غير متوفر', approved: true },
+            { id: 102, title: 'مسوق إلكتروني وميداني', company: 'مؤسسة صدارة', phone: '967770000000', image: 'images/banner%201%20.png', status: 'متوفر', approved: true },
             { id: 103, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', image: '', status: 'متوفر', approved: true }
         ];
 
-        // 3. الشعارات الموحدة لشركاء النجاح
+        // 3. مصفوفة شعارات شركاء النجاح المرتبطة بملفات المجلد المرفوعة
         var SYSTEM_PARTNERS = [
-            { id: 1, name: 'صدارة', logo: 'https://via.placeholder.com/60/0f2347/ffffff?text=SADARA' },
-            { id: 2, name: 'الأمل', logo: 'https://via.placeholder.com/60/d4af37/000000?text=AMAL' }
+            { id: 1, name: 'شريك 1', logo: 'images/logo%201%20.jpg' },
+            { id: 2, name: 'شريك 2', logo: 'images/logo%202.jpg' },
+            { id: 3, name: 'شريك 3', logo: 'images/logo%203.png' },
+            { id: 4, name: 'شريك 4', logo: 'images/logo%204.jpg' },
+            { id: 5, name: 'شريك 5', logo: 'images/logo%205.jpg' }
         ];
 
         function getStoredJobs() {
-            var stored = localStorage.getItem('dhawar_jobs_v3');
+            var stored = localStorage.getItem('dhawar_jobs_v4');
             if (!stored) {
-                localStorage.setItem('dhawar_jobs_v3', JSON.stringify(SYSTEM_JOBS));
+                localStorage.setItem('dhawar_jobs_v4', JSON.stringify(SYSTEM_JOBS));
                 return SYSTEM_JOBS;
             }
             return JSON.parse(stored);
         }
 
         function getStoredPartners() {
-            var stored = localStorage.getItem('dhawar_partners_v3');
-            if (!stored) {
-                localStorage.setItem('dhawar_partners_v3', JSON.stringify(SYSTEM_PARTNERS));
-                return SYSTEM_PARTNERS;
-            }
-            return JSON.parse(stored);
+            return SYSTEM_PARTNERS;
         }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
@@ -460,7 +456,7 @@
 
             for (var i = 0; i < SYSTEM_BANNERS.length; i++) {
                 var activeClass = (i === 0) ? ' active' : '';
-                sliderContainer.innerHTML += '<img src="' + SYSTEM_BANNERS[i] + '" class="ad-slider-img' + activeClass + '" id="bannerImg_' + i + '">';
+                sliderContainer.innerHTML += '<img src="' + SYSTEM_BANNERS[i] + '" class="ad-slider-img' + activeClass + '">';
             }
 
             var currentIndex = 0;
@@ -547,7 +543,7 @@
                 approved: false
             });
 
-            localStorage.setItem('dhawar_jobs_v3', JSON.stringify(jobs));
+            localStorage.setItem('dhawar_jobs_v4', JSON.stringify(jobs));
             alert('تم إرسال الوظيفة مع الصورة بنجاح! ستظهر بالمنصة فور اعتمادها من الإدارة.');
             closeModal('addModal');
         }
