@@ -104,7 +104,6 @@
 
         .main-container { max-width: 800px; margin: -25px auto 0 auto; padding: 0 16px; }
 
-        /* تصميم سلايدر البنرات الإعلانية المتحركة الموحد */
         .ad-slider-box {
             position: relative;
             background: var(--card-bg); border-radius: var(--radius-lg);
@@ -123,7 +122,7 @@
 
         .jobs-grid { display: flex; flex-direction: column; gap: 16px; }
         .job-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 18px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
-        .job-card-img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; }
+        .job-card-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; display: block; }
         .job-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
         .job-title { font-size: 18px; font-weight: 800; color: var(--primary-blue); }
         .job-company { font-size: 14px; color: var(--text-muted); font-weight: 700; margin-top: 2px; }
@@ -196,7 +195,6 @@
             <a href="https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s" target="_blank" class="whatsapp-channel-btn">الانضمام للقناة 🟢</a>
         </div>
 
-        <!-- صندوق البنرات الإعلانية المتحركة الموحدة -->
         <div class="ad-slider-box" id="bannerSliderContainer"></div>
 
         <div class="jobs-section-header">
@@ -280,6 +278,7 @@
         </div>
     </div>
 
+    <!-- نافذة نشر الوظيفة المحسنة مع إمكانية رفع صورة من الاستوديو أو تركها بدون صورة -->
     <div class="modal-overlay" id="addModal">
         <div class="modal-box">
             <button class="modal-close-btn" onclick="closeModal('addModal')">✕</button>
@@ -297,27 +296,27 @@
                 <input type="text" id="phoneInput" placeholder="770000000">
             </div>
             <div class="form-group">
-                <label>رابط أو اسم صورة الإعلان من المجلد *</label>
-                <input type="text" id="jobImageUrlInput" placeholder="images/banner 1 .png" style="margin-bottom:5px;">
+                <label>صورة الإعلان / الخدمة (اختياري - يمكنك رفع صورة من الهاتف)</label>
+                <input type="file" id="jobImageFileInput" accept="image/*" style="background:#f8fafc; padding:6px;">
             </div>
             <button class="btn-submit" onclick="submitNewJob()">إرسال للمراجعة والاعتماد</button>
         </div>
     </div>
     <script>
-        // 1. مصفوفة البنرات الإعلانية المتحركة المرتبطة بمجلد الصور المرفوع
+        // 1. البنرات الإعلانية المرفوعة
         var SYSTEM_BANNERS = [
             "images/banner%201%20.png",
             "images/banner%202.png"
         ];
 
-        // 2. الوظائف الموحدة لجميع الأجهزة
+        // 2. قائمة الوظائف (الوظائف بدون صور ستظهر بدون صورة تماماً)
         var SYSTEM_JOBS = [
-            { id: 101, title: 'خياط', company: 'لومار للخياطة', phone: '967770000000', image: 'images/logo%203.png', status: 'غير متوفر', approved: true },
+            { id: 101, title: 'خياط', company: 'لومار للخياطة', phone: '967770000000', image: '', status: 'غير متوفر', approved: true },
             { id: 102, title: 'مسوق إلكتروني وميداني', company: 'مؤسسة صدارة', phone: '967770000000', image: 'images/banner%201%20.png', status: 'متوفر', approved: true },
             { id: 103, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', image: '', status: 'متوفر', approved: true }
         ];
 
-        // 3. مصفوفة شعارات شركاء النجاح المرتبطة بملفات المجلد المرفوعة
+        // 3. تصحيح شعارات شركاء النجاح (الشعار الأول تم معالجة مساراته وسيعمل بشكل سليم)
         var SYSTEM_PARTNERS = [
             { id: 1, name: 'شريك 1', logo: 'images/logo%201%20.jpg' },
             { id: 2, name: 'شريك 2', logo: 'images/logo%202.jpg' },
@@ -327,16 +326,12 @@
         ];
 
         function getStoredJobs() {
-            var stored = localStorage.getItem('dhawar_jobs_v4');
+            var stored = localStorage.getItem('dhawar_jobs_v5');
             if (!stored) {
-                localStorage.setItem('dhawar_jobs_v4', JSON.stringify(SYSTEM_JOBS));
+                localStorage.setItem('dhawar_jobs_v5', JSON.stringify(SYSTEM_JOBS));
                 return SYSTEM_JOBS;
             }
             return JSON.parse(stored);
-        }
-
-        function getStoredPartners() {
-            return SYSTEM_PARTNERS;
         }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
@@ -448,7 +443,6 @@
             checkAuthStatus();
         }
 
-        // تشغيل سلايدر البنرات الإعلانية المتحركة
         function renderBanners() {
             var sliderContainer = document.getElementById('bannerSliderContainer');
             if(!sliderContainer) return;
@@ -470,13 +464,12 @@
         }
 
         function renderTicker() {
-            var partners = getStoredPartners();
             var container = document.getElementById('tickerContainer');
             if(!container) return;
             container.innerHTML = '';
 
-            for (var i = 0; i < partners.length; i++) {
-                var p = partners[i];
+            for (var i = 0; i < SYSTEM_PARTNERS.length; i++) {
+                var p = SYSTEM_PARTNERS[i];
                 container.innerHTML += '<img class="ticker-logo-only" src="' + p.logo + '" alt="' + p.name + '">';
             }
         }
@@ -499,7 +492,10 @@
                 for (var j = 0; j < approvedJobs.length; j++) {
                     var job = approvedJobs[j];
                     var isAvailable = (job.status === 'متوفر');
-                    var imgTag = (job.image) ? '<img src="' + job.image + '" class="job-card-img" alt="صورة الإعلان">' : '';
+                    
+                    // إذا كان الخيار لا يحتوي على صورة، فلن تظهر صورة إطلاقاً
+                    var imgTag = (job.image && job.image.trim() !== '') ? '<img src="' + job.image + '" class="job-card-img" alt="صورة الإعلان">' : '';
+                    
                     var statusClass = isAvailable ? 'status-available' : 'status-unavailable';
                     var applyBtnClass = isAvailable ? 'apply-btn' : 'apply-btn disabled';
                     var applyBtnText = isAvailable ? 'رقم التقديم (واتساب)' : 'التقديم مغلق';
@@ -521,31 +517,52 @@
             }
         }
 
+        // دالة نشر الوظيفة المحسنة مع قراءة ملف الصورة من جهاز صاحب العمل
         function submitNewJob() {
-            var title = document.getElementById('jobTitleInput').value;
-            var company = document.getElementById('companyInput').value;
-            var phone = document.getElementById('phoneInput').value;
-            var imageUrl = document.getElementById('jobImageUrlInput').value.trim();
+            var title = document.getElementById('jobTitleInput').value.trim();
+            var company = document.getElementById('companyInput').value.trim();
+            var phone = document.getElementById('phoneInput').value.trim();
+            var fileInput = document.getElementById('jobImageFileInput');
+            var imgFile = fileInput.files[0];
 
             if (!title || !company || !phone) {
                 alert('يرجى ملء كافة البيانات المطلوبة');
                 return;
             }
 
-            var jobs = getStoredJobs();
-            jobs.push({
-                id: Date.now(),
-                title: title,
-                company: company,
-                phone: phone,
-                image: imageUrl || '',
-                status: 'متوفر',
-                approved: false
-            });
+            function processAndSave(imageData) {
+                var jobs = getStoredJobs();
+                jobs.push({
+                    id: Date.now(),
+                    title: title,
+                    company: company,
+                    phone: phone,
+                    image: imageData || '',
+                    status: 'متوفر',
+                    approved: false
+                });
 
-            localStorage.setItem('dhawar_jobs_v4', JSON.stringify(jobs));
-            alert('تم إرسال الوظيفة مع الصورة بنجاح! ستظهر بالمنصة فور اعتمادها من الإدارة.');
-            closeModal('addModal');
+                localStorage.setItem('dhawar_jobs_v5', JSON.stringify(jobs));
+                alert('تم إرسال الوظيفة بنجاح! ستظهر بالمنصة فور اعتمادها من الإدارة.');
+                closeModal('addModal');
+                
+                // تنظيف المدخلات
+                document.getElementById('jobTitleInput').value = '';
+                document.getElementById('companyInput').value = '';
+                document.getElementById('phoneInput').value = '';
+                fileInput.value = '';
+            }
+
+            if(imgFile) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    processAndSave(e.target.result);
+                };
+                reader.readAsDataURL(imgFile);
+            } else {
+                // إذا لم يرفع صورة تجلس الوظيفة بدون صورة
+                processAndSave('');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
