@@ -4,573 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة صدارة للوظائف والخدمات | ذمار</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-dark: #0a1324;
-            --primary-blue: #0f2347;
-            --accent-gold: #d4af37;
-            --accent-blue: #2563eb;
-            --bg-light: #f8fafc;
-            --card-bg: #ffffff;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --whatsapp-green: #25d366;
-            --border-color: #e2e8f0;
-            --radius-lg: 16px;
-            --radius-md: 10px;
-            --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background-color: var(--bg-light); color: var(--text-dark); padding-bottom: 90px; }
-
-        .top-navbar {
-            background: var(--primary-dark);
-            color: #ffffff;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-        }
-
-        .brand-logo-wrap { display: flex; align-items: center; gap: 10px; }
-        .brand-logo {
-            background: linear-gradient(135deg, var(--accent-gold), #fff8dc);
-            color: var(--primary-dark);
-            width: 40px; height: 40px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; font-weight: 900;
-        }
-
-        .nav-auth-actions { display: flex; gap: 8px; align-items: center; }
-        .auth-btn {
-            background: linear-gradient(135deg, var(--accent-gold), #f3e5ab);
-            color: var(--primary-dark);
-            border: none; padding: 7px 14px; border-radius: 20px;
-            font-weight: 800; font-size: 12px; cursor: pointer;
-        }
-        .register-btn {
-            background: transparent;
-            color: #ffffff;
-            border: 1px solid var(--accent-gold);
-            padding: 7px 14px; border-radius: 20px;
-            font-weight: 800; font-size: 12px; cursor: pointer;
-        }
-        .btn-add-job {
-            background: var(--accent-blue);
-            color: #ffffff; border: none; padding: 7px 16px; border-radius: 20px;
-            font-weight: 800; font-size: 13px; cursor: pointer;
-        }
-        .profile-btn {
-            background: rgba(255, 255, 255, 0.15);
-            color: #ffffff; border: 1px solid var(--accent-gold);
-            padding: 6px 12px; border-radius: 20px;
-            font-weight: 700; font-size: 12px; cursor: pointer;
-        }
-
-        .hero-banner-title {
-            background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
-            color: #ffffff; padding: 28px 20px 45px 20px; text-align: center;
-        }
-        .hero-banner-title h1 { font-size: 22px; font-weight: 900; }
-
-        .whatsapp-channel-bar {
-            background: #dcfce7;
-            border: 1px solid #86efac;
-            padding: 10px 16px;
-            border-radius: var(--radius-md);
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            font-weight: 800;
-            color: #166534;
-        }
-        .whatsapp-channel-btn {
-            background: var(--whatsapp-green);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .main-container { max-width: 800px; margin: -25px auto 0 auto; padding: 0 16px; }
-
-        .ad-slider-box {
-            position: relative;
-            background: var(--card-bg); border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color); overflow: hidden;
-            box-shadow: var(--shadow-sm); margin-bottom: 20px;
-            min-height: 140px; display: flex; align-items: center; justify-content: center;
-        }
-        .ad-slider-img {
-            width: 100%; height: auto; max-height: 240px; object-fit: cover; display: none;
-        }
-        .ad-slider-img.active { display: block; }
-
-        .jobs-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .jobs-section-title { font-size: 20px; font-weight: 900; color: var(--primary-dark); }
-        .show-all-btn { background: #e2e8f0; color: var(--text-dark); border: none; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
-
-        .jobs-grid { display: flex; flex-direction: column; gap: 16px; }
-        .job-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 18px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
-        .job-card-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; display: block; }
-        .job-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .job-title { font-size: 18px; font-weight: 800; color: var(--primary-blue); }
-        .job-company { font-size: 14px; color: var(--text-muted); font-weight: 700; margin-top: 2px; }
-        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; }
-        .status-available { background: #dcfce7; color: #166534; }
-        .status-unavailable { background: #fee2e2; color: #991b1b; }
-
-        .job-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid #f1f5f9; }
-        .apply-btn { background: var(--whatsapp-green); color: #ffffff; text-decoration: none; padding: 8px 18px; border-radius: var(--radius-md); font-weight: 800; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
-        .apply-btn.disabled { background: #cbd5e1; pointer-events: none; }
-
-        .partners-ticker-section {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--primary-dark); color: #ffffff;
-            border-top: 2px solid var(--accent-gold); padding: 8px 0;
-            overflow: hidden; z-index: 900; display: flex; align-items: center;
-        }
-
-        .ticker-label {
-            background: var(--accent-gold); color: var(--primary-dark);
-            font-weight: 900; font-size: 11px; padding: 6px 14px;
-            border-radius: 0 15px 15px 0; white-space: nowrap; z-index: 10;
-        }
-
-        .ticker-wrapper { display: flex; overflow: hidden; width: 100%; }
-        .ticker-content { display: flex; align-items: center; gap: 20px; white-space: nowrap; animation: tickerSlide 20s linear infinite; }
-        .ticker-logo-only {
-            width: 42px; height: 42px;
-            border-radius: 50%; object-fit: cover;
-            border: 2px solid var(--accent-gold);
-            background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-            flex-shrink: 0;
-        }
-
-        @keyframes tickerSlide {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 19, 36, 0.75); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 16px; }
-        .modal-box { background: #ffffff; width: 100%; max-width: 440px; border-radius: var(--radius-lg); padding: 24px; position: relative; max-height: 90vh; overflow-y: auto; }
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 800; margin-bottom: 5px; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; }
-        .btn-submit { width: 100%; background: var(--primary-blue); color: #ffffff; border: none; padding: 11px; border-radius: var(--radius-md); font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 8px; }
-        .modal-close-btn { position: absolute; left: 15px; top: 15px; border: none; background: #f1f5f9; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+        :root { --primary:#0f2347; --gold:#d4af37; --green:#25d366; }
+        * { box-sizing: border-box; margin:0; padding:0; font-family:'Tajawal', sans-serif; }
+        body { background: #f8fafc; padding-bottom: 90px; }
+        .top-bar { background: #0a1324; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .hero { background: var(--primary); color: white; padding: 25px; text-align: center; }
+        .container { max-width: 800px; margin: -20px auto 0; padding: 0 16px; }
+        .slider { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .slider img { width: 100%; max-height: 220px; object-fit: cover; display: none; }
+        .slider img.active { display: block; }
+        .job-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 14px; border: 1px solid #e2e8f0; }
+        .job-card img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        .ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px; display: flex; align-items: center; z-index: 900; }
+        .ticker img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); margin-left: 15px; }
     </style>
 </head>
 <body>
-
-    <div class="top-navbar">
-        <div class="brand-logo-wrap">
-            <div class="brand-logo">ص</div>
-            <span style="font-weight: 800;">صدارة للوظائف</span>
-        </div>
-        <div class="nav-auth-actions" id="navAuthArea">
-            <button class="btn-add-job" onclick="openModal('addModal')">+ نشر شغل</button>
-            <button class="register-btn" onclick="openModal('registerModal')">حساب جديد</button>
-            <button class="auth-btn" onclick="openModal('loginModal')">تسجيل الدخول</button>
-        </div>
+    <div class="top-bar"><b>صدارة للوظائف</b></div>
+    <div class="hero"><h1>المنصة الأولى للوظائف بمحافظة ذمار</h1></div>
+    <div class="container">
+        <div class="slider" id="sliderBox"></div>
+        <h2 style="margin-bottom:12px;">الوظائف والخدمات المتاحة</h2>
+        <div id="jobsList"></div>
     </div>
-
-    <div class="hero-banner-title">
-        <h1>المنصة الأولى للوظائف بمحافظة ذمار</h1>
-    </div>
-
-    <div class="main-container">
-        <div class="whatsapp-channel-bar">
-            <span>📢 انضم لقناة المنصة الرسمية على الواتساب!</span>
-            <a href="https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s" target="_blank" class="whatsapp-channel-btn">الانضمام للقناة 🟢</a>
-        </div>
-
-        <div class="ad-slider-box" id="bannerSliderContainer"></div>
-
-        <div class="jobs-section-header">
-            <h2 class="jobs-section-title">الوظائف والخدمات المتاحة</h2>
-            <button class="show-all-btn" onclick="renderMainJobs()">عرض الكل</button>
-        </div>
-        <div class="jobs-grid" id="jobsContainer"></div>
-    </div>
-
-    <div class="partners-ticker-section">
-        <div class="ticker-label">شركاء النجاح 🤝</div>
-        <div class="ticker-wrapper">
-            <div class="ticker-content" id="tickerContainer"></div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="registerModal">
-        <div class="modal-box">
-            <button class="modal-close-btn" onclick="closeModal('registerModal')">✕</button>
-            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--primary-blue);">إنشاء حساب جديد</h3>
-            <div class="form-group">
-                <label>نوع الحساب</label>
-                <select id="regRole">
-                    <option value="باحث عن عمل">باحث عن عمل (موظف)</option>
-                    <option value="صاحب عمل">صاحب عمل (مؤسسة / متجر)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>الاسم الكامل / اسم الشركة أو المتجر *</label>
-                <input type="text" id="regName" placeholder="مثال: متجر الأمل">
-            </div>
-            <div class="form-group">
-                <label>اسم المستخدم (4 حروف إنجليزي للدخول) *</label>
-                <input type="text" id="regUsername" maxlength="4" style="text-transform: lowercase;" placeholder="مثال: abdo">
-            </div>
-            <div class="form-group">
-                <label>رقم الهاتف الأساسي (الواتساب) *</label>
-                <input type="text" id="regPhone" placeholder="770000000">
-            </div>
-            <div class="form-group">
-                <label>كلمة المرور (4 أرقام أو حروف) *</label>
-                <input type="password" id="regPin" maxlength="4" placeholder="مثال: 1234">
-            </div>
-            <button class="btn-submit" onclick="handleRegister()">تسجيل وإنشاء الحساب فوراً</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="profileModal">
-        <div class="modal-box">
-            <button class="modal-close-btn" onclick="closeModal('profileModal')">✕</button>
-            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--primary-dark);">تعديل الملف الشخصي</h3>
-            <div class="form-group">
-                <label>الاسم الكامل / اسم الجهة</label>
-                <input type="text" id="profName">
-            </div>
-            <div class="form-group">
-                <label>رقم الهاتف الأساسي</label>
-                <input type="text" id="profPhone">
-            </div>
-            <div class="form-group">
-                <label>رقم هاتف إضافي (اختياري)</label>
-                <input type="text" id="profPhone2" placeholder="أدخل رقم إضافي إن وجد">
-            </div>
-            <button class="btn-submit" onclick="saveProfileChanges()">حفظ التعديلات</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-box">
-            <button class="modal-close-btn" onclick="closeModal('loginModal')">✕</button>
-            <h3 style="margin-bottom: 16px; font-size: 18px;">تسجيل الدخول بحسابك</h3>
-            <div class="form-group">
-                <label>اسم المستخدم (4 حروف إنجليزي) *</label>
-                <input type="text" id="loginUsername" maxlength="4" style="text-transform: lowercase;" placeholder="مثال: abdo">
-            </div>
-            <div class="form-group">
-                <label>كلمة المرور (4 أرقام / حروف) *</label>
-                <input type="password" id="loginPin" maxlength="4" placeholder="أدخل كلمة المرور">
-            </div>
-            <button class="btn-submit" onclick="handleLogin()">دخول المنصة</button>
-        </div>
-    </div>
-
-    <!-- نافذة نشر الوظيفة المحسنة مع إمكانية رفع صورة من الاستوديو أو تركها بدون صورة -->
-    <div class="modal-overlay" id="addModal">
-        <div class="modal-box">
-            <button class="modal-close-btn" onclick="closeModal('addModal')">✕</button>
-            <h3 style="margin-bottom: 14px; font-size: 16px;">نشر شاغر وظيفي / خدمة جديد</h3>
-            <div class="form-group">
-                <label>عنوان الوظيفة / الخدمة *</label>
-                <input type="text" id="jobTitleInput" placeholder="مثال: محاسب عام">
-            </div>
-            <div class="form-group">
-                <label>اسم الشركة / المكان *</label>
-                <input type="text" id="companyInput" placeholder="اسم الشركة أو المتجر">
-            </div>
-            <div class="form-group">
-                <label>رقم التواصل (الواتساب) *</label>
-                <input type="text" id="phoneInput" placeholder="770000000">
-            </div>
-            <div class="form-group">
-                <label>صورة الإعلان / الخدمة (اختياري - يمكنك رفع صورة من الهاتف)</label>
-                <input type="file" id="jobImageFileInput" accept="image/*" style="background:#f8fafc; padding:6px;">
-            </div>
-            <button class="btn-submit" onclick="submitNewJob()">إرسال للمراجعة والاعتماد</button>
-        </div>
-    </div>
-    <script>
-        // 1. البنرات الإعلانية المرفوعة
+    <div class="ticker"><div style="background:var(--gold); padding:4px 10px; font-weight:bold; font-size:11px; border-radius:0 10px 10px 0;">شركاء النجاح</div><div style="display:flex; overflow:hidden; width:100%;"><div style="display:flex; animation:slide 15s linear infinite;" id="tickerBox"></div></div></div><script>
         var SYSTEM_BANNERS = [
-            "images/banner%201%20.png",
-            "images/banner%202.png"
-        ];
-
-        // 2. قائمة الوظائف (الوظائف بدون صور ستظهر بدون صورة تماماً)
+    "images/banner%201%20.png",
+    "images/banner%202.png"
+];
         var SYSTEM_JOBS = [
-            { id: 101, title: 'خياط', company: 'لومار للخياطة', phone: '967770000000', image: '', status: 'غير متوفر', approved: true },
-            { id: 102, title: 'مسوق إلكتروني وميداني', company: 'مؤسسة صدارة', phone: '967770000000', image: 'images/banner%201%20.png', status: 'متوفر', approved: true },
-            { id: 103, title: 'محاسب مالي معتمد', company: 'شركة الأمل للتجارة - ذمار', phone: '967770000000', image: '', status: 'متوفر', approved: true }
-        ];
-
-        // 3. تصحيح شعارات شركاء النجاح (الشعار الأول تم معالجة مساراته وسيعمل بشكل سليم)
+    {
+        "id": 102,
+        "title": "مسوق إلكتروني وميداني",
+        "company": "مؤسسة صدارة",
+        "phone": "780568507",
+        "image": "",
+        "status": "متوفر",
+        "approved": true
+    }
+];
         var SYSTEM_PARTNERS = [
-            { id: 1, name: 'شريك 1', logo: 'images/logo%201%20.jpg' },
-            { id: 2, name: 'شريك 2', logo: 'images/logo%202.jpg' },
-            { id: 3, name: 'شريك 3', logo: 'images/logo%203.png' },
-            { id: 4, name: 'شريك 4', logo: 'images/logo%204.jpg' },
-            { id: 5, name: 'شريك 5', logo: 'images/logo%205.jpg' }
-        ];
+    {
+        "id": 1,
+        "name": "شريك1",
+        "logo": "images/logo%201%20.jpg"
+    },
+    {
+        "id": 2,
+        "name": "شريك 2",
+        "logo": "images/logo%202.jpg"
+    },
+    {
+        "id": 3,
+        "name": "شريك 3",
+        "logo": "images/logo%203.png"
+    }
+];
 
-        function getStoredJobs() {
-            var stored = localStorage.getItem('dhawar_jobs_v5');
-            if (!stored) {
-                localStorage.setItem('dhawar_jobs_v5', JSON.stringify(SYSTEM_JOBS));
-                return SYSTEM_JOBS;
+        function init() {
+            var sBox = document.getElementById('sliderBox');
+            sBox.innerHTML = '';
+            for(var i=0; i<SYSTEM_BANNERS.length; i++) {
+                sBox.innerHTML += '<img src="' + SYSTEM_BANNERS[i] + '" class="' + (i===0?'active':'') + '">';
             }
-            return JSON.parse(stored);
-        }
-
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function checkAuthStatus() {
-            var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            var navAuthArea = document.getElementById('navAuthArea');
-
-            if(currentUser) {
-                navAuthArea.innerHTML = 
-                    '<button class="profile-btn" onclick="openProfileModal()">👤 الملف الشخصي</button>' +
-                    '<button class="btn-add-job" onclick="openModal(\'addModal\')">+ نشر شغل</button>' +
-                    '<button class="auth-btn" style="background:#ef4444; color:white;" onclick="handleLogout()">خروج</button>';
-            } else {
-                navAuthArea.innerHTML = 
-                    '<button class="btn-add-job" onclick="openModal(\'addModal\')">+ نشر شغل</button>' +
-                    '<button class="register-btn" onclick="openModal(\'registerModal\')">حساب جديد</button>' +
-                    '<button class="auth-btn" onclick="openModal(\'loginModal\')">تسجيل الدخول</button>';
-            }
-        }
-
-        function openProfileModal() {
-            var user = JSON.parse(localStorage.getItem('currentUser'));
-            if(!user) return;
-            document.getElementById('profName').value = user.name || '';
-            document.getElementById('profPhone').value = user.phone || '';
-            document.getElementById('profPhone2').value = user.phone2 || '';
-            openModal('profileModal');
-        }
-
-        function saveProfileChanges() {
-            var user = JSON.parse(localStorage.getItem('currentUser'));
-            if(!user) return;
-            var name = document.getElementById('profName').value.trim();
-            var phone = document.getElementById('profPhone').value.trim();
-            var phone2 = document.getElementById('profPhone2').value.trim();
-
-            if(!name || !phone) { alert('الاسم ورقم الهاتف الأساسي مطلوبان'); return; }
-
-            user.name = name; user.phone = phone; user.phone2 = phone2;
-
-            var users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-            for (var i = 0; i < users.length; i++) {
-                if (users[i].username === user.username) users[i] = user;
-            }
-            
-            localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            alert('تم حفظ وتحديث البيانات بنجاح!');
-            closeModal('profileModal');
-            checkAuthStatus();
-        }
-
-        function handleRegister() {
-            var name = document.getElementById('regName').value.trim();
-            var username = document.getElementById('regUsername').value.trim().toLowerCase();
-            var phone = document.getElementById('regPhone').value.trim();
-            var pin = document.getElementById('regPin').value.trim();
-            var role = document.getElementById('regRole').value;
-
-            if(!name || !username || !phone || !pin) { alert('يرجى ملء جميع الحقول المطلوبة'); return; }
-            if(username.length !== 4) { alert('اسم المستخدم يجب أن يكون 4 حروف إنجليزية'); return; }
-            if(pin.length !== 4) { alert('كلمة المرور يجب أن تكون 4 عناصر'); return; }
-
-            var users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-            for (var i = 0; i < users.length; i++) {
-                if(users[i].username === username) { alert('اسم المستخدم مستخدم مسبقاً'); return; }
-            }
-
-            var newUser = { name: name, username: username, phone: phone, phone2: '', pin: pin, role: role };
-            users.push(newUser);
-            localStorage.setItem('dhawar_registered_users', JSON.stringify(users));
-            localStorage.setItem('currentUser', JSON.stringify(newUser));
-
-            alert('مرحباً بك يا ' + name + '! تم إنشاء حسابك بنجاح.');
-            closeModal('registerModal');
-            checkAuthStatus();
-        }
-
-        function handleLogin() {
-            var username = document.getElementById('loginUsername').value.trim().toLowerCase();
-            var pin = document.getElementById('loginPin').value.trim();
-
-            if(!username || !pin) { alert('يرجى إدخال اسم المستخدم وكلمة المرور'); return; }
-
-            var users = JSON.parse(localStorage.getItem('dhawar_registered_users')) || [];
-            var foundUser = null;
-            for (var i = 0; i < users.length; i++) {
-                if (users[i].username === username && users[i].pin === pin) {
-                    foundUser = users[i];
-                    break;
-                }
-            }
-
-            if(foundUser) {
-                localStorage.setItem('currentUser', JSON.stringify(foundUser));
-                alert('أهلاً بعودتك يا ' + foundUser.name + '!');
-                closeModal('loginModal');
-                checkAuthStatus();
-            } else {
-                alert('اسم المستخدم أو كلمة المرور غير صحيحة.');
-            }
-        }
-
-        function handleLogout() {
-            localStorage.removeItem('currentUser');
-            alert('تم تسجيل الخروج بنجاح.');
-            checkAuthStatus();
-        }
-
-        function renderBanners() {
-            var sliderContainer = document.getElementById('bannerSliderContainer');
-            if(!sliderContainer) return;
-            sliderContainer.innerHTML = '';
-
-            for (var i = 0; i < SYSTEM_BANNERS.length; i++) {
-                var activeClass = (i === 0) ? ' active' : '';
-                sliderContainer.innerHTML += '<img src="' + SYSTEM_BANNERS[i] + '" class="ad-slider-img' + activeClass + '">';
-            }
-
-            var currentIndex = 0;
+            var idx = 0;
             setInterval(function() {
-                var imgs = document.querySelectorAll('.ad-slider-img');
-                if (imgs.length <= 1) return;
-                imgs[currentIndex].classList.remove('active');
-                currentIndex = (currentIndex + 1) % imgs.length;
-                imgs[currentIndex].classList.add('active');
+                var imgs = sBox.querySelectorAll('img');
+                if(imgs.length <= 1) return;
+                imgs[idx].classList.remove('active');
+                idx = (idx + 1) % imgs.length;
+                imgs[idx].classList.add('active');
             }, 3500);
-        }
 
-        function renderTicker() {
-            var container = document.getElementById('tickerContainer');
-            if(!container) return;
-            container.innerHTML = '';
+            var tBox = document.getElementById('tickerBox');
+            tBox.innerHTML = '';
+            for(var j=0; j<SYSTEM_PARTNERS.length; j++) {
+                tBox.innerHTML += '<img src="' + SYSTEM_PARTNERS[j].logo + '">';
+            }
 
-            for (var i = 0; i < SYSTEM_PARTNERS.length; i++) {
-                var p = SYSTEM_PARTNERS[i];
-                container.innerHTML += '<img class="ticker-logo-only" src="' + p.logo + '" alt="' + p.name + '">';
+            var jList = document.getElementById('jobsList');
+            jList.innerHTML = '';
+            for(var k=0; k<SYSTEM_JOBS.length; k++) {
+                var job = SYSTEM_JOBS[k];
+                if(!job.approved) continue;
+                var img = job.image ? '<img src="' + job.image + '">' : '';
+                jList.innerHTML += '<div class="job-card">' + img + '<h3>' + job.title + '</h3><p style="color:#64748b; font-size:13px;">' + job.company + '</p><a href="https://wa.me/' + job.phone + '" target="_blank" style="display:inline-block; margin-top:10px; background:var(--green); color:white; padding:6px 14px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:12px;">تقديم واتساب</a></div>';
             }
         }
-
-        function renderMainJobs() {
-            var allJobs = getStoredJobs();
-            var container = document.getElementById('jobsContainer');
-            container.innerHTML = '';
-
-            var approvedJobs = [];
-            for (var i = 0; i < allJobs.length; i++) {
-                if (allJobs[i].approved === true) {
-                    approvedJobs.push(allJobs[i]);
-                }
-            }
-
-            if (approvedJobs.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-muted);">لا توجد وظائف معروضة حالياً</p>';
-            } else {
-                for (var j = 0; j < approvedJobs.length; j++) {
-                    var job = approvedJobs[j];
-                    var isAvailable = (job.status === 'متوفر');
-                    
-                    // إذا كان الخيار لا يحتوي على صورة، فلن تظهر صورة إطلاقاً
-                    var imgTag = (job.image && job.image.trim() !== '') ? '<img src="' + job.image + '" class="job-card-img" alt="صورة الإعلان">' : '';
-                    
-                    var statusClass = isAvailable ? 'status-available' : 'status-unavailable';
-                    var applyBtnClass = isAvailable ? 'apply-btn' : 'apply-btn disabled';
-                    var applyBtnText = isAvailable ? 'رقم التقديم (واتساب)' : 'التقديم مغلق';
-                    var applyLink = isAvailable ? ('https://wa.me/' + job.phone) : '#';
-
-                    var cardHtml = '<div class="job-card">';
-                    cardHtml += imgTag;
-                    cardHtml += '<div class="job-header-row">';
-                    cardHtml += '<div><div class="job-title">' + job.title + '</div><div class="job-company">' + job.company + '</div></div>';
-                    cardHtml += '<span class="status-badge ' + statusClass + '">' + job.status + '</span>';
-                    cardHtml += '</div>';
-                    cardHtml += '<div class="job-card-footer">';
-                    cardHtml += '<span style="font-size:12px; color:var(--text-muted);">ذمار - اليمن</span>';
-                    cardHtml += '<a href="' + applyLink + '" target="_blank" class="' + applyBtnClass + '">' + applyBtnText + '</a>';
-                    cardHtml += '</div></div>';
-
-                    container.innerHTML += cardHtml;
-                }
-            }
-        }
-
-        // دالة نشر الوظيفة المحسنة مع قراءة ملف الصورة من جهاز صاحب العمل
-        function submitNewJob() {
-            var title = document.getElementById('jobTitleInput').value.trim();
-            var company = document.getElementById('companyInput').value.trim();
-            var phone = document.getElementById('phoneInput').value.trim();
-            var fileInput = document.getElementById('jobImageFileInput');
-            var imgFile = fileInput.files[0];
-
-            if (!title || !company || !phone) {
-                alert('يرجى ملء كافة البيانات المطلوبة');
-                return;
-            }
-
-            function processAndSave(imageData) {
-                var jobs = getStoredJobs();
-                jobs.push({
-                    id: Date.now(),
-                    title: title,
-                    company: company,
-                    phone: phone,
-                    image: imageData || '',
-                    status: 'متوفر',
-                    approved: false
-                });
-
-                localStorage.setItem('dhawar_jobs_v5', JSON.stringify(jobs));
-                alert('تم إرسال الوظيفة بنجاح! ستظهر بالمنصة فور اعتمادها من الإدارة.');
-                closeModal('addModal');
-                
-                // تنظيف المدخلات
-                document.getElementById('jobTitleInput').value = '';
-                document.getElementById('companyInput').value = '';
-                document.getElementById('phoneInput').value = '';
-                fileInput.value = '';
-            }
-
-            if(imgFile) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    processAndSave(e.target.result);
-                };
-                reader.readAsDataURL(imgFile);
-            } else {
-                // إذا لم يرفع صورة تجلس الوظيفة بدون صورة
-                processAndSave('');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuthStatus();
-            renderBanners();
-            renderMainJobs();
-            renderTicker();
-        });
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
