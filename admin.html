@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم إدارة منصة صدارة</title>
+    <title>لوحة التحكم الذكية والتحكم الشامل | صدارة</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@
         body { background-color: var(--bg-light); color: var(--text-dark); padding: 15px; }
 
         .admin-card-frame {
-            max-width: 650px; margin: 0 auto; background: var(--card-bg);
+            max-width: 720px; margin: 0 auto; background: var(--card-bg);
             border: 2px solid var(--admin-dark); border-radius: var(--radius);
             padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
@@ -49,247 +49,251 @@
         .btn-toggle { background: var(--warning); }
         .btn-share { background: var(--whatsapp); color: white; }
 
-        .file-upload-btn {
-            display: inline-block; background: var(--admin-accent); color: white;
-            padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 12px;
-            cursor: pointer; text-align: center; margin-top: 5px;
-        }
-        .file-upload-btn input { display: none; }
-        .banner-preview-img { width: 100%; max-height: 120px; object-fit: cover; border-radius: 8px; margin-top: 8px; display: none; }
+        .input-style { width: 100%; padding: 8px; margin: 6px 0; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; outline: none; }
 
         .partner-logo-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-        .partner-logo-card { position: relative; width: 70px; text-align: center; background: white; padding: 6px; border-radius: 8px; border: 1px solid var(--border); }
+        .partner-logo-card { position: relative; width: 75px; text-align: center; background: white; padding: 6px; border-radius: 8px; border: 1px solid var(--border); }
         .partner-logo-card img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
         .partner-delete-btn { background: var(--danger); color: white; border: none; padding: 2px 6px; font-size: 10px; border-radius: 4px; cursor: pointer; margin-top: 4px; width: 100%; }
         
         .job-thumb { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; margin-left: 10px; }
+        textarea.code-output { width: 100%; height: 120px; font-family: monospace; font-size: 11px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: #0f172a; color: #38bdf8; direction: ltr; text-align: left; margin-top: 8px; }
     </style>
 </head>
 <body>
 
     <div class="admin-card-frame">
         <div class="header-title">
-            <span>حساب خارجي لإدارة المنصة</span>
-            <h1>لوحة التحكم الشاملة لمدير المنصة</h1>
+            <span>لوحة التحكم والمزامنة الآلية</span>
+            <h1>التحكم الشامل وتوليد الأكواد</h1>
         </div>
 
+        <!-- 1. البنرات -->
         <div class="section-box">
-            <h3>🤝 إدارة شعارات شركاء النجاح (الشريط المتحرك)</h3>
+            <h3>🖼️ إدارة البنرات الإعلانية المتحركة</h3>
             <div style="background: white; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
-                <label style="font-size:12px; font-weight:bold;">➕ إضافة شركة / شريك جديد:</label><br>
-                <input type="text" id="newPartnerName" placeholder="اسم الشركة أو المتجر" style="width:100%; padding:8px; margin: 6px 0; border:1px solid var(--border); border-radius:6px; font-size:12px;">
-                <label class="file-upload-btn">
-                    📷 اختيار الشعار من المعرض
-                    <input type="file" id="newPartnerLogoFile" accept="image/*">
-                </label>
-                <button class="btn-action btn-approve" style="margin-top:6px;" onclick="addPartnerByAdmin()">إضافة للشريط المتحرك</button>
+                <input type="text" id="newBannerUrl" class="input-style" placeholder="مسار البنر (مثال: images/banner 1 .png)">
+                <button class="btn-action btn-approve" onclick="addBannerAdmin()">➕ إضافة بنر جديد</button>
             </div>
-            <h4 style="font-size:13px; font-weight:bold; margin-top:15px;">الشعارات المعروضة حالياً:</h4>
+            <div id="adminBannersList" style="margin-top:10px;"></div>
+        </div>
+
+        <!-- 2. الشركاء -->
+        <div class="section-box">
+            <h3>🤝 إدارة شعارات شركاء النجاح</h3>
+            <div style="background: white; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                <input type="text" id="newPartnerName" class="input-style" placeholder="اسم الشريك">
+                <input type="text" id="newPartnerLogoUrl" class="input-style" placeholder="مسار الشعار (مثال: images/logo 1 .jpg)">
+                <button class="btn-action btn-approve" onclick="addPartnerAdmin()">➕ إضافة شريك جديد</button>
+            </div>
             <div class="partner-logo-grid" id="adminPartnersList"></div>
         </div>
 
+        <!-- 3. الوظائف -->
         <div class="section-box">
-            <h3>⚫ إدارة الوظائف والخدمات (مراجعة ونشر)</h3>
+            <h3>📋 إدارة الوظائف والخدمات (مراجعة ونشر)</h3>
             <div id="adminJobsList"></div>
         </div>
 
-        <div class="section-box">
-            <h3>⚫ إدارة إعلانات البنرات</h3>
-            <div>
-                <label style="font-size:12px; font-weight:bold;">البنر العلوي:</label><br>
-                <label class="file-upload-btn">
-                    📷 اختيار صورة البنر العلوي
-                    <input type="file" accept="image/*" onchange="uploadBanner(event, 'top')">
-                </label>
-                <img id="prevTop" class="banner-preview-img">
-                <button class="btn-action btn-reject" style="margin-top:5px;" onclick="deleteBanner('top')">حذف البنر العلوي</button>
-            </div>
+        <!-- 4. التوليد الآلي الشامل لملف index.html -->
+        <div class="section-box" style="background:#e0f2fe; border-color:#7dd3fc;">
+            <h3 style="color:#0369a1;">⚡ مولّد كود المنصة الشامل (index.html)</h3>
+            <p style="font-size:11px; color:#0369a1; margin-bottom:8px;">بمجرد تعديل أو إضافة أي شيء بالأعلى، اضغط توليد لتأخذ الكود جاهزاً وتضعه في index.html:</p>
+            
+            <button class="btn-action btn-approve" style="width:100%; justify-content:center; padding:10px; margin-bottom:10px;" onclick="generateFullIndexCode()">⚡ توليد ونسخ الكود بالكامل بضغطة زر</button>
+            
+            <label style="font-size:11px; font-weight:bold; color:#0369a1;">الجزء الأول من الكود (نسخ ولصق):</label>
+            <textarea id="outputPart1" class="code-output" readonly onclick="this.select()"></textarea>
+
+            <label style="font-size:11px; font-weight:bold; color:#0369a1; margin-top:8px; display:block;">الجزء الثاني من الكود (نسخ ولصق):</label>
+            <textarea id="outputPart2" class="code-output" readonly onclick="this.select()"></textarea>
         </div>
     </div>
     <script>
         var CHANNEL_LINK = "https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s";
 
-        function getJobs() {
-            return JSON.parse(localStorage.getItem('dhawar_jobs')) || [];
-        }
+        function getJobs() { return JSON.parse(localStorage.getItem('dhawar_jobs_v6')) || [
+            { id: 101, title: 'خياط', company: 'لومار للخياطة', phone: '967770000000', image: '', status: 'غير متوفر', approved: true },
+            { id: 102, title: 'مسوق إلكتروني وميداني', company: 'مؤسسة صدارة', phone: '967770000000', image: 'images/banner%201%20.png', status: 'متوفر', approved: true }
+        ]; }
 
-        function getPartners() {
-            return JSON.parse(localStorage.getItem('dhawar_partners')) || [];
-        }
+        function getPartners() { return JSON.parse(localStorage.getItem('dhawar_partners_v6')) || [
+            { id: 1, name: 'شريك 1', logo: 'images/logo%201%20.jpg' },
+            { id: 2, name: 'شريك 2', logo: 'images/logo%202.jpg' },
+            { id: 3, name: 'شريك 3', logo: 'images/logo%203.png' }
+        ]; }
 
-        function renderAllAdmin() {
+        function getBanners() { return JSON.parse(localStorage.getItem('dhawar_banners_v6')) || [
+            "images/banner%201%20.png",
+            "images/banner%202.png"
+        ]; }
+
+        function renderAdminAll() {
+            var banners = getBanners();
+            var bContainer = document.getElementById('adminBannersList');
+            bContainer.innerHTML = (banners.length === 0) ? '<p style="font-size:11px;">لا توجد بنرات.</p>' : '';
+            for(var i=0; i<banners.length; i++) {
+                bContainer.innerHTML += '<div style="display:flex; justify-content:space-between; align-items:center; background:white; padding:6px; border-radius:6px; margin-bottom:4px; border:1px solid var(--border);"><span style="font-size:11px;">' + banners[i] + '</span><button class="partner-delete-btn" style="width:auto; padding:2px 6px;" onclick="deleteBanner(' + i + ')">حذف</button></div>';
+            }
+
             var partners = getPartners();
-            var partnerContainer = document.getElementById('adminPartnersList');
-            partnerContainer.innerHTML = (partners.length === 0) ? '<p style="font-size:11px; color:#64748b;">لا توجد شعارات معروضة.</p>' : '';
-            
-            for (var i = 0; i < partners.length; i++) {
-                var p = partners[i];
-                var cardHtml = '<div class="partner-logo-card">';
-                cardHtml += '<img src="' + p.logo + '">';
-                cardHtml += '<button class="partner-delete-btn" onclick="deletePartner(' + p.id + ')">حذف ✕</button>';
-                cardHtml += '</div>';
-                partnerContainer.innerHTML += cardHtml;
+            var pContainer = document.getElementById('adminPartnersList');
+            pContainer.innerHTML = (partners.length === 0) ? '<p style="font-size:11px;">لا توجد شعارات.</p>' : '';
+            for(var j=0; j<partners.length; j++) {
+                pContainer.innerHTML += '<div class="partner-logo-card"><img src="' + partners[j].logo + '"><button class="partner-delete-btn" onclick="deletePartner(' + partners[j].id + ')">حذف ✕</button></div>';
             }
 
             var jobs = getJobs();
-            var jobsContainer = document.getElementById('adminJobsList');
-            jobsContainer.innerHTML = (jobs.length === 0) ? '<p style="font-size:12px; color:#64748b;">لا توجد وظائف جديدة.</p>' : '';
-            
-            for (var j = 0; j < jobs.length; j++) {
-                var job = jobs[j];
+            var jContainer = document.getElementById('adminJobsList');
+            jContainer.innerHTML = (jobs.length === 0) ? '<p style="font-size:12px;">لا توجد وظائف.</p>' : '';
+            for(var k=0; k<jobs.length; k++) {
+                var job = jobs[k];
                 var approveBtn = (!job.approved) ? '<button class="btn-action btn-approve" onclick="approveJob(' + job.id + ')">قبول ونشر</button>' : '';
-                var imgTag = (job.image) ? '<img src="' + job.image + '" class="job-thumb">' : '';
-                var statusText = (job.approved) ? 'مقبول' : 'قيد المراجعة';
-                var statusColor = (job.approved) ? 'green' : 'orange';
-
-                var itemHtml = '<div class="admin-item">';
-                itemHtml += '<div class="item-header">';
-                itemHtml += '<div style="display:flex; align-items:center;">' + imgTag + '<div><strong>' + job.title + '</strong><br><span style="font-size:12px; color:#64748b;">' + job.company + '</span></div></div>';
-                itemHtml += '<span style="font-size:11px; font-weight:bold; color:' + statusColor + ';">' + statusText + '</span>';
-                itemHtml += '</div>';
-                itemHtml += '<div style="font-size:12px; color:#64748b; margin-top:6px;">الهاتف: ' + job.phone + ' | الحالة: <strong>' + job.status + '</strong></div>';
-                itemHtml += '<div class="action-btns">';
-                itemHtml += approveBtn;
-                itemHtml += '<button class="btn-action btn-share" onclick="shareToWhatsAppChannel(' + job.id + ')">مشاركة بالقناة 🟢</button>';
-                itemHtml += '<button class="btn-action btn-toggle" onclick="toggleJobStatus(' + job.id + ')">تغيير التوفر</button>';
-                itemHtml += '<button class="btn-action btn-reject" onclick="deleteJob(' + job.id + ')">حذف</button>';
-                itemHtml += '</div></div>';
-
-                jobsContainer.innerHTML += itemHtml;
-            }
-
-            var topB = localStorage.getItem('ad_banner_top');
-            if (topB) {
-                document.getElementById('prevTop').src = topB;
-                document.getElementById('prevTop').style.display = 'block';
+                jContainer.innerHTML += '<div class="admin-item"><div class="item-header"><strong>' + job.title + '</strong><span style="font-size:11px; color:' + (job.approved ? 'green' : 'orange') + ';">' + (job.approved ? 'مقبول' : 'قيد المراجعة') + '</span></div><div style="font-size:11px; color:#64748b;">' + job.company + ' | ' + job.phone + '</div><div class="action-btns">' + approveBtn + '<button class="btn-action btn-share" onclick="shareToWhatsAppChannel(' + job.id + ')">مشاركة 🟢</button><button class="btn-action btn-reject" onclick="deleteJob(' + job.id + ')">حذف</button></div></div>';
             }
         }
 
-        function shareToWhatsAppChannel(jobId) {
-            var jobs = getJobs();
-            var job = null;
-            for (var i = 0; i < jobs.length; i++) {
-                if (jobs[i].id === jobId) {
-                    job = jobs[i];
-                    break;
-                }
-            }
-            if (!job) return;
-
-            var msg = "📢 *فرصة عمل جديدة - منصة صدارة للوظائف بذمار*\n\n";
-            msg += "💼 *المسمى الوظيفي:* " + job.title + "\n";
-            msg += "🏢 *الجهة / المكان:* " + job.company + "\n";
-            msg += "📍 *الموقع:* محافظة ذمار - اليمن\n";
-            msg += "الحالة: *" + job.status + "*\n\n";
-            msg += "📲 *للتقديم والتواصل المباشر عبر الواتساب:*\n";
-            msg += "https://wa.me/" + job.phone + "\n\n";
-            msg += "---\n";
-            msg += "🟢 *تابع جديد الوظائف والخدمات اليومية عبر قناتنا الرسمية:*\n";
-            msg += CHANNEL_LINK;
-
-            navigator.clipboard.writeText(msg);
-
-            if (job.image) {
-                var win = window.open("", "_blank");
-                if (win) {
-                    win.document.write('<html><head><title>صورة الخدمة</title></head><body style="text-align:center; font-family:sans-serif; padding:20px;"><h3>تم نسخ النص العربي! أحفظ الصورة أدناه لمشاركتها بالقناة:</h3><img src="' + job.image + '" style="max-width:90%; border-radius:12px;"></body></html>');
-                }
-            }
-
-            alert('تم نسخ نص الوظيفة بالعربي بنجاح! سيتم فتح الواتساب الآن للصق الرسالة وإرسالها للقناة.');
-            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(msg), '_blank');
+        function addBannerAdmin() {
+            var url = document.getElementById('newBannerUrl').value.trim();
+            if(!url) return alert('أدخل المسار');
+            var banners = getBanners();
+            banners.push(url);
+            localStorage.setItem('dhawar_banners_v6', JSON.stringify(banners));
+            document.getElementById('newBannerUrl').value = '';
+            renderAdminAll();
         }
 
-        function addPartnerByAdmin() {
+        function deleteBanner(i) {
+            var banners = getBanners();
+            banners.splice(i, 1);
+            localStorage.setItem('dhawar_banners_v6', JSON.stringify(banners));
+            renderAdminAll();
+        }
+
+        function addPartnerAdmin() {
             var name = document.getElementById('newPartnerName').value.trim();
-            var fileInput = document.getElementById('newPartnerLogoFile');
-            var file = fileInput.files[0];
-
-            if (!name || !file) {
-                alert('يرجى إدخال الاسم واختيار الشعار');
-                return;
-            }
-
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var partners = getPartners();
-                partners.push({ id: Date.now(), name: name, logo: e.target.result });
-                localStorage.setItem('dhawar_partners', JSON.stringify(partners));
-                alert('تمت إضافة الشعار بنجاح!');
-                document.getElementById('newPartnerName').value = '';
-                renderAllAdmin();
-            };
-            reader.readAsDataURL(file);
+            var logo = document.getElementById('newPartnerLogoUrl').value.trim();
+            if(!name || !logo) return alert('أدخل الاسم والمسار');
+            var partners = getPartners();
+            partners.push({ id: Date.now(), name: name, logo: logo });
+            localStorage.setItem('dhawar_partners_v6', JSON.stringify(partners));
+            document.getElementById('newPartnerName').value = '';
+            document.getElementById('newPartnerLogoUrl').value = '';
+            renderAdminAll();
         }
 
-        function deletePartner(id) {
-            if (confirm('هل أنت متأكد من حذف الشعار؟')) {
-                var partners = getPartners();
-                var filtered = [];
-                for (var i = 0; i < partners.length; i++) {
-                    if (partners[i].id !== id) {
-                        filtered.push(partners[i]);
-                    }
-                }
-                localStorage.setItem('dhawar_partners', JSON.stringify(filtered));
-                renderAllAdmin();
-            }
+        function deleteId(id) {
+            var partners = getPartners().filter(function(p) { return p.id !== id; });
+            localStorage.setItem('dhawar_partners_v6', JSON.stringify(partners));
+            renderAdminAll();
         }
 
         function approveJob(id) {
-            var jobs = getJobs();
-            for (var i = 0; i < jobs.length; i++) {
-                if (jobs[i].id === id) {
-                    jobs[i].approved = true;
-                }
-            }
-            localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
-            alert('تم قبول الوظيفة بنجاح!');
-            renderAllAdmin();
-        }
-
-        function toggleJobStatus(id) {
-            var jobs = getJobs();
-            for (var i = 0; i < jobs.length; i++) {
-                if (jobs[i].id === id) {
-                    jobs[i].status = (jobs[i].status === 'متوفر' ? 'غير متوفر' : 'متوفر');
-                }
-            }
-            localStorage.setItem('dhawar_jobs', JSON.stringify(jobs));
-            renderAllAdmin();
+            var jobs = getJobs().map(function(j) { if(j.id === id) j.approved = true; return j; });
+            localStorage.setItem('dhawar_jobs_v6', JSON.stringify(jobs));
+            renderAdminAll();
+            alert('تم اعتماد الوظيفة!');
         }
 
         function deleteJob(id) {
-            var jobs = getJobs();
-            var filtered = [];
-            for (var i = 0; i < jobs.length; i++) {
-                if (jobs[i].id !== id) {
-                    filtered.push(jobs[i]);
-                }
+            var jobs = getJobs().filter(function(j) { return j.id !== id; });
+            localStorage.setItem('dhawar_jobs_v6', JSON.stringify(jobs));
+            renderAdminAll();
+        }
+
+        function shareToWhatsAppChannel(jobId) {
+            var job = getJobs().find(function(j) { return j.id === jobId; });
+            if(!job) return;
+            var msg = "📢 *فرصة عمل جديدة - صدارة ذمار*\n\n💼 " + job.title + "\n🏢 " + job.company + "\n📲 https://wa.me/" + job.phone + "\n\n🟢 انضم للقناة:\n" + CHANNEL_LINK;
+            navigator.clipboard.writeText(msg);
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(msg), '_blank');
+        }
+
+        // الدالة السحرية التي تولد الكود كاملاً بناءً على تعديلاتك اللحظية
+        function generateFullIndexCode() {
+            var bannersJson = JSON.stringify(getBanners(), null, 4);
+            var jobsJson = JSON.stringify(getJobs(), null, 4);
+            var partnersJson = JSON.stringify(getPartners(), null, 4);
+
+            var part1 = `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة صدارة للوظائف والخدمات | ذمار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary:#0f2347; --gold:#d4af37; --green:#25d366; }
+        * { box-sizing: border-box; margin:0; padding:0; font-family:'Tajawal', sans-serif; }
+        body { background: #f8fafc; padding-bottom: 90px; }
+        .top-bar { background: #0a1324; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .hero { background: var(--primary); color: white; padding: 25px; text-align: center; }
+        .container { max-width: 800px; margin: -20px auto 0; padding: 0 16px; }
+        .slider { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .slider img { width: 100%; max-height: 220px; object-fit: cover; display: none; }
+        .slider img.active { display: block; }
+        .job-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 14px; border: 1px solid #e2e8f0; }
+        .job-card img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        .ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px; display: flex; align-items: center; z-index: 900; }
+        .ticker img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); margin-left: 15px; }
+    </style>
+</head>
+<body>
+    <div class="top-bar"><b>صدارة للوظائف</b></div>
+    <div class="hero"><h1>المنصة الأولى للوظائف بذمار</h1></div>
+    <div class="container">
+        <div class="slider" id="sliderBox"></div>
+        <h2 style="margin-bottom:12px;">الوظائف المتاحة</h2>
+        <div id="jobsList"></div>
+    </div>
+    <div class="ticker"><div style="background:var(--gold); padding:4px 10px; font-weight:bold; font-size:11px; border-radius:0 10px 10px 0;">شركاء النجاح</div><div style="display:flex; overflow:hidden; width:100%;"><div style="display:flex; animation:slide 15s linear infinite;" id="tickerBox"></div></div></div>`;
+
+            var part2 = `<script>
+        var SYSTEM_BANNERS = ${bannersJson};
+        var SYSTEM_JOBS = ${jobsJson};
+        var SYSTEM_PARTNERS = ${partnersJson};
+
+        function init() {
+            var sBox = document.getElementById('sliderBox');
+            sBox.innerHTML = '';
+            for(var i=0; i<SYSTEM_BANNERS.length; i++) {
+                sBox.innerHTML += '<img src="' + SYSTEM_BANNERS[i] + '" class="' + (i===0?'active':='') + '">';
             }
-            localStorage.setItem('dhawar_jobs', JSON.stringify(filtered));
-            renderAllAdmin();
+            var idx = 0;
+            setInterval(function() {
+                var imgs = sBox.querySelectorAll('img');
+                if(imgs.length <= 1) return;
+                imgs[idx].classList.remove('active');
+                idx = (idx + 1) % imgs.length;
+                imgs[idx].classList.add('active');
+            }, 3500);
+
+            var tBox = document.getElementById('tickerBox');
+            tBox.innerHTML = '';
+            for(var j=0; j<SYSTEM_PARTNERS.length; j++) {
+                tBox.innerHTML += '<img src="' + SYSTEM_PARTNERS[j].logo + '">';
+            }
+
+            var jList = document.getElementById('jobsList');
+            jList.innerHTML = '';
+            for(var k=0; k<SYSTEM_JOBS.length; k++) {
+                var job = SYSTEM_JOBS[k];
+                if(!job.approved) continue;
+                var img = job.image ? '<img src="' + job.image + '">' : '';
+                jList.innerHTML += '<div class="job-card">' + img + '<h3>' + job.title + '</h3><p style="color:#64748b; font-size:13px;">' + job.company + '</p><a href="https://wa.me/' + job.phone + '" target="_blank" style="display:inline-block; margin-top:10px; background:var(--green); color:white; padding:6px 14px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:12px;">تقديم واتساب</a></div>';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', init);
+    <\/script>
+</body>
+</html>`;
+
+            document.getElementById('outputPart1').value = part1;
+            document.getElementById('outputPart2').value = part2;
+            alert('تم توليد كود المنصة بالكامل بنجاح بناءً على تعديلاتك الحالية!');
         }
 
-        function uploadBanner(event, type) {
-            var file = event.target.files[0];
-            if (!file) return;
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                localStorage.setItem('ad_banner_top', e.target.result);
-                alert('تم رفع البنر بنجاح!');
-                renderAllAdmin();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function deleteBanner(type) {
-            localStorage.removeItem('ad_banner_top');
-            document.getElementById('prevTop').style.display = 'none';
-            alert('تم حذف البنر.');
-        }
-
-        document.addEventListener('DOMContentLoaded', renderAllAdmin);
+        document.addEventListener('DOMContentLoaded', renderAdminAll);
     </script>
 </body>
 </html>
