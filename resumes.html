@@ -3,50 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صدارة للوظائف والكفاءات | دليل الكفاءات</title>
+    <title>كفاءات وخبراء محافظة ذمار | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg: #f8fafc; }
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; --text-dark: #0f172a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: #0f172a; padding-bottom: 40px; }
-        
-        header { background: var(--primary); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); }
-        .logo { font-weight: 900; font-size: 18px; color: white; text-decoration: none; }
-        
-        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
-        
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .btn-add-cv { background: var(--gold); color: #0f2347; padding: 9px 18px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 13px; border: none; cursor: pointer; }
+        body { background: var(--bg-light); padding-bottom: 50px; color: var(--text-dark); }
 
-        .resumes-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media(min-width: 768px) { .resumes-grid { grid-template-columns: 1fr 1fr; } }
+        .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
+        .back-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 11px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+
+        .hero-section { background: linear-gradient(135deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 25px 16px; text-align: center; margin-bottom: 20px; }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 16px; }
+
+        .resume-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 14px; border: 1px solid #e2e8f0; box-shadow: 0 3px 10px rgba(0,0,0,0.02); display: flex; gap: 14px; align-items: flex-start; }
+        .resume-img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: #f1f5f9; flex-shrink: 0; }
+        .resume-info { flex: 1; }
+        .resume-name { font-size: 15px; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 4px; }
+        .resume-title { font-size: 12px; font-weight: 700; color: #3b82f6; margin-top: 2px; }
+        .resume-exp { font-size: 11px; color: #64748b; margin-top: 6px; line-height: 1.5; white-space: pre-line; }
         
-        .resume-card { background: white; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; transition: 0.2s; }
-        .resume-card:hover { border-color: var(--gold); }
-        .user-name { font-size: 15px; font-weight: bold; color: var(--primary); display: flex; align-items: center; gap: 4px; }
-        .user-title { font-size: 12px; color: #64748b; margin-top: 2px; }
-        .user-exp { font-size: 12px; color: #334155; margin-top: 8px; line-height: 1.5; background: #f8fafc; padding: 8px; border-radius: 6px; }
+        .whatsapp-contact-btn { background: var(--green); color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; }
+
+        .loading-box { text-align: center; padding: 30px; color: #64748b; font-size: 13px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <header>
-        <a href="index.html" class="logo">صدارة للوظائف 🚀</a>
-        <a href="index.html" style="color:white; text-decoration:none; font-size:13px; font-weight:bold;">الرئيسية 🏠</a>
-    </header>
+    <div class="top-navbar">
+        <span style="font-weight: 900; font-size:14px;"><i class="fa-solid fa-users-viewfinder"></i> دليل الكفاءات والخبراء</span>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
+    </div>
+
+    <div class="hero-section">
+        <h1 style="font-size: 18px; font-weight: 900;">كفاءات ومستقلّو محافظة ذمار</h1>
+        <p style="font-size: 11px; opacity: 0.85; margin-top: 4px;">تصفح أبرز الكفاءات والخبراء المعتمدين في مختلف التخصصات</p>
+    </div>
 
     <div class="container">
-        
-        <div class="top-bar">
-            <h2 style="font-size:17px; color:var(--primary);">📄 دليل الكفاءات والخبرات المسجلة</h2>
-            <button class="btn-add-cv" onclick="redirectToWhatsApp('إضافة سيرة ذاتية / كفاءة')">إضافة سيرتك الذاتية ➕</button>
+        <div id="resumesBox">
+            <div class="loading-box">جاري تحميل الكفاءات من السحابة... ⏳</div>
         </div>
-
-        <div class="resumes-grid" id="resumesContainer">
-            <p style="color:#64748b; font-size:12px;">جاري تحميل الكفاءات...</p>
-        </div>
-
     </div>
 
     <script>
@@ -54,48 +53,56 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // الشارة الزرقاء الموثقة للمستقلين والكفاءات (Blue Badge SVG)
+        // شارة التحقق الزرقاء
         function getBlueBadgeHTML() {
-            return `<span title="مستقل / كفاءة موثوقة" style="display:inline-flex; align-items:center; vertical-align:middle; margin-right:3px;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            return `<span title="حساب موثق" style="display:inline-flex; align-items:center; vertical-align:middle;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#1877F2"/>
                 </svg>
             </span>`;
         }
 
-        async function loadResumes() {
-            let { data, error } = await db.from('resumes').select('*').order('id', {ascending: false});
-            let container = document.getElementById('resumesContainer');
-            container.innerHTML = '';
+        async function loadPublicResumes() {
+            let box = document.getElementById('resumesBox');
+            try {
+                let { data, error } = await db.from('resumes').select('*').order('id', { ascending: false });
+                
+                if (error || !data || data.length === 0) {
+                    box.innerHTML = '<div class="loading-box">لا توجد كفاءات مسجلة حالياً.</div>';
+                    return;
+                }
 
-            if (error || !data || data.length === 0) {
-                container.innerHTML = '<p style="color:#64748b; font-size:12px;">لا توجد كفاءات معروضة حالياً.</p>';
-                return;
+                box.innerHTML = '';
+                data.forEach(r => {
+                    let displayName = r.name || r.title || 'مستقل / كفاءة';
+                    let displayTitle = r.job_title || r.specialty || r.title || 'تخصص عام';
+                    let displayExp = r.experience || 'لا توجد نبذة مختصرة مسجلة.';
+                    let displayPhone = r.phone ? r.phone.replace(/[^0-9]/g, '') : '967780568507';
+                    let displayImg = (r.image && r.image.trim() !== '') ? r.image : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+                    let verifiedBadge = r.is_verified ? getBlueBadgeHTML() : '';
+
+                    box.innerHTML += `
+                        <div class="resume-card">
+                            <img src="${displayImg}" class="resume-img" alt="صورة الكفاءة">
+                            <div class="resume-info">
+                                <div class="resume-name">
+                                    ${displayName} ${verifiedBadge}
+                                </div>
+                                <div class="resume-title">${displayTitle}</div>
+                                <div class="resume-exp">${displayExp}</div>
+                                <a href="https://wa.me/${displayPhone}?text=مرحباً،%20تواصلت%20معك%20عبر%20منصة%20صدارة" target="_blank" class="whatsapp-contact-btn">
+                                    <i class="fa-brands fa-whatsapp"></i> تواصل عبر الواتساب
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                box.innerHTML = '<div class="loading-box" style="color:red;">حدث خطأ أثناء جلب البيانات.</div>';
             }
-
-            data.forEach(r => {
-                let displayName = r.name || r.title || 'بدون اسم';
-                let displayJob = r.job_title || r.specialty || 'تخصص عام';
-                let verifiedBadge = r.is_verified ? getBlueBadgeHTML() : '';
-
-                container.innerHTML += `
-                    <div class="resume-card">
-                        <div class="user-name">${displayName} ${verifiedBadge}</div>
-                        <div class="user-title">${displayJob}</div>
-                        ${r.experience ? `<div class="user-exp">${r.experience}</div>` : ''}
-                        <a href="https://wa.me/${r.phone || '967780568507'}?text=${encodeURIComponent('مرحباً، أود التواصل بشأن الكفاءة: ' + displayName)}" target="_blank" style="display:inline-block; margin-top:10px; background:var(--green); color:white; padding:6px 14px; border-radius:6px; text-decoration:none; font-size:11px; font-weight:bold;">تواصل مع الكفاءة 💬</a>
-                    </div>`;
-            });
         }
 
-        function redirectToWhatsApp(actionType) {
-            const savedUser = localStorage.getItem('sadara_user') || 'زائر';
-            const adminPhone = "967780568507";
-            const text = encodeURIComponent(`مرحباً إدارة صدارة، أنا المسجل: (${savedUser}) أود طلب ${actionType} على المنصة.`);
-            window.open(`https://wa.me/${adminPhone}?text=${text}`, '_blank');
-        }
-
-        document.addEventListener('DOMContentLoaded', loadResumes);
+        document.addEventListener('DOMContentLoaded', loadPublicResumes);
     </script>
 </body>
 </html>
