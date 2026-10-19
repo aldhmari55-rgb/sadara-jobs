@@ -30,6 +30,19 @@
             border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         }
 
+        .nav-btn-cv {
+            background: var(--gold);
+            color: #0a1324;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .hero { 
             background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); 
             color: white; 
@@ -39,7 +52,6 @@
 
         .main-container { max-width: 800px; margin: -25px auto 0; padding: 0 16px; }
 
-        /* سلايدر البنرات الديناميكي المتعدد */
         .ad-slider-box { 
             position: relative;
             background: white; 
@@ -63,33 +75,34 @@
             transition: opacity 0.6s ease-in-out;
         }
 
-        .ad-slider-img.active { 
-            display: block; 
-            opacity: 1;
-        }
+        .ad-slider-img.active { display: block; opacity: 1; }
 
-        /* نقاط التنقل بين البنرات */
-        .slider-dots {
-            position: absolute;
-            bottom: 8px;
+        .slider-dots { position: absolute; bottom: 8px; display: flex; gap: 6px; z-index: 10; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); cursor: pointer; transition: all 0.3s; }
+        .dot.active { background: var(--gold); width: 20px; border-radius: 10px; }
+
+        /* كرت الدعوة لرفع السيرة الذاتية */
+        .cv-banner-card {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 20px;
             display: flex;
-            gap: 6px;
-            z-index: 10;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
         }
 
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .dot.active {
-            background: var(--gold);
-            width: 20px;
-            border-radius: 10px;
+        .cv-banner-btn {
+            background: white;
+            color: #059669;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 12px;
+            text-decoration: none;
+            white-space: nowrap;
         }
 
         .jobs-section-title { font-size: 18px; font-weight: 900; margin-bottom: 12px; color: var(--text-dark); }
@@ -103,13 +116,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
 
-        .job-card img { 
-            width: 100%; 
-            max-height: 240px; 
-            object-fit: cover; 
-            border-radius: 10px; 
-            margin-bottom: 12px; 
-        }
+        .job-card img { width: 100%; max-height: 240px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; }
 
         .apply-btn { 
             background: var(--green); 
@@ -123,7 +130,6 @@
             margin-top: 10px; 
         }
 
-        /* الشريط المتحرك لشركاء النجاح */
         .partners-ticker { 
             position: fixed; 
             bottom: 0; 
@@ -148,29 +154,18 @@
             white-space: nowrap;
         }
 
-        .ticker-content { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            animation: ticker 20s linear infinite; 
-        }
-
-        .ticker-content img { 
-            width: 40px; 
-            height: 40px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            border: 2px solid var(--gold); 
-            background: white; 
-        }
+        .ticker-content { display: flex; align-items: center; gap: 15px; animation: ticker 20s linear infinite; }
+        .ticker-content img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
 
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     </style>
 </head>
 <body>
 
+    <!-- الشريط العلوي مع زر السير الذاتية -->
     <div class="top-navbar">
         <span style="font-weight: 900;">صدارة للوظائف والخدمات</span>
+        <a href="resumes.html" class="nav-btn-cv">📄 دليل الكفاءات والسي في</a>
     </div>
 
     <div class="hero">
@@ -178,10 +173,19 @@
     </div>
 
     <div class="main-container">
-        <!-- منطقة السلايدر المتحرك المتعدد -->
+        <!-- سلايدر البنرات -->
         <div class="ad-slider-box" id="sliderBox">
             <div id="sliderImages"></div>
             <div class="slider-dots" id="sliderDots"></div>
+        </div>
+
+        <!-- كرت تحفيزي لرفع السيرة الذاتية -->
+        <div class="cv-banner-card">
+            <div>
+                <h3 style="font-size: 14px; font-weight: 800;">تبحث عن عمل أو يقدم خدمات؟</h3>
+                <p style="font-size: 11px; opacity: 0.9;">ارفع سيرتك الذاتية ليتواصل معك أصحاب الأعمال مباشرة</p>
+            </div>
+            <a href="resumes.html" class="cv-banner-btn">إضافة ملفك 📄</a>
         </div>
 
         <h2 class="jobs-section-title">الوظائف والخدمات المتاحة</h2>
@@ -194,7 +198,6 @@
             <div class="ticker-content" id="tickerBox"></div>
         </div>
     </div>
-
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
@@ -203,7 +206,7 @@
         let bannerInterval = null;
 
         async function initPlatform() {
-            // 1. جلب وتشغيل سلايدر البنرات متعدد الأعداد
+            // 1. جلب البنرات
             let { data: banners } = await db.from('banners').select('*').order('id', {ascending: false});
             let imgContainer = document.getElementById('sliderImages');
             let dotsContainer = document.getElementById('sliderDots');
@@ -223,7 +226,6 @@
                     }
                 });
 
-                // إذا كان عدد البنرات أكثر من 1، يبدأ التحريك الآلي التتابع
                 if (banners.length > 1) {
                     let currentIndex = 0;
                     bannerInterval = setInterval(() => {
@@ -244,7 +246,7 @@
                 imgContainer.innerHTML = '<p style="font-size:12px; color:var(--text-muted); padding:20px;">صدارة للخدمات والتسويق الرقمي</p>';
             }
 
-            // 2. جلب شركاء النجاح (الشريط المتحرك)
+            // 2. جلب الشركاء
             let { data: partners } = await db.from('partners').select('*').order('id', {ascending: false});
             let tBox = document.getElementById('tickerBox');
             tBox.innerHTML = '';
@@ -252,7 +254,7 @@
                 tBox.innerHTML += `<img src="${p.logo}" alt="${p.name}" title="${p.name}">`;
             });
 
-            // 3. جلب الوظائف والخدمات المتاحة
+            // 3. جلب الوظائف
             let { data: jobs } = await db.from('jobs').select('*').eq('approved', true).order('id', {ascending: false});
             let jBox = document.getElementById('jobsBox');
             jBox.innerHTML = '';
