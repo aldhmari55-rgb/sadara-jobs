@@ -5,190 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة صدارة للوظائف والخدمات | ذمار</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { 
-            --primary: #0f2347; 
-            --gold: #d4af37; 
-            --green: #25d366; 
-            --bg-light: #f8fafc;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-        }
-
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; --text-dark: #0f172a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-light); padding-bottom: 90px; }
 
-        .top-navbar { 
-            background: #0a1324; 
-            color: white; 
-            padding: 12px 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-        }
+        .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); }
+        .nav-btn-cv { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; text-decoration: none; }
 
-        .nav-btn-cv {
-            background: var(--gold);
-            color: #0a1324;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-weight: 800;
-            font-size: 12px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
+        .channel-bar { background: #25d366; color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; }
+        .channel-bar a { color: white; text-decoration: underline; margin-right: 5px; }
 
-        .hero { 
-            background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); 
-            color: white; 
-            padding: 28px 20px 45px 20px; 
-            text-align: center; 
-        }
-
+        .hero { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 24px 16px 40px; text-align: center; }
         .main-container { max-width: 800px; margin: -25px auto 0; padding: 0 16px; }
 
-        .ad-slider-box { 
-            position: relative;
-            background: white; 
-            border-radius: 16px; 
-            overflow: hidden; 
-            margin-bottom: 20px; 
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08); 
-            min-height: 140px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .ad-slider-img { 
-            width: 100%; 
-            max-height: 260px; 
-            object-fit: cover; 
-            display: none; 
-            opacity: 0;
-            transition: opacity 0.6s ease-in-out;
-        }
-
+        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 16px; min-height: 130px; border: 1px solid #e2e8f0; }
+        .ad-slider-img { width: 100%; max-height: 240px; object-fit: cover; display: none; opacity: 0; transition: opacity 0.6s; }
         .ad-slider-img.active { display: block; opacity: 1; }
+        .slider-dots { position: absolute; bottom: 8px; display: flex; gap: 6px; width:100%; justify-content:center; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); }
+        .dot.active { background: var(--gold); width: 18px; border-radius: 10px; }
 
-        .slider-dots { position: absolute; bottom: 8px; display: flex; gap: 6px; z-index: 10; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); cursor: pointer; transition: all 0.3s; }
-        .dot.active { background: var(--gold); width: 20px; border-radius: 10px; }
+        .action-banner { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 14px; padding: 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .action-btn { background: white; color: #059669; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; text-decoration: none; }
 
-        /* كرت الدعوة لرفع السيرة الذاتية */
-        .cv-banner-card {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-        }
+        .job-card { background: white; border-radius: 12px; padding: 14px; margin-bottom: 12px; border: 1px solid #e2e8f0; }
+        .job-card img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        .apply-btn { background: var(--green); color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 11px; display: inline-block; margin-top: 8px; }
 
-        .cv-banner-btn {
-            background: white;
-            color: #059669;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-weight: 800;
-            font-size: 12px;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-
-        .jobs-section-title { font-size: 18px; font-weight: 900; margin-bottom: 12px; color: var(--text-dark); }
-
-        .job-card { 
-            background: white; 
-            border-radius: 14px; 
-            padding: 16px; 
-            margin-bottom: 14px; 
-            border: 1px solid var(--border-color); 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-        }
-
-        .job-card img { width: 100%; max-height: 240px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; }
-
-        .apply-btn { 
-            background: var(--green); 
-            color: white; 
-            text-decoration: none; 
-            padding: 8px 16px; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            font-size: 12px; 
-            display: inline-block; 
-            margin-top: 10px; 
-        }
-
-        .partners-ticker { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            background: #0a1324; 
-            padding: 8px 0; 
-            border-top: 2px solid var(--gold); 
-            display: flex; 
-            align-items: center; 
-            z-index: 900; 
-        }
-
-        .ticker-label { 
-            background: var(--gold); 
-            color: #0a1324; 
-            font-weight: 900; 
-            font-size: 11px; 
-            padding: 6px 12px; 
-            border-radius: 0 12px 12px 0; 
-            z-index: 10; 
-            white-space: nowrap;
-        }
-
-        .ticker-content { display: flex; align-items: center; gap: 15px; animation: ticker 20s linear infinite; }
-        .ticker-content img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
-
+        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; }
+        .ticker-label { background: var(--gold); color: #0a1324; font-weight: 900; font-size: 10px; padding: 6px 10px; border-radius: 0 10px 10px 0; z-index: 10; white-space: nowrap; }
+        .ticker-content { display: flex; align-items: center; gap: 12px; animation: ticker 20s linear infinite; }
+        .ticker-content img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     </style>
 </head>
 <body>
 
-    <!-- الشريط العلوي مع زر السير الذاتية -->
     <div class="top-navbar">
-        <span style="font-weight: 900;">صدارة للوظائف والخدمات</span>
+        <span style="font-weight: 900; font-size:15px;">صدارة للوظائف والخدمات</span>
         <a href="resumes.html" class="nav-btn-cv">📄 دليل الكفاءات والسي في</a>
     </div>
 
+    <!-- شريط القناة الرسمية -->
+    <div class="channel-bar">
+        📢 انضم لقناتنا الرسمية على الواتساب لمتابعة جديد الوظائف:
+        <a href="https://whatsapp.com/channel/0029VbDXcGt0G0XmrZfHLh1s" target="_blank">اضغط هنا للانضمام 🟢</a>
+    </div>
+
     <div class="hero">
-        <h1 style="font-size: 20px;">المنصة الأولى للوظائف بمحافظة ذمار</h1>
+        <h1 style="font-size: 18px;">المنصة الأولى للوظائف والخدمات بمحافظة ذمار</h1>
     </div>
 
     <div class="main-container">
-        <!-- سلايدر البنرات -->
+        <!-- السلايدر -->
         <div class="ad-slider-box" id="sliderBox">
             <div id="sliderImages"></div>
             <div class="slider-dots" id="sliderDots"></div>
         </div>
 
-        <!-- كرت تحفيزي لرفع السيرة الذاتية -->
-        <div class="cv-banner-card">
+        <!-- بنر تحفيزي للتواصل وتلقي الطلبات -->
+        <div class="action-banner">
             <div>
-                <h3 style="font-size: 14px; font-weight: 800;">تبحث عن عمل أو يقدم خدمات؟</h3>
-                <p style="font-size: 11px; opacity: 0.9;">ارفع سيرتك الذاتية ليتواصل معك أصحاب الأعمال مباشرة</p>
+                <h3 style="font-size: 13px; font-weight: 800;">تريد نشر وظيفة أو إضافة ملفك؟</h3>
+                <p style="font-size: 10px; opacity: 0.9;">تواصل مع إدارة المنصة مباشرة عبر الواتساب</p>
             </div>
-            <a href="resumes.html" class="cv-banner-btn">إضافة ملفك 📄</a>
+            <a href="https://wa.me/967780568507?text=مرحبا،%20اريد%20نشر%20وظيفة/إضافة%20سي%20في%20في%20منصة%20صدارة" target="_blank" class="action-btn">تواصل معنا 🟢</a>
         </div>
 
-        <h2 class="jobs-section-title">الوظائف والخدمات المتاحة</h2>
+        <h2 style="font-size: 16px; font-weight: 900; margin-bottom: 10px; color: var(--text-dark);">الوظائف والخدمات المتاحة</h2>
         <div id="jobsBox"></div>
     </div>
 
@@ -198,101 +85,54 @@
             <div class="ticker-content" id="tickerBox"></div>
         </div>
     </div>
+
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let bannerInterval = null;
-
-        async function initPlatform() {
-            // 1. جلب البنرات
+        async function init() {
+            // البنرات
             let { data: banners } = await db.from('banners').select('*').order('id', {ascending: false});
-            let imgContainer = document.getElementById('sliderImages');
-            let dotsContainer = document.getElementById('sliderDots');
-            
-            imgContainer.innerHTML = '';
-            dotsContainer.innerHTML = '';
-
-            if (bannerInterval) clearInterval(bannerInterval);
-
-            if (banners && banners.length > 0) {
+            let imgBox = document.getElementById('sliderImages'), dotsBox = document.getElementById('sliderDots');
+            if(banners && banners.length > 0) {
                 banners.forEach((b, i) => {
-                    let activeClass = (i === 0) ? ' active' : '';
-                    imgContainer.innerHTML += `<img src="${b.url}" class="ad-slider-img${activeClass}" data-index="${i}">`;
-                    
-                    if (banners.length > 1) {
-                        dotsContainer.innerHTML += `<div class="dot${activeClass}" onclick="goToSlide(${i})"></div>`;
-                    }
+                    imgBox.innerHTML += `<img src="${b.url}" class="ad-slider-img ${i===0?'active':''}">`;
+                    if(banners.length > 1) dotsBox.innerHTML += `<div class="dot ${i===0?'active':''}"></div>`;
                 });
-
-                if (banners.length > 1) {
-                    let currentIndex = 0;
-                    bannerInterval = setInterval(() => {
-                        let imgs = imgContainer.querySelectorAll('.ad-slider-img');
-                        let dots = dotsContainer.querySelectorAll('.dot');
-                        if (imgs.length <= 1) return;
-
-                        imgs[currentIndex].classList.remove('active');
-                        if (dots[currentIndex]) dots[currentIndex].classList.remove('active');
-
-                        currentIndex = (currentIndex + 1) % imgs.length;
-
-                        imgs[currentIndex].classList.add('active');
-                        if (dots[currentIndex]) dots[currentIndex].classList.add('active');
+                if(banners.length > 1) {
+                    let idx = 0;
+                    setInterval(() => {
+                        let imgs = imgBox.querySelectorAll('img'), dots = dotsBox.querySelectorAll('.dot');
+                        imgs[idx].classList.remove('active'); if(dots[idx]) dots[idx].classList.remove('active');
+                        idx = (idx + 1) % imgs.length;
+                        imgs[idx].classList.add('active'); if(dots[idx]) dots[idx].classList.add('active');
                     }, 3500);
                 }
-            } else {
-                imgContainer.innerHTML = '<p style="font-size:12px; color:var(--text-muted); padding:20px;">صدارة للخدمات والتسويق الرقمي</p>';
             }
 
-            // 2. جلب الشركاء
+            // الشركاء
             let { data: partners } = await db.from('partners').select('*').order('id', {ascending: false});
             let tBox = document.getElementById('tickerBox');
-            tBox.innerHTML = '';
-            (partners || []).forEach(p => {
-                tBox.innerHTML += `<img src="${p.logo}" alt="${p.name}" title="${p.name}">`;
-            });
+            (partners || []).forEach(p => { tBox.innerHTML += `<img src="${p.logo}">`; });
 
-            // 3. جلب الوظائف
+            // الوظائف
             let { data: jobs } = await db.from('jobs').select('*').eq('approved', true).order('id', {ascending: false});
             let jBox = document.getElementById('jobsBox');
-            jBox.innerHTML = '';
-            
-            if (jobs && jobs.length > 0) {
-                jobs.forEach(j => {
-                    let imgTag = (j.image && j.image.trim() !== '') ? `<img src="${j.image}">` : '';
-                    let statusBadge = (j.status === 'متوفر') 
-                        ? '<span style="background:#dcfce7; color:#166534; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:bold;">متوفر</span>' 
-                        : '<span style="background:#fee2e2; color:#991b1b; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:bold;">غير متوفر</span>';
-                    
-                    jBox.innerHTML += `<div class="job-card">
-                        ${imgTag}
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h3 style="font-size: 16px; color:#0f2347;">${j.title}</h3>
-                            ${statusBadge}
-                        </div>
-                        <p style="font-size: 13px; color:#64748b; margin-top:4px;">${j.company}</p>
-                        <a href="https://wa.me/${j.phone}" target="_blank" class="apply-btn">تقديم عبر الواتساب 🟢</a>
-                    </div>`;
-                });
-            } else {
-                jBox.innerHTML = '<p style="text-align:center; padding:30px; color:var(--text-muted);">لا توجد وظائف معروضة حالياً</p>';
-            }
+            (jobs || []).forEach(j => {
+                let imgTag = (j.image && j.image.trim() !== '') ? `<img src="${j.image}">` : '';
+                jBox.innerHTML += `<div class="job-card">
+                    ${imgTag}
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="font-size: 15px; color:#0f2347;">${j.title}</h3>
+                        <span style="background:#dcfce7; color:#166534; padding:2px 6px; border-radius:10px; font-size:10px; font-weight:bold;">${j.status}</span>
+                    </div>
+                    <p style="font-size: 12px; color:#64748b; margin-top:3px;">${j.company}</p>
+                    <a href="https://wa.me/${j.phone.replace(/[^0-9]/g, '')}" target="_blank" class="apply-btn">تقديم عبر الواتساب 🟢</a>
+                </div>`;
+            });
         }
-
-        function goToSlide(index) {
-            let imgs = document.querySelectorAll('.ad-slider-img');
-            let dots = document.querySelectorAll('.dot');
-            
-            imgs.forEach(img => img.classList.remove('active'));
-            dots.forEach(dot => dot.classList.remove('active'));
-
-            if (imgs[index]) imgs[index].classList.add('active');
-            if (dots[index]) dots[index].classList.add('active');
-        }
-
-        document.addEventListener('DOMContentLoaded', initPlatform);
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
