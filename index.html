@@ -3,99 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صدارة للوظائف والكفاءات | الرئيسية</title>
+    <title>صدارة للوظائف والخدمات بمحافظة ذمار</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg: #f8fafc; }
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg: #0f2347; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: #0f172a; padding-bottom: 40px; }
+        body { background: var(--bg); color: #fff; padding-bottom: 30px; }
         
-        header { background: var(--primary); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); }
-        .logo { font-weight: 900; font-size: 18px; color: white; text-decoration: none; }
-        .auth-btn { background: var(--gold); color: #0f2347; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        /* الهيدر العلوي */
+        header { background: var(--primary); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
+        .logo { font-weight: 900; font-size: 16px; color: white; text-decoration: none; }
+        .cv-btn { background: var(--gold); color: #0f2347; padding: 6px 14px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 12px; }
+        .auth-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; margin-left: 5px; }
 
-        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
-        
-        .hero-banner { background: white; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #e2e8f0; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .hero-banner h1 { color: var(--primary); font-size: 20px; margin-bottom: 8px; }
-        .hero-banner p { color: #64748b; font-size: 13px; margin-bottom: 15px; }
-        
-        .cta-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        .btn-post { background: var(--green); color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; border: none; cursor: pointer; }
+        /* شريط الواتساب الأخضر */
+        .whatsapp-bar { background: var(--green); color: white; padding: 10px; text-align: center; font-size: 12px; font-weight: bold; }
+        .whatsapp-bar a { color: white; text-decoration: underline; }
 
-        .section-title { font-size: 16px; color: var(--primary); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid var(--gold); padding-right: 10px; }
+        /* المحتوى الرئيسي */
+        .main-container { background: #f8fafc; color: #0f172a; padding: 20px 15px; border-top-left-radius: 20px; border-top-right-radius: 20px; margin-top: 10px; min-height: 80vh; }
         
-        .jobs-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media(min-width: 768px) { .jobs-grid { grid-template-columns: 1fr 1fr; } }
-        
-        .job-card { background: white; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; position: relative; transition: 0.2s; }
-        .job-card:hover { border-color: var(--gold); }
-        .job-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .job-title { font-size: 15px; font-weight: bold; color: var(--primary); }
-        .company-name { font-size: 12px; color: #64748b; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
-        
-        .status-badge { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; }
-        .status-open { background: #dcfce7; color: #166534; }
-        .status-closed { background: #fee2e2; color: #991b1b; }
+        .hero-title { text-align: center; font-size: 18px; font-weight: 900; color: var(--primary); margin-bottom: 20px; line-height: 1.6; }
+
+        /* بطاقات الإحصائيات */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: white; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; text-align: center; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .stat-item { font-size: 11px; color: #64748b; }
+        .stat-num { font-size: 15px; font-weight: 900; color: var(--primary); display: block; margin-bottom: 2px; }
+
+        /* بنر تطبيق متجري */
+        .store-banner { background: linear-gradient(135deg, #f97316, #fb923c); border-radius: 12px; padding: 15px; color: white; margin-bottom: 15px; position: relative; overflow: hidden; }
+        .store-banner h3 { font-size: 16px; margin-bottom: 5px; }
+        .store-banner p { font-size: 11px; opacity: 0.9; }
+
+        /* بطاقة الإعلان والأصفر */
+        .ad-card { background: #f59e0b; border-radius: 12px; padding: 15px; color: #fff; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .ad-btn { background: #111; color: var(--gold); padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 12px; text-decoration: none; border: none; cursor: pointer; }
+
+        /* بطاقة التواصل الأخضر */
+        .contact-card { background: var(--green); border-radius: 12px; padding: 15px; color: white; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .contact-btn { background: white; color: var(--green); padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 12px; text-decoration: none; border: none; cursor: pointer; }
+
+        .section-title { font-size: 15px; font-weight: 900; color: var(--primary); margin-bottom: 12px; border-right: 4px solid var(--gold); padding-right: 8px; }
+
+        /* الوظائف */
+        .job-card { background: white; padding: 14px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .job-title { font-size: 14px; font-weight: bold; color: var(--primary); }
+        .job-company { font-size: 11px; color: #64748b; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+        .apply-btn { background: var(--primary); color: white; padding: 6px 12px; border-radius: 6px; font-size: 11px; text-decoration: none; font-weight: bold; }
 
         /* نافذة التسجيل المنبثقة */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-card { background: white; padding: 22px; border-radius: 14px; width: 90%; max-width: 400px; text-align: right; }
-        .modal-card input, .modal-card select { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 12px; width: 90%; max-width: 380px; text-align: right; }
+        .modal-card input, .modal-card select { width: 100%; padding: 8px; margin-top: 4px; margin-bottom: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; }
     </style>
 </head>
 <body>
 
+    <!-- الهيدر العلوي -->
     <header>
-        <a href="index.html" class="logo">صدارة للوظائف 🚀</a>
-        <button class="auth-btn" onclick="openAuthModal()">حساب جديد / تسجيل 👤</button>
+        <a href="index.html" class="logo">صدارة للوظائف والخدمات</a>
+        <div>
+            <button class="auth-btn" onclick="openAuthModal()">حساب جديد 👤</button>
+            <a href="resumes.html" class="cv-btn">دليل الكفاءات 📄</a>
+        </div>
     </header>
 
-    <div class="container">
+    <!-- شريط الواتساب الأخضر -->
+    <div class="whatsapp-bar">
+        📢 انضم لمجتمعنا الرسمي على الواتساب لمتابعة جديد الوظائف والكفاءات: <a href="https://wa.me/967780568507" target="_blank">اضغط هنا للانضمام للمجتمع 🟢</a>
+    </div>
+
+    <!-- المحتوى الداخلي بتصميمك الأصلي -->
+    <div class="main-container">
         
-        <div class="hero-banner">
-            <h1>منصة التوظيف الأولى في محافظة ذمار 🏢</h1>
-            <p>نصل الشركات بأفضل الكفاءات والمهارات المحلية بسهولة وأمان</p>
-            <div class="cta-btns">
-                <button class="btn-post" onclick="redirectToWhatsApp('إعلان وظيفة جديد')">نشر وظيفة عبر الواتساب 💬</button>
-                <a href="resumes.html" style="background:var(--primary); color:white; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:13px;">تصفح الكفاءات 📄</a>
+        <h1 class="hero-title">المنصة الأولى للوظائف والخدمات بمحافظة ذمار 🏢</h1>
+
+        <!-- الإحصائيات -->
+        <div class="stats-grid">
+            <div class="stat-item"><span class="stat-num">4</span>متواجد الآن 🟢</div>
+            <div class="stat-item"><span class="stat-num">39</span>إجمالي الزيارات 👥</div>
+            <div class="stat-item"><span class="stat-num" id="jobsCount">2</span>الوظائف 💼</div>
+            <div class="stat-item"><span class="stat-num">1</span>الكفاءات 📄</div>
+        </div>
+
+        <!-- بنر متجري المحاسبي -->
+        <div class="store-banner">
+            <h3>تطبيق كاشير متجري المحاسبي 🛒</h3>
+            <p>إدارة شاملة لمتجرك.. بكل سهولة واحترافية</p>
+        </div>
+
+        <!-- بطاقة الإعلان -->
+        <div class="ad-card">
+            <div>
+                <h4 style="font-size: 14px; margin-bottom: 3px;">هل تريد الإعلان عن نشاطك أو متجرك؟ 📢</h4>
+                <p style="font-size: 11px; opacity: 0.9;">توفر مساحات إعلانية مدفوعة في بنرات السلايدر</p>
             </div>
+            <button class="ad-btn" onclick="redirectToWhatsApp('حجز مساحة إعلانية')">احجز إعلانك ⭐</button>
+        </div>
+
+        <!-- بطاقة التواصل -->
+        <div class="contact-card">
+            <div>
+                <h4 style="font-size: 14px; margin-bottom: 3px;">تريد نشر وظيفة أو إضافة ملفك؟</h4>
+                <p style="font-size: 11px; opacity: 0.9;">تواصل مع إدارة المنصة مباشرة عبر الواتساب</p>
+            </div>
+            <button class="contact-btn" onclick="redirectToWhatsApp('نشر وظيفة أو سيرة ذاتية')">تواصل معنا 🟢</button>
         </div>
 
         <div class="section-title">
-            <span>💼 أحدث الوظائف والفرص المتاحة</span>
+            <span>💼 الوظائف والخدمات المتاحة</span>
         </div>
 
-        <div class="jobs-grid" id="jobsContainer">
-            <p style="color:#64748b; font-size:12px;">جاري تحميل الوظائف...</p>
+        <!-- قائمة الوظائف -->
+        <div id="jobsContainer">
+            <p style="color: #64748b; font-size: 12px; text-align: center;">جاري تحميل الوظائف...</p>
         </div>
 
     </div>
 
-    <!-- نافذة التسجيل المنبثقة -->
+    <!-- نافذة التسجيل المنبثقة (الميزة الجديدة) -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-card">
-            <h3 style="color:var(--primary); margin-bottom:12px;">انضم إلى منصة صدارة 🚀</h3>
+            <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 15px;">انضم إلى منصة صدارة 🚀</h3>
             
-            <label style="font-size:12px; font-weight:bold;">نوع الحساب</label>
+            <label style="font-size: 11px; font-weight: bold;">نوع الحساب</label>
             <select id="userType">
                 <option value="شركة/صاحب عمل">شركة / صاحب عمل 🏢</option>
                 <option value="باحث عن عمل">باحث عن عمل / فرد 👤</option>
             </select>
 
-            <label style="font-size:12px; font-weight:bold;">الاسم الكامل / اسم الجهة</label>
-            <input type="text" id="userName" placeholder="مثال: شركة صدارة / أحمد علي">
+            <label style="font-size: 11px; font-weight: bold;">الاسم الكامل / اسم الجهة</label>
+            <input type="text" id="userName" placeholder="مثال: شركة صدارة">
 
-            <label style="font-size:12px; font-weight:bold;">البريد الإلكتروني</label>
+            <label style="font-size: 11px; font-weight: bold;">البريد الإلكتروني</label>
             <input type="email" id="userEmail" placeholder="example@mail.com">
 
-            <label style="font-size:12px; font-weight:bold;">رقم الواتساب</label>
+            <label style="font-size: 11px; font-weight: bold;">رقم الواتساب</label>
             <input type="tel" id="userPhone" placeholder="770000000">
 
-            <button onclick="registerUser()" style="width:100%; background:var(--green); color:white; border:none; padding:11px; border-radius:8px; font-weight:bold; cursor:pointer;">تأكيد وإنشاء الحساب 📱</button>
-            <button onclick="closeAuthModal()" style="width:100%; background:#64748b; color:white; border:none; padding:8px; border-radius:8px; margin-top:6px; cursor:pointer; font-size:12px;">إلغاء</button>
-            <div id="authMsg" style="font-size:11px; margin-top:8px; text-align:center;"></div>
+            <button onclick="registerUser()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;">تأكيد وإنشاء الحساب 📱</button>
+            <button onclick="closeAuthModal()" style="width:100%; background:#64748b; color:white; border:none; padding:7px; border-radius:6px; margin-top:5px; cursor:pointer; font-size:11px;">إلغاء</button>
+            <div id="authMsg" style="font-size:11px; margin-top:6px; text-align:center;"></div>
         </div>
     </div>
 
@@ -104,10 +153,10 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // الشارة الزرقاء الموثقة (Blue Tick Badge SVG)
+        // دالة إيقونة الشارة الزرقاء الموثقة (Blue Tick Badge SVG)
         function getBlueBadgeHTML() {
             return `<span title="جهة عمل موثوقة" style="display:inline-flex; align-items:center; vertical-align:middle; margin-right:3px;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#1877F2"/>
                 </svg>
             </span>`;
@@ -119,23 +168,21 @@
             container.innerHTML = '';
 
             if (error || !data || data.length === 0) {
-                container.innerHTML = '<p style="color:#64748b; font-size:12px;">لا توجد وظائف معروضة حالياً.</p>';
+                container.innerHTML = '<p style="color:#64748b; font-size:12px; text-align:center;">لا توجد وظائف معروضة حالياً.</p>';
                 return;
             }
 
+            document.getElementById('jobsCount').textContent = data.length;
+
             data.forEach(j => {
-                let isAvail = j.status === 'متاحة';
                 let verifiedBadge = j.is_verified ? getBlueBadgeHTML() : '';
                 container.innerHTML += `
                     <div class="job-card">
-                        <div class="job-header">
-                            <div>
-                                <div class="job-title">${j.title}</div>
-                                <div class="company-name">${j.company || 'جهة غير محددة'} ${verifiedBadge}</div>
-                            </div>
-                            <span class="status-badge ${isAvail ? 'status-open' : 'status-closed'}">${j.status || 'متاحة'}</span>
+                        <div>
+                            <div class="job-title">${j.title}</div>
+                            <div class="job-company">${j.company || 'جهة غير محددة'} ${verifiedBadge}</div>
                         </div>
-                        <a href="https://wa.me/${j.phone || '967780568507'}?text=${encodeURIComponent('مرحباً، أود التقديم على وظيفة: ' + j.title)}" target="_blank" style="display:inline-block; margin-top:10px; background:var(--primary); color:white; padding:6px 14px; border-radius:6px; text-decoration:none; font-size:11px; font-weight:bold;">التقديم عبر الواتساب 💬</a>
+                        <a href="https://wa.me/${j.phone || '967780568507'}?text=${encodeURIComponent('مرحباً، أود التقديم على وظيفة: ' + j.title)}" target="_blank" class="apply-btn">التقديم عبر الواتساب 💬</a>
                     </div>`;
             });
         }
@@ -164,7 +211,7 @@
         function redirectToWhatsApp(actionType) {
             const savedUser = localStorage.getItem('sadara_user') || 'زائر';
             const adminPhone = "967780568507";
-            const text = encodeURIComponent(`مرحباً إدارة صدارة، أنا المسجل: (${savedUser}) أود طلب نشر ${actionType} على المنصة.`);
+            const text = encodeURIComponent(`مرحباً إدارة صدارة، أنا المسجل: (${savedUser}) أود طلب ${actionType} على المنصة.`);
             window.open(`https://wa.me/${adminPhone}?text=${text}`, '_blank');
         }
 
