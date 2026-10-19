@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دليل الكفاءات ورفع السيرة الذاتية | صدارة</title>
+    <title>دليل الكفاءات والخدمات المهنية | صدارة</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -29,7 +29,7 @@
             position: sticky; top: 0; z-index: 100;
         }
 
-        .logo { font-size: 18px; font-weight: 800; color: var(--primary-dark); display: flex; align-items: center; gap: 8px; }
+        .logo { font-size: 16px; font-weight: 800; color: var(--primary-dark); display: flex; align-items: center; gap: 8px; }
 
         .btn {
             padding: 8px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 700;
@@ -41,14 +41,41 @@
 
         .hero {
             background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-            color: var(--white); padding: 35px 20px; text-align: center; margin-bottom: 25px;
+            color: var(--white); padding: 30px 20px; text-align: center; margin-bottom: 20px;
         }
-        .hero h1 { font-size: 22px; margin-bottom: 10px; font-weight: 800; }
-        .hero p { font-size: 13px; opacity: 0.95; max-width: 600px; margin: 0 auto 18px auto; }
+        .hero h1 { font-size: 20px; margin-bottom: 8px; font-weight: 800; }
+        .hero p { font-size: 12px; opacity: 0.95; max-width: 600px; margin: 0 auto 15px auto; }
 
-        .container { max-width: 900px; margin: 0 auto; padding: 0 16px; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-        .section-title { font-size: 18px; font-weight: 800; color: var(--dark); }
+        .container { max-width: 950px; margin: 0 auto; padding: 0 16px; }
+
+        /* شريط التصنيفات والفلترة */
+        .categories-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+        }
+        .categories-bar::-webkit-scrollbar { display: none; }
+
+        .cat-chip {
+            background: var(--white);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--slate);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .cat-chip.active, .cat-chip:hover {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
         .card {
@@ -63,6 +90,12 @@
         }
         .candidate-info h3 { font-size: 15px; color: var(--dark); }
         .candidate-info p { font-size: 12px; color: var(--primary-dark); font-weight: 600; }
+        
+        .badge-cat {
+            background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 10px;
+            font-size: 10px; font-weight: bold; display: inline-block; margin-bottom: 6px;
+        }
+
         .card-body { font-size: 12px; color: var(--slate); margin-bottom: 14px; }
         .skills-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
         .tag { background: var(--light-bg); color: var(--slate); padding: 2px 8px; border-radius: 12px; font-size: 11px; border: 1px solid var(--border); }
@@ -80,7 +113,7 @@
         
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; color: var(--dark); }
-        .form-control { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; background: #fff; }
         textarea.form-control { resize: vertical; min-height: 70px; }
         .file-upload-box { border: 2px dashed var(--border); border-radius: 8px; padding: 16px; text-align: center; background: var(--light-bg); cursor: pointer; }
         
@@ -95,24 +128,36 @@
 
     <header>
         <div class="logo"><i class="fa-solid fa-briefcase"></i><span>دليل الكفاءات والسي في</span></div>
-        <button class="btn btn-outline" id="btnOpenTop" onclick="openModal()"><i class="fa-solid fa-id-card"></i> إنشاء ملف / رفع CV</button>
+        <button class="btn btn-outline" onclick="openModal()"><i class="fa-solid fa-id-card"></i> إنشاء ملف / رفع CV</button>
     </header>
 
     <section class="hero">
-        <h1>اعرض خدماتك وسيرتك الذاتية لأصحاب العمل مباشرة</h1>
-        <p>قم بإنشاء ملفك الشخصي وأرفق سيرتك الذاتية ليتواصل معك أصحاب الشركات عبر الواتساب.</p>
-        <button class="btn btn-primary" id="btnOpenHero" onclick="openModal()"><i class="fa-solid fa-cloud-arrow-up"></i> إضافة ملفك الآن</button>
+        <h1>دليل الكفاءات والخدمات المهنية</h1>
+        <p>تصفح المخصصين بحسب التخصص أو أضف سيرتك الذاتية ليتواصل معك أصحاب الأعمال.</p>
+        <button class="btn btn-primary" onclick="openModal()"><i class="fa-solid fa-cloud-arrow-up"></i> إضافة ملفك الآن</button>
     </section>
 
     <main class="container">
-        <div class="section-header">
-            <h2 class="section-title">الكفاءات المتاحة للتوظيف</h2>
-            <span id="candidates-count" style="color: var(--slate); font-weight: 600; font-size: 13px;">جاري التحميل...</span>
+        <!-- أزرار التصنيفات والفلترة السريعة -->
+        <div class="categories-bar" id="categoriesBar">
+            <div class="cat-chip active" onclick="filterCategory('الكل', this)">الكل</div>
+            <div class="cat-chip" onclick="filterCategory('التسويق والترويج', this)">📢 التسويق والترويج</div>
+            <div class="cat-chip" onclick="filterCategory('المحاسبة والمالية', this)">📊 المحاسبة والمالية</div>
+            <div class="cat-chip" onclick="filterCategory('الطب والصحة', this)">🩺 الطب والصحة</div>
+            <div class="cat-chip" onclick="filterCategory('التقنية وبرمجة', this)">💻 التقنية والبرمجة</div>
+            <div class="cat-chip" onclick="filterCategory('الخدمات والنظافه', this)">🧹 الخدمات العامة والنظافة</div>
+            <div class="cat-chip" onclick="filterCategory('أخرى', this)">📁 تخصصات أخرى</div>
         </div>
+
+        <div class="section-header">
+            <h2 class="section-title" id="sectionTitle">جميع الكفاءات المتاحة</h2>
+            <span id="candidates-count" style="color: var(--slate); font-weight: 600; font-size: 12px;">جاري التحميل...</span>
+        </div>
+
         <div class="grid" id="candidates-grid"></div>
     </main>
 
-    <!-- النافذة المنسدلة -->
+    <!-- النافذة المنسدلة لإنشاء الملف -->
     <div class="modal-overlay" id="profile-modal">
         <div class="modal">
             <div class="modal-header">
@@ -121,10 +166,23 @@
             </div>
             <form id="candidate-form" onsubmit="handleSubmit(event)">
                 <div class="form-group"><label>الاسم الكامل *</label><input type="text" id="full_name" class="form-control" required placeholder="مثال: عبدالرحمن الذماري"></div>
-                <div class="form-group"><label>المسمى الوظيفي / الخدمة *</label><input type="text" id="job_title" class="form-control" required placeholder="مثال: محاسب، مسوق إلكتروني"></div>
-                <div class="form-group"><label>رقم الواتساب للتواصل *</label><input type="tel" id="phone" class="form-control" required placeholder="مثال: 967770000000"></div>
-                <div class="form-group"><label>المهارات الرئيسية (مفصولة بفواصل)</label><input type="text" id="skills" class="form-control" placeholder="إدارة، تصميم، إكسل"></div>
-                <div class="form-group"><label>نبذة عن خبراتك والخدمات</label><textarea id="experience" class="form-control" placeholder="ملخص عن خبرتك..."></textarea></div>
+                <div class="form-group"><label>المسمى الوظيفي (مثال: محاسب عام، مسوق رقمي) *</label><input type="text" id="job_title" class="form-control" required></div>
+                
+                <div class="form-group">
+                    <label>القسم / التخصص الرئيسي *</label>
+                    <select id="category" class="form-control" required>
+                        <option value="التسويق والترويج">📢 التسويق والترويج</option>
+                        <option value="المحاسبة والمالية">📊 المحاسبة والمالية</option>
+                        <option value="الطب والصحة">🩺 الطب والصحة</option>
+                        <option value="التقنية وبرمجة">💻 التقنية والبرمجة</option>
+                        <option value="الخدمات والنظافه">🧹 الخدمات العامة والنظافة</option>
+                        <option value="أخرى">📁 تخصصات أخرى</option>
+                    </select>
+                </div>
+
+                <div class="form-group"><label>رقم الواتساب للتواصل *</label><input type="tel" id="phone" class="form-control" required placeholder="967770000000"></div>
+                <div class="form-group"><label>المهارات الرئيسية (مفصولة بفواصل)</label><input type="text" id="skills" class="form-control" placeholder="إكسل، تصميم، تواصل"></div>
+                <div class="form-group"><label>نبذة عن الخبرات والخدمات</label><textarea id="experience" class="form-control" placeholder="ملخص خبرتك..."></textarea></div>
                 <div class="form-group">
                     <label>رفع السيرة الذاتية (CV)</label>
                     <div class="file-upload-box" onclick="document.getElementById('cv_file').click()">
@@ -143,20 +201,13 @@
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
-        
-        let db = null;
-        try {
-            db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch(e) {
-            console.error("Supabase Init Error:", e);
-        }
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        let allCandidates = [];
+        let currentCategory = 'الكل';
         let selectedFile = null;
 
-        function openModal() {
-            document.getElementById('profile-modal').classList.add('active');
-        }
-
+        function openModal() { document.getElementById('profile-modal').classList.add('active'); }
         function closeModal() {
             document.getElementById('profile-modal').classList.remove('active');
             document.getElementById('candidate-form').reset();
@@ -173,58 +224,73 @@
         }
 
         async function fetchCandidates() {
-            const grid = document.getElementById('candidates-grid');
             const countLabel = document.getElementById('candidates-count');
-
-            if (!db) {
-                countLabel.textContent = "خطأ في الاتصال بالخادم";
-                return;
-            }
-
             try {
                 const { data, error } = await db.from('resumes').select('*').order('id', { ascending: false });
                 if (error) throw error;
-
-                countLabel.textContent = `${(data || []).length} كفاءة متوفرة`;
-                grid.innerHTML = '';
-
-                if (!data || data.length === 0) {
-                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--slate); padding: 30px;">لا توجد ملفات شخصية مسجلة حالياً.</p>';
-                    return;
-                }
-
-                data.forEach(candidate => {
-                    const skillsArray = candidate.skills ? candidate.skills.split(',').map(s => s.trim()) : [];
-                    const initial = candidate.full_name ? candidate.full_name.charAt(0) : '؟';
-                    
-                    grid.insertAdjacentHTML('beforeend', `
-                        <div class="card">
-                            <div>
-                                <div class="card-header">
-                                    <div class="avatar">${initial}</div>
-                                    <div class="candidate-info">
-                                        <h3>${escapeHtml(candidate.full_name)}</h3>
-                                        <p>${escapeHtml(candidate.job_title)}</p>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <p>${escapeHtml(candidate.experience || 'لا توجد نبذة مختصرة مضافة.')}</p>
-                                    ${skillsArray.length > 0 ? `<div class="skills-tags">${skillsArray.map(s => `<span class="tag">${escapeHtml(s)}</span>`).join('')}</div>` : ''}
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                <a href="https://wa.me/${candidate.phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn btn-primary" style="flex: 1; justify-content: center; font-size: 11px;">
-                                    <i class="fa-brands fa-whatsapp"></i> تواصل واتساب
-                                </a>
-                                ${candidate.cv_url ? `<a href="${candidate.cv_url}" target="_blank" class="btn btn-outline" style="font-size: 11px;"><i class="fa-solid fa-file-pdf"></i> CV</a>` : ''}
-                            </div>
-                        </div>
-                    `);
-                });
+                allCandidates = data || [];
+                renderCandidates();
             } catch (err) {
                 console.error("Fetch error:", err);
-                countLabel.textContent = "لا توجد ملفات مسجلة حالياً";
+                countLabel.textContent = "خطأ في الاتصال";
             }
+        }
+
+        function filterCategory(cat, element) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-chip').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById('sectionTitle').textContent = cat === 'الكل' ? 'جميع الكفاءات المتاحة' : `قسم: ${cat}`;
+            renderCandidates();
+        }
+
+        function renderCandidates() {
+            const grid = document.getElementById('candidates-grid');
+            const countLabel = document.getElementById('candidates-count');
+
+            let filtered = allCandidates;
+            if (currentCategory !== 'الكل') {
+                filtered = allCandidates.filter(c => c.category === currentCategory);
+            }
+
+            countLabel.textContent = `${filtered.length} كفاءة متوفرة`;
+            grid.innerHTML = '';
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--slate); padding: 30px;">لا توجد كفاءات مسجلة في هذا القسم حالياً.</p>';
+                return;
+            }
+
+            filtered.forEach(candidate => {
+                const skillsArray = candidate.skills ? candidate.skills.split(',').map(s => s.trim()) : [];
+                const initial = candidate.full_name ? candidate.full_name.charAt(0) : '؟';
+                const catName = candidate.category || 'أخرى';
+                
+                grid.insertAdjacentHTML('beforeend', `
+                    <div class="card">
+                        <div>
+                            <span class="badge-cat">${catName}</span>
+                            <div class="card-header">
+                                <div class="avatar">${initial}</div>
+                                <div class="candidate-info">
+                                    <h3>${escapeHtml(candidate.full_name)}</h3>
+                                    <p>${escapeHtml(candidate.job_title)}</p>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p>${escapeHtml(candidate.experience || 'لا توجد نبذة مختصرة مضافة.')}</p>
+                                ${skillsArray.length > 0 ? `<div class="skills-tags">${skillsArray.map(s => `<span class="tag">${escapeHtml(s)}</span>`).join('')}</div>` : ''}
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="https://wa.me/${candidate.phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn btn-primary" style="flex: 1; justify-content: center; font-size: 11px;">
+                                <i class="fa-brands fa-whatsapp"></i> تواصل واتساب
+                            </a>
+                            ${candidate.cv_url ? `<a href="${candidate.cv_url}" target="_blank" class="btn btn-outline" style="font-size: 11px;"><i class="fa-solid fa-file-pdf"></i> CV</a>` : ''}
+                        </div>
+                    </div>
+                `);
+            });
         }
 
         async function handleSubmit(event) {
@@ -235,8 +301,6 @@
 
             try {
                 let cvUrl = '';
-
-                // إذا قمت بتحديد صورة أو ملف، وسجلت رابط صورة مباشر هنا
                 if (selectedFile) {
                     try {
                         const fileName = `${Date.now()}_${selectedFile.name.replace(/\s+/g, '_')}`;
@@ -245,13 +309,14 @@
                             const { data: publicUrlData } = db.storage.from('cv_files').getPublicUrl(fileName);
                             cvUrl = publicUrlData.publicUrl;
                         }
-                    } catch(e) { console.log("Storage bypass", e); }
+                    } catch(e) { console.log(e); }
                 }
 
                 const newCandidate = {
                     full_name: document.getElementById('full_name').value.trim(),
                     job_title: document.getElementById('job_title').value.trim(),
-                    phone: document.getElementById('phone').value.trim(),
+                    category: document.getElementById('category').value,
+                    phone: document.getElementById('phone.trim()') ? document.getElementById('phone').value.trim() : document.getElementById('phone').value.trim(),
                     skills: document.getElementById('skills').value.trim(),
                     experience: document.getElementById('experience').value.trim(),
                     cv_url: cvUrl
@@ -260,21 +325,21 @@
                 const { error: insertError } = await db.from('resumes').insert([newCandidate]);
                 if (insertError) throw insertError;
 
-                showToast('تم نشر ملفك الشخصي بنجاح!');
+                showToast('تم نشر ملفك الشخصي وتصنيفه بنجاح!');
                 closeModal();
                 fetchCandidates();
             } catch (error) {
-                console.error("Save error:", error);
-                showToast('حدث خطأ أثناء الحفظ، يرجى إعادة المحاولة');
+                console.error(error);
+                showToast('حدث خطأ أثناء الحفظ، يرجى المحاولة');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'حفظ ونشر الملف 🟢';
             }
         }
 
-        function showToast(message) {
+        function showToast(msg) {
             const toast = document.getElementById('toast');
-            document.getElementById('toast-message').textContent = message;
+            document.getElementById('toast-message').textContent = msg;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3500);
         }
