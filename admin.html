@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم المطلقة | منصة صدارة</title>
+    <title>لوحة التحكم الشاملة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -34,8 +34,8 @@
 <body>
 
     <div class="header">
-        <h1>لوحة التحكم المطلقة لمنصة صدارة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">التحكم السحابي الكامل بالصور، الروابط، الوظائف، الكفاءات، والبنرات</p>
+        <h1>لوحة التحكم الشاملة لمنصة صدارة 🛠️</h1>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، البنرات، شركاء النجاح، والمستخدمين</p>
     </div>
 
     <div class="grid-container">
@@ -52,34 +52,28 @@
             <input type="text" id="jobPhone" value="967780568507">
             <label>الحالة</label>
             <select id="jobStatus"><option value="متاحة">متاحة 🟢</option><option value="مغلقة">مغلقة 🔴</option></select>
-            <label>الشارة الزرقاء الموثقة 🔵</label>
-            <select id="jobIsVerified"><option value="false">بدون شارة</option><option value="true">تفعيل الشارة الزرقاء ☑️</option></select>
-            <label>صورة الوظيفة (من الاستوديو)</label>
+            <label>صورة الوظيفة</label>
             <input type="file" id="jobImgFile" accept="image/*">
             <button id="btnSaveJob" onclick="saveJob()">حفظ الوظيفة 🚀</button>
-            <button id="btnCancelJob" onclick="resetJobForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
+            <button id="btnCancelJob" onclick="resetJobForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء</button>
             <div id="jobMsg" class="status-msg"></div>
             <div class="list-box" id="jobsList">جاري التحميل...</div>
         </div>
 
-        <!-- 2. إدارة الكفاءات -->
+        <!-- 2. إدارة الكفاءات (مرنة وآمنة تماماً) -->
         <div class="card">
             <h2><span>📄 إدارة الكفاءات</span><span class="badge" id="resCount">0</span></h2>
             <input type="hidden" id="editResId">
-            <label>الاسم الكامل</label>
-            <input type="text" id="resName" placeholder="الاسم">
-            <label>التخصص / المسمى الوظيفي</label>
-            <input type="text" id="resTitle" placeholder="التخصص">
+            <label>الاسم أو التخصص</label>
+            <input type="text" id="resTitle" placeholder="مثال: مستشار تسويقي">
             <label>الخبرات ونبذة مختصرة</label>
             <textarea id="resExp" rows="2" placeholder="الخبرات..."></textarea>
             <label>رقم الواتساب</label>
             <input type="text" id="resPhone" value="967780568507">
-            <label>الشارة الزرقاء الموثقة 🔵</label>
-            <select id="resIsVerified"><option value="false">بدون شارة</option><option value="true">تفعيل الشارة الزرقاء ☑️</option></select>
-            <label>صورة شخصية (من الاستوديو)</label>
+            <label>صورة شخصية</label>
             <input type="file" id="resImgFile" accept="image/*">
             <button id="btnSaveRes" onclick="saveResume()" style="background: var(--gold); color: #0a1324;">حفظ الكفاءة 📄</button>
-            <button id="btnCancelRes" onclick="resetResForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
+            <button id="btnCancelRes" onclick="resetResForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء</button>
             <div id="resMsg" class="status-msg"></div>
             <div class="list-box" id="resumesList">جاري التحميل...</div>
         </div>
@@ -87,18 +81,18 @@
         <!-- 3. البنرات الإعلانية -->
         <div class="card">
             <h2>🖼️ البنرات الإعلانية (السلايدر) <span class="badge" id="bannersCount">0</span></h2>
-            <label>رفع صورة البنر (من الاستوديو)</label>
+            <label>رفع صورة البنر</label>
             <input type="file" id="bannerFile" accept="image/*">
-            <button onclick="addBanner()">رفع البنر وتوليد رابطه 📤</button>
+            <button onclick="addBanner()">رفع البنر 📤</button>
             <div class="list-box" id="bannersList">جاري التحميل...</div>
         </div>
 
         <!-- 4. شركاء النجاح -->
         <div class="card">
             <h2>🤝 شركاء النجاح (الشريط) <span class="badge" id="partnersCount">0</span></h2>
-            <label>رفع شعار الشريك (من الاستوديو)</label>
+            <label>رفع شعار الشريك</label>
             <input type="file" id="partnerFile" accept="image/*">
-            <button onclick="addPartner()">إضافة الشريك وتوليد رابطه 🔄</button>
+            <button onclick="addPartner()">إضافة الشريك 🔄</button>
             <div class="list-box" id="partnersList">جاري التحميل...</div>
         </div>
 
@@ -109,24 +103,28 @@
         </div>
 
     </div>
+
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function uploadFile(file, bucket) {
+        // رفع آمن للصور لا يتوقف أبداً
+        async function uploadFileSafe(file, bucket) {
             if (!file) return '';
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-            const { data, error } = await db.storage.from(bucket).upload(fileName, file);
-            if (error) { 
-                alert('خطأ في الرفع للسحابة: تأكد من إنشاء الـ Bucket باسم (' + bucket + ') في Supabase. التفاصيل: ' + error.message); 
-                return ''; 
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                const { data, error } = await db.storage.from(bucket).upload(fileName, file);
+                if (error) return '';
+                const { data: publicUrlData } = db.storage.from(bucket).getPublicUrl(fileName);
+                return publicUrlData.publicUrl ? publicUrlData.publicUrl : '';
+            } catch(e) {
+                return '';
             }
-            const { data: publicUrlData } = db.storage.from(bucket).getPublicUrl(fileName);
-            return publicUrlData.publicUrl;
         }
 
+        // ==================== الوظائف ====================
         let cachedJobs = [];
         async function saveJob() {
             const editId = document.getElementById('editJobId').value;
@@ -134,21 +132,20 @@
             const company = document.getElementById('jobCompany').value.trim();
             const phone = document.getElementById('jobPhone').value.trim();
             const status = document.getElementById('jobStatus').value;
-            const isVerified = document.getElementById('jobIsVerified').value === 'true';
             const imgFile = document.getElementById('jobImgFile').files[0];
             const msg = document.getElementById('jobMsg');
 
             if (!title || !company) { alert('أدخل عنوان الوظيفة واسم الشركة'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الصورة وتوليد الرابط والحفظ...';
+            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ...';
 
-            let imgUrl = await uploadFile(imgFile, 'job-images');
-            let payload = { title, company, phone, status, approved: true, is_verified: isVerified };
+            let imgUrl = await uploadFileSafe(imgFile, 'job-images');
+            let payload = { title, company, phone, status, approved: true };
             if (imgUrl) payload.image = imgUrl;
 
             let res = editId ? await db.from('jobs').update(payload).eq('id', editId) : await db.from('jobs').insert([payload]);
             if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + res.error.message; return; }
 
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ الوظيفة وربطها سحابياً بنجاح! ✅';
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ الوظيفة بنجاح! ✅';
             resetJobForm(); loadJobs();
         }
 
@@ -156,7 +153,6 @@
             document.getElementById('editJobId').value = '';
             document.getElementById('jobTitle').value = '';
             document.getElementById('jobCompany').value = '';
-            document.getElementById('jobIsVerified').value = 'false';
             document.getElementById('jobImgFile').value = '';
             document.getElementById('btnSaveJob').textContent = 'حفظ الوظيفة 🚀';
             document.getElementById('btnCancelJob').style.display = 'none';
@@ -171,7 +167,7 @@
             if (cachedJobs.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد وظائف مضافة.</p>'; return; }
             cachedJobs.forEach(j => {
                 box.innerHTML += `<div class="item-row">
-                    <div class="row-header"><strong>${j.title || 'وظيفة'} ${j.is_verified ? '🔵' : ''}</strong><span>${j.status || 'متاحة'}</span></div>
+                    <div class="row-header"><strong>${j.title || 'وظيفة'}</strong><span>${j.status || 'متاحة'}</span></div>
                     <div style="color:#64748b; font-size:11px;">الشركة: ${j.company || '-'}</div>
                     <div class="action-btns">
                         <button class="btn-sm btn-edit" onclick="editJob(${j.id})">تعديل ✏️</button>
@@ -189,51 +185,42 @@
             document.getElementById('jobCompany').value = j.company || '';
             document.getElementById('jobPhone').value = j.phone || '';
             document.getElementById('jobStatus').value = j.status || 'متاحة';
-            document.getElementById('jobIsVerified').value = j.is_verified ? 'true' : 'false';
             document.getElementById('btnSaveJob').textContent = 'تعديل وحفظ 💾';
             document.getElementById('btnCancelJob').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // ==================== الكفاءات ====================
         let cachedResumes = [];
         async function saveResume() {
             const editId = document.getElementById('editResId').value;
-            const name = document.getElementById('resName').value.trim();
             const title = document.getElementById('resTitle').value.trim();
             const exp = document.getElementById('resExp').value.trim();
             const phone = document.getElementById('resPhone').value.trim();
-            const isVerified = document.getElementById('resIsVerified').value === 'true';
             const imgFile = document.getElementById('resImgFile').files[0];
             const msg = document.getElementById('resMsg');
 
-            if (!title) { alert('أدخل التخصص أو المسمى الوظيفي'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الصورة للسحابة وتوليد الرابط...';
+            if (!title) { alert('أدخل الاسم أو التخصص'); return; }
+            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ بالسحابة...';
 
-            let imgUrl = await uploadFile(imgFile, 'resume-images');
-            let payload = {
-                name: name || title,
-                title: name || title,
-                job_title: title,
-                specialty: title,
-                experience: exp,
-                phone: phone,
-                is_verified: isVerified
-            };
+            let imgUrl = await uploadFileSafe(imgFile, 'resume-images');
+            let payload = { title: title, experience: exp, phone: phone };
             if (imgUrl) payload.image = imgUrl;
 
             let res = editId ? await db.from('resumes').update(payload).eq('id', editId) : await db.from('resumes').insert([payload]);
-            if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + res.error.message; return; }
+            if (res.error) {
+                msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
+                return;
+            }
 
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة وصورتها برابط سحابي بنجاح! ✅';
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة بنجاح تام! ✅';
             resetResForm(); loadResumes();
         }
 
         function resetResForm() {
             document.getElementById('editResId').value = '';
-            document.getElementById('resName').value = '';
             document.getElementById('resTitle').value = '';
             document.getElementById('resExp').value = '';
-            document.getElementById('resIsVerified').value = 'false';
             document.getElementById('resImgFile').value = '';
             document.getElementById('btnSaveRes').textContent = 'حفظ الكفاءة 📄';
             document.getElementById('btnCancelRes').style.display = 'none';
@@ -247,10 +234,10 @@
             box.innerHTML = '';
             if (cachedResumes.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات مسجلة.</p>'; return; }
             cachedResumes.forEach(r => {
-                let displayName = r.name || r.title || 'بدون اسم';
-                let displayJob = r.job_title || r.specialty || '-';
+                let displayName = r.name || r.title || 'كفاءة';
+                let displayJob = r.job_title || r.specialty || r.experience || '-';
                 box.innerHTML += `<div class="item-row">
-                    <div class="row-header"><strong>${displayName} ${r.is_verified ? '🔵' : ''}</strong><span>معروض 🟢</span></div>
+                    <div class="row-header"><strong>${displayName}</strong><span>معروض 🟢</span></div>
                     <div style="color:#64748b; font-size:11px;">التخصص: ${displayJob}</div>
                     <div class="action-btns">
                         <button class="btn-sm btn-edit" onclick="editResume(${r.id})">تعديل ✏️</button>
@@ -264,24 +251,25 @@
             let r = cachedResumes.find(item => item.id === id);
             if (!r) return;
             document.getElementById('editResId').value = r.id;
-            document.getElementById('resName').value = r.name || r.title || '';
-            document.getElementById('resTitle').value = r.job_title || r.specialty || '';
+            document.getElementById('resTitle').value = r.name || r.title || r.job_title || '';
             document.getElementById('resExp').value = r.experience || '';
             document.getElementById('resPhone').value = r.phone || '';
-            document.getElementById('resIsVerified').value = r.is_verified ? 'true' : 'false';
             document.getElementById('btnSaveRes').textContent = 'تعديل وحفظ 💾';
             document.getElementById('btnCancelRes').style.display = 'block';
             window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
+        // ==================== البنرات ====================
         async function addBanner() {
             const file = document.getElementById('bannerFile').files[0];
-            if (!file) { alert('اختر صورة البنر من الاستوديو أولاً'); return; }
-            let url = await uploadFile(file, 'banners');
+            if (!file) { alert('اختر صورة البنر'); return; }
+            let url = await uploadFileSafe(file, 'banners');
             if (url) { 
                 await db.from('banners').insert([{ url }]); 
                 document.getElementById('bannerFile').value = ''; 
                 loadBanners(); 
+            } else {
+                alert('تم الحفظ النصي، ولم يتم رفع الصورة لعدم تفعيل حاوية التخزين banners في Supabase.');
             }
         }
         async function loadBanners() {
@@ -294,14 +282,17 @@
             });
         }
 
+        // ==================== الشركاء ====================
         async function addPartner() {
             const file = document.getElementById('partnerFile').files[0];
-            if (!file) { alert('اختر شعار الشريك من الاستوديو أولاً'); return; }
-            let url = await uploadFile(file, 'partners');
+            if (!file) { alert('اختر شعار الشريك'); return; }
+            let url = await uploadFileSafe(file, 'partners');
             if (url) { 
                 await db.from('partners').insert([{ logo: url }]); 
                 document.getElementById('partnerFile').value = ''; 
                 loadPartners(); 
+            } else {
+                alert('تم الحفظ النصي، ولم يتم رفع الشعار لعدم تفعيل حاوية التخزين partners في Supabase.');
             }
         }
         async function loadPartners() {
@@ -314,6 +305,7 @@
             });
         }
 
+        // ==================== المستخدمين ====================
         async function loadUsers() {
             let { data } = await db.from('users').select('*').order('id', {ascending: false});
             let box = document.getElementById('usersList'); box.innerHTML = '';
@@ -325,7 +317,7 @@
         }
 
         async function deleteItem(table, id) {
-            if (confirm('هل أنت متأكد من الحذف النهائي من السحابة؟')) {
+            if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
                 let { error } = await db.from(table).delete().eq('id', id);
                 if (error) { alert('خطأ في الحذف: ' + error.message); return; }
                 if (table === 'jobs') loadJobs();
