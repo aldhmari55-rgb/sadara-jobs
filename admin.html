@@ -33,13 +33,14 @@
         .badge-status { padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold; }
         .badge-active { background: #dcfce7; color: #166534; }
         .badge-closed { background: #fee2e2; color: #991b1b; }
+        .preview-img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #cbd5e1; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، الشارة الزرقاء، والبنرات بسرعة فائقة</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، الشارة الزرقاء، والرفع الفعلي للصور</p>
     </div>
 
     <div class="grid-container">
@@ -47,7 +48,7 @@
         <!-- 1. إدارة الوظائف -->
         <div class="card">
             <h2>
-                <span>💼 إضافة وإدارة الوظائف</span>
+                <span>💼 إدارة الوظائف</span>
                 <span class="badge" id="jobsCount">0 وظيفة</span>
             </h2>
             <input type="hidden" id="editJobId">
@@ -55,7 +56,7 @@
             <input type="text" id="jobTitle" placeholder="مثال: مطلوب محاسب خبرة">
             
             <label>اسم الجهة / الشركة</label>
-            <input type="text" id="jobCompany" placeholder="مثال: شركة صدارة">
+            <input type="text" id="jobCompany" placeholder="شركة صدارة">
             
             <label>رقم التواصل (واتساب)</label>
             <input type="text" id="jobPhone" value="967780568507">
@@ -72,21 +73,21 @@
                 <option value="true">تفعيل الشارة الزرقاء ☑️</option>
             </select>
 
-            <label>صورة الوظيفة (اختياري)</label>
+            <label>صورة الوظيفة</label>
             <input type="file" id="jobImgFile" accept="image/*">
 
             <button id="btnSaveJob" onclick="saveJob()">نشر الوظيفة الآن 🚀</button>
             <button id="btnCancelJob" onclick="resetJobForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
             <div id="jobMsg" class="status-msg"></div>
 
-            <h3 style="font-size:13px; margin-top:15px; color:var(--primary);">قائمة الوظائف والتحكم بها:</h3>
+            <h3 style="font-size:13px; margin-top:15px; color:var(--primary);">قائمة الوظائف:</h3>
             <div class="list-box" id="jobsList">جاري التحميل...</div>
         </div>
 
         <!-- 2. إدارة الكفاءات / السير الذاتية -->
         <div class="card">
             <h2>
-                <span>📄 إضافة وإدارة الكفاءات</span>
+                <span>📄 إدارة الكفاءات</span>
                 <span class="badge" id="resCount">0 كفاءة</span>
             </h2>
             <input type="hidden" id="editResId">
@@ -108,14 +109,14 @@
                 <option value="true">تفعيل الشارة الزرقاء ☑️</option>
             </select>
 
-            <label>صورة شخصية (اختياري)</label>
+            <label>صورة شخصية</label>
             <input type="file" id="resImgFile" accept="image/*">
 
             <button id="btnSaveRes" onclick="saveResume()" style="background: var(--gold); color: #0a1324;">حفظ الكفاءة 📄</button>
             <button id="btnCancelRes" onclick="resetResForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
             <div id="resMsg" class="status-msg"></div>
 
-            <h3 style="font-size:13px; margin-top:15px; color:var(--primary);">قائمة الكفاءات والتحكم بها:</h3>
+            <h3 style="font-size:13px; margin-top:15px; color:var(--primary);">قائمة الكفاءات:</h3>
             <div class="list-box" id="resumesList">جاري التحميل...</div>
         </div>
 
@@ -145,19 +146,24 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // رفع ملفات سريع وآمن لا يتسبب بتعليق النظام
-        async function uploadFileFast(file, bucket) {
+        // دالة رفع الصور مع التأكد من نجاح الرابط الحقيقي
+        async function uploadFileStrict(file, bucket) {
             if (!file) return '';
             try {
                 const fileExt = file.name.split('.').pop();
                 const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-                const { data, error } = await db.storage.from(bucket).upload(fileName, file, { timeout: 10000 });
-                if (error) { console.warn("Storage Error:", error.message); return ''; }
+                
+                const { error: uploadError } = await db.storage.from(bucket).upload(fileName, file);
+                if (uploadError) {
+                    alert('خطأ في رفع الصورة للسحابة: ' + uploadError.message);
+                    return null;
+                }
+
                 const { data: publicUrlData } = db.storage.from(bucket).getPublicUrl(fileName);
                 return publicUrlData.publicUrl || '';
             } catch(e) {
-                console.warn("Upload timeout or error", e);
-                return '';
+                alert('حدث استثناء أثناء رفع الصورة.');
+                return null;
             }
         }
 
@@ -175,27 +181,25 @@
             const msg = document.getElementById('jobMsg');
 
             if (!title || !company) { alert('أدخل العنوان واسم الشركة'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ الفوري... ⚡';
+            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الصورة والحفظ... ⏳';
 
-            let imgUrl = await uploadFileFast(imgFile, 'platform-files');
+            let imgUrl = '';
+            if (imgFile) {
+                imgUrl = await uploadFileStrict(imgFile, 'platform-files');
+                if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة، لم يتم الحفظ.'; return; }
+            }
+
             let payload = { title, company, phone, status, approved: true, is_verified: isVerified };
             if (imgUrl) payload.image = imgUrl;
 
-            let res;
-            if (editId) {
-                res = await db.from('jobs').update(payload).eq('id', editId);
-            } else {
-                res = await db.from('jobs').insert([payload]);
-            }
-
+            let res = editId ? await db.from('jobs').update(payload).eq('id', editId) : await db.from('jobs').insert([payload]);
             if (res.error) {
-                // محاولة بدون حقل الشارة إذا لم يكن موجوداً في جدول قاعدة البيانات
                 delete payload.is_verified;
                 res = editId ? await db.from('jobs').update(payload).eq('id', editId) : await db.from('jobs').insert([payload]);
             }
 
             msg.style.color = 'green'; 
-            msg.textContent = 'تم الحفظ بنجاح تام! ✅';
+            msg.textContent = 'تم الحفظ والرفع بنجاح حقيقي! ✅';
             resetJobForm();
             loadJobs();
         }
@@ -221,10 +225,14 @@
             cachedJobs.forEach(j => {
                 let isAvail = j.status === 'متاحة';
                 let verifiedBadge = j.is_verified ? ' 🔵' : '';
+                let imgTag = j.image ? `<img src="${j.image}" class="preview-img">` : '';
                 box.innerHTML += `
                     <div class="item-row">
-                        <div class="row-header">
-                            <strong>${j.title}${verifiedBadge}</strong>
+                        <div class="row-header" style="align-items:center;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                ${imgTag}
+                                <strong>${j.title}${verifiedBadge}</strong>
+                            </div>
                             <span class="badge-status ${isAvail ? 'badge-active' : 'badge-closed'}">${j.status || 'متاحة'}</span>
                         </div>
                         <div style="color:#64748b; font-size:11px;">الجهة: ${j.company || '-'}</div>
@@ -273,9 +281,13 @@
             const msg = document.getElementById('resMsg');
 
             if (!name || !title) { alert('أدخل الاسم والمسمى الوظيفي'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ السريع... ⚡';
+            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الصورة والحفظ الفعلي... ⏳';
 
-            let imgUrl = await uploadFileFast(imgFile, 'platform-files');
+            let imgUrl = '';
+            if (imgFile) {
+                imgUrl = await uploadFileStrict(imgFile, 'platform-files');
+                if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة، لم يتم الحفظ.'; return; }
+            }
 
             let payload = {
                 name: name,
@@ -288,22 +300,16 @@
             };
             if (imgUrl) payload.image = imgUrl;
 
-            let res;
-            if (editId) {
-                res = await db.from('resumes').update(payload).eq('id', editId);
-            } else {
-                res = await db.from('resumes').insert([payload]);
-            }
+            let res = editId ? await db.from('resumes').update(payload).eq('id', editId) : await db.from('resumes').insert([payload]);
 
             if (res.error) {
-                // محاولة مبسطة إذا لم يقبل الجدول بعض الحقول
                 let simplePayload = { title: name, experience: title + " - " + exp, phone: phone };
                 if (imgUrl) simplePayload.image = imgUrl;
                 res = editId ? await db.from('resumes').update(simplePayload).eq('id', editId) : await db.from('resumes').insert([simplePayload]);
             }
 
             msg.style.color = 'green'; 
-            msg.textContent = 'تم حفظ الكفاءة بنجاح تام! ✅';
+            msg.textContent = 'تم حفظ الكفاءة وصورتها بنجاح حقيقي! ✅';
             resetResForm();
             loadResumes();
         }
@@ -331,10 +337,14 @@
                 let displayName = r.name || r.title || 'بدون اسم';
                 let displayJob = r.job_title || r.specialty || '-';
                 let verifiedBadge = r.is_verified ? ' 🔵' : '';
+                let imgTag = r.image ? `<img src="${r.image}" class="preview-img">` : '';
                 box.innerHTML += `
                     <div class="item-row">
-                        <div class="row-header">
-                            <strong>${displayName}${verifiedBadge}</strong>
+                        <div class="row-header" style="align-items:center;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                ${imgTag}
+                                <strong>${displayName}${verifiedBadge}</strong>
+                            </div>
                             <span class="badge-status badge-active">معروض 🟢</span>
                         </div>
                         <div style="color:#64748b; font-size:11px;">التخصص: ${displayJob}</div>
@@ -365,15 +375,13 @@
             const file = document.getElementById('bannerFile').files[0];
             const msg = document.getElementById('bannerMsg');
             if (!file) { alert('اختر صورة البنر'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الرفع الفوري...';
-            let url = await uploadFileFast(file, 'platform-files');
+            msg.style.color = 'blue'; msg.textContent = 'جاري الرفع الفعلي...';
+            let url = await uploadFileStrict(file, 'platform-files');
             if (url) {
                 await db.from('banners').insert([{ url: url }]);
                 msg.style.color = 'green'; msg.textContent = 'تم رفع البنر بنجاح! ✅';
                 document.getElementById('bannerFile').value = '';
                 loadBanners();
-            } else {
-                alert('تأكد من اختيار الصورة أو الاتصال.');
             }
         }
 
@@ -381,15 +389,13 @@
             const file = document.getElementById('partnerFile').files[0];
             const msg = document.getElementById('partnerMsg');
             if (!file) { alert('اختر صورة الشعار'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري الرفع الفوري...';
-            let url = await uploadFileFast(file, 'platform-files');
+            msg.style.color = 'blue'; msg.textContent = 'جاري الرفع الفعلي...';
+            let url = await uploadFileStrict(file, 'platform-files');
             if (url) {
                 await db.from('partners').insert([{ logo: url }]);
                 msg.style.color = 'green'; msg.textContent = 'تم إضافة الشريك بنجاح! ✅';
                 document.getElementById('partnerFile').value = '';
                 loadPartners();
-            } else {
-                alert('تأكد من اختيار الشعار أو الاتصال.');
             }
         }
 
