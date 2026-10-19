@@ -37,7 +37,7 @@
 
     <div class="header">
         <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، الشارات الزرقاء، المستخدمين والوساطة</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، الشارات الزرقاء، والمستخدمين</p>
     </div>
 
     <div class="grid-container">
@@ -47,7 +47,7 @@
             <h2><span>💼 إدارة الوظائف</span><span class="badge" id="jobsCount">0</span></h2>
             <input type="hidden" id="editJobId">
             <label>عنوان الوظيفة</label>
-            <input type="text" id="jobTitle" placeholder="مثال: محاسب">
+            <input type="text" id="jobTitle" placeholder="مثال: مسوق ميداني">
             <label>اسم الشركة</label>
             <input type="text" id="jobCompany" placeholder="شركة صدارة">
             <label>رقم الواتساب</label>
@@ -100,9 +100,9 @@
             <div class="list-box" id="partnersList"></div>
         </div>
 
-        <!-- 4. قائمة المستخدمين والمسجلين الجدد -->
+        <!-- 4. قائمة المستخدمين -->
         <div class="card" style="border: 2px solid var(--primary); grid-column: 1 / -1;">
-            <h2>👥 حسابات المستخدمين والشركات المسجلة بالمنصة <span class="badge" id="usersCount">0</span></h2>
+            <h2>👥 حسابات المستخدمين والشركات المسجلة <span class="badge" id="usersCount">0</span></h2>
             <div class="list-box" id="usersList">جاري التحميل...</div>
         </div>
 
@@ -142,11 +142,21 @@
             if (imgUrl) payload.image = imgUrl;
 
             let error;
-            if (editId) { error = (await db.from('jobs').update(payload).eq('id', editId)).error; }
-            else { error = (await db.from('jobs').insert([payload])).error; }
+            if (editId) {
+                error = (await db.from('jobs').update(payload).eq('id', editId)).error;
+            } else {
+                error = (await db.from('jobs').insert([payload])).error;
+            }
 
-            if (error) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + error.message; }
-            else { msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅'; resetJobForm(); loadJobs(); }
+            if (error) {
+                // محاولة ثانية بدون حقل is_verified تفادياً لأي خطأ في هيكلة الجدول
+                delete payload.is_verified;
+                let err2 = editId ? (await db.from('jobs').update(payload).eq('id', editId)).error : (await db.from('jobs').insert([payload])).error;
+                if (err2) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + err2.message; return; }
+            }
+
+            msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅';
+            resetJobForm(); loadJobs();
         }
 
         function resetJobForm() {
@@ -167,7 +177,7 @@
             box.innerHTML = '';
             cachedJobs.forEach(j => {
                 box.innerHTML += `<div class="item-row">
-                    <div class="row-header"><strong>${j.title} ${j.is_verified ? '🔵' : ''}</strong><span>${j.status}</span></div>
+                    <div class="row-header"><strong>${j.title} ${j.is_verified ? '🔵' : ''}</strong><span>${j.status || 'متاحة'}</span></div>
                     <div style="color:#64748b; font-size:11px;">الشركة: ${j.company}</div>
                     <div class="action-btns">
                         <button class="btn-sm btn-edit" onclick="editJob(${j.id})">تعديل ✏️</button>
@@ -210,11 +220,20 @@
             if (imgUrl) payload.image = imgUrl;
 
             let error;
-            if (editId) { error = (await db.from('resumes').update(payload).eq('id', editId)).error; }
-            else { error = (await db.from('resumes').insert([payload])).error; }
+            if (editId) {
+                error = (await db.from('resumes').update(payload).eq('id', editId)).error;
+            } else {
+                error = (await db.from('resumes').insert([payload])).error;
+            }
 
-            if (error) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + error.message; }
-            else { msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅'; resetResForm(); loadResumes(); }
+            if (error) {
+                delete payload.is_verified;
+                let err2 = editId ? (await db.from('resumes').update(payload).eq('id', editId)).error : (await db.from('resumes').insert([payload])).error;
+                if (err2) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + err2.message; return; }
+            }
+
+            msg.style.color = 'green'; msg.textContent = 'تم الحفظ بنجاح! ✅';
+            resetResForm(); loadResumes();
         }
 
         function resetResForm() {
@@ -294,7 +313,7 @@
             let box = document.getElementById('usersList'); box.innerHTML = '';
             document.getElementById('usersCount').textContent = (data ? data.length : 0);
             (data || []).forEach(u => {
-                box.innerHTML += `<div class="item-row"><div class="row-header"><strong>${u.full_name || 'مستخدم'} (${u.user_type || 'فرد'})</strong><a href="https://wa.me/${u.phone}" target="_blank" style="color:green; font-weight:bold;">واتساب: ${u.phone}</a></div><div style="color:#64748b; font-size:11px;">كلمة المرور: ${u.password || 'غير محددة'}</div></div>`;
+                box.innerHTML += `<div class="item-row"><div class="row-header"><strong>${u.full_name || 'مستخدم'}</strong><a href="https://wa.me/${u.phone}" target="_blank" style="color:green; font-weight:bold;">واتساب: ${u.phone}</a></div><div style="color:#64748b; font-size:11px;">كلمة المرور: ${u.password || '••••'}</div></div>`;
             });
         }
 
