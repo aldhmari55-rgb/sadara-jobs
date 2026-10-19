@@ -3,69 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الشاملة والسيطرة الكاملة | صدارة</title>
+    <title>لوحة السيطرة الشاملة 100% | صدارة للوظائف</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --admin-dark: #0f172a; --admin-blue: #2563eb; --bg: #f8fafc; --card: #ffffff; --green: #16a34a; --red: #dc2626; --gold: #ca8a04; }
+        :root { --dark: #0f172a; --blue: #2563eb; --bg: #f8fafc; --card: #ffffff; --green: #16a34a; --red: #dc2626; --gold: #ca8a04; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); padding: 15px; color: #1e293b; }
-        .box { max-width: 750px; margin: 0 auto; background: var(--card); border: 2px solid var(--admin-dark); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h1 { font-size: 20px; text-align: center; margin-bottom: 20px; color: var(--admin-dark); }
+        body { background: var(--bg); padding: 12px; color: #1e293b; padding-bottom: 60px; }
+        .box { max-width: 800px; margin: 0 auto; background: var(--card); border: 2px solid var(--dark); border-radius: 12px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { font-size: 18px; text-align: center; margin-bottom: 16px; color: var(--dark); font-weight: 900; }
         .sec { background: #f1f5f9; padding: 14px; border-radius: 10px; margin-bottom: 16px; border: 1px solid #cbd5e1; }
-        .sec h3 { font-size: 15px; margin-bottom: 10px; color: var(--admin-dark); font-weight: 900; }
-        input, select { width: 100%; padding: 8px; margin: 6px 0; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; background: #fff; }
-        .btn { border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; color: white; display: inline-flex; align-items: center; gap: 4px; }
-        .btn-add { background: var(--green); width: 100%; justify-content: center; padding: 10px; margin-top: 6px; font-size: 14px; }
-        .btn-edit { background: var(--admin-blue); }
+        .sec h3 { font-size: 14px; margin-bottom: 8px; color: var(--dark); font-weight: 900; }
+        input, select, textarea { width: 100%; padding: 8px; margin: 4px 0; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; background: #fff; }
+        .btn { border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; color: white; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-add { background: var(--green); width: 100%; justify-content: center; padding: 8px; margin-top: 6px; font-size: 12px; }
+        .btn-edit { background: var(--blue); }
         .btn-del { background: var(--red); }
         .btn-toggle { background: var(--gold); }
-        .item { background: white; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 10px; }
-        .flex-btns { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-        .partner-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
-        .partner-card { background: white; padding: 8px; border-radius: 8px; border: 1px solid #cbd5e1; width: 110px; text-align: center; }
-        .partner-card img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; margin-bottom: 4px; }
+        .item { background: white; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 8px; }
+        .flex-btns { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+        .partner-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .partner-card { background: white; padding: 6px; border-radius: 8px; border: 1px solid #cbd5e1; width: 100px; text-align: center; }
+        .partner-card img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .upload-label { background: #e2e8f0; border: 1px dashed #94a3b8; border-radius: 6px; padding: 6px; text-align: center; font-size: 11px; cursor: pointer; display: block; margin: 4px 0; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="box">
-        <h1>⚡ لوحة التحكم الشاملة والمباشرة (صدارة)</h1>
+        <h1>⚡ لوحة السيطرة والتحكم السحابية الكاملة (صدارة)</h1>
 
-        <!-- قسم إضافة وظيفة أو خدمة مباشرة من الأدمن -->
+        <!-- 1. إدارة البنرات -->
+        <div class="sec">
+            <h3>🖼️ إدارة البنرات الإعلانية (السلايدر العلوي)</h3>
+            <label class="upload-label" onclick="document.getElementById('bFile').click()">📤 رفع صورة البنر من الجوال</label>
+            <input type="file" id="bFile" accept="image/*" style="display:none;" onchange="uploadFile('bFile', 'bUrl')">
+            <input type="text" id="bUrl" placeholder="أو مسار/رابط الصورة">
+            <button class="btn btn-add" onclick="addBanner()">نشر البنر بالسحابة 🟢</button>
+            <div id="bList" style="margin-top:10px;"></div>
+        </div>
+
+        <!-- 2. إدارة الشركاء -->
+        <div class="sec">
+            <h3>🤝 إدارة شركاء النجاح (الشريط المتحرك)</h3>
+            <input type="text" id="pName" placeholder="اسم الشريك / الشركة">
+            <label class="upload-label" onclick="document.getElementById('pFile').click()">📤 رفع الشعار من الجوال</label>
+            <input type="file" id="pFile" accept="image/*" style="display:none;" onchange="uploadFile('pFile', 'pLogo')">
+            <input type="text" id="pLogo" placeholder="أو مسار الشعار">
+            <button class="btn btn-add" onclick="addPartner()">إضافة الشريك للسحابة 🟢</button>
+            <div class="partner-grid" id="pList"></div>
+        </div>
+
+        <!-- 3. إضافة وظيفة جديدة -->
         <div class="sec" style="background:#e0f2fe; border-color:#7dd3fc;">
-            <h3 style="color:#0369a1;">➕ إضافة شاغر أو خدمة جديدة مباشرة</h3>
-            <input type="text" id="jTitle" placeholder="عنوان الوظيفة أو الخدمة (مثال: محاسب عام)">
+            <h3 style="color:#0369a1;">➕ إضافة شاغر وظيفي جديد</h3>
+            <input type="text" id="jTitle" placeholder="عنوان الوظيفة (مثال: محاسب عام، مسوق)">
             <input type="text" id="jCompany" placeholder="اسم الشركة أو الجهة">
-            <input type="text" id="jPhone" placeholder="رقم الواتساب (مثال: 967770000000)">
-            <input type="text" id="jImage" placeholder="مسار صورة الإعلان اختياري (مثال: images/banner 1 .png)">
+            <input type="text" id="jPhone" value="967780568507" placeholder="رقم الواتساب للتواصل">
+            <label class="upload-label" onclick="document.getElementById('jFile').click()">📤 رفع صورة الإعلان (اختياري)</label>
+            <input type="file" id="jFile" accept="image/*" style="display:none;" onchange="uploadFile('jFile', 'jImage')">
+            <input type="text" id="jImage" placeholder="مسار الصورة اختياري">
             <select id="jStatus">
                 <option value="متوفر">الحالة: متوفر</option>
                 <option value="غير متوفر">الحالة: غير متوفر</option>
             </select>
-            <button class="btn btn-add" onclick="addNewJobDirect()">نشر الوظيفة في المنصة فوراً 🟢</button>
+            <button class="btn btn-add" onclick="addJob()">نشر الوظيفة بالمنصة فوراً 🟢</button>
         </div>
 
-        <!-- البنرات -->
+        <!-- 4. إدارة الوظائف المعروضة -->
         <div class="sec">
-            <h3>🖼️ إدارة البنرات الإعلانية المتحركة (سلايدر)</h3>
-            <input type="text" id="bUrl" placeholder="مسار البنر (مثال: images/banner 1 .png)">
-            <button class="btn btn-add" onclick="addBanner()" style="padding:8px; font-size:12px;">إضافة البنر للسحابة</button>
-            <div id="bList" style="margin-top:10px;"></div>
-        </div>
-
-        <!-- الشركاء -->
-        <div class="sec">
-            <h3>🤝 إدارة شعارات شركاء النجاح (الشريط المتحرك)</h3>
-            <input type="text" id="pName" placeholder="اسم الشريك أو المتجر">
-            <input type="text" id="pLogo" placeholder="مسار الشعار (مثال: images/logo 1 .jpg)">
-            <button class="btn btn-add" onclick="addPartner()" style="padding:8px; font-size:12px;">إضافة الشريك للسحابة</button>
-            <div class="partner-grid" id="pList"></div>
-        </div>
-
-        <!-- الوظائف -->
-        <div class="sec">
-            <h3>📋 إدارة ومراجعة كافة الوظائف والخدمات المعروضة</h3>
+            <h3>📋 إدارة وتعديل الوظائف المعلنة</h3>
             <div id="jList"></div>
+        </div>
+
+        <!-- 5. إضافة وإدارة دليل الكفاءات والسي في -->
+        <div class="sec" style="background:#ecfdf5; border-color:#a7f3d0;">
+            <h3 style="color:#047857;">📄 إضافة وإدارة السير الذاتية والكفاءات</h3>
+            <input type="text" id="rName" placeholder="الاسم الكامل">
+            <input type="text" id="rTitle" placeholder="المسمى الوظيفي / الخدمة">
+            <select id="rCat">
+                <option value="التسويق والترويج">📢 التسويق والترويج</option>
+                <option value="المحاسبة والمالية">📊 المحاسبة والمالية</option>
+                <option value="الطب والصحة">🩺 الطب والصحة</option>
+                <option value="التقنية وبرمجة">💻 التقنية والبرمجة</option>
+                <option value="الخدمات والنظافه">🧹 الخدمات العامة والنظافة</option>
+                <option value="أخرى">📁 تخصصات أخرى</option>
+            </select>
+            <input type="text" id="rPhone" value="967780568507" placeholder="رقم الواتساب">
+            <input type="text" id="rSkills" placeholder="المهارات (مفصولة بفواصل)">
+            <textarea id="rExp" placeholder="نبذة عن الخبرة والخدمة"></textarea>
+            <label class="upload-label" onclick="document.getElementById('rCvFile').click()">📤 رفع ملف السي في CV (PDF/صورة)</label>
+            <input type="file" id="rCvFile" style="display:none;" onchange="uploadFile('rCvFile', 'rCvUrl')">
+            <input type="text" id="rCvUrl" placeholder="رابط السي في التلقائي">
+            <button class="btn btn-add" onclick="addResume()">نشر الكفاءة في الدليل فوراً 🟢</button>
+            
+            <hr style="margin:12px 0; border:none; border-top:1px solid #a7f3d0;">
+            <div id="rList"></div>
         </div>
     </div>
 
@@ -74,115 +106,109 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG"; 
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // رفع الملفات والصور تلقائياً للسحابة
+        async function uploadFile(inputId, targetId) {
+            let file = document.getElementById(inputId).files[0];
+            if(!file) return;
+            alert('جاري رفع الملف إلى السحابة...');
+            try {
+                let name = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                let { data, error } = await db.storage.from('cv_files').upload(name, file);
+                if (error) throw error;
+                let { data: pubData } = db.storage.from('cv_files').getPublicUrl(name);
+                document.getElementById(targetId).value = pubData.publicUrl;
+                alert('تم رفع الملف وتوليد الرابط السحابي بنجاح!');
+            } catch(e) {
+                console.error(e);
+                alert('حدث خطأ أثناء الرفع، يمكنك وضع الرابط يدويًا.');
+            }
+        }
+
         async function loadAll() {
-            // 1. البنرات
+            // البنرات
             let { data: banners } = await db.from('banners').select('*').order('id', {ascending: false});
-            let bBox = document.getElementById('bList');
-            bBox.innerHTML = '';
+            let bBox = document.getElementById('bList'); bBox.innerHTML = '';
             (banners || []).forEach(b => {
                 bBox.innerHTML += `<div class="item" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:11px; font-weight:bold; word-break:break-all;">${b.url}</span>
-                    <div class="flex-btns" style="margin:0;">
+                    <span style="font-size:10px; word-break:break-all; max-width:60%;">${b.url}</span>
+                    <div class="flex-btns">
                         <button class="btn btn-edit" onclick="editBanner(${b.id}, '${b.url}')">✏️ تعديل</button>
                         <button class="btn btn-del" onclick="delBanner(${b.id})">🗑️ حذف</button>
                     </div>
                 </div>`;
             });
 
-            // 2. الشركاء
+            // الشركاء
             let { data: partners } = await db.from('partners').select('*').order('id', {ascending: false});
-            let pBox = document.getElementById('pList');
-            pBox.innerHTML = '';
+            let pBox = document.getElementById('pList'); pBox.innerHTML = '';
             (partners || []).forEach(p => {
                 pBox.innerHTML += `<div class="partner-card">
                     <img src="${p.logo}">
-                    <div style="font-size:10px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</div>
-                    <button class="btn btn-edit" style="font-size:9px; padding:2px; width:100%; justify-content:center; margin:2px 0;" onclick="editPartner(${p.id}, '${p.name}', '${p.logo}')">✏️ تعديل</button>
-                    <button class="btn btn-del" style="font-size:9px; padding:2px; width:100%; justify-content:center;" onclick="delPartner(${p.id})">🗑️ حذف</button>
+                    <div style="font-size:10px; font-weight:bold; overflow:hidden;">${p.name}</div>
+                    <button class="btn btn-edit" style="font-size:8px; padding:2px; width:100%; justify-content:center; margin:2px 0;" onclick="editPartner(${p.id}, '${p.name}', '${p.logo}')">✏️ تعديل</button>
+                    <button class="btn btn-del" style="font-size:8px; padding:2px; width:100%; justify-content:center;" onclick="delPartner(${p.id})">🗑️ حذف</button>
                 </div>`;
             });
 
-            // 3. الوظائف
+            // الوظائف
             let { data: jobs } = await db.from('jobs').select('*').order('id', {ascending: false});
-            let jBox = document.getElementById('jList');
-            jBox.innerHTML = '';
+            let jBox = document.getElementById('jList'); jBox.innerHTML = '';
             (jobs || []).forEach(j => {
                 jBox.innerHTML += `<div class="item">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <strong>${j.title}</strong>
-                        <span style="font-size:11px; font-weight:bold; color:${j.approved?'green':'orange'}">${j.approved?'مقبول ومنشور':'قيد المراجعة'}</span>
+                        <span style="font-size:10px; color:${j.approved?'green':'orange'}">${j.approved?'منشور':'معلق'}</span>
                     </div>
-                    <div style="font-size:11px; color:#64748b; margin-top:2px;">${j.company} | هاتف: ${j.phone} | الحالة: <b>${j.status}</b></div>
+                    <div style="font-size:11px; color:#64748b;">${j.company} | ${j.phone} | الحالة: <b>${j.status}</b></div>
                     <div class="flex-btns">
-                        ${!j.approved ? `<button class="btn btn-add" style="width:auto; padding:4px 8px;" onclick="approveJob(${j.id})">🟢 قبول ونشر</button>` : `<button class="btn btn-toggle" onclick="toggleJob(${j.id}, '${j.status}')">🔄 تغيير التوفر</button>`}
-                        <button class="btn btn-edit" onclick="editJob(${j.id}, '${j.title}', '${j.company}', '${j.phone}', '${j.image||''}')">✏️ تعديل شامل</button>
+                        <button class="btn btn-toggle" onclick="toggleJob(${j.id}, '${j.status}')">🔄 تغيير التوفر</button>
+                        <button class="btn btn-edit" onclick="editJob(${j.id}, '${j.title}', '${j.company}', '${j.phone}', '${j.image||''}')">✏️ تعديل</button>
                         <button class="btn btn-del" onclick="delJob(${j.id})">🗑️ حذف</button>
+                    </div>
+                </div>`;
+            });
+
+            // الكفاءات
+            let { data: resumes } = await db.from('resumes').select('*').order('id', {ascending: false});
+            let rBox = document.getElementById('rList'); rBox.innerHTML = '';
+            (resumes || []).forEach(r => {
+                rBox.innerHTML += `<div class="item">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>${r.full_name} (${r.job_title})</strong>
+                        <span style="font-size:10px; background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:8px;">${r.category||'عام'}</span>
+                    </div>
+                    <div style="font-size:11px; color:#64748b;">واتساب: ${r.phone}</div>
+                    <div class="flex-btns">
+                        <button class="btn btn-edit" onclick="editResume(${r.id}, '${r.full_name}', '${r.job_title}', '${r.category||'التسويق والترويج'}', '${r.phone}')">✏️ تعديل</button>
+                        <button class="btn btn-del" onclick="delResume(${r.id})">🗑️ حذف</button>
                     </div>
                 </div>`;
             });
         }
 
-        async function addBanner() {
-            let url = document.getElementById('bUrl').value.trim();
-            if(url) { await db.from('banners').insert([{ url }]); document.getElementById('bUrl').value=''; loadAll(); alert('تمت الإضافة بنجاح!'); }
-        }
-        async function editBanner(id, oldUrl) {
-            let url = prompt('تعديل مسار/رابط البنر:', oldUrl);
-            if(url) { await db.from('banners').update({ url }).eq('id', id); loadAll(); }
-        }
-        async function delBanner(id) {
-            if(confirm('هل تريد حذف هذا البنر؟')) { await db.from('banners').delete().eq('id', id); loadAll(); }
-        }
+        // الأوامر التنفيذية
+        async function addBanner() { let url = document.getElementById('bUrl').value.trim(); if(url){ await db.from('banners').insert([{url}]); document.getElementById('bUrl').value=''; loadAll(); alert('تم الحفظ!'); } }
+        async function editBanner(id, old) { let url = prompt('رابط البنر:', old); if(url){ await db.from('banners').update({url}).eq('id', id); loadAll(); } }
+        async function delBanner(id) { if(confirm('حذف؟')){ await db.from('banners').delete().eq('id', id); loadAll(); } }
 
-        async function addPartner() {
-            let name = document.getElementById('pName').value.trim();
-            let logo = document.getElementById('pLogo').value.trim();
-            if(name && logo) { await db.from('partners').insert([{ name, logo }]); document.getElementById('pName').value=''; document.getElementById('pLogo').value=''; loadAll(); alert('تمت إضافة الشريك بنجاح!'); }
-        }
-        async function editPartner(id, oldName, oldLogo) {
-            let name = prompt('تعديل اسم الشريك:', oldName);
-            let logo = prompt('تعديل مسار الشعار:', oldLogo);
-            if(name && logo) { await db.from('partners').update({ name, logo }).eq('id', id); loadAll(); }
-        }
-        async function delPartner(id) {
-            if(confirm('هل تريد حذف هذا الشريك؟')) { await db.from('partners').delete().eq('id', id); loadAll(); }
-        }
+        async function addPartner() { let name=document.getElementById('pName').value.trim(), logo=document.getElementById('pLogo').value.trim(); if(name&&logo){ await db.from('partners').insert([{name,logo}]); loadAll(); alert('تم الحفظ!'); } }
+        async function editPartner(id, n, l) { let name=prompt('الاسم:', n), logo=prompt('الشعار:', l); if(name&&logo){ await db.from('partners').update({name,logo}).eq('id', id); loadAll(); } }
+        async function delPartner(id) { if(confirm('حذف؟')){ await db.from('partners').delete().eq('id', id); loadAll(); } }
 
-        async function addNewJobDirect() {
-            let title = document.getElementById('jTitle').value.trim();
-            let company = document.getElementById('jCompany').value.trim();
-            let phone = document.getElementById('jPhone').value.trim();
-            let image = document.getElementById('jImage').value.trim();
-            let status = document.getElementById('jStatus').value;
-
-            if(!title || !company || !phone) { alert('يرجى ملء الحقول الأساسية (العنوان، الجهة، الهاتف)'); return; }
-
-            await db.from('jobs').insert([{ title, company, phone, image, status, approved: true }]);
-            document.getElementById('jTitle').value = '';
-            document.getElementById('jCompany').value = '';
-            document.getElementById('jPhone').value = '';
-            document.getElementById('jImage').value = '';
-            loadAll();
-            alert('تم نشر الوظيفة في المنصة فوراً للجميع!');
+        async function addJob() {
+            let title=document.getElementById('jTitle').value.trim(), company=document.getElementById('jCompany').value.trim(), phone=document.getElementById('jPhone').value.trim(), image=document.getElementById('jImage').value.trim(), status=document.getElementById('jStatus').value;
+            if(title&&company&&phone){ await db.from('jobs').insert([{title,company,phone,image,status,approved:true}]); loadAll(); alert('تم نشر الوظيفة!'); }
         }
+        async function toggleJob(id, cur) { await db.from('jobs').update({status: cur==='متوفر'?'غير متوفر':'متوفر'}).eq('id', id); loadAll(); }
+        async function editJob(id, t, c, p, img) { let title=prompt('العنوان:',t), company=prompt('الجهة:',c), phone=prompt('الهاتف:',p), image=prompt('الصورة:',img); if(title&&company&&phone){ await db.from('jobs').update({title,company,phone,image}).eq('id',id); loadAll(); } }
+        async function delJob(id) { if(confirm('حذف الوظيفة؟')){ await db.from('jobs').delete().eq('id', id); loadAll(); } }
 
-        async function approveJob(id) { await db.from('jobs').update({ approved: true }).eq('id', id); loadAll(); }
-        async function toggleJob(id, cur) { await db.from('jobs').update({ status: cur === 'متوفر' ? 'غير متوفر' : 'متوفر' }).eq('id', id); loadAll(); }
-        
-        async function editJob(id, t, c, p, img) {
-            let title = prompt('تعديل العنوان:', t);
-            let company = prompt('تعديل الجهة:', c);
-            let phone = prompt('تعديل الهاتف:', p);
-            let image = prompt('تعديل مسار الصورة:', img);
-            if(title && company && phone) { 
-                await db.from('jobs').update({ title, company, phone, image }).eq('id', id); 
-                loadAll(); 
-            }
+        async function addResume() {
+            let full_name=document.getElementById('rName').value.trim(), job_title=document.getElementById('rTitle').value.trim(), category=document.getElementById('rCat').value, phone=document.getElementById('rPhone').value.trim(), skills=document.getElementById('rSkills').value.trim(), experience=document.getElementById('rExp').value.trim(), cv_url=document.getElementById('rCvUrl').value.trim();
+            if(full_name&&job_title&&phone){ await db.from('resumes').insert([{full_name,job_title,category,phone,skills,experience,cv_url}]); loadAll(); alert('تم نشر الكفاءة!'); }
         }
-        
-        async function delJob(id) {
-            if(confirm('هل تريد حذف هذه الوظيفة نهائياً؟')) { await db.from('jobs').delete().eq('id', id); loadAll(); }
-        }
+        async function editResume(id, n, t, c, p) { let full_name=prompt('الاسم:',n), job_title=prompt('المسمى:',t), category=prompt('القسم:',c), phone=prompt('الهاتف:',p); if(full_name&&job_title&&phone){ await db.from('resumes').update({full_name,job_title,category,phone}).eq('id',id); loadAll(); } }
+        async function delResume(id) { if(confirm('حذف الكفاءة؟')){ await db.from('resumes').delete().eq('id', id); loadAll(); } }
 
         document.addEventListener('DOMContentLoaded', loadAll);
     </script>
