@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة إدارة منصة صدارة</title>
+    <title>لوحة إدارة منصة صدارة السحابية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -21,7 +21,7 @@
         button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
         button:hover { background: #1e3a8a; }
         .status-msg { margin-top: 8px; font-size: 11px; font-weight: bold; text-align: center; }
-        .list-box { margin-top: 15px; max-height: 250px; overflow-y: auto; }
+        .list-box { margin-top: 15px; max-height: 220px; overflow-y: auto; }
         .item-row { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #f1f5f9; font-size: 12px; }
         .btn-del { background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; width: auto; margin-top: 0; }
     </style>
@@ -29,8 +29,8 @@
 <body>
 
     <div class="header">
-        <h1>لوحة تحكم منصة صدارة للوظائف 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، السير الذاتية، البنرات والشركاء</p>
+        <h1>لوحة تحكم صدارة السحابية ⚡</h1>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، والبنرات بالصور فقط</p>
     </div>
 
     <div class="grid-container">
@@ -38,13 +38,13 @@
         <!-- 1. إضافة وظيفة جديدة -->
         <div class="card">
             <h2>💼 إضافة وظيفة جديدة</h2>
-            <label>عنوان الوظيفة / الخدمة</label>
-            <input type="text" id="jobTitle" placeholder="مثال: مطلوب محاسب خبرة">
+            <label>عنوان الوظيفة</label>
+            <input type="text" id="jobTitle" placeholder="مثال: مطلوب محاسب">
             
-            <label>اسم الشركة / الجهة</label>
+            <label>اسم الجهة / الشركة</label>
             <input type="text" id="jobCompany" placeholder="مثال: شركة صدارة">
             
-            <label>رقم التواصل (واتساب)</label>
+            <label>رقم الواتساب</label>
             <input type="text" id="jobPhone" value="967780568507">
             
             <label>حالة الوظيفة</label>
@@ -53,82 +53,72 @@
                 <option value="مغلقة">مغلقة 🔴</option>
             </select>
 
-            <label>صورة الوظيفة (اختياري)</label>
+            <label>صورة الوظيفة</label>
             <input type="file" id="jobImgFile" accept="image/*">
 
-            <button onclick="addJob()">نشر الوظيفة الآن 🚀</button>
+            <button onclick="addJob()">نشر الوظيفة فوري 🚀</button>
             <div id="jobMsg" class="status-msg"></div>
         </div>
 
-        <!-- 2. إضافة سيرة ذاتية (كفاءة) -->
+        <!-- 2. إضافة سيرة ذاتية / كفاءة (بالصور فقط) -->
         <div class="card">
-            <h2>📄 إضافة سيرة ذاتية / كفاءة</h2>
+            <h2>📄 إضافة كفاءة / سيرة ذاتية (صورة فقط)</h2>
             <label>الاسم الكامل</label>
-            <input type="text" id="resName" placeholder="مثال: عبدالرحمن الذماري">
+            <input type="text" id="resName" placeholder="مثال: عبدالرحمن العلوي">
             
             <label>المسمى الوظيفي / التخصص</label>
-            <input type="text" id="resTitle" placeholder="مثال: مستشار تسويق ومدرب">
+            <input type="text" id="resTitle" placeholder="مثال: مهندس جوالات">
             
             <label>الخبرات / نبذة مختصرة</label>
-            <textarea id="resExp" rows="2" placeholder="خبرة سنتين في المجال..."></textarea>
+            <textarea id="resExp" rows="2" placeholder="تفاصيل الخبرات..."></textarea>
             
-            <label>رقم الواتساب للتواصل</label>
+            <label>رقم الواتساب</label>
             <input type="text" id="resPhone" value="967780568507">
 
-            <label>صورة الشخص / الشعار (اختياري)</label>
+            <label>صورة السيرة الذاتية / الشخصية (صورة فقط)</label>
             <input type="file" id="resImgFile" accept="image/*">
 
-            <label>ملف الـ CV بصيغة PDF (اختياري)</label>
-            <input type="file" id="resPdfFile" accept=".pdf">
-
-            <button onclick="addResume()" style="background: var(--gold); color: #0a1324;">إضافة السيرة الذاتية 📄</button>
+            <button onclick="addResume()" style="background: var(--gold); color: #0a1324;">إضافة الكفاءة بالصورة فوري 📄</button>
             <div id="resMsg" class="status-msg"></div>
         </div>
 
-        <!-- 3. رفع بنر للسلايدر المتحرك -->
+        <!-- 3. البنرات السحابية -->
         <div class="card">
-            <h2>🖼️ إضافة بنر للسلايدر العلوي</h2>
+            <h2>🖼️ إدارة بنرات السلايدر</h2>
             <label>اختر صورة البنر</label>
             <input type="file" id="bannerFile" accept="image/*">
-            <button onclick="addBanner()">رفع البنر للسلايدر 📤</button>
+            <button onclick="addBanner()">رفع البنر فوري 📤</button>
             <div id="bannerMsg" class="status-msg"></div>
-            
             <div class="list-box" id="bannersList"></div>
         </div>
 
-        <!-- 4. إضافة شعار شركاء النجاح -->
+        <!-- 4. الشركاء السحابيين -->
         <div class="card">
-            <h2>🤝 إضافة شعار شريك نجاح</h2>
-            <label>اختر صورة الشعار</label>
+            <h2>🤝 إدارة شركاء النجاح</h2>
+            <label>اختر شعار الشريك</label>
             <input type="file" id="partnerFile" accept="image/*">
-            <button onclick="addPartner()">إضافة للشريط المتحرك 🔄</button>
+            <button onclick="addPartner()">إضافة الشعار فوري 🔄</button>
             <div id="partnerMsg" class="status-msg"></div>
-
             <div class="list-box" id="partnersList"></div>
         </div>
 
     </div>
+
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // دالة رفع الملفات إلى Supabase Storage
         async function uploadFile(file, bucket) {
             if (!file) return '';
             const fileExt = file.name.split('.').pop();
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
             const { data, error } = await db.storage.from(bucket).upload(fileName, file);
-            
-            if (error) {
-                console.error("Upload Error:", error);
-                return '';
-            }
+            if (error) { console.error("Upload Error:", error); return ''; }
             const { data: publicUrlData } = db.storage.from(bucket).getPublicUrl(fileName);
             return publicUrlData.publicUrl;
         }
 
-        // 1. نشر وظيفة
         async function addJob() {
             const title = document.getElementById('jobTitle').value.trim();
             const company = document.getElementById('jobCompany').value.trim();
@@ -137,115 +127,88 @@
             const imgFile = document.getElementById('jobImgFile').files[0];
             const msg = document.getElementById('jobMsg');
 
-            if (!title || !company) { alert('الرجاء كتابة العنوان واسم الشركة'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري النشر والرفع...';
+            if (!title || !company) { alert('أدخل العنوان واسم الشركة'); return; }
+            msg.style.color = 'blue'; msg.textContent = 'جاري الرفع السحابي اللحظي...';
 
             let imgUrl = await uploadFile(imgFile, 'job-images');
-
-            const { error } = await db.from('jobs').insert([{
-                title: title,
-                company: company,
-                phone: phone,
-                status: status,
-                image: imgUrl,
-                approved: true
-            }]);
+            const { error } = await db.from('jobs').insert([{ title, company, phone, status, image: imgUrl }]);
 
             if (error) {
-                msg.style.color = 'red'; msg.textContent = 'حدث خطأ: ' + error.message;
+                msg.style.color = 'red'; msg.textContent = 'خطأ: ' + error.message;
             } else {
-                msg.style.color = 'green'; msg.textContent = 'تم نشر الوظيفة بنجاح! ✅';
+                msg.style.color = 'green'; msg.textContent = 'تم النشر بنجاح فوري! ✅';
                 document.getElementById('jobTitle').value = '';
                 document.getElementById('jobCompany').value = '';
                 document.getElementById('jobImgFile').value = '';
             }
         }
 
-        // 2. إضافة سيرة ذاتية (معدلة بدون حقل approved المتسبب في الخطأ)
         async function addResume() {
             const name = document.getElementById('resName').value.trim();
             const title = document.getElementById('resTitle').value.trim();
             const exp = document.getElementById('resExp').value.trim();
             const phone = document.getElementById('resPhone').value.trim();
             const imgFile = document.getElementById('resImgFile').files[0];
-            const pdfFile = document.getElementById('resPdfFile').files[0];
             const msg = document.getElementById('resMsg');
 
-            if (!name || !title) { alert('الرجاء كتابة الاسم والتخصص'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الملفات والسيرة الذاتية...';
+            if (!name || !title) { alert('أدخل الاسم والمسمى الوظيفي'); return; }
+            msg.style.color = 'blue'; msg.textContent = 'جاري الرفع السحابي للصورة والبيانات...';
 
             let imgUrl = await uploadFile(imgFile, 'resume-images');
-            let pdfUrl = await uploadFile(pdfFile, 'resume-pdfs');
 
             const { error } = await db.from('resumes').insert([{
                 name: name,
                 job_title: title,
                 experience: exp,
                 phone: phone,
-                image: imgUrl,
-                file_url: pdfUrl
+                image: imgUrl
             }]);
 
             if (error) {
-                msg.style.color = 'red'; msg.textContent = 'حدث خطأ: ' + error.message;
+                msg.style.color = 'red'; msg.textContent = 'خطأ سحابي: ' + error.message;
             } else {
-                msg.style.color = 'green'; msg.textContent = 'تم إضافة السيرة الذاتية بنجاح! ✅';
+                msg.style.color = 'green'; msg.textContent = 'تم إضافة الكفاءة بالصورة بنجاح فوري! ✅';
                 document.getElementById('resName').value = '';
                 document.getElementById('resTitle').value = '';
                 document.getElementById('resExp').value = '';
                 document.getElementById('resImgFile').value = '';
-                document.getElementById('resPdfFile').value = '';
             }
         }
 
-        // 3. إضافة بنر للسلايدر
         async function addBanner() {
             const file = document.getElementById('bannerFile').files[0];
             const msg = document.getElementById('bannerMsg');
-            if (!file) { alert('اختر صورة البنر أولاً'); return; }
-
-            msg.style.color = 'blue'; msg.textContent = 'جاري الرفع...';
+            if (!file) { alert('اختر صورة البنر'); return; }
+            msg.style.color = 'blue'; msg.textContent = 'جاري التحديث اللحظي...';
             let url = await uploadFile(file, 'banners');
-
             if (url) {
                 await db.from('banners').insert([{ url: url }]);
-                msg.style.color = 'green'; msg.textContent = 'تم رفع البنر بنجاح! ✅';
+                msg.style.color = 'green'; msg.textContent = 'تم تحديث السلايدر بنجاح فوري! ✅';
                 document.getElementById('bannerFile').value = '';
                 loadBanners();
-            } else {
-                msg.style.color = 'red'; msg.textContent = 'فشل رفع البنر';
             }
         }
 
-        // 4. إضافة شريك
         async function addPartner() {
             const file = document.getElementById('partnerFile').files[0];
             const msg = document.getElementById('partnerMsg');
-            if (!file) { alert('اختر صورة الشعار أولاً'); return; }
-
+            if (!file) { alert('اختر الشعار'); return; }
             msg.style.color = 'blue'; msg.textContent = 'جاري الرفع...';
             let url = await uploadFile(file, 'partners');
-
             if (url) {
                 await db.from('partners').insert([{ logo: url }]);
-                msg.style.color = 'green'; msg.textContent = 'تم إضافة الشريك بنجاح! ✅';
+                msg.style.color = 'green'; msg.textContent = 'تم التحديث فوري! ✅';
                 document.getElementById('partnerFile').value = '';
                 loadPartners();
-            } else {
-                msg.style.color = 'red'; msg.textContent = 'فشل الرفع';
             }
         }
 
-        // دوان جلب وحذف البنرات والشركاء
         async function loadBanners() {
             let { data } = await db.from('banners').select('*').order('id', {ascending: false});
             let box = document.getElementById('bannersList');
             box.innerHTML = '';
             (data || []).forEach(b => {
-                box.innerHTML += `<div class="item-row">
-                    <img src="${b.url}" style="height:30px; border-radius:4px;">
-                    <button class="btn-del" onclick="deleteItem('banners', ${b.id})">حذف</button>
-                </div>`;
+                box.innerHTML += `<div class="item-row"><img src="${b.url}" style="height:30px; border-radius:4px;"><button class="btn-del" onclick="deleteItem('banners', ${b.id})">حذف</button></div>`;
             });
         }
 
@@ -254,25 +217,19 @@
             let box = document.getElementById('partnersList');
             box.innerHTML = '';
             (data || []).forEach(p => {
-                box.innerHTML += `<div class="item-row">
-                    <img src="${p.logo}" style="height:25px; border-radius:50%;">
-                    <button class="btn-del" onclick="deleteItem('partners', ${p.id})">حذف</button>
-                </div>`;
+                box.innerHTML += `<div class="item-row"><img src="${p.logo}" style="height:25px; border-radius:50%;"><button class="btn-del" onclick="deleteItem('partners', ${p.id})">حذف</button></div>`;
             });
         }
 
         async function deleteItem(table, id) {
-            if (confirm('هل أنت تأكد من الحذف؟')) {
+            if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
                 await db.from(table).delete().eq('id', id);
                 if (table === 'banners') loadBanners();
                 if (table === 'partners') loadPartners();
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadBanners();
-            loadPartners();
-        });
+        document.addEventListener('DOMContentLoaded', () => { loadBanners(); loadPartners(); });
     </script>
 </body>
 </html>
