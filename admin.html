@@ -6,6 +6,12 @@
     <title>لوحة التحكم الشاملة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- مكتبات تصدير Excel و PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
     <style>
         :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --red: #ef4444; --bg: #f8fafc; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
@@ -44,7 +50,7 @@
 
     <div class="header">
         <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، الشارة الزرقاء، والإحصائيات الحية</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المستخدمين، والشارة الزرقاء</p>
     </div>
 
     <!-- شريط الإحصائيات الواقعية المباشرة -->
@@ -122,9 +128,16 @@
             <div class="list-box" id="resumesList">جاري التحميل...</div>
         </div>
 
-        <!-- 3. إدارة المستخدمين المسجلين (المضافة حديثاً) -->
+        <!-- 3. إدارة المستخدمين المسجلين (مع أزرار التصدير) -->
         <div class="card">
-            <h2><span>👥 المستخدمون المسجلون</span><span class="badge" id="usersCount">0</span></h2>
+            <h2>
+                <span>👥 المستخدمون المسجلون</span>
+                <div style="display:flex; gap:5px; align-items:center;">
+                    <button onclick="exportToExcel()" class="btn-sm" style="background:#10b981; padding:5px 8px; font-size:10px; margin:0;">Excel 📊</button>
+                    <button onclick="exportToPDF()" class="btn-sm" style="background:#ef4444; padding:5px 8px; font-size:10px; margin:0;">PDF 📄</button>
+                    <span class="badge" id="usersCount">0</span>
+                </div>
+            </h2>
             <div class="list-box" id="usersList">جاري التحميل...</div>
         </div>
 
@@ -153,6 +166,8 @@
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let cachedUsers = []; // تخزين بيانات المستخدمين للتصدير
 
         // دالة جلب الإحصائيات السحابية الواقعية إلى لوحة التحكم
         async function loadAdminRealStats() {
@@ -374,11 +389,12 @@
             window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
-        // ==================== المستخدمون المسجلون (المضافة حديثاً) ====================
+        // ==================== المستخدمون المسجلون + التصدير ====================
         async function loadRegisteredUsers() {
             let { data, error } = await db.from('users').select('*').order('id', {ascending: false});
+            cachedUsers = data || [];
             let box = document.getElementById('usersList');
-            document.getElementById('usersCount').textContent = data ? data.length : 0;
+            document.getElementById('usersCount').textContent = cachedUsers.length;
             box.innerHTML = '';
             
             if (!data || data.length === 0) {
@@ -400,6 +416,47 @@
                     </div>
                 </div>`;
             });
+        }
+
+        function exportToExcel() {
+            if (!cachedUsers || cachedUsers.length === 0) { alert('لا توجد بيانات مستخدمين للتصدير.'); return; }
+            let dataToExport = cachedUsers.map((u, index) => ({
+                "م": index + 1,
+                "اسم المستخدم": u.full_name || 'مستخدم',
+                "رقم الهاتف (واتساب)": u.phone || '',
+                "تاريخ التسجيل": u.created_at ? new Date(u.created_at).toLocaleDateString('ar-SA') : '-'
+            }));
+            let worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            let workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "المستخدمين");
+            XLSX.writeFile(workbook, "Sadara_Registered_Users.xlsx");
+        }
+
+        function exportToPDF() {
+            if (!cachedUsers || cachedUsers.length === 0) { alert('لا توجد بيانات مستخدمين للتصدير.'); return; }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.text("Sadara Platform - Registered Users", 105, 15, { align: "center" });
+
+            let tableData = cachedUsers.map((u, index) => [
+                index + 1,
+                u.phone || '',
+                u.full_name || 'مستخدم',
+                u.created_at ? new Date(u.created_at).toLocaleDateString('ar-SA') : '-'
+            ]);
+
+            doc.autoTable({
+                head: [['#', 'Phone', 'User Name', 'Registration Date']],
+                body: tableData,
+                startY: 25,
+                styles: { halign: 'right', font: 'helvetica', fontSize: 11 },
+                headStyles: { fillColor: [15, 35, 71] }
+            });
+
+            doc.save("Sadara_Registered_Users.pdf");
         }
 
         // ==================== البنرات ====================
