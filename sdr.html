@@ -18,6 +18,7 @@
         body { background: var(--bg); padding: 15px; color: #0f172a; padding-bottom: 50px; }
         .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 15px; border-bottom: 3px solid var(--gold); }
         
+        /* شريط الإحصائيات الواقعية المباشرة */
         .admin-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto 20px auto; }
         @media(min-width: 768px) { .admin-stats-grid { grid-template-columns: repeat(4, 1fr); } }
         .stat-card-admin { background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
@@ -43,22 +44,33 @@
         .btn-edit { background: #3b82f6; }
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         .preview-img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
-        .lesson-group { background: #f1f5f9; padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid #cbd5e1; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المستخدمين، ورفع الدورات التدريبية المترتبة</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المستخدمين، والشارة الزرقاء والأكاديمية</p>
     </div>
 
     <!-- شريط الإحصائيات الواقعية المباشرة -->
     <div class="admin-stats-grid">
-        <div class="stat-card-admin"><h3 id="adminOnline">...</h3><p>متواجد الآن 🟢</p></div>
-        <div class="stat-card-admin"><h3 id="adminTotalViews">...</h3><p>إجمالي الزيارات 👥</p></div>
-        <div class="stat-card-admin"><h3 id="adminJobs">...</h3><p>إجمالي الوظائف 💼</p></div>
-        <div class="stat-card-admin"><h3 id="adminResumes">...</h3><p>إجمالي الكفاءات 📄</p></div>
+        <div class="stat-card-admin">
+            <h3 id="adminOnline">...</h3>
+            <p>متواجد الآن 🟢</p>
+        </div>
+        <div class="stat-card-admin">
+            <h3 id="adminTotalViews">...</h3>
+            <p>إجمالي الزيارات 👥</p>
+        </div>
+        <div class="stat-card-admin">
+            <h3 id="adminJobs">...</h3>
+            <p>إجمالي الوظائف 💼</p>
+        </div>
+        <div class="stat-card-admin">
+            <h3 id="adminResumes">...</h3>
+            <p>إجمالي الكفاءات 📄</p>
+        </div>
     </div>
 
     <div class="grid-container">
@@ -116,7 +128,7 @@
             <div class="list-box" id="resumesList">جاري التحميل...</div>
         </div>
 
-        <!-- 3. إدارة المستخدمين المسجلين -->
+        <!-- 3. إدارة المستخدمين المسجلين (مع أزرار التصدير) -->
         <div class="card">
             <h2>
                 <span>👥 المستخدمون المسجلون</span>
@@ -136,7 +148,7 @@
             <input type="file" id="bannerFile" accept="image/*">
             <button onclick="addBanner()">رفع البنر للسلايدر 📤</button>
             <div id="bannerMsg" class="status-msg"></div>
-            <div class="list-box" id="bannersList">جاري التحميل...</div>
+            <div class="list-box" id="bannersList"></div>
         </div>
 
         <!-- 5. شركاء النجاح -->
@@ -146,51 +158,38 @@
             <input type="file" id="partnerFile" accept="image/*">
             <button onclick="addPartner()">إضافة الشريك للشريط 🔄</button>
             <div id="partnerMsg" class="status-msg"></div>
-            <div class="list-box" id="partnersList">جاري التحميل...</div>
+            <div class="list-box" id="partnersList"></div>
         </div>
 
-        <!-- 6. نظام رفع الدورات والدروس المرتبة -->
+        <!-- 6. إدارة الدورات التدريبية والأكاديمية -->
         <div class="card" style="grid-column: 1 / -1;">
-            <h2>🎓 رفع الدورة والدروس المرتبة <span class="badge" id="coursesCount">0</span></h2>
-            
-            <label>اسم الدورة التدريبية الرئيسية</label>
-            <input type="text" id="courseMainTitle" placeholder="مثال: دبلوم التسويق الرقمي الشامل">
+            <h2>🎓 إدارة دورات الأكاديمية ورفع المحتوى <span class="badge" id="coursesCount">0</span></h2>
+            <label>عنوان الدورة التدريبية</label>
+            <input type="text" id="adminCourseTitle" placeholder="مثال: دبلوم التسويق الرقمي وإدارة الحملات">
             
             <label>وصف الدورة</label>
-            <textarea id="courseMainDesc" rows="2" placeholder="وصف موجز لما تحتويه هذه الدورة..."></textarea>
+            <textarea id="adminCourseDesc" rows="2" placeholder="وصف موجز لما ستتعلمه في الدورة..."></textarea>
             
-            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #cbd5e1;">
+            <label>رابط الفيديو السحابي (YouTube أو رابط مباشر)</label>
+            <input type="text" id="adminVideoUrl" placeholder="https://www.youtube.com/embed/...">
             
-            <label style="color: var(--primary); font-size: 13px;">📚 دروس الدورة (مسمى الدرس ورابط الفيديو الخاص به):</label>
+            <label>المدة المطلوبة للاجتياز وإصدار الشهادة (بالدقائق)</label>
+            <input type="number" id="adminDuration" value="5" placeholder="5">
             
-            <div id="lessonsContainer">
-                <div class="lesson-group">
-                    <label>مسمى الدرس (عنوان الفيديو)</label>
-                    <input type="text" class="lesson-title" placeholder="مثال: الدرس الأول: مقدمة">
-                    <label>رابط الفيديو</label>
-                    <input type="text" class="lesson-url" placeholder="https://www.youtube.com/watch?v=...">
-                </div>
-            </div>
-
-            <button type="button" onclick="addLessonField()" style="background: #64748b; margin-top: 8px; padding: 8px;">➕ إضافة درس آخر للدورة</button>
-            
-            <button onclick="saveStructuredCourse()" style="background:#0284c7; color:white; margin-top: 15px;">نشر الدورة بكافة دروسها المرتبة 🚀</button>
+            <button onclick="addNewCourse()" style="background:#0284c7; color:white;">نشر الدورة وتفعيلها للطلاب 🚀</button>
             <div id="courseMsg" class="status-msg"></div>
-            
-            <div class="list-box" id="adminCoursesList" style="margin-top: 15px;">جاري التحميل...</div>
+            <div class="list-box" id="adminCoursesList">جاري التحميل...</div>
         </div>
 
     </div>
-
 <script>
     const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let cachedUsers = []; 
-    let cachedJobs = [];
-    let cachedResumes = [];
+    let cachedUsers = []; // تخزين بيانات المستخدمين للتصدير
 
+    // دالة جلب الإحصائيات السحابية الواقعية إلى لوحة التحكم
     async function loadAdminRealStats() {
         try {
             let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
@@ -227,6 +226,7 @@
     }
 
     // ==================== الوظائف ====================
+    let cachedJobs = [];
     async function saveJob() {
         const editId = document.getElementById('editJobId').value;
         const title = document.getElementById('jobTitle').value.trim();
@@ -541,64 +541,38 @@
         });
     }
 
-    // ==================== نظام الدورات والدروس المرتبة ====================
-    function addLessonField() {
-        let container = document.getElementById('lessonsContainer');
-        container.innerHTML += `
-            <div class="lesson-group">
-                <label>مسمى الدرس (عنوان الفيديو)</label>
-                <input type="text" class="lesson-title" placeholder="مثال: الدرس التالي...">
-                <label>رابط الفيديو</label>
-                <input type="text" class="lesson-url" placeholder="https://www.youtube.com/watch?v=...">
-            </div>`;
-    }
-
-    async function saveStructuredCourse() {
-        const title = document.getElementById('courseMainTitle').value.trim();
-        const description = document.getElementById('courseMainDesc').value.trim();
+    // ==================== الدورات التدريبية والأكاديمية ====================
+    async function addNewCourse() {
+        const title = document.getElementById('adminCourseTitle').value.trim();
+        const description = document.getElementById('adminCourseDesc').value.trim();
+        const video_url = document.getElementById('adminVideoUrl').value.trim();
+        const duration_minutes = parseInt(document.getElementById('adminDuration').value) || 5;
         const msg = document.getElementById('courseMsg');
 
-        if (!title) {
-            alert('يرجى إدخال اسم الدورة الرئيسية على الأقل!');
+        if (!title || !video_url) {
+            alert('يرجى إدخال عنوان الدورة ورابط الفيديو على الأقل!');
             return;
         }
 
-        let titles = document.querySelectorAll('.lesson-title');
-        let urls = document.querySelectorAll('.lesson-url');
-        let lessonsArray = [];
-
-        for (let i = 0; i < titles.length; i++) {
-            let t = titles[i].value.trim();
-            let u = urls[i].value.trim();
-            if (t || u) {
-                lessonsArray.push({ lesson_title: t || 'درس بدون مسمى', video_url: u || '' });
-            }
-        }
-
         msg.style.color = 'blue';
-        msg.textContent = 'جاري حفظ الدورة ودروسها المرتبة في السحابة... ⏳';
+        msg.textContent = 'جاري نشر الدورة في السحابة... ⏳';
 
         let { error } = await db.from('platform_courses').insert([{
-            title: title,
-            description: description,
-            lessons: lessonsArray
+            title,
+            description,
+            video_url,
+            duration_minutes
         }]);
 
         if (error) {
             msg.style.color = 'red';
-            msg.textContent = 'خطأ سحابي: ' + error.message;
+            msg.textContent = 'خطأ أثناء النشر: ' + error.message;
         } else {
             msg.style.color = 'green';
-            msg.textContent = 'تم نشر الدورة ودروسها بنجاح تام! ✅';
-            document.getElementById('courseMainTitle').value = '';
-            document.getElementById('courseMainDesc').value = '';
-            document.getElementById('lessonsContainer').innerHTML = `
-                <div class="lesson-group">
-                    <label>مسمى الدرس (عنوان الفيديو)</label>
-                    <input type="text" class="lesson-title" placeholder="مثال: الدرس الأول: مقدمة">
-                    <label>رابط الفيديو</label>
-                    <input type="text" class="lesson-url" placeholder="https://www.youtube.com/watch?v=...">
-                </div>`;
+            msg.textContent = 'تم نشر الدورة بنجاح وأصبحت متاحة في المنصة! 🎉';
+            document.getElementById('adminCourseTitle').value = '';
+            document.getElementById('adminCourseDesc').value = '';
+            document.getElementById('adminVideoUrl').value = '';
             loadAdminCourses();
         }
     }
@@ -615,22 +589,15 @@
         }
 
         data.forEach(c => {
-            let lessonsListHTML = '';
-            if (c.lessons && Array.isArray(c.lessons)) {
-                c.lessons.forEach((l, idx) => {
-                    lessonsListHTML += `<div style="font-size:11px; color:#334155; margin-right:10px; margin-top:2px;">🔹 ${idx + 1}. ${l.lesson_title}</div>`;
-                });
-            }
-
             box.innerHTML += `<div class="item-row">
                 <div class="row-header">
                     <strong>🎓 ${c.title}</strong>
-                    <span>الدروس: ${c.lessons ? c.lessons.length : 0}</span>
+                    <span>⏱️ ${c.duration_minutes} دقائق</span>
                 </div>
                 <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'}</div>
-                <div style="background:#f1f5f9; padding:6px; border-radius:6px; margin-top:4px;">${lessonsListHTML || 'بدون دروس محددة'}</div>
-                <div style="display: flex; gap: 5px; margin-top: 8px;">
-                    <button type="button" class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف الدورة بالكامل 🗑️</button>
+                <div class="action-btns">
+                    <a href="watch.html?id=${c.id}" target="_blank" class="btn-sm" style="background:#0284c7; text-decoration:none;">معاينة الدورة 🎬</a>
+                    <button class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
                 </div>
             </div>`;
         });
@@ -640,7 +607,6 @@
         if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
             let { error } = await db.from(table).delete().eq('id', id);
             if (error) { alert('خطأ في الحذف: ' + error.message); return; }
-            alert('تم الحذف بنجاح! ✅');
             if (table === 'jobs') loadJobs();
             if (table === 'resumes') loadResumes();
             if (table === 'users') loadRegisteredUsers();
