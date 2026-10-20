@@ -554,6 +554,37 @@
         }
 
         // ==================== الدورات التدريبية والأكاديمية ====================
+        async function loadAdminCourses() {
+            let { data } = await db.from('platform_courses').select('*').order('id', {ascending: false});
+            cachedCourses = data || [];
+            let box = document.getElementById('adminCoursesList');
+            document.getElementById('coursesCount').textContent = cachedCourses.length;
+            box.innerHTML = '';
+            
+            if (cachedCourses.length === 0) {
+                box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات تدريبية مضافة حالياً.</p>';
+                return;
+            }
+
+            cachedCourses.forEach(c => {
+                let statusBadge = c.is_active !== false ? '<span style="color:#166534; background:#dcfce7; padding:2px 6px; border-radius:4px; font-size:10px;">مرئي 🟢</span>' : '<span style="color:#991b1b; background:#fee2e2; padding:2px 6px; border-radius:4px; font-size:10px;">مخفي 🔴</span>';
+                
+                box.innerHTML += `<div class="item-row">
+                    <div class="row-header">
+                        <strong>🎓 ${c.title}</strong>
+                        ${statusBadge}
+                    </div>
+                    <div style="color:#64748b; font-size:11px;">المدة: ${c.duration_minutes} دقائق | الوصف: ${c.description || 'بدون وصف'}</div>
+                    <div style="display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap;">
+                        <button class="btn-sm btn-edit" style="width: auto; padding: 6px 12px; margin: 0;" onclick="editCourse(${c.id})">تعديل ✏️</button>
+                        <button class="btn-sm" style="width: auto; padding: 6px 12px; margin: 0; background:${c.is_active !== false ? '#d97706' : '#10b981'};" onclick="toggleCourseVisibility(${c.id}, ${c.is_active !== false})">${c.is_active !== false ? 'إخفاء 👁️‍🗨️' : 'إظهار 👁️'}</button>
+                        <a href="watch.html?id=${c.id}" target="_blank" class="btn-sm" style="width: auto; padding: 6px 12px; margin: 0; background:#0284c7; text-decoration:none; display:inline-block;">معاينة 🎬</a>
+                        <button class="btn-sm btn-del" style="width: auto; padding: 6px 12px; margin: 0;" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
+                    </div>
+                </div>`;
+            });
+        }
+
         async function saveCourseToDb() {
             const editId = document.getElementById('editCourseId').value;
             const title = document.getElementById('adminCourseTitle').value.trim();
@@ -594,36 +625,6 @@
             document.getElementById('adminCourseStatus').value = 'true';
             document.getElementById('btnSaveCourse').textContent = 'نشر الدورة وتفعيلها للطلاب 🚀';
             document.getElementById('btnCancelCourse').style.display = 'none';
-        }
-
-        async function loadAdminCourses() {
-            let { data } = await db.from('platform_courses').select('*').order('id', {ascending: false});
-            cachedCourses = data || [];
-            let box = document.getElementById('adminCoursesList');
-            document.getElementById('coursesCount').textContent = cachedCourses.length;
-            box.innerHTML = '';
-            
-            if (cachedCourses.length === 0) {
-                box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات تدريبية مضافة حالياً.</p>';
-                return;
-            }
-
-            cachedCourses.forEach(c => {
-                let statusBadge = c.is_active !== false ? '<span style="color:#166534; background:#dcfce7; padding:2px 6px; border-radius:4px; font-size:10px;">مرئي 🟢</span>' : '<span style="color:#991b1b; background:#fee2e2; padding:2px 6px; border-radius:4px; font-size:10px;">مخفي 🔴</span>';
-                box.innerHTML += `<div class="item-row">
-                    <div class="row-header">
-                        <strong>🎓 ${c.title}</strong>
-                        ${statusBadge}
-                    </div>
-                    <div style="color:#64748b; font-size:11px;">المدة: ${c.duration_minutes} دقائق | الوصف: ${c.description || 'بدون وصف'}</div>
-                    <div class="action-btns">
-                        <button class="btn-sm btn-edit" onclick="editCourse(${c.id})">تعديل ✏️</button>
-                        <button class="btn-sm" style="background:${c.is_active !== false ? '#d97706' : '#10b981'};" onclick="toggleCourseVisibility(${c.id}, ${c.is_active !== false})">${c.is_active !== false ? 'إخفاء 👁️‍🗨️' : 'إظهار 👁️'}</button>
-                        <a href="watch.html?id=${c.id}" target="_blank" class="btn-sm" style="background:#0284c7; text-decoration:none;">معاينة 🎬</a>
-                        <button class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
-                    </div>
-                </div>`;
-            });
         }
 
         function editCourse(id) {
