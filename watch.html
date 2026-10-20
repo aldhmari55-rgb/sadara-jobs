@@ -31,7 +31,7 @@
         </div>
 
         <div class="video-box" id="videoContainer">
-            <!-- سيتم حقن فيديو اليوتيوب هنا تلقائياً -->
+            <!-- سيتم حقن فيديو اليوتيوب هنا -->
         </div>
 
         <div class="progress-box">
@@ -51,9 +51,9 @@
 
         let courseData = null;
         let watchedSeconds = 0;
-        let requiredSeconds = 300; // افتراضي 5 دقائق أو حسب إعدادات الدورة
+        let requiredSeconds = 300; 
         let timerInterval = null;
-        const studentName = localStorage.getItem('sadara_logged_name') || 'متدرب صدارة الكريم';
+        const studentName = localStorage.getItem('sadara_logged_name') || 'عبدالرحمن عبدالله الذماري';
 
         async function initWatchPage() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -73,11 +73,10 @@
             }
 
             courseData = data;
-            requiredSeconds = (courseData.duration_minutes || 5) * 60; // تحويل الدقائق إلى ثواني
+            requiredSeconds = (courseData.duration_minutes || 5) * 60;
 
             document.getElementById('courseTitleText').textContent = courseData.title;
             
-            // معالجة رابط يوتيوب وتحويله إلى صيغة الـ Embed المناسبة للعرض داخل المنصة
             let ytUrl = courseData.video_url;
             let embedUrl = "";
             
@@ -87,15 +86,12 @@
             } else if (ytUrl.includes('watch?v=')) {
                 let videoId = ytUrl.split('watch?v=')[1].split('&')[0];
                 embedUrl = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
-            } else if (ytUrl.includes('/embed/')) {
-                embedUrl = ytUrl;
             } else {
                 embedUrl = ytUrl;
             }
 
             document.getElementById('videoContainer').innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
 
-            // بدء عداد وقت المشاهدة فور دخول الطالب وفتح الدورة
             startTrackingTimer();
         }
 
@@ -109,7 +105,7 @@
                     clearInterval(timerInterval);
                     document.getElementById('timerText').textContent = "✅ اكتملت مدة الدورة بنجاح تام!";
                     document.getElementById('claimCertBtn').style.display = 'inline-block';
-                    document.getElementById('statusMsg').textContent = "أنت مؤهل الآن لاستلام شهادتك المعتمدة وتحميلها بصيغة PDF.";
+                    document.getElementById('statusMsg').textContent = "أنت مؤهل الآن لاستلام شهادتك المعتمدة بتصميم فاخر بصيغة PDF.";
                 } else {
                     let mins = Math.floor(remaining / 60);
                     let secs = remaining % 60;
@@ -122,7 +118,6 @@
             const verificationCode = 'SAD-' + Math.random().toString(36).substring(2, 9).toUpperCase();
             const verificationUrl = `https://sadarah.top/verify.html?code=${verificationCode}`;
 
-            // حفظ بيانات الشهادة في جدول قاعدة البيانات لتفعيل باركود التحقق الفوري
             await db.from('course_certificates').insert([{
                 student_name: studentName,
                 course_name: courseData.title,
@@ -131,46 +126,74 @@
                 verification_code: verificationCode
             }]);
 
-            // توليد الباركود وصيغة الـ PDF للشهادة
-            QRCode.toDataURL(verificationUrl, { width: 150 }, function (err, qrCodeDataUrl) {
+            // توليد الـ QR Code أولاً
+            QRCode.toDataURL(verificationUrl, { width: 200 }, function (err, qrCodeDataUrl) {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
-                doc.setFillColor(15, 23, 42);
+                // إطار أبيض وأزرق فخم للشهادة (تصميم يشبه شهادات منصات التدريب العالمية)
+                doc.setFillColor(255, 255, 255);
                 doc.rect(0, 0, 297, 210, 'F');
 
-                doc.setTextColor(255, 255, 255);
-                doc.setFont("Tajawal", "bold");
-                doc.setFontSize(26);
-                doc.text("منصة صدارة للتوظيف والخدمات الرقمية", 148, 30, { align: "center" });
+                // شريط علوي كحلي فاخر
+                doc.setFillColor(15, 35, 71);
+                doc.rect(0, 0, 297, 25, 'F');
 
-                doc.setFontSize(16);
-                doc.setTextColor(56, 189, 248);
-                doc.text("شهادة إتمام دورة تدريبية معتمدة", 148, 45, { align: "center" });
+                doc.setTextColor(212, 175, 55); // لون ذهبي
+                doc.setFont("Helvetica", "bold");
+                doc.setFontSize(14);
+                doc.text("SADARAH PLATFORM - sadarah.top", 148, 16, { align: "center" });
+
+                // محتوى الشهادة (نصوص واضحة ومرتبة)
+                doc.setTextColor(15, 35, 71);
+                doc.setFont("Helvetica", "bold");
+                doc.setFontSize(28);
+                doc.text("CERTIFICATE OF COMPLETION", 148, 48, { align: "center" });
 
                 doc.setFontSize(14);
-                doc.setTextColor(203, 213, 225);
-                doc.text("تشهد إدارة منصة صدارة (sadarah.top) بأن المتدرب/ة:", 148, 70, { align: "center" });
+                doc.setTextColor(100, 116, 139);
+                doc.text("تُشهد منصة صدارة للوظائف والخدمات الرقمية بأن المتدرب:", 148, 65, { align: "center" });
 
+                // اسم الطالب (بارز وكبير)
                 doc.setFontSize(24);
-                doc.setTextColor(255, 255, 255);
-                doc.text(studentName, 148, 88, { align: "center" });
+                doc.setTextColor(15, 35, 71);
+                doc.text(studentName, 148, 85, { align: "center" });
 
-                doc.setFontSize(14);
-                doc.setTextColor(203, 213, 225);
-                doc.text(`قد أتم بنجاح متطلبات الدورة التدريبية: ${courseData.title}`, 148, 108, { align: "center" });
+                doc.setFontSize(13);
+                doc.setTextColor(100, 116, 139);
+                doc.text(`قد أتم بنجاح الدورة التدريبية المعتمدة:`, 148, 102, { align: "center" });
 
-                // إضافة الباركود الخاص بالتحقق في الزاوية
-                doc.addImage(qrCodeDataUrl, 'PNG', 20, 150, 40, 40);
+                // عنوان الدورة
+                doc.setFontSize(18);
+                doc.setTextColor(212, 175, 55);
+                doc.text(courseData.title, 148, 118, { align: "center" });
+
+                // تفاصيل الحضور والتقدير
+                doc.setFontSize(11);
+                doc.setTextColor(71, 85, 105);
+                doc.text(`التقدير: امتياز | المدة التدريبية: ${courseData.duration_minutes} دقائق | تاريخ الإصدار: ${new Date().toLocaleDateString('ar-YE')}`, 148, 135, { align: "center" });
+
+                // خط فاصل سفلي
+                doc.setDrawColor(212, 175, 55);
+                doc.setLineWidth(0.5);
+                doc.line(30, 150, 267, 150);
+
+                // إضافة الباركود الخاص بالتحقق في الزاوية اليسرى السفلية
+                doc.addImage(qrCodeDataUrl, 'PNG', 20, 155, 38, 38);
                 doc.setFontSize(9);
-                doc.setTextColor(148, 163, 184);
-                doc.text("امسح الرمز للتحقق الفوري من صحة الشهادة", 22, 195);
+                doc.setTextColor(100, 116, 139);
+                doc.text("امسح الرمز للتحقق الفوري", 22, 198);
 
-                doc.text(`رقم التحقق: ${verificationCode}`, 230, 180);
-                doc.text("معتمدة رسمياً عبر خوادم sadarah.top", 230, 188);
+                // بيانات الاعتماد في الزاوية اليمنى السفلية
+                doc.setFontSize(10);
+                doc.setTextColor(15, 35, 71);
+                doc.text(`رقم التحقق: ${verificationCode}`, 275, 172, { align: "right" });
+                doc.text("معتمدة رسمياً عبر موقع sadarah.top", 275, 180, { align: "right" });
+                doc.text("التوقيع والاعتماد: إدارة منصة صدارة", 275, 188, { align: "right" });
 
+                // حفظ ملف الـ PDF بالاسم الجميل
                 doc.save(`Sadarah_Certificate_${studentName}.pdf`);
-                alert('تهانينا الخالصة! تم إصدار وتنزيل شهادتك المعتمدة بنجاح تام 🎉');
+                alert('تم إصدار الشهادة بتصميمها الفاخر الجديد وتنزيلها بنجاح تام! 🌟');
             });
         }
 
