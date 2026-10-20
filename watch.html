@@ -13,11 +13,11 @@
         body { background: #0f172a; color: white; padding: 20px; direction: rtl; text-align: right; }
         .container { max-width: 900px; margin: 0 auto; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 15px; }
-        .back-btn { background: #334155; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; }
-        .video-box { background: #1e293b; border-radius: 12px; overflow: hidden; margin-bottom: 20px; border: 1px solid #475569; position: relative; }
-        video, iframe { width: 100%; height: 400px; background: black; }
+        .back-btn { background: #334155; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 13px; }
+        .video-box { background: #1e293b; border-radius: 12px; overflow: hidden; margin-bottom: 20px; border: 1px solid #475569; position: relative; aspect-ratio: 16/9; }
+        .video-box iframe { width: 100%; height: 100%; border: none; }
         .progress-box { background: #1e293b; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #475569; }
-        .timer-display { font-size: 1.5rem; font-weight: bold; color: #38bdf8; margin: 10px 0; }
+        .timer-display { font-size: 1.3rem; font-weight: bold; color: #38bdf8; margin: 10px 0; }
         .claim-btn { background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: none; margin-top: 15px; transition: 0.3s; }
         .claim-btn:hover { background: #059669; }
     </style>
@@ -26,18 +26,18 @@
 
     <div class="container">
         <div class="header">
-            <h1 id="courseTitleText">جاري تحميل الدورة...</h1>
+            <h1 id="courseTitleText" style="font-size: 1.2rem; color: #f8fafc;">جاري تحميل الدورة التدريبية...</h1>
             <a href="courses.html" class="back-btn">⬅️ العودة للدورات</a>
         </div>
 
         <div class="video-box" id="videoContainer">
-            <!-- سيتم حقن مشغل الفيديو هنا -->
+            <!-- سيتم حقن فيديو اليوتيوب هنا تلقائياً -->
         </div>
 
         <div class="progress-box">
             <h3>📊 نظام تتابُع الحضور والمشاهدة التلقائي</h3>
-            <div class="timer-display" id="timerText">وقت المشاهدة المتبقي: جاري الحساب...</div>
-            <p id="statusMsg" style="color: #94a3b8; font-size: 0.9rem;">يرجى متابعة الفيديو بالكامل ليتم فتح زر استلام الشهادة المعتمدة تلقائياً.</p>
+            <div class="timer-display" id="timerText">وقت المشاهدة المتبقي: جاري تفعيل العد التنازلي...</div>
+            <p id="statusMsg" style="color: #94a3b8; font-size: 0.9rem;">يرجى متابعة فيديو الشرح بالكامل ليتم فتح زر استلام الشهادة المعتمدة تلقائياً.</p>
             <button class="claim-btn" id="claimCertBtn" onclick="generateAndDownloadCertificate()">🎓 مبروك! استلم شهادتك المعتمدة الآن (PDF)</button>
         </div>
     </div>
@@ -51,49 +51,52 @@
 
         let courseData = null;
         let watchedSeconds = 0;
-        let requiredSeconds = 60; // افتراضي دقيقة واحدة للتجربة أو حسب إعدادات الدورة
+        let requiredSeconds = 300; // افتراضي 5 دقائق أو حسب إعدادات الدورة
         let timerInterval = null;
-        const studentPhone = localStorage.getItem('sadara_logged_phone') || 'Guest_' + Math.floor(Math.random()*1000);
-        const studentName = localStorage.getItem('sadara_logged_name') || 'متدرب صدارة';
+        const studentName = localStorage.getItem('sadara_logged_name') || 'متدرب صدارة الكريم';
 
         async function initWatchPage() {
             const urlParams = new URLSearchParams(window.location.search);
             const courseId = urlParams.get('id');
 
             if(!courseId) {
-                alert('لم يتم تحديد الدورة!');
+                alert('لم يتم تحديد الدورة التدريبية!');
                 window.location.href = 'courses.html';
                 return;
             }
 
             let { data, error } = await db.from('platform_courses').select('*').eq('id', courseId).single();
             if(error || !data) {
-                alert('الدورة غير موجودة!');
+                alert('عذراً، هذه الدورة غير متوفرة حالياً.');
+                window.location.href = 'courses.html';
                 return;
             }
 
             courseData = data;
-            requiredSeconds = (courseData.duration_minutes || 5) * 60; // تحويل الدقائق لثواني
+            requiredSeconds = (courseData.duration_minutes || 5) * 60; // تحويل الدقائق إلى ثواني
 
             document.getElementById('courseTitleText').textContent = courseData.title;
             
-            // حقن الفيديو (سواء رابط مباشر mp4 أو يوتيوب)
-            let vBox = document.getElementById('videoContainer');
-            if(courseData.video_url.includes('youtube.com') || courseData.video_url.includes('youtu.be')) {
-                let embedUrl = courseData.video_url.includes('watch?v=') ? courseData.video_url.replace('watch?v=', 'embed/') : courseData.video_url;
-                vBox.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
+            // معالجة رابط يوتيوب وتحويله إلى صيغة الـ Embed المناسبة للعرض داخل المنصة
+            let ytUrl = courseData.video_url;
+            let embedUrl = "";
+            
+            if (ytUrl.includes('youtu.be/')) {
+                let videoId = ytUrl.split('youtu.be/')[1].split('?')[0];
+                embedUrl = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+            } else if (ytUrl.includes('watch?v=')) {
+                let videoId = ytUrl.split('watch?v=')[1].split('&')[0];
+                embedUrl = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+            } else if (ytUrl.includes('/embed/')) {
+                embedUrl = ytUrl;
             } else {
-                vBox.innerHTML = `<video id="courseVideo" src="${courseData.video_url}" controls controlsList="nodownload"></video>`;
-                // بدء حساب الثواني عند تشغيل الفيديو المباشر
-                let vid = document.getElementById('courseVideo');
-                vid.addEventListener('play', () => startTrackingTimer());
-                vid.addEventListener('pause', () => stopTrackingTimer());
+                embedUrl = ytUrl;
             }
 
-            // لو كان رابط يوتيوب نبدأ التتبع تلقائياً عند فتح الصفحة
-            if(courseData.video_url.includes('youtube')) {
-                startTrackingTimer();
-            }
+            document.getElementById('videoContainer').innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+
+            // بدء عداد وقت المشاهدة فور دخول الطالب وفتح الدورة
+            startTrackingTimer();
         }
 
         function startTrackingTimer() {
@@ -104,35 +107,31 @@
                 
                 if(remaining <= 0) {
                     clearInterval(timerInterval);
-                    document.getElementById('timerText').textContent = "✅ اكتملت مدة الدورة بنجاح!";
+                    document.getElementById('timerText').textContent = "✅ اكتملت مدة الدورة بنجاح تام!";
                     document.getElementById('claimCertBtn').style.display = 'inline-block';
-                    document.getElementById('statusMsg').textContent = "أنت مؤهل الآن لاستلام شهادتك المعتمدة من منصة صدارة.";
+                    document.getElementById('statusMsg').textContent = "أنت مؤهل الآن لاستلام شهادتك المعتمدة وتحميلها بصيغة PDF.";
                 } else {
                     let mins = Math.floor(remaining / 60);
                     let secs = remaining % 60;
-                    document.getElementById('timerText').textContent = `الوقت المتبقي للاجتياز: ${mins} دقيقة و ${secs} ثانية`;
+                    document.getElementById('timerText').textContent = `الوقت المتبقي لاجتياز الدورة: ${mins} دقيقة و ${secs} ثانية`;
                 }
             }, 1000);
-        }
-
-        function stopTrackingTimer() {
-            // يمكن إيقاف التوقف المؤقت إذا أردت إجبار المشاهدة المستمرة، أو تركها تعمل
         }
 
         async function generateAndDownloadCertificate() {
             const verificationCode = 'SAD-' + Math.random().toString(36).substring(2, 9).toUpperCase();
             const verificationUrl = `https://sadarah.top/verify.html?code=${verificationCode}`;
 
-            // حفظ في جدول الشهادات السابق لتعمل مع الباركود
+            // حفظ بيانات الشهادة في جدول قاعدة البيانات لتفعيل باركود التحقق الفوري
             await db.from('course_certificates').insert([{
                 student_name: studentName,
                 course_name: courseData.title,
-                grade: 'امتياز (معتمد)',
+                grade: 'امتياز (معتمد نظامياً)',
                 attendance_hours: courseData.duration_minutes + ' دقائق تدريبية',
                 verification_code: verificationCode
             }]);
 
-            // توليد الـ PDF والباركود
+            // توليد الباركود وصيغة الـ PDF للشهادة
             QRCode.toDataURL(verificationUrl, { width: 150 }, function (err, qrCodeDataUrl) {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
@@ -143,11 +142,11 @@
                 doc.setTextColor(255, 255, 255);
                 doc.setFont("Tajawal", "bold");
                 doc.setFontSize(26);
-                doc.text("منصة صدارة للوظائف والخدمات الرقمية", 148, 30, { align: "center" });
+                doc.text("منصة صدارة للتوظيف والخدمات الرقمية", 148, 30, { align: "center" });
 
                 doc.setFontSize(16);
                 doc.setTextColor(56, 189, 248);
-                doc.text("شهادة إتمام دورة تدريبية نظامية معتمدة", 148, 45, { align: "center" });
+                doc.text("شهادة إتمام دورة تدريبية معتمدة", 148, 45, { align: "center" });
 
                 doc.setFontSize(14);
                 doc.setTextColor(203, 213, 225);
@@ -159,18 +158,19 @@
 
                 doc.setFontSize(14);
                 doc.setTextColor(203, 213, 225);
-                doc.text(`أتم بنجاح كامل الساعات المقررة لدورة: ${courseData.title}`, 148, 108, { align: "center" });
+                doc.text(`قد أتم بنجاح متطلبات الدورة التدريبية: ${courseData.title}`, 148, 108, { align: "center" });
 
+                // إضافة الباركود الخاص بالتحقق في الزاوية
                 doc.addImage(qrCodeDataUrl, 'PNG', 20, 150, 40, 40);
                 doc.setFontSize(9);
                 doc.setTextColor(148, 163, 184);
                 doc.text("امسح الرمز للتحقق الفوري من صحة الشهادة", 22, 195);
 
                 doc.text(`رقم التحقق: ${verificationCode}`, 230, 180);
-                doc.text("صادرة نظامياً من خوادم sadarah.top", 230, 188);
+                doc.text("معتمدة رسمياً عبر خوادم sadarah.top", 230, 188);
 
                 doc.save(`Sadarah_Certificate_${studentName}.pdf`);
-                alert('تهانينا! تم إصدار وتنزيل شهادتك المعتمدة بنجاح تام 🎉');
+                alert('تهانينا الخالصة! تم إصدار وتنزيل شهادتك المعتمدة بنجاح تام 🎉');
             });
         }
 
