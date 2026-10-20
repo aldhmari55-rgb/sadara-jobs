@@ -31,6 +31,19 @@
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // دالة لتحويل أي رابط يوتيوب عادي إلى رابط إيمبد (Embed) لكي يظهر الفيديو حتماً
+    function getEmbedUrl(url) {
+        if (!url) return '';
+        if (url.includes('embed/')) return url;
+        let videoId = '';
+        if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+        } else if (url.includes('watch?v=')) {
+            videoId = url.split('watch?v=')[1].split('&')[0];
+        }
+        return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+    }
+
     async function loadCourseData() {
         const urlParams = new URLSearchParams(window.location.search);
         const courseId = urlParams.get('id');
@@ -49,7 +62,7 @@
         }
 
         let lessons = course.lessons || [];
-        let firstVideo = lessons.length > 0 ? lessons[0].video_url : '';
+        let firstVideo = lessons.length > 0 ? getEmbedUrl(lessons[0].video_url) : '';
 
         let html = `
             <h1>🎓 ${course.title}</h1>
@@ -65,8 +78,9 @@
 
         lessons.forEach((l, idx) => {
             let activeClass = idx === 0 ? 'active' : '';
+            let safeUrl = getEmbedUrl(l.video_url);
             html += `
-                <div class="lesson-item ${activeClass}" onclick="playLesson('${l.video_url}', this)">
+                <div class="lesson-item ${activeClass}" onclick="playLesson('${safeUrl}', this)">
                     <span>🔹 الدرس ${idx + 1}: ${l.lesson_title}</span>
                     <span style="font-size: 11px; opacity: 0.8;">مشاهدة ▶️</span>
                 </div>
