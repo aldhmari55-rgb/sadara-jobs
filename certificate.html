@@ -171,7 +171,7 @@
             direction: ltr;
         }
 
-        /* 6. مربع رمز الـ QR المحدث لصورة مباشرة */
+        /* 6. مربع رمز الـ QR */
         .cert-field.qr-box {
             position: absolute;
             bottom: 8.5%;
@@ -305,11 +305,18 @@
             document.getElementById('courseHours').innerText = studentData.hours;
             document.getElementById('certSerial').innerText = studentData.certificate_code;
 
-            // 🌟 رابط التحقق الرسمي والربط المباشر بكشف الشهادات
-            const verifyUrl = `https://sadarajobs.com/verify-certificate?id=${encodeURIComponent(studentData.certificate_code)}`;
+            // 🌟 تضمين تفاصيل الشهادة النصية مباشرة بداخل الباركود ليعمل فوراً دون الاعتماد على نطاق إنترنت معطل
+            const certDetailsText = 
+`SADARAH CERTIFICATE
+ID: ${studentData.certificate_code}
+Name: ${studentData.full_name}
+Course: ${studentData.course_name}
+Hours: ${studentData.hours} Hours
+Date: ${studentData.created_at}
+Status: Verified`;
 
-            // 🌟 توليد الباركود فوراً ورسمه عبر المولد المباشر السريع للصور الموثوقة
-            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(verifyUrl)}&color=000000&bgcolor=ffffff`;
+            // 🌟 توليد الباركود المباشر عبر API موثوق
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(certDetailsText)}&color=000000&bgcolor=ffffff`;
             
             document.getElementById('qrImage').src = qrApiUrl;
         }
