@@ -7,61 +7,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --bg: #f8fafc; }
+        :root { --primary: #0f2347; --gold: #d4af37; --bg: #f8fafc; --green: #059669; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); padding: 15px; color: #0f172a; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         h1 { color: var(--primary); font-size: 20px; margin-bottom: 5px; }
         .desc { color: #64748b; font-size: 13px; margin-bottom: 15px; }
         
-        /* حاوية الفيديو الآمنة مع العزل التام */
         .secure-video-container {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%; /* نسبة عرض لارتفاع 16:9 */
+            padding-bottom: 56.25%;
             background: #000;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 8px 20px rgba(15, 35, 71, 0.15);
             margin-bottom: 20px;
         }
+        .secure-video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .shield-top { position: absolute; top: 0; left: 0; width: 100%; height: 65px; z-index: 20; background: transparent; }
+        .shield-bottom-left { position: absolute; bottom: 0; left: 0; width: 120px; height: 50px; z-index: 20; background: transparent; }
 
-        .secure-video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* طبقات حماية شفافة تغطي الزوايا التي يظهر فيها شعار يوتيوب واسم القناة وتمنع النقر عليها */
-        .shield-top {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 65px;
-            z-index: 20;
-            background: transparent;
-            pointer-events: auto;
-        }
-
-        .shield-bottom-left {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 120px;
-            height: 50px;
-            z-index: 20;
-            background: transparent;
-            pointer-events: auto;
-        }
-
-        .lessons-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; }
+        .lessons-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
         .lesson-item { padding: 12px; background: #f1f5f9; margin-bottom: 8px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid transparent; }
         .lesson-item:hover { background: #e2e8f0; }
         .lesson-item.active { background: var(--primary); color: white; border-right-color: var(--gold); }
+        
+        /* زر استلام الشهادة الذي يظهر عند اكتمال الدروس */
+        .cert-box { margin-top: 25px; background: #dcfce7; border: 2px dashed #059669; padding: 20px; border-radius: 12px; text-align: center; display: none; }
+        .cert-btn { background: var(--green); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 10px; }
+        .cert-btn:hover { background: #047857; }
     </style>
 </head>
 <body>
@@ -75,22 +50,17 @@
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // دالة لتوليد رابط يوتيوب نظيف وخالٍ من العناصر الخارجية مع تعطيل العرض الترويجي
+    let watchedLessons = new Set();
+    let totalLessonsCount = 0;
+    let currentCourseName = "";
+
     function getUltraSecureEmbed(url) {
         if (!url) return '';
         let videoId = '';
-        if (url.includes('embed/')) {
-            videoId = url.split('embed/')[1].split('?')[0];
-        } else if (url.includes('youtu.be/')) {
-            videoId = url.split('youtu.be/')[1].split('?')[0];
-        } else if (url.includes('watch?v=')) {
-            videoId = url.split('watch?v=')[1].split('&')[0];
-        }
-
-        if (videoId) {
-            return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=0&controls=1&rel=0&modestbranding=1&showinfo=0&disablekb=1&iv_load_policy=3&autohide=1`;
-        }
-        return url;
+        if (url.includes('embed/')) { videoId = url.split('embed/')[1].split('?')[0]; }
+        else if (url.includes('youtu.be/')) { videoId = url.split('youtu.be/')[1].split('?')[0]; }
+        else if (url.includes('watch?v=')) { videoId = url.split('watch?v=')[1].split('&')[0]; }
+        return videoId ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=0&controls=1&rel=0&modestbranding=1&showinfo=0&disablekb=1&iv_load_policy=3` : url;
     }
 
     async function loadCourseData() {
@@ -106,26 +76,32 @@
         let { data: course, error } = await db.from('platform_courses').select('*').eq('id', courseId).single();
 
         if (error || !course || course.is_active === false) {
-            container.innerHTML = '<p style="color:red; text-align:center;">عذراً، هذه الدورة غير متاحة حالياً أو غير موجودة.</p>';
+            container.innerHTML = '<p style="color:red; text-align:center;">عذراً، هذه الدورة غير متاحة حالياً.</p>';
             return;
         }
 
+        currentCourseName = course.title;
         let lessons = course.lessons || [];
+        totalLessonsCount = lessons.length;
         let firstVideo = lessons.length > 0 ? getUltraSecureEmbed(lessons[0].video_url) : '';
+
+        // تسجيل الدرس الأول كمشاهد افتراضياً عند فتح الدورة
+        if(totalLessonsCount > 0) watchedLessons.add(0);
 
         let html = `
             <h1>🎓 ${course.title}</h1>
             <p class="desc">${course.description || 'لا يوجد وصف متاح.'}</p>
             
             <div class="secure-video-container">
-                <!-- طبقات حماية تعزل مكان اسم القناة وشعار يوتيوب وتمنع أي نقر عليها -->
                 <div class="shield-top"></div>
                 <div class="shield-bottom-left"></div>
-                
                 <iframe id="mainVideoPlayer" src="${firstVideo}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
 
-            <div class="lessons-title">📚 قائمة دروس الدورة (${lessons.length} دروس)</div>
+            <div class="lessons-title">
+                <span>📚 قائمة دروس الدورة (${lessons.length} دروس)</span>
+                <span id="progressText" style="font-size:12px; color:#059669;">تم إنجاز: 1 / ${lessons.length}</span>
+            </div>
             <div id="lessonsList">
         `;
 
@@ -133,21 +109,59 @@
             let activeClass = idx === 0 ? 'active' : '';
             let safeUrl = getUltraSecureEmbed(l.video_url);
             html += `
-                <div class="lesson-item ${activeClass}" onclick="playLesson('${safeUrl}', this)">
+                <div class="lesson-item ${activeClass}" id="lesson-${idx}" onclick="playLesson('${safeUrl}', ${idx}, this)">
                     <span>🔹 الدرس ${idx + 1}: ${l.lesson_title}</span>
-                    <span style="font-size: 11px; opacity: 0.9;">مشاهدة ▶️</span>
+                    <span id="badge-${idx}" style="font-size: 11px; opacity: 0.9;">${idx === 0 ? 'مشاهدة الآن ▶️' : 'متاح للقبول ⏳'}</span>
                 </div>
             `;
         });
 
-        html += `</div>`;
+        html += `</div>
+            <!-- صندوق الحصول على الشهادة -->
+            <div class="cert-box" id="certificateBox">
+                <h3 style="color:#065f46; font-size:16px;">🎉 مبروك! لقد أكملت كافة دروس الدورة بنجاح</h3>
+                <p style="font-size:12px; color:#047857; margin-top:5px;">يمكنك الآن إصدار شهادتك التقديرية المعتمدة رسمياً.</p>
+                <a href="#" id="getCertBtn" class="cert-btn">عرض واستلام الشهادة الرسمية 🎓</a>
+            </div>
+        `;
         container.innerHTML = html;
+        checkCompletion();
     }
 
-    function playLesson(videoUrl, element) {
+    function playLesson(videoUrl, idx, element) {
         document.getElementById('mainVideoPlayer').src = videoUrl;
         document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('active'));
         element.classList.add('active');
+
+        watchedLessons.add(idx);
+        document.getElementById(`badge-${idx}`).textContent = "تم المشاهدة ✓";
+        document.getElementById('progressText').textContent = `تم إنجاز: ${watchedLessons.size} / ${totalLessonsCount}`;
+        
+        checkCompletion();
+    }
+
+    function checkCompletion() {
+        if (watchedLessons.size >= totalLessonsCount && totalLessonsCount > 0) {
+            document.getElementById('certificateBox').style.display = 'block';
+            // رابط توليد الشهادة مع بيانات الدورة
+            let studentName = prompt("أدخل اسمك الكامل ليظهر على الشهادة المعتمدة:") || "متدرب منصة صدارة";
+            let certCode = "SDR-" + Math.floor(100000 + Math.random() * 900000);
+            
+            // تخزين الشهادة في قاعدة البيانات للتحقق لاحقاً
+            saveCertificateToCloud(studentName, currentCourseName, certCode);
+        }
+    }
+
+    async function saveCertificateToCloud(studentName, courseName, code) {
+        await db.from('course_certificates').insert([{
+            student_name: studentName,
+            course_name: courseName,
+            grade: "مكتمل بنجاح",
+            attendance_hours: "ساعات معتمدة",
+            verification_code: code
+        }]);
+
+        document.getElementById('getCertBtn').href = `certificate.html?code=${code}`;
     }
 
     document.addEventListener('DOMContentLoaded', loadCourseData);
