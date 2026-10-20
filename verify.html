@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التحقق من اعتماد الشهادة | صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background: #f8f9fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; direction: rtl; }
+        .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); width: 100%; max-width: 500px; text-align: center; border-top: 6px solid #059669; }
+        h2 { color: #0f172a; margin-bottom: 10px; }
+        .status { font-size: 1.1rem; color: #059669; font-weight: bold; margin-bottom: 20px; }
+        .info-box { text-align: right; background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .info-box p { margin-bottom: 8px; font-size: 1rem; color: #334155; }
+        .info-box span { font-weight: bold; color: #0f172a; }
+        .error { color: #dc2626; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>التحقق الرسمي من الشهادة</h2>
+        <div id="result">جاري جلب البيانات من السحابة...</div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'ضع_رابط_supabase_هنا';
+        const SUPABASE_ANON_KEY = 'ضع_مفتاح_anon_هنا';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function verifyCertificate() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const resultDiv = document.getElementById('result');
+
+            if (!code) {
+                resultDiv.innerHTML = `<p class="error">رابط التحقق غير صالح أو غير مكتمل!</p>`;
+                return;
+            }
+
+            const { data, error } = await supabaseClient
+                .from('course_certificates')
+                .select('*')
+                .eq('verification_code', code)
+                .single();
+
+            if (error || !data) {
+                resultDiv.innerHTML = `<p class="error">⚠️ عذراً، هذه الشهادة غير مسجلة في قاعدة بيانات منصة صدارة أو أن الكود غير صحيح!</p>`;
+                return;
+            }
+
+            resultDiv.innerHTML = `
+                <p class="status">✅ شهادة معتمدة وصحيحة 100%</p>
+                <div class="info-box">
+                    <p>اسم المتدرب: <span>${data.student_name}</span></p>
+                    <p>اسم الدورة: <span>${data.course_name}</span></p>
+                    <p>التقدير النهائي: <span>${data.grade}</span></p>
+                    <p>ساعات الحضور: <span>${data.attendance_hours}</span></p>
+                    <p>تاريخ الاصدار: <span>${new Date(data.issue_date).toLocaleDateString('ar-YE')}</span></p>
+                    <p>رقم التحقق: <span>${data.verification_code}</span></p>
+                </div>
+                <p style="font-size:0.85rem; color:#64748b;">صادرة رسمياً عبر منصة صدارة للتوظيف والخدمات الرقمية (sadarah.top)</p>
+            `;
+        }
+
+        verifyCertificate();
+    </script>
+
+</body>
+</html>
