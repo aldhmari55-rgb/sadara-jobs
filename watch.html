@@ -13,11 +13,18 @@
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         h1 { color: var(--primary); font-size: 20px; margin-bottom: 5px; }
         .desc { color: #64748b; font-size: 13px; margin-bottom: 15px; }
-        .video-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 15px; }
-        .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        
+        /* مشغل الفيديو مع طبقة العزل لمنع الانتقال لليوتيوب */
+        .video-box-wrapper { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 10px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .video-box-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        
+        /* طبقة شفافة تعزل الجزء العلوي حيث يظهر اسم القناة لمنع الضغط عليه */
+        .top-shield { position: absolute; top: 0; left: 0; width: 100%; height: 60px; z-index: 10; background: transparent; cursor: default; }
+
         .lessons-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; }
-        .lesson-item { padding: 12px; background: #f1f5f9; margin-bottom: 6px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
-        .lesson-item:hover, .lesson-item.active { background: var(--primary); color: white; }
+        .lesson-item { padding: 12px; background: #f1f5f9; margin-bottom: 8px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid transparent; }
+        .lesson-item:hover { background: #e2e8f0; }
+        .lesson-item.active { background: var(--primary); color: white; border-right-color: var(--gold); }
     </style>
 </head>
 <body>
@@ -31,17 +38,23 @@
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // دالة لتحويل أي رابط يوتيوب عادي إلى رابط إيمبد (Embed) لكي يظهر الفيديو حتماً
-    function getEmbedUrl(url) {
+    // دالة تحويل وتأمين روابط يوتيوب لمنع الانتقال للخارج وإخفاء الشعار والتوصيات
+    function getCleanSecureEmbedUrl(url) {
         if (!url) return '';
-        if (url.includes('embed/')) return url;
         let videoId = '';
-        if (url.includes('youtu.be/')) {
+        if (url.includes('embed/')) {
+            videoId = url.split('embed/')[1].split('?')[0];
+        } else if (url.includes('youtu.be/')) {
             videoId = url.split('youtu.be/')[1].split('?')[0];
         } else if (url.includes('watch?v=')) {
             videoId = url.split('watch?v=')[1].split('&')[0];
         }
-        return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+
+        if (videoId) {
+            // إرسال معامل الحماية لمنع المقترحات وإخفاء الهوية الجانبية
+            return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&showinfo=0&disablekb=1&iv_load_policy=3`;
+        }
+        return url;
     }
 
     async function loadCourseData() {
@@ -62,14 +75,16 @@
         }
 
         let lessons = course.lessons || [];
-        let firstVideo = lessons.length > 0 ? getEmbedUrl(lessons[0].video_url) : '';
+        let firstVideo = lessons.length > 0 ? getCleanSecureEmbedUrl(lessons[0].video_url) : '';
 
         let html = `
             <h1>🎓 ${course.title}</h1>
             <p class="desc">${course.description || 'لا يوجد وصف متاح.'}</p>
             
-            <div class="video-box">
-                <iframe id="mainVideoPlayer" src="${firstVideo}" allowfullscreen></iframe>
+            <div class="video-box-wrapper">
+                <!-- طبقة حماية تمنع النقر على العنوان واسم القناة بالعلوي -->
+                <div class="top-shield"></div>
+                <iframe id="mainVideoPlayer" src="${firstVideo}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
 
             <div class="lessons-title">📚 قائمة دروس الدورة (${lessons.length} دروس)</div>
@@ -78,11 +93,11 @@
 
         lessons.forEach((l, idx) => {
             let activeClass = idx === 0 ? 'active' : '';
-            let safeUrl = getEmbedUrl(l.video_url);
+            let safeUrl = getCleanSecureEmbedUrl(l.video_url);
             html += `
                 <div class="lesson-item ${activeClass}" onclick="playLesson('${safeUrl}', this)">
                     <span>🔹 الدرس ${idx + 1}: ${l.lesson_title}</span>
-                    <span style="font-size: 11px; opacity: 0.8;">مشاهدة ▶️</span>
+                    <span style="font-size: 11px; opacity: 0.9;">مشاهدة ▶️</span>
                 </div>
             `;
         });
