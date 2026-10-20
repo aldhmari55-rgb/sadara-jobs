@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الشاملة - منصة صدارة</title>
+    <title>لوحة التحكم الشاملة - منصة صدارة الرقمية</title>
+    <!-- خط القاهرة الرسمي -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS لتصميم سريع ومتجاوب -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
         * { font-family: 'Cairo', sans-serif; }
         .tab-content { display: none; }
@@ -16,33 +20,32 @@
 <body class="bg-slate-900 text-slate-100 min-h-screen p-4 md:p-6">
 
     <div class="max-w-7xl mx-auto">
-        <!-- ترويسة اللوحة -->
+        <!-- ترويسة لوحة التحكم -->
         <header class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-6 shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
-                <h1 class="text-2xl font-black text-emerald-400">لوحة التحكم المركزية - منصة صدارة</h1>
-                <p class="text-slate-400 text-sm mt-1">الإدارة الشاملة للشهادات، الدورات، البنرات، الوظائف، الحسابات والشركاء</p>
+                <h1 class="text-2xl font-black text-emerald-400">لوحة تحكم منصة صدارة السحابية</h1>
+                <p class="text-slate-400 text-sm mt-1">إدارة الشهادات، البنرات، الوظائف، الكفاءات، المسجلين وشركاء النجاح من Supabase</p>
             </div>
-            <a href="certificate.html" target="_blank" class="bg-emerald-600 hover:bg-emerald-750 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-md">
-                🔗 معاينة نموذج الشهادة
+            <a href="https://sadarah.top" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-md">
+                🌐 زيارة المنصة
             </a>
         </header>
 
-        <!-- شريط التنقل بين الأقسام (التبويبات) -->
-        <nav class="flex flex-wrap gap-2 mb-6 bg-slate-800 p-2 rounded-xl border border-slate-700">
-            <button onclick="switchTab('certificates')" id="btn-certificates" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-lg font-bold text-sm bg-emerald-600 text-white transition">🎓 الشهادات والدورات</button>
-            <button onclick="switchTab('banners')" id="btn-banners" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">🖼️ البنرات الإعلانية</button>
-            <button onclick="switchTab('jobs')" id="btn-jobs" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">💼 الوظائف</button>
-            <button onclick="switchTab('talents')" id="btn-talents" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">⭐ الكفاءات والخبراء</button>
-            <button onclick="switchTab('users')" id="btn-users" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">👥 الحسابات والمسجلين</button>
-            <button onclick="switchTab('partners')" id="btn-partners" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">🤝 شركاء النجاح</button>
+        <!-- شريط التنقل بين الأقسام السحابية -->
+        <nav class="flex flex-wrap gap-2 mb-6 bg-slate-800 p-2 rounded-xl border border-slate-700 overflow-x-auto">
+            <button onclick="switchTab('certificates')" id="btn-certificates" class="tab-btn py-2.5 px-4 rounded-lg font-bold text-sm bg-emerald-600 text-white transition">🎓 الشهادات والدورات</button>
+            <button onclick="switchTab('banners')" id="btn-banners" class="tab-btn py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">🖼️ البنرات الإعلانية</button>
+            <button onclick="switchTab('jobs')" id="btn-jobs" class="tab-btn py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">💼 الوظائف</button>
+            <button onclick="switchTab('talents')" id="btn-talents" class="tab-btn py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">⭐ الكفاءات والخبراء</button>
+            <button onclick="switchTab('users')" id="btn-users" class="tab-btn py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">👥 المسجلين والحسابات</button>
+            <button onclick="switchTab('partners')" id="btn-partners" class="tab-btn py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">🤝 شركاء النجاح</button>
         </nav>
 
-        <!-- محتوى التبويبات -->
+        <!-- المحتوى التفاعلي للأقسام السحابية -->
 
-        <!-- 1. تبويب الشهادات والدورات -->
+        <!-- 1. قسم الشهادات والدورات -->
         <div id="tab-certificates" class="tab-content active space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- نموذج إصدار شهادة -->
                 <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-lg">
                     <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">➕ إصدار شهادة جديدة</h2>
                     <form id="certForm" onsubmit="createNewCertificate(event)" class="space-y-4">
@@ -68,7 +71,6 @@
                     </form>
                 </div>
 
-                <!-- جدول كشف الشهادات -->
                 <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-lg lg:col-span-2 flex flex-col">
                     <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
                         <h2 class="text-lg font-bold text-emerald-400">📋 كشف الشهادات والدورات</h2>
@@ -86,7 +88,7 @@
                                 </tr>
                             </thead>
                             <tbody id="certificatesTableBody" class="divide-y divide-slate-700 text-slate-300">
-                                <tr><td colspan="5" class="text-center p-4 text-slate-500">جاري التحميل...</td></tr>
+                                <tr><td colspan="5" class="text-center p-4 text-slate-500">جاري التحميل من السحابة...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -94,45 +96,79 @@
             </div>
         </div>
 
-        <!-- 2. تبويب البنرات الإعلانية -->
-        <div id="tab-banners" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
-            <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">🖼️ إدارة البنرات الإعلانية والعروض</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <input type="text" placeholder="عنوان البنر" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm">
-                <input type="text" placeholder="رابط صورة البنر (URL)" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm">
-                <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm transition">إضافة بنر جديد</button>
+        <!-- 2. قسم البنرات الإعلانية -->
+        <div id="tab-banners" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg space-y-6">
+            <h2 class="text-lg font-bold text-emerald-400 border-b border-slate-700 pb-2">🖼️ إدارة بنرات الواجهة والعروض</h2>
+            <form onsubmit="addBanner(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="text" id="bannerTitle" placeholder="عنوان البنر الإعلاني" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                <input type="url" id="bannerImg" placeholder="رابط صورة البنر (Storage URL)" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 transition">حفظ وإضافة البنر</button>
+            </form>
+            <div id="bannersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-slate-400 text-sm">
+                <!-- جلب البنرات من السحابة هنا -->
             </div>
-            <p class="text-slate-400 text-sm">قسم مخصص للتحكم بالبنرات الإعلانية المتحركة وثابتة الواجهة.</p>
         </div>
 
-        <!-- 3. تبويب الوظائف -->
-        <div id="tab-jobs" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
-            <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">💼 إدارة الوظائف والفرص (صدارة للتوظيف)</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <input type="text" placeholder="مسمى الوظيفة" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm">
-                <input type="text" placeholder="اسم الشركة / الجهة" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm">
-                <input type="text" placeholder="الموقع / المدينة" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm">
-                <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm transition">نشر وظيفة</button>
+        <!-- 3. قسم الوظائف -->
+        <div id="tab-jobs" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg space-y-6">
+            <h2 class="text-lg font-bold text-emerald-400 border-b border-slate-700 pb-2">💼 إدارة الفرص والوظائف (صدارة للتوظيف)</h2>
+            <form onsubmit="addJob(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <input type="text" id="jobTitle" placeholder="مسمى الوظيفة" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                <input type="text" id="companyName" placeholder="اسم الشركة / الجهة" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                <input type="text" id="jobLocation" placeholder="الموقع / المدينة" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 transition">نشر وظيفة جديدة</button>
+            </form>
+            <div id="jobsList" class="space-y-3">
+                <!-- جلب الوظائف من السحابة هنا -->
             </div>
-            <p class="text-slate-400 text-sm">إدارة سوق العمل والفرص الوظيفية المنشورة عبر المنصة.</p>
         </div>
 
-        <!-- 4. تبويب الكفاءات والخبراء -->
-        <div id="tab-talents" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
-            <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">⭐ إدارة الكفاءات والمدربين</h2>
-            <p class="text-slate-400 text-sm">إدارة ملفات الخبراء، المدربين المعتمدين، والمستشارين في منصة صدارة.</p>
+        <!-- 4. قسم الكفاءات والخبراء -->
+        <div id="tab-talents" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg space-y-6">
+            <h2 class="text-lg font-bold text-emerald-400 border-b border-slate-700 pb-2">⭐ إدارة الكفاءات والمدربين المعتمدين</h2>
+            <form onsubmit="addTalent(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="text" id="talentName" placeholder="اسم الخبير / المدرب" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                <input type="text" id="talentRole" placeholder="التخصص / المسمى الوظيفي" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 transition">إضافة كفاءة جديدة</button>
+            </form>
+            <div id="talentsList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- جلب الكفاءات هنا -->
+            </div>
         </div>
 
-        <!-- 5. تبويب الحسابات والمسجلين -->
-        <div id="tab-users" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
-            <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">👥 قاعدة بيانات المسجلين والحسابات</h2>
-            <p class="text-slate-400 text-sm">إدارة بيانات الطلاب، العملاء، والصلاحيات الخاصة بالحسابات.</p>
+        <!-- 5. قسم المسجلين والحسابات -->
+        <div id="tab-users" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h2 class="text-lg font-bold text-emerald-400">👥 قاعدة بيانات المستخدمين والمسجلين في المنصة</h2>
+                <button onclick="loadUsers()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-md transition">🔄 تحديث</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-right text-sm">
+                    <thead class="bg-slate-900 text-slate-400 uppercase text-xs">
+                        <tr>
+                            <th class="p-3">الاسم</th>
+                            <th class="p-3">البريد / الهاتف</th>
+                            <th class="p-3">تاريخ التسجيل</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody" class="divide-y divide-slate-700 text-slate-300">
+                        <tr><td colspan="3" class="text-center p-4 text-slate-500">جاري تحميل الحسابات من السحابة...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- 6. تبويب شركاء النجاح -->
-        <div id="tab-partners" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
-            <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">🤝 شركاء النجاح والجهات المعتمدة</h2>
-            <p class="text-slate-400 text-sm">إدارة شعارات الجهات والشركات الشريكة لمنصة صدارة.</p>
+        <!-- 6. قسم شركاء النجاح -->
+        <div id="tab-partners" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg space-y-6">
+            <h2 class="text-lg font-bold text-emerald-400 border-b border-slate-700 pb-2">🤝 إدارة شركاء النجاح والجهات المعتمدة</h2>
+            <form onsubmit="addPartner(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="text" id="partnerName" placeholder="اسم الجهة / الشريك" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                <input type="url" id="partnerLogo" placeholder="رابط الشعار (Logo URL)" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 transition">إضافة شريك جديد</button>
+            </form>
+            <div id="partnersList" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- جلب الشركاء هنا -->
+            </div>
         </div>
 
     </div>
@@ -142,7 +178,7 @@
         const SUPABASE_ANON_KEY = 'ضع_مفتاح_ANON_KEY_هنا';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // نظام تبديل التبويبات بسلاسة
+        // تبديل التبويبات
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => {
@@ -154,6 +190,13 @@
             const activeBtn = document.getElementById(`btn-${tabId}`);
             activeBtn.classList.remove('bg-slate-700', 'text-slate-300');
             activeBtn.classList.add('bg-emerald-600', 'text-white');
+
+            // تحميل بيانات التبويب تلقائياً عند الفتح
+            if (tabId === 'banners') loadBanners();
+            if (tabId === 'jobs') loadJobs();
+            if (tabId === 'talents') loadTalents();
+            if (tabId === 'users') loadUsers();
+            if (tabId === 'partners') loadPartners();
         }
 
         function generateRandomSerial() {
@@ -161,20 +204,17 @@
             document.getElementById('certCode').value = `SAD-2026-${randomNum}`;
         }
 
+        // --- 1. إدارة الشهادات ---
         async function loadCertificates() {
             const tbody = document.getElementById('certificatesTableBody');
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-500">جاري التحديث...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-500">جاري الجلب...</td></tr>`;
 
             try {
-                const { data, error } = await supabaseClient
-                    .from('certificates')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
+                const { data, error } = await supabaseClient.from('certificates').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-500">لا توجد شهادات مسجلة.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-500">لا توجد شهادات.</td></tr>`;
                     return;
                 }
 
@@ -188,49 +228,98 @@
                         <td class="p-3 text-slate-300">${cert.course_name}</td>
                         <td class="p-3 text-emerald-300">${cert.hours || 30} س</td>
                         <td class="p-3 flex gap-2">
-                            <a href="certificate.html?id=${cert.certificate_code}" target="_blank" class="bg-sky-600 hover:bg-sky-700 text-white px-2.5 py-1 rounded text-xs transition">عرض</a>
-                            <button onclick="deleteCertificate('${cert.id}')" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1 rounded text-xs transition">حذف</button>
+                            <a href="https://sadarah.top/certificate.html?id=${cert.certificate_code}" target="_blank" class="bg-sky-600 hover:bg-sky-700 text-white px-2.5 py-1 rounded text-xs transition">عرض</a>
+                            <button onclick="deleteRecord('certificates', '${cert.id}', loadCertificates)" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1 rounded text-xs transition">حذف</button>
                         </td>
                     `;
                     tbody.appendChild(row);
                 });
             } catch (err) {
-                console.error("خطأ:", err);
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-rose-400">خطأ في جلب بيانات الداتا.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-rose-400">فشل التحميل من Supabase.</td></tr>`;
             }
         }
 
-        async function createNewCertificate(event) {
-            event.preventDefault();
+        async function createNewCertificate(e) {
+            e.preventDefault();
             const full_name = document.getElementById('fullName').value.trim();
             const course_name = document.getElementById('courseName').value.trim();
             const hours = parseInt(document.getElementById('courseHours').value) || 30;
             const certificate_code = document.getElementById('certCode').value.trim();
 
             try {
-                const { error } = await supabaseClient
-                    .from('certificates')
-                    .insert([{ certificate_code, full_name, course_name, hours }]);
-
+                const { error } = await supabaseClient.from('certificates').insert([{ certificate_code, full_name, course_name, hours }]);
                 if (error) throw error;
-                alert('تم إصدار الشهادة بنجاح!');
+                alert('تم حفظ وإصدار الشهادة بنجاح!');
                 document.getElementById('certForm').reset();
                 generateRandomSerial();
                 loadCertificates();
             } catch (err) {
-                alert('خطأ أثناء الحفظ (تأكد أن السيريال غير مكرر).');
+                alert('خطأ في الحفظ (تأكد من عدم تكرار كود الشهادة).');
             }
         }
 
-        async function deleteCertificate(id) {
-            if (!confirm('هل أنت متأكد من الحذف؟')) return;
+        // --- 2. إدارة البنرات ---
+        async function loadBanners() {
+            const container = document.getElementById('bannersList');
             try {
-                const { error } = await supabaseClient.from('certificates').delete().eq('id', id);
-                if (error) throw error;
-                loadCertificates();
-            } catch (err) {
-                alert('فشل الحذف.');
-            }
+                const { data } = await supabaseClient.from('banners').select('*');
+                if (!data || data.length === 0) {
+                    container.innerHTML = `<p class="col-span-3 text-slate-500">لا توجد بنرات مسجلة.</p>`;
+                    return;
+                }
+                container.innerHTML = data.map(b => `
+                    <div class="bg-slate-900 border border-slate-700 rounded-lg p-3 flex flex-col gap-2">
+                        <img src="${b.image_url}" class="w-full h-32 object-cover rounded-md" alt="Banner">
+                        <p class="font-bold text-white text-xs">${b.title}</p>
+                        <button onclick="deleteRecord('banners', '${b.id}', loadBanners)" class="bg-rose-600 text-white text-xs py-1 rounded">حذف البنر</button>
+                    </div>
+                `).join('');
+            } catch (e) {}
+        }
+
+        async function addBanner(e) {
+            e.preventDefault();
+            const title = document.getElementById('bannerTitle').value;
+            const image_url = document.getElementById('bannerImg').value;
+            await supabaseClient.from('banners').insert([{ title, image_url }]);
+            loadBanners();
+        }
+
+        // --- 3. إدارة الوظائف ---
+        async function loadJobs() {
+            const container = document.getElementById('jobsList');
+            try {
+                const { data } = await supabaseClient.from('jobs').select('*');
+                if (!data || data.length === 0) {
+                    container.innerHTML = `<p class="text-slate-500">لا توجد وظائف معلنة حالياً.</p>`;
+                    return;
+                }
+                container.innerHTML = data.map(j => `
+                    <div class="bg-slate-900 border border-slate-700 rounded-lg p-3 flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-emerald-400">${j.title}</h4>
+                            <p class="text-xs text-slate-400">${j.company} - ${j.location}</p>
+                        </div>
+                        <button onclick="deleteRecord('jobs', '${j.id}', loadJobs)" class="bg-rose-600 text-white text-xs px-3 py-1 rounded">حذف</button>
+                    </div>
+                `).join('');
+            } catch (e) {}
+        }
+
+        async function addJob(e) {
+            e.preventDefault();
+            const title = document.getElementById('jobTitle').value;
+            const company = document.getElementById('companyName').value;
+            const location = document.getElementById('jobLocation').value;
+            await supabaseClient.from('jobs').insert([{ title, company, location }]);
+            loadJobs();
+        }
+
+        // --- 4. دالة حذف الموارد العريضة ---
+        async function deleteRecord(table, id, callback) {
+            if (!confirm('هل أنت متأكد من العملية؟')) return;
+            await supabaseClient.from(table).delete().eq('id', id);
+            callback();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
