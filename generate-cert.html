@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إصدار شهادة معتمدة | صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- مكتبة jsPDF لتوليد ملفات الـ PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- مكتبة QRCode لتوليد الباركود -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <!-- مكتبة Supabase للاتصال بقاعدة البيانات -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background: #f1f5f9; padding: 20px; direction: rtl; text-align: right; }
+        .form-container { max-width: 600px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        h2 { margin-bottom: 20px; color: #0f172a; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #334155; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; }
+        .btn { background: #2563eb; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn:hover { background: #1d4ed8; }
+        .back-link { display: block; text-align: center; margin-top: 15px; color: #64748b; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>إصدار شهادة متدرب جديدة</h2>
+        <div class="form-group">
+            <label>اسم المتدرب الثلاثي:</label>
+            <input type="text" id="studentName" placeholder="مثال: عبدالرحمن عبدالله الذماري">
+        </div>
+        <div class="form-group">
+            <label>اسم الدورة التدريبية:</label>
+            <input type="text" id="courseName" value="دورة إعداد السيرة الذاتية واجتياز المقابلات">
+        </div>
+        <div class="form-group">
+            <label>التقدير / الدرجة:</label>
+            <input type="text" id="grade" value="ممتاز (95%)">
+        </div>
+        <div class="form-group">
+            <label>ساعات الحضور:</label>
+            <input type="text" id="attendanceHours" value="10 ساعات تدريبية">
+        </div>
+        <button class="btn" onclick="generateAndSaveCertificate()">حفظ في النظام وتوليد الشهادة (PDF)</button>
+        <a href="courses.html" class="back-link">⬅️ عودة لقسم الدورات</a>
+    </div>
+
+    <!-- عنصر مخفي لتوليد الـ QR Code -->
+    <canvas id="qrCanvas" style="display:none;"></canvas>
+
+    <script>
+        // إعدادات اتصال Supabase (تأكد من مطابقتها لبيانات مشروعك الحالي)
+        const SUPABASE_URL = 'ضع_رابط_supabase_هنا';
+        const SUPABASE_ANON_KEY = 'ضع_مفتاح_anon_هنا';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function generateAndSaveCertificate() {
+            const studentName = document.getElementById('studentName').value;
+            const courseName = document.getElementById('courseName').value;
+            const grade = document.getElementById('grade').value;
+            const attendanceHours = document.getElementById('attendanceHours').value;
+
+            if(!studentName) {
+                alert('الرجاء إدخال اسم المتدرب');
+                return;
+            }
+
+            // توليد كود تحقق فريد وعشوائي
+            const verificationCode = 'SAD-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+            
+            // رابط التحقق الذي سيفتح عند قراءة الباركود (يوجه إلى صفحة التحقق مع الكود)
+            const verificationUrl = `https://sadarah.top/verify.html?code=${verificationCode}`;
+
+            // 1. حفظ البيانات في Supabase
+            const { error } = await supabaseClient
+                .from('course_certificates')
+                .insert([{ student_name: studentName, course_name: courseName, grade: grade, attendance_hours: attendanceHours, verification_code: verificationCode }]);
+
+            if(error) {
+                alert('حدث خطأ أثناء الحفظ بالسحابة: ' + error.message);
+                return;
+            }
+
+            // 2. توليد صورة QR Code برابط التحقق
+            QRCode.toDataURL(verificationUrl, { width: 150 }, async function (err, qrCodeDataUrl) {
+                if (err) {
+                    console.error(err);
+                    alert('خطأ في توليد الباركود');
+                    return;
+                }
+
+                // 3. إنشاء ملف الـ PDF باستخدام jsPDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+                // تصميم الشهادة بالـ PDF
+                doc.setFillColor(15, 23, 42); // لون خلفية رئيسي فخم (Dark Blue)
+                doc.rect(0, 0, 297, 210, 'F');
+
+                doc.setTextColor(255, 255, 255);
+                doc.setFont("Cairo", "bold");
+                doc.setFontSize(28);
+                doc.text("منصة صدارة للتوظيف والخدمات الرقمية", 148, 30, { align: "center" });
+
+                doc.setFontSize(16);
+                doc.setTextColor(56, 189, 248);
+                doc.text("شهادة اجتياز دورة تدريبية معتمدة", 148, 45, { align: "center" });
+
+                doc.setFontSize(14);
+                doc.setTextColor(203, 213, 225);
+                doc.text("تشهد إدارة منصة صدارة (sadarah.top) بأن المتدرب/ة:", 148, 70, { align: "center" });
+
+                doc.setFontSize(24);
+                doc.setTextColor(255, 255, 255);
+                doc.text(studentName, 148, 88, { align: "center" });
+
+                doc.setFontSize(14);
+                doc.setTextColor(203, 213, 225);
+                doc.text(`لقد اجتاز بنجاح التكوين التدريبي في: ${courseName}`, 148, 108, { align: "center" });
+
+                doc.setFontSize(12);
+                doc.text(`التقدير: ${grade}  |  ساعات الحضور: ${attendanceHours}`, 148, 122, { align: "center" });
+
+                // إضافة صورة الـ QR Code على الشهادة (في الزاوية اليسرى السفلية مثلاً)
+                doc.addImage(qrCodeDataUrl, 'PNG', 20, 150, 40, 40);
+                doc.setFontSize(9);
+                doc.setTextColor(148, 163, 184);
+                doc.text("امسح الرمز للتحقق من صحة الشهادة", 22, 195);
+
+                doc.text(`رقم التحقق: ${verificationCode}`, 230, 180);
+                doc.text("معتمدة رسمياً عبر موقع sadarah.top", 230, 188);
+
+                // حفظ ونزول الملف تلقائياً
+                doc.save(`Certificate_${studentName}.pdf`);
+                alert('تم حفظ بيانات الشهادة في السحابة وتنزيل ملف الـ PDF بنجاح!');
+            });
+        }
+    </script>
+
+</body>
+</html>
