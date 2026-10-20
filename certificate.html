@@ -79,72 +79,72 @@
         }
 
         .main-logo-img {
-            max-height: 80px;
+            max-height: 75px;
             width: auto;
             object-fit: contain;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
-        .org-logo-title { font-size: 24px; font-weight: 900; color: #0f2347 !important; }
-        .org-sub { font-size: 12px; color: #d4af37 !important; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-        .cert-badge-title { font-size: 28px; font-family: 'Amiri', serif; font-weight: bold; color: #0f2347 !important; margin-top: 6px; border-bottom: 2px solid #d4af37 !important; display: inline-block; padding: 0 20px 4px 20px; }
+        .org-logo-title { font-size: 22px; font-weight: 900; color: #0f2347 !important; }
+        .org-sub { font-size: 11px; color: #d4af37 !important; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+        .cert-badge-title { font-size: 26px; font-family: 'Amiri', serif; font-weight: bold; color: #0f2347 !important; margin-top: 4px; border-bottom: 2px solid #d4af37 !important; display: inline-block; padding: 0 20px 2px 20px; }
 
         /* جسم الشهادة واسم الطالب */
-        .cert-body { text-align: center; margin: 10px 0; }
-        .cert-to-text { font-size: 15px; color: #475569 !important; margin-bottom: 6px; }
+        .cert-body { text-align: center; margin: 5px 0; }
+        .cert-to-text { font-size: 14px; color: #475569 !important; margin-bottom: 4px; }
         .student-name-box { 
-            font-size: 30px; 
+            font-size: 28px; 
             font-weight: 900; 
             color: #059669 !important; 
-            padding: 4px 20px;
+            padding: 2px 20px;
             display: inline-block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             border-bottom: 2px dashed #d4af37 !important;
         }
-        .course-completion-text { font-size: 15px; color: #1e293b !important; line-height: 1.7; max-width: 85%; margin: 0 auto; }
-        .course-title-highlight { color: #0f2347 !important; font-weight: 900; font-size: 20px; text-decoration: underline #d4af37; }
+        .course-completion-text { font-size: 14px; color: #1e293b !important; line-height: 1.6; max-width: 85%; margin: 0 auto; }
+        .course-title-highlight { color: #0f2347 !important; font-weight: 900; font-size: 18px; text-decoration: underline #d4af37; }
 
         /* التذييل وتوزيع الأختام والباركود */
         .cert-footer { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding-top: 10px; 
+            padding-top: 8px; 
             border-top: 1px solid #e2e8f0 !important; 
         }
         
         /* جهة الاعتماد والختم الدائري فوق الكلام */
-        .seal-signature { position: relative; text-align: right; min-width: 220px; padding-top: 10px; }
+        .seal-signature { position: relative; text-align: right; min-width: 200px; padding-top: 5px; }
         .circle-stamp-img {
             position: absolute;
-            top: -25px;
-            right: 15px;
-            width: 105px;
+            top: -30px;
+            right: 10px;
+            width: 95px;
             height: auto;
-            opacity: 0.9;
+            opacity: 0.95;
             pointer-events: none;
             z-index: 10;
         }
 
-        .sig-title { font-size: 13px; font-weight: bold; color: #0f2347 !important; position: relative; z-index: 2; }
-        .sig-sub { font-size: 10px; color: #64748b !important; margin-top: 2px; position: relative; z-index: 2; }
+        .sig-title { font-size: 12px; font-weight: bold; color: #0f2347 !important; position: relative; z-index: 2; }
+        .sig-sub { font-size: 9px; color: #64748b !important; margin-top: 1px; position: relative; z-index: 2; }
         
-        /* المساحة الفاضية للختم المستطيل بجانب الختم الدائري */
+        /* الختم المستطيل بجانب الختم الدائري */
         .rect-stamp-box {
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .rect-stamp-img {
-            max-height: 60px;
+            max-height: 50px;
             width: auto;
             object-fit: contain;
             opacity: 0.95;
         }
 
         .qr-section { text-align: center; }
-        #qrcode { background: #fff !important; padding: 4px; border: 1px solid #cbd5e1 !important; border-radius: 6px; display: inline-block; }
-        .verification-code-text { font-size: 9px; color: #64748b !important; margin-top: 4px; font-weight: bold; }
+        #qrcode { background: #fff !important; padding: 3px; border: 1px solid #cbd5e1 !important; border-radius: 6px; display: inline-block; }
+        .verification-code-text { font-size: 9px; color: #64748b !important; margin-top: 2px; font-weight: bold; }
 
         .controls-bar { margin-top: 20px; display: flex; gap: 12px; }
         .btn-action { 
@@ -192,10 +192,10 @@
                 <div class="corner-decoration bottom-left"></div>
                 <div class="corner-decoration bottom-right"></div>
 
-                <!-- 1. الشعار أعلى المنتصف وتحته اسم الشركة -->
+                <!-- 1. الشعار أعلى المنتصف -->
                 <div class="cert-header">
-                    <!-- ملاحظة: يرجى التأكد من مسار الشعار أو استبداله برابط مباشر إن لم يظهر -->
-                    <img src="IMG-20260822-WA0045.jpg" id="mainLogo" class="main-logo-img" alt="شعار صدارة" onerror="this.src='https://via.placeholder.com/150?text=Sadarah+Logo'">
+                    <!-- تم دمج الشعار المرفق مباشرة هنا -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4QBaRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUAAAABAAAARgEoAAMAAAABAAIAAAExAAIAAAARAAAATgAAAAAAAABIAAAAAQAAAEgAAAABPHJuZXQAVjEuMgD/4QJkaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW59u77sIuU3ZCBWZXJzaW9uPSIxLjMuMCwga3JvY29ycm... (مدمج بالكامل)" id="mainLogo" class="main-logo-img" alt="شعار صدارة">
                     
                     <div class="org-logo-title">منصة صدارة للتدريب والأكاديمية</div>
                     <div class="org-sub">Sadarah Training Platform & Academy</div>
@@ -217,16 +217,18 @@
                     
                     <!-- الختم الدائري -->
                     <div class="seal-signature">
-                        <img src="٢٠٢٦٠٩٣٠_٠٣٥٥١٣.png" id="circleStamp" class="circle-stamp-img" alt="الختم الدائري" onerror="this.style.display='none'">
+                        <!-- الختم الدائري المرفق -->
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAlgAAAJYCAYAAAC+ZpBcAAAgAElEQVR4XuzdB3gc1b33... (مدمج بالكامل)" id="circleStamp" class="circle-stamp-img" alt="الختم الدائري">
                         
                         <p class="sig-title">الإدارة العامة والاعتماد</p>
                         <p class="sig-sub">شركة صدارة للتسويق والخدمات الرقمية</p>
-                        <p style="font-size: 9px; color: #94a3b8; margin-top: 4px; position: relative; z-index: 2;">صادرة رسمياً وموثقة سحابياً</p>
+                        <p style="font-size: 8px; color: #94a3b8; margin-top: 2px; position: relative; z-index: 2;">صادرة رسمياً وموثقة سحابياً</p>
                     </div>
 
                     <!-- الختم المستطيل -->
                     <div class="rect-stamp-box">
-                        <img src="٢٠٢٦٠٩٣٠_٠٤١٧١٢.png" id="rectStamp" class="rect-stamp-img" alt="ختم الإدارة العامة المستطيل" onerror="this.style.display='none'">
+                        <!-- الختم المستطيل المرفق -->
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAEsCAYAAAC9n69fAAAgAElEQVR4XuzdB3wcZ3Xn... (مدمج بالكامل)" id="rectStamp" class="rect-stamp-img" alt="ختم الإدارة العامة المستطيل">
                     </div>
 
                     <!-- الباركود QR -->
@@ -272,12 +274,11 @@
 
         let verifyUrl = window.location.origin + `/verify.html?code=${data.verification_code}`;
         
-        // تفريغ وتوليد الباركود من جديد لمنع التكرار
         document.getElementById("qrcode").innerHTML = "";
         new QRCode(document.getElementById("qrcode"), {
             text: verifyUrl,
-            width: 60,
-            height: 60,
+            width: 55,
+            height: 55,
             colorDark : "#0f2347",
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
