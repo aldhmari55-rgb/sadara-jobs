@@ -3,93 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الشاملة - منصة صدارة للخدمات الرقمية</title>
-    <!-- خط القاهرة الرسمي -->
+    <title>لوحة التحكم الشاملة - منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS لتصميم سريع واحترافي -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <style>
         * { font-family: 'Cairo', sans-serif; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-6">
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 md:p-6">
 
-    <div class="max-w-6xl mx-auto">
-        <!-- ترويسة لوحة التحكم -->
-        <header class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-8 shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- ترويسة اللوحة -->
+        <header class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-6 shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
-                <h1 class="text-2xl font-black text-emerald-400">لوحة تحكم منصة صدارة</h1>
-                <p class="text-slate-400 text-sm mt-1">إدارة الشهادات، الساعات التدريبية، وكشف الإصدارات الرقمية</p>
+                <h1 class="text-2xl font-black text-emerald-400">لوحة التحكم المركزية - منصة صدارة</h1>
+                <p class="text-slate-400 text-sm mt-1">الإدارة الشاملة للشهادات، الدورات، البنرات، الوظائف، الحسابات والشركاء</p>
             </div>
-            <div class="flex gap-3">
-                <a href="certificate.html" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-md">
-                    🔗 معاينة صفحة الشهادة
-                </a>
-            </div>
+            <a href="certificate.html" target="_blank" class="bg-emerald-600 hover:bg-emerald-750 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-md">
+                🔗 معاينة نموذج الشهادة
+            </a>
         </header>
 
-        <!-- شبكة الإدارة (إضافة شهادة جديدة + الإحصائيات) -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            
-            <!-- نموذج إصدار شهادة جديدة -->
-            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl lg:col-span-1">
-                <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">➕ إصدار شهادة جديدة</h2>
-                <form id="certForm" onsubmit="createNewCertificate(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1">اسم المتدرب الثلاثي/الرباعي</label>
-                        <input type="text" id="fullName" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none" placeholder="مثال: عبدالرحمن عبدالله الذماري">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1">مسمى الدورة التدريبية</label>
-                        <input type="text" id="courseName" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none" placeholder="مثال: إدارة الأعمال والتسويق الرقمي">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
+        <!-- شريط التنقل بين الأقسام (التبويبات) -->
+        <nav class="flex flex-wrap gap-2 mb-6 bg-slate-800 p-2 rounded-xl border border-slate-700">
+            <button onclick="switchTab('certificates')" id="btn-certificates" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-lg font-bold text-sm bg-emerald-600 text-white transition">🎓 الشهادات والدورات</button>
+            <button onclick="switchTab('banners')" id="btn-banners" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">🖼️ البنرات الإعلانية</button>
+            <button onclick="switchTab('jobs')" id="btn-jobs" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">💼 الوظائف</button>
+            <button onclick="switchTab('talents')" id="btn-talents" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">⭐ الكفاءات والخبراء</button>
+            <button onclick="switchTab('users')" id="btn-users" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">👥 الحسابات والمسجلين</button>
+            <button onclick="switchTab('partners')" id="btn-partners" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 transition">🤝 شركاء النجاح</button>
+        </nav>
+
+        <!-- محتوى التبويبات -->
+
+        <!-- 1. تبويب الشهادات والدورات -->
+        <div id="tab-certificates" class="tab-content active space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- نموذج إصدار شهادة -->
+                <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-lg">
+                    <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">➕ إصدار شهادة جديدة</h2>
+                    <form id="certForm" onsubmit="createNewCertificate(event)" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-300 mb-1">عدد الساعات</label>
-                            <input type="number" id="courseHours" value="30" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none">
+                            <label class="block text-xs font-bold text-slate-300 mb-1">اسم المتدرب</label>
+                            <input type="text" id="fullName" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none" placeholder="عبدالرحمن الذماري">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-300 mb-1">كود الشهادة (السيريال)</label>
-                            <input type="text" id="certCode" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none" placeholder="SAD-2026-XXXX">
+                            <label class="block text-xs font-bold text-slate-300 mb-1">مسمى الدورة التدريبية</label>
+                            <input type="text" id="courseName" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none" placeholder="التسويق الرقمي">
                         </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-300 mb-1">عدد الساعات</label>
+                                <input type="number" id="courseHours" value="30" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-300 mb-1">كود الشهادة</label>
+                                <input type="text" id="certCode" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg transition shadow-md">حفظ وإصدار الشهادة</button>
+                    </form>
+                </div>
+
+                <!-- جدول كشف الشهادات -->
+                <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-lg lg:col-span-2 flex flex-col">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+                        <h2 class="text-lg font-bold text-emerald-400">📋 كشف الشهادات والدورات</h2>
+                        <button onclick="loadCertificates()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-md transition">🔄 تحديث القائمة</button>
                     </div>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg transition shadow-lg mt-2">
-                        حفظ وإصدار الشهادة
-                    </button>
-                </form>
-            </div>
-
-            <!-- كشف وإدارة الشهادات (الجدول الرئيسي) -->
-            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl lg:col-span-2 flex flex-col">
-                <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
-                    <h2 class="text-lg font-bold text-emerald-400">📋 كشف الشهادات الصادرة</h2>
-                    <button onclick="loadCertificates()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-md transition text-slate-200">🔄 تحديث القائمة</button>
-                </div>
-
-                <div class="overflow-x-auto flex-grow">
-                    <table class="w-full text-right text-sm">
-                        <thead class="bg-slate-900 text-slate-400 uppercase text-xs">
-                            <tr>
-                                <th class="p-3">السيريال</th>
-                                <th class="p-3">اسم المتدرب</th>
-                                <th class="p-3">الدورة</th>
-                                <th class="p-3">الساعات</th>
-                                <th class="p-3">الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="certificatesTableBody" class="divide-y divide-slate-700 text-slate-300">
-                            <tr>
-                                <td colspan="5" class="text-center p-4 text-slate-500">جاري تحميل البيانات...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto flex-grow">
+                        <table class="w-full text-right text-sm">
+                            <thead class="bg-slate-900 text-slate-400 uppercase text-xs">
+                                <tr>
+                                    <th class="p-3">السيريال</th>
+                                    <th class="p-3">اسم المتدرب</th>
+                                    <th class="p-3">الدورة</th>
+                                    <th class="p-3">الساعات</th>
+                                    <th class="p-3">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="certificatesTableBody" class="divide-y divide-slate-700 text-slate-300">
+                                <tr><td colspan="5" class="text-center p-4 text-slate-500">جاري التحميل...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-
         </div>
+
+        <!-- 2. تبويب البنرات الإعلانية -->
+        <div id="tab-banners" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+            <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">🖼️ إدارة البنرات الإعلانية والعروض</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <input type="text" placeholder="عنوان البنر" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm">
+                <input type="text" placeholder="رابط صورة البنر (URL)" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm">
+                <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm transition">إضافة بنر جديد</button>
+            </div>
+            <p class="text-slate-400 text-sm">قسم مخصص للتحكم بالبنرات الإعلانية المتحركة وثابتة الواجهة.</p>
+        </div>
+
+        <!-- 3. تبويب الوظائف -->
+        <div id="tab-jobs" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+            <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">💼 إدارة الوظائف والفرص (صدارة للتوظيف)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <input type="text" placeholder="مسمى الوظيفة" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm">
+                <input type="text" placeholder="اسم الشركة / الجهة" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm">
+                <input type="text" placeholder="الموقع / المدينة" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm">
+                <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm transition">نشر وظيفة</button>
+            </div>
+            <p class="text-slate-400 text-sm">إدارة سوق العمل والفرص الوظيفية المنشورة عبر المنصة.</p>
+        </div>
+
+        <!-- 4. تبويب الكفاءات والخبراء -->
+        <div id="tab-talents" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+            <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">⭐ إدارة الكفاءات والمدربين</h2>
+            <p class="text-slate-400 text-sm">إدارة ملفات الخبراء، المدربين المعتمدين، والمستشارين في منصة صدارة.</p>
+        </div>
+
+        <!-- 5. تبويب الحسابات والمسجلين -->
+        <div id="tab-users" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+            <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">👥 قاعدة بيانات المسجلين والحسابات</h2>
+            <p class="text-slate-400 text-sm">إدارة بيانات الطلاب، العملاء، والصلاحيات الخاصة بالحسابات.</p>
+        </div>
+
+        <!-- 6. تبويب شركاء النجاح -->
+        <div id="tab-partners" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+            <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">🤝 شركاء النجاح والجهات المعتمدة</h2>
+            <p class="text-slate-400 text-sm">إدارة شعارات الجهات والشركات الشريكة لمنصة صدارة.</p>
+        </div>
+
     </div>
 
     <script>
@@ -97,13 +142,25 @@
         const SUPABASE_ANON_KEY = 'ضع_مفتاح_ANON_KEY_هنا';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // توليد سيريال تلقائي عند فتح الصفحة
+        // نظام تبديل التبويبات بسلاسة
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-emerald-600', 'text-white');
+                el.classList.add('bg-slate-700', 'text-slate-300');
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.remove('bg-slate-700', 'text-slate-300');
+            activeBtn.classList.add('bg-emerald-600', 'text-white');
+        }
+
         function generateRandomSerial() {
             const randomNum = Math.floor(1000 + Math.random() * 9000);
             document.getElementById('certCode').value = `SAD-2026-${randomNum}`;
         }
 
-        // جلب وعرض قائمة الشهادات في الجدول
         async function loadCertificates() {
             const tbody = document.getElementById('certificatesTableBody');
             tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-500">جاري التحديث...</td></tr>`;
@@ -117,7 +174,7 @@
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-500">لا توجد شهادات مسجلة حالياً.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-500">لا توجد شهادات مسجلة.</td></tr>`;
                     return;
                 }
 
@@ -138,15 +195,13 @@
                     tbody.appendChild(row);
                 });
             } catch (err) {
-                console.error("خطأ في جلب الكشف:", err);
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-rose-400">فشل تحميل البيانات من قاعدة الداتا.</td></tr>`;
+                console.error("خطأ:", err);
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-rose-400">خطأ في جلب بيانات الداتا.</td></tr>`;
             }
         }
 
-        // إضافة شهادة جديدة للقاعدة
         async function createNewCertificate(event) {
             event.preventDefault();
-            
             const full_name = document.getElementById('fullName').value.trim();
             const course_name = document.getElementById('courseName').value.trim();
             const hours = parseInt(document.getElementById('courseHours').value) || 30;
@@ -158,32 +213,23 @@
                     .insert([{ certificate_code, full_name, course_name, hours }]);
 
                 if (error) throw error;
-
-                alert('تم إصدار وحفظ الشهادة بنجاح في المنصة!');
+                alert('تم إصدار الشهادة بنجاح!');
                 document.getElementById('certForm').reset();
                 generateRandomSerial();
                 loadCertificates();
             } catch (err) {
-                alert('خطأ أثناء الحفظ: تأكد من أن كود الشهادة (السيريال) غير مكرر مسبقاً.');
-                console.error(err);
+                alert('خطأ أثناء الحفظ (تأكد أن السيريال غير مكرر).');
             }
         }
 
-        // حذف شهادة من الكشف
         async function deleteCertificate(id) {
-            if (!confirm('هل أنت متأكد من حذف هذه الشهادة نهائياً من الكشف؟')) return;
-
+            if (!confirm('هل أنت متأكد من الحذف؟')) return;
             try {
-                const { error } = await supabaseClient
-                    .from('certificates')
-                    .delete()
-                    .eq('id', id);
-
+                const { error } = await supabaseClient.from('certificates').delete().eq('id', id);
                 if (error) throw error;
                 loadCertificates();
             } catch (err) {
-                alert('فشل حذف الشهادة.');
-                console.error(err);
+                alert('فشل الحذف.');
             }
         }
 
