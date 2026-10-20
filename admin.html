@@ -35,7 +35,7 @@
 <body>
 
     <div class="header">
-        <h1>لوحة تحكم منصة صدارة المطلقة 🛠️</h1>
+        <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
         <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، الشارة الزرقاء، والتخزين السحابي الفعلي</p>
     </div>
 
@@ -346,18 +346,30 @@
             });
         }
 
-        // ==================== الشركاء ====================
+        // ==================== الشركاء (مصححة ومضمونة) ====================
         async function addPartner() {
             const file = document.getElementById('partnerFile').files[0];
             const msg = document.getElementById('partnerMsg');
-            if (!file) { alert('اختر شعار الشريك'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري رفع شعار الشريك الفعلي...';
+            if (!file) { alert('اختر شعار الشريك أولاً'); return; }
+            
+            msg.style.color = 'blue'; 
+            msg.textContent = 'جاري رفع شعار الشريك بالسحابة... ⏳';
+            
             let url = await uploadFileStrict(file);
             if (url) { 
-                await db.from('partners').insert([{ logo: url }]); 
+                let { error } = await db.from('partners').insert([{ logo: url }]); 
+                if (error) {
+                    msg.style.color = 'red'; 
+                    msg.textContent = 'خطأ في الحفظ: ' + error.message;
+                    return;
+                }
                 document.getElementById('partnerFile').value = ''; 
-                msg.style.color = 'green'; msg.textContent = 'تم إضافة الشريك بنجاح! ✅';
+                msg.style.color = 'green'; 
+                msg.textContent = 'تم إضافة الشريك بنجاح وظهر في الشريط! ✅';
                 loadPartners(); 
+            } else {
+                msg.style.color = 'red';
+                msg.textContent = 'فشل رفع الصورة للسحابة.';
             }
         }
 
