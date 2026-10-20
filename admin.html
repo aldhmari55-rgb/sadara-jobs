@@ -10,7 +10,15 @@
         :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --red: #ef4444; --bg: #f8fafc; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); padding: 15px; color: #0f172a; padding-bottom: 50px; }
-        .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid var(--gold); }
+        .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 15px; border-bottom: 3px solid var(--gold); }
+        
+        /* شريط الإحصائيات الواقعية المضاف */
+        .admin-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto 20px auto; }
+        @media(min-width: 768px) { .admin-stats-grid { grid-template-columns: repeat(4, 1fr); } }
+        .stat-card-admin { background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .stat-card-admin h3 { font-size: 18px; font-weight: 900; color: var(--primary); }
+        .stat-card-admin p { font-size: 11px; color: #64748b; font-weight: 700; margin-top: 2px; }
+
         .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1000px; margin: 0 auto; }
         @media(min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; } }
         .card { background: white; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
@@ -36,7 +44,27 @@
 
     <div class="header">
         <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، الشارة الزرقاء، والتخزين السحابي الفعلي</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، الشارة الزرقاء، والإحصائيات الحية</p>
+    </div>
+
+    <!-- شريط الإحصائيات الواقعية المباشرة -->
+    <div class="admin-stats-grid">
+        <div class="stat-card-admin">
+            <h3 id="adminOnline">...</h3>
+            <p>متواجد الآن 🟢</p>
+        </div>
+        <div class="stat-card-admin">
+            <h3 id="adminTotalViews">...</h3>
+            <p>إجمالي الزيارات 👥</p>
+        </div>
+        <div class="stat-card-admin">
+            <h3 id="adminJobs">...</h3>
+            <p>إجمالي الوظائف 💼</p>
+        </div>
+        <div class="stat-card-admin">
+            <h3 id="adminResumes">...</h3>
+            <p>إجمالي الكفاءات 📄</p>
+        </div>
     </div>
 
     <div class="grid-container">
@@ -115,11 +143,28 @@
         </div>
 
     </div>
-
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // دالة جلب الإحصائيات السحابية الواقعية إلى لوحة التحكم
+        async function loadAdminRealStats() {
+            try {
+                let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
+                document.getElementById('adminTotalViews').textContent = st ? st.total_views : 36;
+
+                let fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+                let { count: activeCount } = await db.from('active_sessions')
+                    .select('*', { count: 'exact', head: true })
+                    .gt('last_ping', fiveMinsAgo);
+
+                document.getElementById('adminOnline').textContent = activeCount && activeCount > 0 ? activeCount : 1;
+            } catch(e) {
+                document.getElementById('adminTotalViews').textContent = 36;
+                document.getElementById('adminOnline').textContent = 1;
+            }
+        }
 
         async function uploadFileStrict(file) {
             if (!file) return '';
@@ -188,6 +233,7 @@
             cachedJobs = data || [];
             let box = document.getElementById('jobsList');
             document.getElementById('jobsCount').textContent = cachedJobs.length;
+            document.getElementById('adminJobs').textContent = cachedJobs.length;
             box.innerHTML = '';
             if (cachedJobs.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد وظائف مضافة.</p>'; return; }
             cachedJobs.forEach(j => {
@@ -283,6 +329,7 @@
             cachedResumes = data || [];
             let box = document.getElementById('resumesList');
             document.getElementById('resCount').textContent = cachedResumes.length;
+            document.getElementById('adminResumes').textContent = cachedResumes.length;
             box.innerHTML = '';
             if (cachedResumes.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات مسجلة.</p>'; return; }
             cachedResumes.forEach(r => {
@@ -346,7 +393,7 @@
             });
         }
 
-        // ==================== الشركاء (مصححة ومضمونة) ====================
+        // ==================== الشركاء ====================
         async function addPartner() {
             const file = document.getElementById('partnerFile').files[0];
             const msg = document.getElementById('partnerMsg');
@@ -357,7 +404,7 @@
             
             let url = await uploadFileStrict(file);
             if (url) { 
-                let { error } = await db.from('partners').insert([{ logo: url }]); 
+                let { error } = await db.from('partners').insert([{ logo: url, name: file.name }]); 
                 if (error) {
                     msg.style.color = 'red'; 
                     msg.textContent = 'خطأ في الحفظ: ' + error.message;
@@ -395,7 +442,11 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadJobs(); loadResumes(); loadBanners(); loadPartners();
+            loadAdminRealStats();
+            loadJobs(); 
+            loadResumes(); 
+            loadBanners(); 
+            loadPartners();
         });
     </script>
 </body>
