@@ -292,20 +292,26 @@
             document.getElementById('courseHours').innerText = studentData.hours;
             document.getElementById('certSerial').innerText = studentData.certificate_code;
 
-            // 🌟 الربط الحقيقي: توجيه رمز الـ QR ديناميكياً إلى رابط هذه الشهادة بالتحديد ليعمل على أي هاتف فور مسحه
-            const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.set('id', studentData.certificate_code);
-            const verificationUrl = currentUrl.toString();
+            // 🌟 الربط المباشر المحدث للـ QR Code: تضمين بيانات الشهادة الكاملة بداخل الرمز
+            const qrTextData = 
+`--- توثيق شهادة رقمية رسمية ---
+منصة صدارة للتدريب والتنمية
+اسم الطالب: ${studentData.full_name}
+الدورة التدريبية: ${studentData.course_name}
+رقم الشهادة: ${studentData.certificate_code}
+تاريخ الإصدار: ${studentData.created_at}
+عدد الساعات: ${studentData.hours} ساعة تدريبية
+الحالة: شهادة معتمدة وموثقة`;
 
             const qrContainer = document.getElementById("qrcode");
             qrContainer.innerHTML = "";
             new QRCode(qrContainer, {
-                text: verificationUrl,
+                text: qrTextData,
                 width: 78,
                 height: 78,
                 colorDark: "#065f46",
                 colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
+                correctLevel: QRCode.CorrectLevel.M
             });
         }
 
