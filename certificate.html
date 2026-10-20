@@ -100,7 +100,7 @@
             z-index: 1;
         }
 
-        /* نصوص الشهادة والـ QR فوق الصورة */
+        /* نصوص الشهادة والـ QR فوق الصورة (مصححة ومفعلة) */
         .cert-content {
             position: absolute;
             top: 0;
@@ -233,8 +233,8 @@
         <!-- صورة الخلفية الرسمية -->
         <img class="cert-bg-img" src="https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.png" crossorigin="anonymous" alt="Certificate Background">
 
-        <!-- عناصر الشهادة -->
-        .cert-content">
+        <!-- عناصر الشهادة والنصوص والباركود -->
+        <div class="cert-content">
             <div class="cert-field student-name" id="studentName">---</div>
             <div class="cert-field intro-text">وذلك لحضوره بنجاح الدورة التدريبية الموسومة بـ:</div>
             <div class="cert-field course-title" id="courseTitle">---</div>
@@ -295,13 +295,12 @@
             document.getElementById('courseHours').innerText = studentData.hours;
             document.getElementById('certSerial').innerText = studentData.certificate_code;
 
-            // 🌟 تنسيق بيانات الباركود لتظهر بشكل مباشر ومضمون التوليد دون مشاكل حجم البيانات
+            // تنسيق بيانات الباركود لتظهر بشكل مباشر ومستقر
             const qrPayload = `SADARAH CERTIFICATE\nID: ${studentData.certificate_code}\nName: ${studentData.full_name}\nCourse: ${studentData.course_name}\nDate: ${studentData.created_at}\nHours: ${studentData.hours}h`;
 
             const qrContainer = document.getElementById("qrcode");
             qrContainer.innerHTML = "";
             
-            // توليد الـ QR بالاعتماد على مكتبة qrcode.js وبدقة عالية ومستقرة
             try {
                 new QRCode(qrContainer, {
                     text: qrPayload,
