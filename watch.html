@@ -6,6 +6,11 @@
     <title>مشاهدة الدورة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- مكتبة مشغل الفيديو المحترفة لتغطية يوتيوب وتحويله لمشغل خاص بالمنصة -->
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+
     <style>
         :root { --primary: #0f2347; --gold: #d4af37; --bg: #f8fafc; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
@@ -14,12 +19,21 @@
         h1 { color: var(--primary); font-size: 20px; margin-bottom: 5px; }
         .desc { color: #64748b; font-size: 13px; margin-bottom: 15px; }
         
-        /* مشغل الفيديو مع طبقة العزل لمنع الانتقال لليوتيوب */
-        .video-box-wrapper { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 10px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .video-box-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        
-        /* طبقة شفافة تعزل الجزء العلوي حيث يظهر اسم القناة لمنع الضغط عليه */
-        .top-shield { position: absolute; top: 0; left: 0; width: 100%; height: 60px; z-index: 10; background: transparent; cursor: default; }
+        /* حاوية مشغل الفيديو المخصص */
+        .player-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 0 8px 20px rgba(15, 35, 71, 0.15);
+            margin-bottom: 20px;
+        }
+
+        /* تخصيص ألوان مشغل منصة صدارة */
+        .plyr--full-ui input[type=range] { color: #2563eb; }
+        .plyr__control--overlaid { background: rgba(15, 35, 71, 0.9); }
+        .plyr--video .plyr__control:hover { background: #2563eb; }
 
         .lessons-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; }
         .lesson-item { padding: 12px; background: #f1f5f9; margin-bottom: 8px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid transparent; }
@@ -38,8 +52,10 @@
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // دالة تحويل وتأمين روابط يوتيوب لمنع الانتقال للخارج وإخفاء الشعار والتوصيات
-    function getCleanSecureEmbedUrl(url) {
+    let playerInstance = null;
+
+    // استخراج معرف فيديو يوتيوب من أي رابط مدخل
+    function getYouTubeId(url) {
         if (!url) return '';
         let videoId = '';
         if (url.includes('embed/')) {
@@ -49,12 +65,7 @@
         } else if (url.includes('watch?v=')) {
             videoId = url.split('watch?v=')[1].split('&')[0];
         }
-
-        if (videoId) {
-            // إرسال معامل الحماية لمنع المقترحات وإخفاء الهوية الجانبية
-            return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&showinfo=0&disablekb=1&iv_load_policy=3`;
-        }
-        return url;
+        return videoId || url;
     }
 
     async function loadCourseData() {
@@ -75,16 +86,14 @@
         }
 
         let lessons = course.lessons || [];
-        let firstVideo = lessons.length > 0 ? getCleanSecureEmbedUrl(lessons[0].video_url) : '';
+        let firstVideoId = lessons.length > 0 ? getYouTubeId(lessons[0].video_url) : '';
 
         let html = `
             <h1>🎓 ${course.title}</h1>
             <p class="desc">${course.description || 'لا يوجد وصف متاح.'}</p>
             
-            <div class="video-box-wrapper">
-                <!-- طبقة حماية تمنع النقر على العنوان واسم القناة بالعلوي -->
-                <div class="top-shield"></div>
-                <iframe id="mainVideoPlayer" src="${firstVideo}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="player-wrapper">
+                <div id="player" data-plyr-provider="youtube" data-plyr-embed-id="${firstVideoId}"></div>
             </div>
 
             <div class="lessons-title">📚 قائمة دروس الدورة (${lessons.length} دروس)</div>
@@ -93,9 +102,9 @@
 
         lessons.forEach((l, idx) => {
             let activeClass = idx === 0 ? 'active' : '';
-            let safeUrl = getCleanSecureEmbedUrl(l.video_url);
+            let vId = getYouTubeId(l.video_url);
             html += `
-                <div class="lesson-item ${activeClass}" onclick="playLesson('${safeUrl}', this)">
+                <div class="lesson-item ${activeClass}" onclick="playLesson('${vId}', this)">
                     <span>🔹 الدرس ${idx + 1}: ${l.lesson_title}</span>
                     <span style="font-size: 11px; opacity: 0.9;">مشاهدة ▶️</span>
                 </div>
@@ -104,10 +113,24 @@
 
         html += `</div>`;
         container.innerHTML = html;
+
+        // تشغيل المشغل المخصص وحظر تحويلات يوتيوب
+        playerInstance = new Plyr('#player', {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+            youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
+        });
     }
 
-    function playLesson(videoUrl, element) {
-        document.getElementById('mainVideoPlayer').src = videoUrl;
+    function playLesson(videoId, element) {
+        if (playerInstance) {
+            playerInstance.source = {
+                type: 'video',
+                sources: [{
+                    src: videoId,
+                    provider: 'youtube',
+                }]
+            };
+        }
         document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('active'));
         element.classList.add('active');
     }
