@@ -89,7 +89,7 @@
             background-color: #ffffff;
         }
 
-        /* صورة الخلفية كعنصر صريح لتضمن الظهور في الطباعة و PDF */
+        /* صورة الخلفية الرسمية */
         .cert-bg-img {
             position: absolute;
             top: 0;
@@ -100,7 +100,7 @@
             z-index: 1;
         }
 
-        /* الطبقة التي تحتوي كافة النصوص والباركود فوق الصورة */
+        /* نصوص الشهادة والـ QR فوق الصورة */
         .cert-content {
             position: absolute;
             top: 0;
@@ -197,7 +197,6 @@
             z-index: 10;
         }
 
-        /* إعدادات الطباعة المباشرة من المتصفح */
         @media print {
             body { 
                 background: none; 
@@ -228,10 +227,10 @@
     <div class="certificate-wrapper" id="certificateCard">
         <div id="loadingOverlay" class="loading-overlay">جاري تحميل بيانات الشهادة...</div>
 
-        <!-- صورة الخلفية المباشرة الرسمية -->
+        <!-- صورة الخلفية الرسمية -->
         <img class="cert-bg-img" src="https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.png" crossorigin="anonymous" alt="Certificate Background">
 
-        <!-- نصوص وعناصر الشهادة فوق الخلفية -->
+        <!-- عناصر الشهادة -->
         <div class="cert-content">
             <div class="cert-field student-name" id="studentName">---</div>
             <div class="cert-field intro-text">وذلك لحضوره بنجاح الدورة التدريبية الموسومة بـ:</div>
@@ -248,7 +247,6 @@
 
     <script>
         const SUPABASE_URL = 'https://lvutrzswngpkjfamgact.supabase.co';
-        // ضع مفتاح ANON KEY الخاص بمشروعك في المتغير أدناه
         const SUPABASE_ANON_KEY = 'ضع_مفتاح_ANON_KEY_هنا';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -264,7 +262,6 @@
                     .single();
 
                 if (error || !data) {
-                    // بيانات تجريبية في حال عدم الربط أو التخزين المباشر
                     renderCertificateData({
                         full_name: 'عبدالرحمن عبدالله صالح الذماري',
                         course_name: 'إدارة الأعمال والتسويق الرقمي الحديث',
@@ -273,7 +270,6 @@
                         hours: '30'
                     });
                 } else {
-                    // جلب البيانات الفعلية من جدول قاعدة البيانات بما فيها حقل الساعات hours
                     renderCertificateData({
                         full_name: data.full_name,
                         course_name: data.course_name,
@@ -296,7 +292,10 @@
             document.getElementById('courseHours').innerText = studentData.hours;
             document.getElementById('certSerial').innerText = studentData.certificate_code;
 
-            const verificationUrl = `https://sadarajobs.com/verify-certificate?id=${studentData.certificate_code}`;
+            // 🌟 الربط الحقيقي: توجيه رمز الـ QR ديناميكياً إلى رابط هذه الشهادة بالتحديد ليعمل على أي هاتف فور مسحه
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('id', studentData.certificate_code);
+            const verificationUrl = currentUrl.toString();
 
             const qrContainer = document.getElementById("qrcode");
             qrContainer.innerHTML = "";
@@ -310,7 +309,6 @@
             });
         }
 
-        // تنزيل الصورة PNG
         function downloadPNG() {
             const certElement = document.getElementById('certificateCard');
             html2canvas(certElement, { scale: 3, useCORS: true, allowTaint: true }).then(canvas => {
@@ -322,7 +320,6 @@
             });
         }
 
-        // تنزيل ملف PDF مباشر
         function downloadPDF() {
             const { jsPDF } = window.jspdf;
             const certElement = document.getElementById('certificateCard');
