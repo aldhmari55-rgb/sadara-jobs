@@ -12,7 +12,7 @@
         body { background: var(--bg); padding: 15px; color: #0f172a; padding-bottom: 50px; }
         .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 15px; border-bottom: 3px solid var(--gold); }
         
-        /* شريط الإحصائيات الواقعية المضاف */
+        /* شريط الإحصائيات الواقعية المباشرة */
         .admin-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto 20px auto; }
         @media(min-width: 768px) { .admin-stats-grid { grid-template-columns: repeat(4, 1fr); } }
         .stat-card-admin { background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
@@ -122,7 +122,13 @@
             <div class="list-box" id="resumesList">جاري التحميل...</div>
         </div>
 
-        <!-- 3. البنرات الإعلانية -->
+        <!-- 3. إدارة المستخدمين المسجلين (المضافة حديثاً) -->
+        <div class="card">
+            <h2><span>👥 المستخدمون المسجلون</span><span class="badge" id="usersCount">0</span></h2>
+            <div class="list-box" id="usersList">جاري التحميل...</div>
+        </div>
+
+        <!-- 4. البنرات الإعلانية -->
         <div class="card">
             <h2>🖼️ البنرات الإعلانية (السلايدر) <span class="badge" id="bannersCount">0</span></h2>
             <label>رفع صورة البنر</label>
@@ -132,7 +138,7 @@
             <div class="list-box" id="bannersList"></div>
         </div>
 
-        <!-- 4. شركاء النجاح -->
+        <!-- 5. شركاء النجاح -->
         <div class="card">
             <h2>🤝 شركاء النجاح (الشريط) <span class="badge" id="partnersCount">0</span></h2>
             <label>رفع شعار الشريك</label>
@@ -368,6 +374,34 @@
             window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
+        // ==================== المستخدمون المسجلون (المضافة حديثاً) ====================
+        async function loadRegisteredUsers() {
+            let { data, error } = await db.from('users').select('*').order('id', {ascending: false});
+            let box = document.getElementById('usersList');
+            document.getElementById('usersCount').textContent = data ? data.length : 0;
+            box.innerHTML = '';
+            
+            if (!data || data.length === 0) {
+                box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد حسابات مسجلة حتى الآن.</p>';
+                return;
+            }
+            
+            data.forEach(u => {
+                let dateFormatted = u.created_at ? new Date(u.created_at).toLocaleDateString('ar-SA') : '-';
+                box.innerHTML += `<div class="item-row">
+                    <div class="row-header">
+                        <strong>👤 ${u.full_name || 'مستخدم'}</strong>
+                        <span style="font-size:10px; color:#64748b;">${dateFormatted}</span>
+                    </div>
+                    <div style="color:#475569; font-size:11px; direction:ltr; text-align:right;">📱 ${u.phone}</div>
+                    <div class="action-btns">
+                        <a href="https://wa.me/${u.phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none;">مراسلة واتساب 💬</a>
+                        <button class="btn-sm btn-del" onclick="deleteItem('users', ${u.id})">حذف 🗑️</button>
+                    </div>
+                </div>`;
+            });
+        }
+
         // ==================== البنرات ====================
         async function addBanner() {
             const file = document.getElementById('bannerFile').files[0];
@@ -436,6 +470,7 @@
                 if (error) { alert('خطأ في الحذف: ' + error.message); return; }
                 if (table === 'jobs') loadJobs();
                 if (table === 'resumes') loadResumes();
+                if (table === 'users') loadRegisteredUsers();
                 if (table === 'banners') loadBanners();
                 if (table === 'partners') loadPartners();
             }
@@ -445,6 +480,7 @@
             loadAdminRealStats();
             loadJobs(); 
             loadResumes(); 
+            loadRegisteredUsers();
             loadBanners(); 
             loadPartners();
         });
