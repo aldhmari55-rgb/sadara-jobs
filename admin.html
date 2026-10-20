@@ -115,6 +115,7 @@
         </div>
 
     </div>
+
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
@@ -164,12 +165,8 @@
 
             let res = editId ? await db.from('jobs').update(payload).eq('id', editId) : await db.from('jobs').insert([payload]);
             if (res.error) {
-                delete payload.is_verified;
-                res = editId ? await db.from('jobs').update(payload).eq('id', editId) : await db.from('jobs').insert([payload]);
-                if (res.error) {
-                    msg.style.color = 'red'; msg.textContent = 'خطأ من قاعدة البيانات: ' + res.error.message;
-                    return;
-                }
+                msg.style.color = 'red'; msg.textContent = 'خطأ من قاعدة البيانات: ' + res.error.message;
+                return;
             }
 
             msg.style.color = 'green'; msg.textContent = 'تم حفظ الوظيفة ونشرها بنجاح تام! ✅';
@@ -249,6 +246,7 @@
             }
 
             let payload = {
+                full_name: name,
                 name: name,
                 title: name,
                 job_title: title,
@@ -261,13 +259,8 @@
 
             let res = editId ? await db.from('resumes').update(payload).eq('id', editId) : await db.from('resumes').insert([payload]);
             if (res.error) {
-                let simplePayload = { title: name, experience: title + (exp ? " - " + exp : ""), phone: phone, is_verified: isVerified };
-                if (imgUrl) simplePayload.image = imgUrl;
-                res = editId ? await db.from('resumes').update(simplePayload).eq('id', editId) : await db.from('resumes').insert([simplePayload]);
-                if (res.error) {
-                    msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
-                    return;
-                }
+                msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
+                return;
             }
 
             msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة بالاسم والتخصص والصورة بنجاح حقيقي! ✅';
@@ -293,7 +286,7 @@
             box.innerHTML = '';
             if (cachedResumes.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات مسجلة.</p>'; return; }
             cachedResumes.forEach(r => {
-                let displayName = r.name || r.title || 'كفاءة';
+                let displayName = r.full_name || r.name || r.title || 'كفاءة';
                 let displayJob = r.job_title || r.specialty || '-';
                 let badge = r.is_verified ? ' 🔵' : '';
                 let imgTag = r.image ? `<img src="${r.image}" class="preview-img">` : '';
@@ -318,7 +311,7 @@
             let r = cachedResumes.find(item => item.id === id);
             if (!r) return;
             document.getElementById('editResId').value = r.id;
-            document.getElementById('resName').value = r.name || r.title || '';
+            document.getElementById('resName').value = r.full_name || r.name || r.title || '';
             document.getElementById('resTitle').value = r.job_title || r.specialty || '';
             document.getElementById('resExp').value = r.experience || '';
             document.getElementById('resPhone').value = r.phone || '967780568507';
@@ -342,6 +335,7 @@
                 loadBanners(); 
             }
         }
+
         async function loadBanners() {
             let { data } = await db.from('banners').select('*').order('id', {ascending: false});
             let box = document.getElementById('bannersList'); box.innerHTML = '';
@@ -366,6 +360,7 @@
                 loadPartners(); 
             }
         }
+
         async function loadPartners() {
             let { data } = await db.from('partners').select('*').order('id', {ascending: false});
             let box = document.getElementById('partnersList'); box.innerHTML = '';
