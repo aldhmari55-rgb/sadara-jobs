@@ -16,6 +16,7 @@
         .nav-btns-group { display: flex; align-items: center; gap: 5px; }
         .mini-btn { background: #1e293b; color: white; border: 1px solid var(--gold); padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 3px; }
         .mini-btn-gold { background: var(--gold); color: #0a1324; border: none; }
+        .mini-btn-courses { background: #f59e0b; color: white; border: none; }
 
         .channel-bar { background: #25d366; color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; }
         .channel-bar a { color: white; text-decoration: underline; margin-right: 5px; }
@@ -61,6 +62,7 @@
     <div class="top-navbar">
         <span style="font-weight: 900; font-size:14px;">صدارة للوظائف</span>
         <div class="nav-btns-group">
+            <a href="courses.html" class="mini-btn mini-btn-courses"><i class="fa-solid fa-graduation-cap"></i> دورات صدارة</a>
             <a href="resumes.html" class="mini-btn mini-btn-gold"><i class="fa-solid fa-users-viewfinder"></i> الكفاءات</a>
             <div id="authArea">
                 <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>
@@ -255,7 +257,6 @@
             msg.style.color = 'blue'; msg.textContent = 'جاري المعالجة السريعة...';
 
             if (!isLoginMode) {
-                // وضع إنشاء حساب جديد مع ضمان عدم التعليق
                 const name = document.getElementById('authName').value.trim() || phone;
                 
                 try {
@@ -266,7 +267,6 @@
                     }]);
 
                     if (error) {
-                        // إذا كان الرقم موجوداً مسبقاً، حوله تلقائياً لوضع الدخول السريع
                         localStorage.setItem('sadara_logged_phone', phone);
                         localStorage.setItem('sadara_logged_name', name);
                     }
@@ -279,7 +279,6 @@
                 setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 800);
 
             } else {
-                // وضع تسجيل الدخول السريع المضمون (يتجاوز التعليق تماماً ويحفظ الجلسة فوراً)
                 localStorage.setItem('sadara_logged_phone', phone);
                 localStorage.setItem('sadara_logged_name', 'مستخدم صدارة (' + phone.slice(-4) + ')');
                 
