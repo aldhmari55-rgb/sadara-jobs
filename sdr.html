@@ -3,624 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الشاملة | منصة صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>لوحة التحكم الشاملة - منصة صدارة للخدمات الرقمية</title>
+    <!-- خط القاهرة الرسمي -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS لتصميم سريع واحترافي -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- مكتبة تصدير Excel فقط -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --red: #ef4444; --bg: #f8fafc; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); padding: 15px; color: #0f172a; padding-bottom: 50px; }
-        .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 15px; border-bottom: 3px solid var(--gold); }
-        
-        .admin-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto 20px auto; }
-        @media(min-width: 768px) { .admin-stats-grid { grid-template-columns: repeat(4, 1fr); } }
-        .stat-card-admin { background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .stat-card-admin h3 { font-size: 18px; font-weight: 900; color: var(--primary); }
-        .stat-card-admin p { font-size: 11px; color: #64748b; font-weight: 700; margin-top: 2px; }
-
-        .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1000px; margin: 0 auto; }
-        @media(min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; } }
-        .card { background: white; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .card h2 { font-size: 15px; margin-bottom: 12px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
-        label { font-size: 12px; font-weight: bold; display: block; margin-top: 8px; color: #475569; }
-        input, select, textarea { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
-        input[type="file"] { background: #f1f5f9; cursor: pointer; }
-        button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
-        button:hover { opacity: 0.9; }
-        .status-msg { margin-top: 8px; font-size: 11px; font-weight: bold; text-align: center; }
-        .list-box { margin-top: 12px; max-height: 280px; overflow-y: auto; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
-        .item-row { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-bottom: 1px solid #f1f5f9; font-size: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
-        .row-header { display: flex; justify-content: space-between; align-items: center; }
-        .action-btns { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
-        .btn-sm { padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 10px; font-weight: bold; color: white; }
-        .btn-del { background: var(--red); }
-        .btn-edit { background: #3b82f6; }
-        .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
-        .preview-img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
-        .lesson-group { background: #f1f5f9; padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid #cbd5e1; }
+        * { font-family: 'Cairo', sans-serif; }
     </style>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-6">
 
-    <div class="header">
-        <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، الشهادات، والدورات والدروس المرتبة</p>
-    </div>
+    <div class="max-w-6xl mx-auto">
+        <!-- ترويسة لوحة التحكم -->
+        <header class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-8 shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-black text-emerald-400">لوحة تحكم منصة صدارة</h1>
+                <p class="text-slate-400 text-sm mt-1">إدارة الشهادات، الساعات التدريبية، وكشف الإصدارات الرقمية</p>
+            </div>
+            <div class="flex gap-3">
+                <a href="certificate.html" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-md">
+                    🔗 معاينة صفحة الشهادة
+                </a>
+            </div>
+        </header>
 
-    <div class="admin-stats-grid">
-        <div class="stat-card-admin"><h3 id="adminOnline">...</h3><p>متواجد الآن 🟢</p></div>
-        <div class="stat-card-admin"><h3 id="adminTotalViews">...</h3><p>إجمالي الزيارات 👥</p></div>
-        <div class="stat-card-admin"><h3 id="adminCertificates">...</h3><p>الشهادات الصادرة 🎓</p></div>
-        <div class="stat-card-admin"><h3 id="adminJobs">...</h3><p>إجمالي الوظائف 💼</p></div>
-    </div>
+        <!-- شبكة الإدارة (إضافة شهادة جديدة + الإحصائيات) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            
+            <!-- نموذج إصدار شهادة جديدة -->
+            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl lg:col-span-1">
+                <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-slate-700 pb-2">➕ إصدار شهادة جديدة</h2>
+                <form id="certForm" onsubmit="createNewCertificate(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">اسم المتدرب الثلاثي/الرباعي</label>
+                        <input type="text" id="fullName" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none" placeholder="مثال: عبدالرحمن عبدالله الذماري">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">مسمى الدورة التدريبية</label>
+                        <input type="text" id="courseName" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none" placeholder="مثال: إدارة الأعمال والتسويق الرقمي">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">عدد الساعات</label>
+                            <input type="number" id="courseHours" value="30" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">كود الشهادة (السيريال)</label>
+                            <input type="text" id="certCode" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none" placeholder="SAD-2026-XXXX">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg transition shadow-lg mt-2">
+                        حفظ وإصدار الشهادة
+                    </button>
+                </form>
+            </div>
 
-    <div class="grid-container">
-
-        <!-- 1. كشف الشهادات الصادرة والطلاب (مع إمكانية التصدير إلى PDF عربي و Excel) -->
-        <div class="card" style="grid-column: 1 / -1; border-top: 4px solid var(--gold);">
-            <h2>
-                <span>🎓 كشف الشهادات المعتمدة الصادرة للطلاب</span>
-                <div style="display:flex; gap:5px; align-items:center;">
-                    <button onclick="exportCertificatesToExcel()" class="btn-sm" style="background:#10b981; padding:6px 10px; font-size:11px; margin:0;">Excel 📊</button>
-                    <button onclick="exportCertificatesToPDF()" class="btn-sm" style="background:#ef4444; padding:6px 10px; font-size:11px; margin:0;">تصدير PDF 📄</button>
-                    <span class="badge" id="certCount">0</span>
+            <!-- كشف وإدارة الشهادات (الجدول الرئيسي) -->
+            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl lg:col-span-2 flex flex-col">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+                    <h2 class="text-lg font-bold text-emerald-400">📋 كشف الشهادات الصادرة</h2>
+                    <button onclick="loadCertificates()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-md transition text-slate-200">🔄 تحديث القائمة</button>
                 </div>
-            </h2>
-            <div class="list-box" id="certificatesList" style="max-height: 350px;">جاري تحميل كشوفات الشهادات...</div>
-        </div>
 
-        <!-- 2. إدارة الوظائف -->
-        <div class="card">
-            <h2><span>💼 إدارة الوظائف</span><span class="badge" id="jobsCount">0</span></h2>
-            <input type="hidden" id="editJobId">
-            <label>عنوان الوظيفة</label>
-            <input type="text" id="jobTitle" placeholder="مثال: محاسب عام">
-            <label>اسم الشركة / الجهة</label>
-            <input type="text" id="jobCompany" placeholder="شركة صدارة">
-            <label>رقم الواتساب</label>
-            <input type="text" id="jobPhone" value="967780568507">
-            <label>الحالة</label>
-            <select id="jobStatus">
-                <option value="متاحة">متاحة 🟢</option>
-                <option value="مغلقة">مغلقة 🔴</option>
-            </select>
-            <label>الشارة الزرقاء الموثقة 🔵</label>
-            <select id="jobVerified">
-                <option value="false">بدون شارة</option>
-                <option value="true">تفعيل الشارة الزرقاء ☑️</option>
-            </select>
-            <label>صورة الوظيفة</label>
-            <input type="file" id="jobImgFile" accept="image/*">
-            <button id="btnSaveJob" onclick="saveJob()">نشر الوظيفة الآن 🚀</button>
-            <button id="btnCancelJob" onclick="resetJobForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء</button>
-            <div id="jobMsg" class="status-msg"></div>
-            <div class="list-box" id="jobsList">جاري التحميل...</div>
-        </div>
-
-        <!-- 3. إدارة الكفاءات -->
-        <div class="card">
-            <h2><span>📄 إدارة الكفاءات</span><span class="badge" id="resCount">0</span></h2>
-            <input type="hidden" id="editResId">
-            <label>الاسم الكامل</label>
-            <input type="text" id="resName" placeholder="مثال: عبدالرحمن الذماري">
-            <label>المسمى الوظيفي / التخصص</label>
-            <input type="text" id="resTitle" placeholder="مثال: مستشار تسويقي">
-            <label>الخبرات ونبذة مختصرة</label>
-            <textarea id="resExp" rows="2" placeholder="الخبرات..."></textarea>
-            <label>رقم الواتساب</label>
-            <input type="text" id="resPhone" value="967780568507">
-            <label>الشارة الزرقاء الموثقة 🔵</label>
-            <select id="resVerified">
-                <option value="false">بدون شارة</option>
-                <option value="true">تفعيل الشارة الزرقاء ☑️</option>
-            </select>
-            <label>صورة شخصية</label>
-            <input type="file" id="resImgFile" accept="image/*">
-            <button id="btnSaveRes" onclick="saveResume()" style="background: var(--gold); color: #0a1324;">حفظ الكفاءة 📄</button>
-            <button id="btnCancelRes" onclick="resetResForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء</button>
-            <div id="resMsg" class="status-msg"></div>
-            <div class="list-box" id="resumesList">جاري التحميل...</div>
-        </div>
-
-        <!-- 4. نظام رفع وإدارة الدورات والدروس المرتبة -->
-        <div class="card" style="grid-column: 1 / -1;">
-            <h2>
-                <span id="formTitleText">🎓 رفع وإدارة الدورات والدروس المرتبة</span>
-                <span class="badge" id="coursesCount">0</span>
-            </h2>
-            
-            <input type="hidden" id="editCourseId">
-            <label>اسم الدورة التدريبية الرئيسية</label>
-            <input type="text" id="courseMainTitle" placeholder="مثال: دبلوم التسويق الرقمي الشامل">
-            <label>وصف الدورة</label>
-            <textarea id="courseMainDesc" rows="2" placeholder="وصف موجز لما تحتويه هذه الدورة..."></textarea>
-            <label>حالة التوفر للطلاب</label>
-            <select id="courseStatus">
-                <option value="true">متوفر ومنشور للطلاب 🟢</option>
-                <option value="false">غير متوفر / مخفي 🔴</option>
-            </select>
-            
-            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #cbd5e1;">
-            <label style="color: var(--primary); font-size: 13px;">📚 دروس الدورة (مسمى الدرس ورابط الفيديو الخاص به):</label>
-            
-            <div id="lessonsContainer">
-                <div class="lesson-group">
-                    <label>مسمى الدرس (عنوان الفيديو)</label>
-                    <input type="text" class="lesson-title" placeholder="مثال: الدرس الأول: مقدمة">
-                    <label>رابط الفيديو</label>
-                    <input type="text" class="lesson-url" placeholder="https://www.youtube.com/embed/...">
+                <div class="overflow-x-auto flex-grow">
+                    <table class="w-full text-right text-sm">
+                        <thead class="bg-slate-900 text-slate-400 uppercase text-xs">
+                            <tr>
+                                <th class="p-3">السيريال</th>
+                                <th class="p-3">اسم المتدرب</th>
+                                <th class="p-3">الدورة</th>
+                                <th class="p-3">الساعات</th>
+                                <th class="p-3">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="certificatesTableBody" class="divide-y divide-slate-700 text-slate-300">
+                            <tr>
+                                <td colspan="5" class="text-center p-4 text-slate-500">جاري تحميل البيانات...</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <button type="button" onclick="addLessonField('', '')" style="background: #64748b; margin-top: 8px;">➕ إضافة درس آخر للدورة</button>
-            <button id="btnSaveCourse" onclick="saveStructuredCourse()" style="background:#0284c7; color:white; margin-top: 15px;">نشر الدورة بكافة دروسها المرتبة 🚀</button>
-            <button id="btnCancelCourse" onclick="resetCourseForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
-            <div id="courseMsg" class="status-msg"></div>
-            <div class="list-box" id="adminCoursesList" style="margin-top: 15px;">جاري التحميل...</div>
         </div>
-
     </div>
 
-<script>
-    const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
-    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <script>
+        const SUPABASE_URL = 'https://lvutrzswngpkjfamgact.supabase.co';
+        const SUPABASE_ANON_KEY = 'ضع_مفتاح_ANON_KEY_هنا';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let cachedCertificates = [];
-    let cachedJobs = [];
-    let cachedResumes = [];
-    let cachedCourses = [];
-
-    async function loadCertificates() {
-        let { data, error } = await db.from('course_certificates').select('*').order('id', {ascending: false});
-        cachedCertificates = data || [];
-        
-        let box = document.getElementById('certificatesList');
-        document.getElementById('certCount').textContent = cachedCertificates.length;
-        document.getElementById('adminCertificates').textContent = cachedCertificates.length;
-        
-        box.innerHTML = '';
-        if (!data || data.length === 0) { 
-            box.innerHTML = '<p style="color:#64748b; font-size:11px; text-align:center;">لا توجد شهادات صادرة حتى الآن.</p>'; 
-            return; 
+        // توليد سيريال تلقائي عند فتح الصفحة
+        function generateRandomSerial() {
+            const randomNum = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('certCode').value = `SAD-2026-${randomNum}`;
         }
 
-        data.forEach((c, idx) => {
-            let dateFormatted = c.created_at ? new Date(c.created_at).toLocaleDateString('ar-SA') : '-';
-            box.innerHTML += `
-                <div class="item-row">
-                    <div class="row-header">
-                        <strong>🎓 الطالب: ${c.student_name}</strong>
-                        <span style="color:#059669; font-weight:bold; font-size:11px;">كود: ${c.verification_code}</span>
-                    </div>
-                    <div style="color:#475569; font-size:11px;">📚 الدورة: <b>${c.course_name}</b> | التاريخ: ${dateFormatted}</div>
-                    <div class="action-btns">
-                        <a href="certificate.html?code=${c.verification_code}" target="_blank" class="btn-sm" style="background:#2563eb; text-decoration:none;">معاينة الشهادة 🔍</a>
-                        <button class="btn-sm btn-del" onclick="deleteItem('course_certificates', ${c.id})">حذف الشهادة 🗑️</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
+        // جلب وعرض قائمة الشهادات في الجدول
+        async function loadCertificates() {
+            const tbody = document.getElementById('certificatesTableBody');
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-500">جاري التحديث...</td></tr>`;
 
-    // تصدير كشف الشهادات إلى ملف PDF عربي أنيق وعالي الدقة
-    function exportCertificatesToPDF() {
-        if (!cachedCertificates || !cachedCertificates.length) { 
-            alert('لا توجد شهادات صادرة لتصديرها.'); 
-            return; 
-        }
+            try {
+                const { data, error } = await supabaseClient
+                    .from('certificates')
+                    .select('*')
+                    .order('created_at', { ascending: false });
 
-        let printWindow = window.open('', '_blank');
-        let rowsHTML = '';
+                if (error) throw error;
 
-        cachedCertificates.forEach((c, i) => {
-            let dateFormatted = c.created_at ? new Date(c.created_at).toLocaleDateString('ar-SA') : '-';
-            rowsHTML += `
-                <tr>
-                    <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">${i + 1}</td>
-                    <td style="border: 1px solid #cbd5e1; padding: 8px; font-weight: bold; color: #0f2347;">${c.student_name || 'غير محدد'}</td>
-                    <td style="border: 1px solid #cbd5e1; padding: 8px;">${c.course_name || 'غير محدد'}</td>
-                    <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center; font-weight: bold; color: #059669; direction: ltr;">${c.verification_code || '-'}</td>
-                    <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">${c.attendance_hours || 'ساعات معتمدة'}</td>
-                    <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">${dateFormatted}</td>
-                </tr>
-            `;
-        });
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-500">لا توجد شهادات مسجلة حالياً.</td></tr>`;
+                    return;
+                }
 
-        let fullHTML = `
-            <!DOCTYPE html>
-            <html lang="ar" dir="rtl">
-            <head>
-                <meta charset="UTF-8">
-                <title>كشف الشهادات المعتمدة الصادرة - منصة صدارة</title>
-                <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-                <style>
-                    * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-                    body { padding: 20px; background: #fff; color: #0f172a; direction: rtl; text-align: right; }
-                    .report-header { text-align: center; border-bottom: 3px solid #d4af37; padding-bottom: 12px; margin-bottom: 20px; }
-                    .report-header h1 { font-size: 22px; color: #0f2347; margin-bottom: 4px; }
-                    .report-header p { font-size: 12px; color: #64748b; }
-                    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
-                    th { background: #0f2347; color: white; border: 1px solid #0f2347; padding: 10px; text-align: center; font-size: 13px; }
-                    tr:nth-child(even) { background: #f8fafc; }
-                    .footer-info { margin-top: 30px; display: flex; justify-content: space-between; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 10px; }
-                    
-                    @media print {
-                        @page { size: A4 portrait; margin: 15mm; }
-                        body { padding: 0; }
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="report-header">
-                    <h1>🎓 منصة صدارة للتدريب والأكاديمية</h1>
-                    <p>كشف تفصيلي بالشهادات المعتمدة الصادرة للطلاب والكوادر التدريبية</p>
-                </div>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 5%;">#</th>
-                            <th style="width: 25%;">اسم الطالب</th>
-                            <th style="width: 30%;">اسم الدورة التدريبية</th>
-                            <th style="width: 15%;">كود التحقق</th>
-                            <th style="width: 12%;">الساعات</th>
-                            <th style="width: 13%;">تاريخ الإصدار</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${rowsHTML}
-                    </tbody>
-                </table>
-
-                <div class="footer-info">
-                    <div>إجمالي الشهادات في الكشف: <b>${cachedCertificates.length} شهادة</b></div>
-                    <div>الموقع الرسمي: sadarah.top</div>
-                    <div>تاريخ التصدير: ${new Date().toLocaleDateString('ar-SA')}</div>
-                </div>
-
-                <script>
-                    window.onload = function() {
-                        window.print();
-                    };
-                <\/script>
-            </body>
-            </html>
-        `;
-
-        printWindow.document.write(fullHTML);
-        printWindow.document.close();
-    }
-
-    // تصدير كشف الشهادات إلى Excel
-    function exportCertificatesToExcel() {
-        if (!cachedCertificates.length) { alert('لا توجد شهادات صادرة.'); return; }
-        let dataToExport = cachedCertificates.map((c, i) => ({ 
-            "م": i + 1, 
-            "اسم الطالب": c.student_name || '', 
-            "اسم الدورة": c.course_name || '', 
-            "كود التحقق": c.verification_code || '',
-            "الساعات": c.attendance_hours || 'ساعات معتمدة',
-            "تاريخ الإصدار": c.created_at ? new Date(c.created_at).toLocaleDateString('ar-SA') : '-' 
-        }));
-        let ws = XLSX.utils.json_to_sheet(dataToExport); 
-        let wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "الشهادات الصادرة"); 
-        XLSX.writeFile(wb, "Sadara_Certificates.xlsx");
-    }
-
-    async function loadAdminRealStats() {
-        try {
-            let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
-            document.getElementById('adminTotalViews').textContent = st ? st.total_views : 36;
-            let fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-            let { count: activeCount } = await db.from('active_sessions').select('*', { count: 'exact', head: true }).gt('last_ping', fiveMinsAgo);
-            document.getElementById('adminOnline').textContent = activeCount && activeCount > 0 ? activeCount : 1;
-        } catch(e) {
-            document.getElementById('adminTotalViews').textContent = 36;
-            document.getElementById('adminOnline').textContent = 1;
-        }
-    }
-
-    async function uploadFileStrict(file) {
-        if (!file) return '';
-        try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-            const { error: uploadError } = await db.storage.from('platform-files').upload(fileName, file);
-            if (uploadError) { alert('خطأ في رفع الصورة للسحابة: ' + uploadError.message); return null; }
-            const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
-            return publicUrlData.publicUrl || '';
-        } catch(e) { alert('فشل في عملية الرفع.'); return null; }
-    }
-
-    async function saveJob() {
-        const editId = document.getElementById('editJobId').value;
-        const title = document.getElementById('jobTitle').value.trim();
-        const company = document.getElementById('jobCompany').value.trim();
-        const phone = document.getElementById('jobPhone').value.trim();
-        const status = document.getElementById('jobStatus').value;
-        const isVerified = document.getElementById('jobVerified').value === 'true';
-        const imgFile = document.getElementById('jobImgFile').files[0];
-        const msg = document.getElementById('jobMsg');
-
-        if (!title || !company) { alert('يرجى إدخال عنوان الوظيفة واسم الشركة'); return; }
-        msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ... ⏳';
-
-        let imgUrl = '';
-        if (imgFile) {
-            imgUrl = await uploadFileStrict(imgFile);
-            if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة، لم يتم الحفظ.'; return; }
-        }
-
-        let payload = { title, company, phone, status, approved: true, is_verified: isVerified };
-        if (imgUrl) payload.image = imgUrl;
-
-        let res = editId ? await db.from('jobs').update(payload).eq('id', editId) : await db.from('jobs').insert([payload]);
-        if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ من قاعدة البيانات: ' + res.error.message; return; }
-
-        msg.style.color = 'green'; msg.textContent = 'تم حفظ الوظيفة ونشرها بنجاح! ✅';
-        resetJobForm(); loadJobs();
-    }
-
-    function resetJobForm() {
-        document.getElementById('editJobId').value = '';
-        document.getElementById('jobTitle').value = '';
-        document.getElementById('jobCompany').value = '';
-        document.getElementById('jobVerified').value = 'false';
-        document.getElementById('jobImgFile').value = '';
-        document.getElementById('btnSaveJob').textContent = 'نشر الوظيفة الآن 🚀';
-        document.getElementById('btnCancelJob').style.display = 'none';
-    }
-
-    async function loadJobs() {
-        let { data } = await db.from('jobs').select('*').order('id', {ascending: false});
-        cachedJobs = data || [];
-        let box = document.getElementById('jobsList');
-        document.getElementById('jobsCount').textContent = cachedJobs.length;
-        document.getElementById('adminJobs').textContent = cachedJobs.length;
-        box.innerHTML = '';
-        if (cachedJobs.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد وظائف مضافة.</p>'; return; }
-        cachedJobs.forEach(j => {
-            let imgTag = j.image ? `<img src="${j.image}" class="preview-img">` : '';
-            let badge = j.is_verified ? ' 🔵' : '';
-            box.innerHTML += `<div class="item-row">
-                <div class="row-header" style="align-items:center;">
-                    <div style="display:flex; align-items:center; gap:8px;">${imgTag}<strong>${j.title || 'وظيفة'}${badge}</strong></div>
-                    <span>${j.status || 'متاحة'}</span>
-                </div>
-                <div style="color:#64748b; font-size:11px;">الشركة: ${j.company || '-'}</div>
-                <div class="action-btns">
-                    <button class="btn-sm btn-edit" onclick="editJob(${j.id})">تعديل ✏️</button>
-                    <button class="btn-sm btn-del" onclick="deleteItem('jobs', ${j.id})">حذف 🗑️</button>
-                </div>
-            </div>`;
-        });
-    }
-
-    function editJob(id) {
-        let j = cachedJobs.find(item => item.id === id);
-        if (!j) return;
-        document.getElementById('editJobId').value = j.id;
-        document.getElementById('jobTitle').value = j.title || '';
-        document.getElementById('jobCompany').value = j.company || '';
-        document.getElementById('jobPhone').value = j.phone || '967780568507';
-        document.getElementById('jobStatus').value = j.status || 'متاحة';
-        document.getElementById('jobVerified').value = j.is_verified ? 'true' : 'false';
-        document.getElementById('btnSaveJob').textContent = 'تعديل وحفظ 💾';
-        document.getElementById('btnCancelJob').style.display = 'block';
-    }
-
-    async function saveResume() {
-        const editId = document.getElementById('editResId').value;
-        const name = document.getElementById('resName').value.trim();
-        const title = document.getElementById('resTitle').value.trim();
-        const exp = document.getElementById('resExp').value.trim();
-        const phone = document.getElementById('resPhone').value.trim();
-        const isVerified = document.getElementById('resVerified').value === 'true';
-        const imgFile = document.getElementById('resImgFile').files[0];
-        const msg = document.getElementById('resMsg');
-
-        if (!name || !title) { alert('يرجى إدخال الاسم والمسمى الوظيفي'); return; }
-        msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ... ⏳';
-
-        let imgUrl = '';
-        if (imgFile) {
-            imgUrl = await uploadFileStrict(imgFile);
-            if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة، لم يتم الحفظ.'; return; }
-        }
-
-        let payload = { full_name: name, name, title: name, job_title: title, specialty: title, experience: exp, phone, is_verified: isVerified };
-        if (imgUrl) payload.image = imgUrl;
-
-        let res = editId ? await db.from('resumes').update(payload).eq('id', editId) : await db.from('resumes').insert([payload]);
-        if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message; return; }
-
-        msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة بنجاح! ✅';
-        resetResForm(); loadResumes();
-    }
-
-    function resetResForm() {
-        document.getElementById('editResId').value = '';
-        document.getElementById('resName').value = '';
-        document.getElementById('resTitle').value = '';
-        document.getElementById('resExp').value = '';
-        document.getElementById('resVerified').value = 'false';
-        document.getElementById('resImgFile').value = '';
-        document.getElementById('btnSaveRes').textContent = 'حفظ الكفاءة 📄';
-        document.getElementById('btnCancelRes').style.display = 'none';
-    }
-
-    async function loadResumes() {
-        let { data } = await db.from('resumes').select('*').order('id', {ascending: false});
-        cachedResumes = data || [];
-        let box = document.getElementById('resumesList');
-        document.getElementById('resCount').textContent = cachedResumes.length;
-        box.innerHTML = '';
-        if (cachedResumes.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات مسجلة.</p>'; return; }
-        cachedResumes.forEach(r => {
-            let displayName = r.full_name || r.name || r.title || 'كفاءة';
-            let displayJob = r.job_title || r.specialty || '-';
-            let badge = r.is_verified ? ' 🔵' : '';
-            let imgTag = r.image ? `<img src="${r.image}" class="preview-img">` : '';
-            box.innerHTML += `<div class="item-row">
-                <div class="row-header" style="align-items:center;">
-                    <div style="display:flex; align-items:center; gap:8px;">${imgTag}<strong>${displayName}${badge}</strong></div>
-                    <span>معروض 🟢</span>
-                </div>
-                <div style="color:#64748b; font-size:11px;">التخصص: ${displayJob}</div>
-                <div class="action-btns">
-                    <button class="btn-sm btn-edit" onclick="editResume(${r.id})">تعديل ✏️</button>
-                    <button class="btn-sm btn-del" onclick="deleteItem('resumes', ${r.id})">حذف 🗑️</button>
-                </div>
-            </div>`;
-        });
-    }
-
-    function editResume(id) {
-        let r = cachedResumes.find(item => item.id === id);
-        if (!r) return;
-        document.getElementById('editResId').value = r.id;
-        document.getElementById('resName').value = r.full_name || r.name || r.title || '';
-        document.getElementById('resTitle').value = r.job_title || r.specialty || '';
-        document.getElementById('resExp').value = r.experience || '';
-        document.getElementById('resPhone').value = r.phone || '967780568507';
-        document.getElementById('resVerified').value = r.is_verified ? 'true' : 'false';
-        document.getElementById('btnSaveRes').textContent = 'تعديل وحفظ 💾';
-        document.getElementById('btnCancelRes').style.display = 'block';
-    }
-
-    function addLessonField(titleVal = '', urlVal = '') {
-        let container = document.getElementById('lessonsContainer');
-        container.innerHTML += `
-            <div class="lesson-group">
-                <label>مسمى الدرس (عنوان الفيديو)</label>
-                <input type="text" class="lesson-title" value="${titleVal}" placeholder="مثال: الدرس التالي...">
-                <label>رابط الفيديو</label>
-                <input type="text" class="lesson-url" value="${urlVal}" placeholder="https://www.youtube.com/embed/...">
-            </div>`;
-    }
-
-    async function saveStructuredCourse() {
-        const editId = document.getElementById('editCourseId').value;
-        const title = document.getElementById('courseMainTitle').value.trim();
-        const description = document.getElementById('courseMainDesc').value.trim();
-        const is_active = document.getElementById('courseStatus').value === 'true';
-        const msg = document.getElementById('courseMsg');
-
-        if (!title) { alert('يرجى إدخال اسم الدورة الرئيسية!'); return; }
-
-        let titles = document.querySelectorAll('.lesson-title');
-        let urls = document.querySelectorAll('.lesson-url');
-        let lessonsArray = [];
-
-        for (let i = 0; i < titles.length; i++) {
-            let t = titles[i].value.trim();
-            let u = urls[i].value.trim();
-            if (t || u) { lessonsArray.push({ lesson_title: t || 'درس بدون مسمى', video_url: u || '' }); }
-        }
-
-        msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ بالسحابة... ⏳';
-        let payload = { title, description, is_active, lessons: lessonsArray };
-        let res = editId ? await db.from('platform_courses').update(payload).eq('id', editId) : await db.from('platform_courses').insert([payload]);
-
-        if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ سحابي: ' + res.error.message; }
-        else {
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الدورة بنجاح! ✅';
-            resetCourseForm(); loadAdminCourses();
-        }
-    }
-
-    function resetCourseForm() {
-        document.getElementById('editCourseId').value = '';
-        document.getElementById('courseMainTitle').value = '';
-        document.getElementById('courseMainDesc').value = '';
-        document.getElementById('courseStatus').value = 'true';
-        document.getElementById('lessonsContainer').innerHTML = `
-            <div class="lesson-group">
-                <label>مسمى الدرس (عنوان الفيديو)</label>
-                <input type="text" class="lesson-title" placeholder="مثال: الدرس الأول: مقدمة">
-                <label>رابط الفيديو</label>
-                <input type="text" class="lesson-url" placeholder="https://www.youtube.com/embed/...">
-            </div>`;
-        document.getElementById('btnSaveCourse').textContent = 'نشر الدورة بكافة دروسها المرتبة 🚀';
-        document.getElementById('btnCancelCourse').style.display = 'none';
-    }
-
-    async function loadAdminCourses() {
-        let { data } = await db.from('platform_courses').select('*').order('id', {ascending: false});
-        cachedCourses = data || [];
-        let box = document.getElementById('adminCoursesList');
-        document.getElementById('coursesCount').textContent = cachedCourses.length;
-        box.innerHTML = '';
-        if (!cachedCourses.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات مضافة.</p>'; return; }
-
-        cachedCourses.forEach(c => {
-            let isActive = c.is_active !== false;
-            let statusBadge = isActive ? '<span style="color:green; font-weight:bold;">متوفر 🟢</span>' : '<span style="color:red; font-weight:bold;">غير متوفر 🔴</span>';
-            let toggleText = isActive ? 'إخفاء 🔴' : 'إظهار 🟢';
-
-            let lessonsListHTML = '';
-            if (c.lessons && Array.isArray(c.lessons)) {
-                c.lessons.forEach((l, idx) => { lessonsListHTML += `<div style="font-size:11px; color:#334155; margin-right:10px;">🔹 ${idx + 1}. ${l.lesson_title}</div>`; });
+                tbody.innerHTML = '';
+                data.forEach(cert => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-slate-750 transition';
+                    row.innerHTML = `
+                        <td class="p-3 font-mono text-xs text-emerald-400">${cert.certificate_code}</td>
+                        <td class="p-3 font-bold">${cert.full_name}</td>
+                        <td class="p-3 text-slate-300">${cert.course_name}</td>
+                        <td class="p-3 text-emerald-300">${cert.hours || 30} س</td>
+                        <td class="p-3 flex gap-2">
+                            <a href="certificate.html?id=${cert.certificate_code}" target="_blank" class="bg-sky-600 hover:bg-sky-700 text-white px-2.5 py-1 rounded text-xs transition">عرض</a>
+                            <button onclick="deleteCertificate('${cert.id}')" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1 rounded text-xs transition">حذف</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (err) {
+                console.error("خطأ في جلب الكشف:", err);
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-rose-400">فشل تحميل البيانات من قاعدة الداتا.</td></tr>`;
             }
-
-            box.innerHTML += `<div class="item-row">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong>🎓 ${c.title} (${statusBadge})</strong>
-                    <div style="display:flex; gap:5px;">
-                        <button type="button" class="btn-sm btn-edit" onclick="editCourse(${c.id})">تعديل ✏️</button>
-                        <button type="button" class="btn-sm" style="background:#d97706;" onclick="toggleStatus(${c.id}, ${isActive})">${toggleText}</button>
-                        <button type="button" class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
-                    </div>
-                </div>
-                <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'}</div>
-                <div style="background:#f1f5f9; padding:6px; border-radius:6px; margin-top:4px;">${lessonsListHTML || 'بدون دروس'}</div>
-            </div>`;
-        });
-    }
-
-    function editCourse(id) {
-        let c = cachedCourses.find(item => item.id == id);
-        if (!c) return;
-        document.getElementById('editCourseId').value = c.id;
-        document.getElementById('courseMainTitle').value = c.title || '';
-        document.getElementById('courseMainDesc').value = c.description || '';
-        document.getElementById('courseStatus').value = (c.is_active !== false) ? 'true' : 'false';
-        
-        let container = document.getElementById('lessonsContainer'); container.innerHTML = '';
-        if (c.lessons && Array.isArray(c.lessons) && c.lessons.length > 0) {
-            c.lessons.forEach(l => { addLessonField(l.lesson_title, l.video_url); });
-        } else { addLessonField('', ''); }
-
-        document.getElementById('btnSaveCourse').textContent = 'تعديل وحفظ الدورة 💾';
-        document.getElementById('btnCancelCourse').style.display = 'block';
-    }
-
-    async function toggleStatus(id, currentStatus) {
-        let { error } = await db.from('platform_courses').update({ is_active: !currentStatus }).eq('id', id);
-        if (error) { alert('خطأ: ' + error.message); return; }
-        loadAdminCourses();
-    }
-
-    async function deleteItem(table, id) {
-        if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
-            let { error } = await db.from(table).delete().eq('id', id);
-            if (error) { alert('خطأ: ' + error.message); return; }
-            if (table === 'jobs') loadJobs();
-            if (table === 'resumes') loadResumes();
-            if (table === 'platform_courses') loadAdminCourses();
-            if (table === 'course_certificates') loadCertificates();
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        loadCertificates(); loadAdminRealStats(); loadJobs(); loadResumes(); loadAdminCourses();
-    });
-</script>
+        // إضافة شهادة جديدة للقاعدة
+        async function createNewCertificate(event) {
+            event.preventDefault();
+            
+            const full_name = document.getElementById('fullName').value.trim();
+            const course_name = document.getElementById('courseName').value.trim();
+            const hours = parseInt(document.getElementById('courseHours').value) || 30;
+            const certificate_code = document.getElementById('certCode').value.trim();
+
+            try {
+                const { error } = await supabaseClient
+                    .from('certificates')
+                    .insert([{ certificate_code, full_name, course_name, hours }]);
+
+                if (error) throw error;
+
+                alert('تم إصدار وحفظ الشهادة بنجاح في المنصة!');
+                document.getElementById('certForm').reset();
+                generateRandomSerial();
+                loadCertificates();
+            } catch (err) {
+                alert('خطأ أثناء الحفظ: تأكد من أن كود الشهادة (السيريال) غير مكرر مسبقاً.');
+                console.error(err);
+            }
+        }
+
+        // حذف شهادة من الكشف
+        async function deleteCertificate(id) {
+            if (!confirm('هل أنت متأكد من حذف هذه الشهادة نهائياً من الكشف؟')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('certificates')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+                loadCertificates();
+            } catch (err) {
+                alert('فشل حذف الشهادة.');
+                console.error(err);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            generateRandomSerial();
+            loadCertificates();
+        });
+    </script>
 </body>
 </html>
