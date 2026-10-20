@@ -11,8 +11,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- مكتبة توليد رمز الـ QR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- مكتبة تحويل الشهادة إلى صورة عالية الجودة -->
+    <!-- مكتبة تحويل العناصر إلى صور -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- مكتبة توليد ملفات PDF برمجياً -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
         * {
@@ -32,7 +34,7 @@
             padding: 20px;
         }
 
-        /* شريط أزرار التحكم */
+        /* شريط التحكم */
         .actions-bar {
             display: flex;
             gap: 12px;
@@ -43,8 +45,8 @@
             background-color: #059669;
             color: #ffffff;
             border: none;
-            padding: 10px 24px;
-            font-size: 15px;
+            padding: 10px 20px;
+            font-size: 14px;
             font-weight: 700;
             border-radius: 6px;
             cursor: pointer;
@@ -60,6 +62,15 @@
             transform: translateY(-2px);
         }
 
+        .btn-pdf {
+            background-color: #dc2626;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-pdf:hover {
+            background-color: #b91c1c;
+        }
+
         .btn-outline {
             background-color: transparent;
             border: 2px solid #059669;
@@ -67,22 +78,36 @@
             box-shadow: none;
         }
 
-        .btn-outline:hover {
-            background-color: rgba(16, 185, 129, 0.1);
-        }
-
-        /* قالب الشهادة برابط الصورة الرسمي الجديد */
+        /* حاوية الشهادة الرئيسي */
         .certificate-wrapper {
             position: relative;
             width: 1000px;
             height: 707px;
-            background-image: url('https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.png');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-position: center;
             border-radius: 8px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        /* صورة الخلفية كعنصر صريح لتضمن الظهور في الطباعة و PDF */
+        .cert-bg-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            z-index: 1;
+        }
+
+        /* الطبقة التي تحتوي كافة النصوص والباركود فوق الصورة */
+        .cert-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
         }
 
         /* 1. اسم المتدرب */
@@ -98,7 +123,7 @@
             color: #065f46;
         }
 
-        /* 2. عبارة "وذلك لحضوره الدورة التدريبية" */
+        /* 2. عبارة التمهيد */
         .cert-field.intro-text {
             position: absolute;
             top: 55%;
@@ -111,7 +136,7 @@
             color: #334155;
         }
 
-        /* 3. مسمى الدورة التدريبية */
+        /* 3. مسمى الدورة */
         .cert-field.course-title {
             position: absolute;
             top: 61.5%;
@@ -148,7 +173,7 @@
             direction: ltr;
         }
 
-        /* 6. مربع رمز الـ QR للتحقق */
+        /* 6. مربع رمز الـ QR */
         .cert-field.qr-box {
             position: absolute;
             bottom: 8.5%;
@@ -159,7 +184,6 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
-        /* شاشة جلب البيانات */
         .loading-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -173,18 +197,30 @@
             z-index: 10;
         }
 
+        /* إعدادات الطباعة المباشرة من المتصفح */
         @media print {
-            body { background: none; padding: 0; }
+            body { 
+                background: none; 
+                padding: 0; 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+            }
             .actions-bar { display: none !important; }
-            .certificate-wrapper { box-shadow: none; border-radius: 0; width: 100vw; height: 100vh; }
+            .certificate-wrapper { 
+                box-shadow: none; 
+                border-radius: 0; 
+                width: 100vw; 
+                height: 100vh; 
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- شريط الأزرار -->
+    <!-- أزرار الإجراءات -->
     <div class="actions-bar">
-        <button class="btn" onclick="downloadCertificate()">📥 تحميل الشهادة (PNG)</button>
+        <button class="btn" onclick="downloadPNG()">🖼️ تحميل (PNG)</button>
+        <button class="btn btn-pdf" onclick="downloadPDF()">📄 تحميل (PDF)</button>
         <button class="btn btn-outline" onclick="window.print()">🖨️ طباعة الشهادة</button>
     </div>
 
@@ -192,25 +228,22 @@
     <div class="certificate-wrapper" id="certificateCard">
         <div id="loadingOverlay" class="loading-overlay">جاري تحميل بيانات الشهادة...</div>
 
-        <!-- 1. اسم المتدرب -->
-        <div class="cert-field student-name" id="studentName">---</div>
-        
-        <!-- 2. جملة التمهيد -->
-        <div class="cert-field intro-text">وذلك لحضوره بنجاح الدورة التدريبية الموسومة بـ:</div>
-        
-        <!-- 3. مسمى الدورة -->
-        <div class="cert-field course-title" id="courseTitle">---</div>
-        
-        <!-- 4. التاريخ وعدد الساعات (تُجلب من قاعدة البيانات) -->
-        <div class="cert-field meta-details">
-            وذلك بتاريخ: <span id="issueDate">---</span> | بواقع: <span id="courseHours">---</span> ساعة تدريبية
+        <!-- صورة الخلفية المباشرة -->
+        <img class="cert-bg-img" src="https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.png" crossorigin="anonymous" alt="Certificate Background">
+
+        <!-- نصوص وعناصر الشهادة فوق الخلفية -->
+        <div class="cert-content">
+            <div class="cert-field student-name" id="studentName">---</div>
+            <div class="cert-field intro-text">وذلك لحضوره بنجاح الدورة التدريبية الموسومة بـ:</div>
+            <div class="cert-field course-title" id="courseTitle">---</div>
+            
+            <div class="cert-field meta-details">
+                وذلك بتاريخ: <span id="issueDate">---</span> | بواقع: <span id="courseHours">---</span> ساعة تدريبية
+            </div>
+
+            <div class="cert-field cert-serial" id="certSerial">---</div>
+            <div class="cert-field qr-box" id="qrcode"></div>
         </div>
-
-        <!-- 5. رقم الشهادة -->
-        <div class="cert-field cert-serial" id="certSerial">---</div>
-
-        <!-- 6. رمز الـ QR -->
-        <div class="cert-field qr-box" id="qrcode"></div>
     </div>
 
     <script>
@@ -230,7 +263,6 @@
                     .single();
 
                 if (error || !data) {
-                    // بيانات تجريبية افتراضية في حال عدم الاتصال المباشر
                     renderCertificateData({
                         full_name: 'عبدالرحمن عبدالله صالح الذماري',
                         course_name: 'إدارة الأعمال والتسويق الرقمي الحديث',
@@ -244,7 +276,7 @@
                         course_name: data.course_name,
                         certificate_code: data.certificate_code,
                         created_at: new Date(data.created_at).toISOString().split('T')[0],
-                        hours: data.hours || '20'
+                        hours: data.hours || '30'
                     });
                 }
             } catch (err) {
@@ -275,18 +307,33 @@
             });
         }
 
-        function downloadCertificate() {
+        // دالة تنزيل الصورة PNG
+        function downloadPNG() {
             const certElement = document.getElementById('certificateCard');
-            html2canvas(certElement, {
-                scale: 3,
-                useCORS: true,
-                allowTaint: true
-            }).then(canvas => {
+            html2canvas(certElement, { scale: 3, useCORS: true, allowTaint: true }).then(canvas => {
                 const serial = document.getElementById('certSerial').innerText;
                 const link = document.createElement('a');
                 link.download = `شهادة_${serial}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
+            });
+        }
+
+        // دالة تنزيل الـ PDF المباشرة برمجياً وبأعلى جودة
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const certElement = document.getElementById('certificateCard');
+
+            html2canvas(certElement, { scale: 3, useCORS: true, allowTaint: true }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                // إنشاء مستند PDF أفقي أبعاد A4
+                const pdf = new jsPDF('landscape', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                const serial = document.getElementById('certSerial').innerText;
+                pdf.save(`شهادة_${serial}.pdf`);
             });
         }
 
