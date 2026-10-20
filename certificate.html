@@ -20,12 +20,12 @@
             padding: 20px; 
         }
 
-        /* ورقة الشهادة بمقاس A4 الأفقي بدقة طباعة عالية */
+        /* ورقة الشهادة A4 أفقي */
         .page-a4-landscape {
             width: 297mm;
             height: 210mm;
             background: #ffffff;
-            padding: 12mm;
+            padding: 10mm;
             position: relative;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             display: flex;
@@ -36,11 +36,10 @@
             background-size: 20px 20px;
         }
 
-        /* الإطار الملكي المزدوج المزين بالزوايا الذهبية */
         .outer-border {
             border: 4px solid #0f2347 !important;
             height: 100%;
-            padding: 6mm;
+            padding: 5mm;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -51,7 +50,7 @@
         .inner-gold-border {
             border: 2px solid #d4af37 !important;
             height: 100%;
-            padding: 25px 35px;
+            padding: 20px 30px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -61,8 +60,8 @@
         /* زوايا زخرفية ذهبية */
         .corner-decoration {
             position: absolute;
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             border: 3px solid #d4af37 !important;
         }
         .top-left { top: -2px; left: -2px; border-right: none !important; border-bottom: none !important; }
@@ -70,55 +69,83 @@
         .bottom-left { bottom: -2px; left: -2px; border-right: none !important; border-top: none !important; }
         .bottom-right { bottom: -2px; right: -2px; border-left: none !important; border-top: none !important; }
 
-        /* الرأس والعناوين */
-        .cert-header { text-align: center; margin-bottom: 10px; }
-        .org-logo-title { font-size: 28px; font-weight: 900; color: #0f2347 !important; letter-spacing: 0.5px; }
-        .org-sub { font-size: 13px; color: #d4af37 !important; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
-        .cert-badge-title { font-size: 32px; font-family: 'Amiri', serif; font-weight: bold; color: #0f2347 !important; margin-top: 10px; border-bottom: 2px solid #d4af37 !important; display: inline-block; padding: 0 25px 5px 25px; }
+        /* الرأس: الشعار أعلى المنتصف وتحته اسم الشركة */
+        .cert-header { 
+            text-align: center; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-logo-img {
+            max-height: 80px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 6px;
+        }
+
+        .org-logo-title { font-size: 24px; font-weight: 900; color: #0f2347 !important; }
+        .org-sub { font-size: 12px; color: #d4af37 !important; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+        .cert-badge-title { font-size: 28px; font-family: 'Amiri', serif; font-weight: bold; color: #0f2347 !important; margin-top: 6px; border-bottom: 2px solid #d4af37 !important; display: inline-block; padding: 0 20px 4px 20px; }
 
         /* جسم الشهادة واسم الطالب */
-        .cert-body { text-align: center; margin: 15px 0; }
-        .cert-to-text { font-size: 15px; color: #475569 !important; margin-bottom: 8px; }
+        .cert-body { text-align: center; margin: 10px 0; }
+        .cert-to-text { font-size: 15px; color: #475569 !important; margin-bottom: 6px; }
         .student-name-box { 
-            font-size: 32px; 
+            font-size: 30px; 
             font-weight: 900; 
             color: #059669 !important; 
-            padding: 5px 20px;
+            padding: 4px 20px;
             display: inline-block;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             border-bottom: 2px dashed #d4af37 !important;
         }
-        .course-completion-text { font-size: 16px; color: #1e293b !important; line-height: 1.8; max-width: 80%; margin: 0 auto; }
-        .course-title-highlight { color: #0f2347 !important; font-weight: 900; font-size: 22px; text-decoration: underline #d4af37; }
+        .course-completion-text { font-size: 15px; color: #1e293b !important; line-height: 1.7; max-width: 85%; margin: 0 auto; }
+        .course-title-highlight { color: #0f2347 !important; font-weight: 900; font-size: 20px; text-decoration: underline #d4af37; }
 
-        /* التذييل والتوقيع وختم الجودة مع الباركود */
-        .cert-footer { display: flex; justify-content: space-between; align-items: flex-end; padding-top: 15px; border-top: 1px solid #e2e8f0 !important; }
-        .seal-signature { text-align: right; }
-        .sig-title { font-size: 13px; font-weight: bold; color: #0f2347 !important; }
-        .sig-sub { font-size: 10px; color: #64748b !important; margin-top: 3px; }
-        
-        .gold-badge-stamp { 
-            width: 65px; 
-            height: 65px; 
-            background: #d4af37 !important;
-            background: linear-gradient(135deg, #d4af37, #fef08a, #b45309) !important; 
-            border-radius: 50%; 
+        /* التذييل وتوزيع الأختام والباركود */
+        .cert-footer { 
             display: flex; 
-            justify-content: center; 
+            justify-content: space-between; 
             align-items: center; 
-            color: #0f2347 !important; 
-            font-weight: 900; 
-            font-size: 10px; 
-            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);
-            border: 2px solid #fff !important;
-            text-align: center;
+            padding-top: 10px; 
+            border-top: 1px solid #e2e8f0 !important; 
+        }
+        
+        /* جهة الاعتماد والختم الدائري فوق الكلام */
+        .seal-signature { position: relative; text-align: right; min-width: 220px; padding-top: 10px; }
+        .circle-stamp-img {
+            position: absolute;
+            top: -15px;
+            right: 15px;
+            width: 100px;
+            height: auto;
+            opacity: 0.85;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .sig-title { font-size: 13px; font-weight: bold; color: #0f2347 !important; position: relative; z-index: 2; }
+        .sig-sub { font-size: 10px; color: #64748b !important; margin-top: 2px; position: relative; z-index: 2; }
+        
+        /* المساحة الفاضية للختم المستطيل بجانب الختم الدائري */
+        .rect-stamp-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .rect-stamp-img {
+            max-height: 55px;
+            width: auto;
+            object-fit: contain;
+            opacity: 0.9;
         }
 
         .qr-section { text-align: center; }
         #qrcode { background: #fff !important; padding: 4px; border: 1px solid #cbd5e1 !important; border-radius: 6px; display: inline-block; }
         .verification-code-text { font-size: 9px; color: #64748b !important; margin-top: 4px; font-weight: bold; }
 
-        /* شريط أزرار التحكم بالطباعة */
         .controls-bar { margin-top: 20px; display: flex; gap: 12px; }
         .btn-action { 
             background: #d4af37; 
@@ -134,30 +161,22 @@
         }
         .btn-action:hover { background: #fef08a; transform: translateY(-2px); }
 
-        /* إعدادات الطباعة الحازمة للألوان والتدرجات الذهبية */
         @media print {
-            @page { 
-                size: A4 landscape; 
-                margin: 0; 
-            }
-            
-            /* إجبار المتصفح على طباعة خلفيات وألوان الـ CSS بالكامل */
+            @page { size: A4 landscape; margin: 0; }
             *, *::before, *::after {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
                 color-adjust: exact !important;
             }
-
             body { background: white !important; padding: 0; min-height: auto; }
             .controls-bar { display: none !important; }
-            
             .page-a4-landscape { 
                 box-shadow: none !important; 
                 width: 297mm !important; 
                 height: 210mm !important; 
                 border: none !important;
                 margin: 0 !important;
-                padding: 10mm !important;
+                padding: 8mm !important;
             }
         }
     </style>
@@ -173,12 +192,16 @@
                 <div class="corner-decoration bottom-left"></div>
                 <div class="corner-decoration bottom-right"></div>
 
+                <!-- 1. الشعار أعلى المنتصف وتحته اسم الشركة -->
                 <div class="cert-header">
+                    <img src="IMG-20260822-WA0045.jpg" id="mainLogo" class="main-logo-img" alt="شعار صدارة">
+                    
                     <div class="org-logo-title">منصة صدارة للتدريب والأكاديمية</div>
                     <div class="org-sub">Sadarah Training Platform & Academy</div>
                     <div><span class="cert-badge-title">شهادة إتمام دورة تدريبية</span></div>
                 </div>
 
+                <!-- 2. جسم الشهادة واسم الطالب -->
                 <div class="cert-body">
                     <p class="cert-to-text">تشهد إدارة المنصة بأن المتدرب / المتدربة:</p>
                     <div class="student-name-box" id="studentNameDisplay">جاري التحميل...</div>
@@ -188,21 +211,29 @@
                     </p>
                 </div>
 
+                <!-- 3. التذييل والأختام والباركود -->
                 <div class="cert-footer">
+                    
+                    <!-- الختم الدائري ينزل فوق كلام الاعتماد -->
                     <div class="seal-signature">
+                        <img src="٢٠٢٦٠٩٣٠_٠٣٥٥١٣.png" id="circleStamp" class="circle-stamp-img" alt="الختم الدائري">
+                        
                         <p class="sig-title">الإدارة العامة والاعتماد</p>
                         <p class="sig-sub">شركة صدارة للتسويق والخدمات الرقمية</p>
-                        <p style="font-size: 9px; color: #94a3b8; margin-top: 4px;">صادرة رسمياً وموثقة سحابياً</p>
+                        <p style="font-size: 9px; color: #94a3b8; margin-top: 4px; position: relative; z-index: 2;">صادرة رسمياً وموثقة سحابياً</p>
                     </div>
 
-                    <div class="gold-badge-stamp">
-                        معتمدة<br>صدارة
+                    <!-- الختم المستطيل في المنطقة الفاضية بجانب الختم الدائري -->
+                    <div class="rect-stamp-box">
+                        <img src="٢٠٢٦٠٩٣٠_٠٤١٧١٢.png" id="rectStamp" class="rect-stamp-img" alt="ختم الإدارة العامة المستطيل">
                     </div>
 
+                    <!-- الباركود QR -->
                     <div class="qr-section">
                         <div id="qrcode"></div>
                         <div class="verification-code-text" id="codeTextDisplay">CODE: ---</div>
                     </div>
+
                 </div>
 
             </div>
@@ -241,8 +272,8 @@
         let verifyUrl = window.location.origin + `/verify.html?code=${data.verification_code}`;
         new QRCode(document.getElementById("qrcode"), {
             text: verifyUrl,
-            width: 65,
-            height: 65,
+            width: 60,
+            height: 60,
             colorDark : "#0f2347",
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
