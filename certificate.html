@@ -78,7 +78,7 @@
             box-shadow: none;
         }
 
-        /* حاوية الشهادة الرئيسي */
+        /* حاوية الشهادة الرئيسية */
         .certificate-wrapper {
             position: relative;
             width: 1000px;
@@ -149,7 +149,7 @@
             color: #1e293b;
         }
 
-        /* 4. تفاصيل التاريخ وعدد الساعات */
+        /* 4. تفاصيل التاريخ وعدد الساعات الديناميكية */
         .cert-field.meta-details {
             position: absolute;
             top: 67.5%;
@@ -228,7 +228,7 @@
     <div class="certificate-wrapper" id="certificateCard">
         <div id="loadingOverlay" class="loading-overlay">جاري تحميل بيانات الشهادة...</div>
 
-        <!-- صورة الخلفية المباشرة -->
+        <!-- صورة الخلفية المباشرة الرسمية -->
         <img class="cert-bg-img" src="https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.png" crossorigin="anonymous" alt="Certificate Background">
 
         <!-- نصوص وعناصر الشهادة فوق الخلفية -->
@@ -248,7 +248,8 @@
 
     <script>
         const SUPABASE_URL = 'https://lvutrzswngpkjfamgact.supabase.co';
-        const SUPABASE_ANON_KEY = 'مفتاح_ANON_KEY_الخاص_بالمشروع';
+        // ضع مفتاح ANON KEY الخاص بمشروعك في المتغير أدناه
+        const SUPABASE_ANON_KEY = 'ضع_مفتاح_ANON_KEY_هنا';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function fetchAndRenderCertificate() {
@@ -263,6 +264,7 @@
                     .single();
 
                 if (error || !data) {
+                    // بيانات تجريبية في حال عدم الربط أو التخزين المباشر
                     renderCertificateData({
                         full_name: 'عبدالرحمن عبدالله صالح الذماري',
                         course_name: 'إدارة الأعمال والتسويق الرقمي الحديث',
@@ -271,6 +273,7 @@
                         hours: '30'
                     });
                 } else {
+                    // جلب البيانات الفعلية من جدول قاعدة البيانات بما فيها حقل الساعات hours
                     renderCertificateData({
                         full_name: data.full_name,
                         course_name: data.course_name,
@@ -307,7 +310,7 @@
             });
         }
 
-        // دالة تنزيل الصورة PNG
+        // تنزيل الصورة PNG
         function downloadPNG() {
             const certElement = document.getElementById('certificateCard');
             html2canvas(certElement, { scale: 3, useCORS: true, allowTaint: true }).then(canvas => {
@@ -319,14 +322,13 @@
             });
         }
 
-        // دالة تنزيل الـ PDF المباشرة برمجياً وبأعلى جودة
+        // تنزيل ملف PDF مباشر
         function downloadPDF() {
             const { jsPDF } = window.jspdf;
             const certElement = document.getElementById('certificateCard');
 
             html2canvas(certElement, { scale: 3, useCORS: true, allowTaint: true }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
-                // إنشاء مستند PDF أفقي أبعاد A4
                 const pdf = new jsPDF('landscape', 'mm', 'a4');
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
