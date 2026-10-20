@@ -182,6 +182,9 @@
             background: #ffffff;
             border-radius: 6px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .loading-overlay {
@@ -231,7 +234,7 @@
         <img class="cert-bg-img" src="https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.png" crossorigin="anonymous" alt="Certificate Background">
 
         <!-- عناصر الشهادة -->
-        <div class="cert-content">
+        .cert-content">
             <div class="cert-field student-name" id="studentName">---</div>
             <div class="cert-field intro-text">وذلك لحضوره بنجاح الدورة التدريبية الموسومة بـ:</div>
             <div class="cert-field course-title" id="courseTitle">---</div>
@@ -292,27 +295,25 @@
             document.getElementById('courseHours').innerText = studentData.hours;
             document.getElementById('certSerial').innerText = studentData.certificate_code;
 
-            // 🌟 الربط المباشر المحدث للـ QR Code: تضمين بيانات الشهادة الكاملة بداخل الرمز
-            const qrTextData = 
-`--- توثيق شهادة رقمية رسمية ---
-منصة صدارة للتدريب والتنمية
-اسم الطالب: ${studentData.full_name}
-الدورة التدريبية: ${studentData.course_name}
-رقم الشهادة: ${studentData.certificate_code}
-تاريخ الإصدار: ${studentData.created_at}
-عدد الساعات: ${studentData.hours} ساعة تدريبية
-الحالة: شهادة معتمدة وموثقة`;
+            // 🌟 تنسيق بيانات الباركود لتظهر بشكل مباشر ومضمون التوليد دون مشاكل حجم البيانات
+            const qrPayload = `SADARAH CERTIFICATE\nID: ${studentData.certificate_code}\nName: ${studentData.full_name}\nCourse: ${studentData.course_name}\nDate: ${studentData.created_at}\nHours: ${studentData.hours}h`;
 
             const qrContainer = document.getElementById("qrcode");
             qrContainer.innerHTML = "";
-            new QRCode(qrContainer, {
-                text: qrTextData,
-                width: 78,
-                height: 78,
-                colorDark: "#065f46",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.M
-            });
+            
+            // توليد الـ QR بالاعتماد على مكتبة qrcode.js وبدقة عالية ومستقرة
+            try {
+                new QRCode(qrContainer, {
+                    text: qrPayload,
+                    width: 78,
+                    height: 78,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+            } catch (e) {
+                console.error("خطأ في توليد الباركود:", e);
+            }
         }
 
         function downloadPNG() {
