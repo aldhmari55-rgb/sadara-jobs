@@ -164,6 +164,9 @@
         <!-- 6. إدارة الدورات التدريبية والأكاديمية -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>🎓 إدارة دورات الأكاديمية ورفع المحتوى <span class="badge" id="coursesCount">0</span></h2>
+            
+            <input type="hidden" id="editCourseId">
+            
             <label>عنوان الدورة التدريبية</label>
             <input type="text" id="adminCourseTitle" placeholder="مثال: دبلوم التسويق الرقمي وإدارة الحملات">
             
@@ -175,8 +178,16 @@
             
             <label>المدة المطلوبة للاجتياز وإصدار الشهادة (بالدقائق)</label>
             <input type="number" id="adminDuration" value="5" placeholder="5">
+
+            <label>حالة الظهور والتوفر للطلاب</label>
+            <select id="adminCourseStatus">
+                <option value="true">منشور ومتاح للطلاب 🟢</option>
+                <option value="false">مخفي / غير متاح 🔴</option>
+            </select>
             
-            <button onclick="addNewCourse()" style="background:#0284c7; color:white;">نشر الدورة وتفعيلها للطلاب 🚀</button>
+            <button id="btnSaveCourse" onclick="saveCourseToDb()" style="background:#0284c7; color:white;">نشر الدورة وتفعيلها للطلاب 🚀</button>
+            <button id="btnCancelCourse" onclick="resetCourseForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
+            
             <div id="courseMsg" class="status-msg"></div>
             <div class="list-box" id="adminCoursesList">جاري التحميل...</div>
         </div>
@@ -187,7 +198,10 @@
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let cachedUsers = []; // تخزين بيانات المستخدمين للتصدير
+    let cachedUsers = []; 
+    let cachedCourses = [];
+    let cachedJobs = [];
+    let cachedResumes = [];
 
     // دالة جلب الإحصائيات السحابية الواقعية إلى لوحة التحكم
     async function loadAdminRealStats() {
@@ -226,7 +240,6 @@
     }
 
     // ==================== الوظائف ====================
-    let cachedJobs = [];
     async function saveJob() {
         const editId = document.getElementById('editJobId').value;
         const title = document.getElementById('jobTitle').value.trim();
@@ -312,7 +325,6 @@
     }
 
     // ==================== الكفاءات ====================
-    let cachedResumes = [];
     async function saveResume() {
         const editId = document.getElementById('editResId').value;
         const name = document.getElementById('resName').value.trim();
@@ -541,12 +553,48 @@
         });
     }
 
-    // ==================== الدورات التدريبية والأكاديمية ====================
-    async function addNewCourse() {
+    // ==================== الدورات التدريبية والأكاديمية (التحكم الكامل: نشر، تعديل، إخفاء، حذف) ====================
+    async function loadAdminCourses() {
+        let { data } = await db.from('platform_courses').select('*').order('id', {ascending: false});
+        cachedCourses = data || [];
+        let box = document.getElementById('adminCoursesList');
+        document.getElementById('coursesCount').textContent = cachedCourses.length;
+        box.innerHTML = '';
+        
+        if (cachedCourses.length === 0) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات تدريبية مضافة حالياً.</p>';
+            return;
+        }
+
+        cachedCourses.forEach(c => {
+            let isActive = c.is_active !== false;
+            let statusBadge = isActive ? '<span style="color:#166534; background:#dcfce7; padding:2px 6px; border-radius:4px; font-size:10px;">مرئي 🟢</span>' : '<span style="color:#991b1b; background:#fee2e2; padding:2px 6px; border-radius:4px; font-size:10px;">مخفي 🔴</span>';
+            let toggleText = isActive ? 'إخفاء 👁️‍🗨️' : 'إظهار 👁️';
+            let toggleColor = isActive ? '#d97706' : '#10b981';
+
+            box.innerHTML += `<div class="item-row">
+                <div class="row-header">
+                    <strong>🎓 ${c.title}</strong>
+                    ${statusBadge}
+                </div>
+                <div style="color:#64748b; font-size:11px;">المدة: ${c.duration_minutes || 5} دقائق | الوصف: ${c.description || 'بدون وصف'}</div>
+                <div style="display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap;">
+                    <button type="button" class="btn-sm btn-edit" style="width: auto; padding: 6px 12px; margin: 0;" onclick="editCourse(${c.id})">تعديل ✏️</button>
+                    <button type="button" class="btn-sm" style="width: auto; padding: 6px 12px; margin: 0; background: ${toggleColor};" onclick="toggleCourseVisibility(${c.id}, ${isActive})">${toggleText}</button>
+                    <a href="watch.html?id=${c.id}" target="_blank" class="btn-sm" style="width: auto; padding: 6px 12px; margin: 0; background:#0284c7; text-decoration:none; display:inline-block;">معاينة 🎬</a>
+                    <button type="button" class="btn-sm btn-del" style="width: auto; padding: 6px 12px; margin: 0;" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
+                </div>
+            </div>`;
+        });
+    }
+
+    async function saveCourseToDb() {
+        const editId = document.getElementById('editCourseId').value;
         const title = document.getElementById('adminCourseTitle').value.trim();
         const description = document.getElementById('adminCourseDesc').value.trim();
         const video_url = document.getElementById('adminVideoUrl').value.trim();
         const duration_minutes = parseInt(document.getElementById('adminDuration').value) || 5;
+        const is_active = document.getElementById('adminCourseStatus').value === 'true';
         const msg = document.getElementById('courseMsg');
 
         if (!title || !video_url) {
@@ -555,52 +603,61 @@
         }
 
         msg.style.color = 'blue';
-        msg.textContent = 'جاري نشر الدورة في السحابة... ⏳';
+        msg.textContent = 'جاري الحفظ في السحابة... ⏳';
 
-        let { error } = await db.from('platform_courses').insert([{
-            title,
-            description,
-            video_url,
-            duration_minutes
-        }]);
+        let payload = { title, description, video_url, duration_minutes, is_active };
+        let res;
 
-        if (error) {
+        if (editId) {
+            res = await db.from('platform_courses').update(payload).eq('id', editId);
+        } else {
+            res = await db.from('platform_courses').insert([payload]);
+        }
+
+        if (res.error) {
             msg.style.color = 'red';
-            msg.textContent = 'خطأ أثناء النشر: ' + error.message;
+            msg.textContent = 'خطأ أثناء الحفظ: ' + res.error.message;
         } else {
             msg.style.color = 'green';
-            msg.textContent = 'تم نشر الدورة بنجاح وأصبحت متاحة في المنصة! 🎉';
-            document.getElementById('adminCourseTitle').value = '';
-            document.getElementById('adminCourseDesc').value = '';
-            document.getElementById('adminVideoUrl').value = '';
+            msg.textContent = 'تم حفظ الدورة وتحديثها بنجاح تام! ✅';
+            resetCourseForm();
             loadAdminCourses();
         }
     }
 
-    async function loadAdminCourses() {
-        let { data } = await db.from('platform_courses').select('*').order('id', {ascending: false});
-        let box = document.getElementById('adminCoursesList');
-        document.getElementById('coursesCount').textContent = data ? data.length : 0;
-        box.innerHTML = '';
-        
-        if (!data || data.length === 0) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات تدريبية مضافة حالياً.</p>';
-            return;
-        }
+    function resetCourseForm() {
+        document.getElementById('editCourseId').value = '';
+        document.getElementById('adminCourseTitle').value = '';
+        document.getElementById('adminCourseDesc').value = '';
+        document.getElementById('adminVideoUrl').value = '';
+        document.getElementById('adminDuration').value = '5';
+        document.getElementById('adminCourseStatus').value = 'true';
+        document.getElementById('btnSaveCourse').textContent = 'نشر الدورة وتفعيلها للطلاب 🚀';
+        document.getElementById('btnCancelCourse').style.display = 'none';
+    }
 
-        data.forEach(c => {
-            box.innerHTML += `<div class="item-row">
-                <div class="row-header">
-                    <strong>🎓 ${c.title}</strong>
-                    <span>⏱️ ${c.duration_minutes} دقائق</span>
-                </div>
-                <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'}</div>
-                <div class="action-btns">
-                    <a href="watch.html?id=${c.id}" target="_blank" class="btn-sm" style="background:#0284c7; text-decoration:none;">معاينة الدورة 🎬</a>
-                    <button class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
-                </div>
-            </div>`;
-        });
+    function editCourse(id) {
+        let c = cachedCourses.find(item => item.id == id);
+        if (!c) return;
+        document.getElementById('editCourseId').value = c.id;
+        document.getElementById('adminCourseTitle').value = c.title || '';
+        document.getElementById('adminCourseDesc').value = c.description || '';
+        document.getElementById('adminVideoUrl').value = c.video_url || '';
+        document.getElementById('adminDuration').value = c.duration_minutes || 5;
+        document.getElementById('adminCourseStatus').value = (c.is_active !== false) ? 'true' : 'false';
+        document.getElementById('btnSaveCourse').textContent = 'تعديل وحفظ الدورة 💾';
+        document.getElementById('btnCancelCourse').style.display = 'block';
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    async function toggleCourseVisibility(id, currentStatus) {
+        let newStatus = !currentStatus;
+        let { error } = await db.from('platform_courses').update({ is_active: newStatus }).eq('id', id);
+        if (error) {
+            alert('خطأ في التحديث: ' + error.message);
+        } else {
+            loadAdminCourses();
+        }
     }
 
     async function deleteItem(table, id) {
