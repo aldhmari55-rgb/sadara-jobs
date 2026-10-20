@@ -24,10 +24,10 @@
         <header class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-6 shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <h1 class="text-2xl font-black text-emerald-400">لوحة تحكم منصة صدارة السحابية</h1>
-                <p class="text-slate-400 text-sm mt-1">الإدارة الكاملة ورفع الصور المباشر من المعرض لـ Supabase</p>
+                <p class="text-slate-400 text-sm mt-1">إدارة واستعراض كافة صور وعناصر المنصة الرسمية مباشرة من سحابة Supabase</p>
             </div>
             <a href="https://sadarah.top" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-md">
-                🌐 زيارة المنصة
+                🌐 زيارة المنصة الرسمية
             </a>
         </header>
 
@@ -96,55 +96,64 @@
 
         <!-- 2. قسم البنرات الإعلانية -->
         <div id="tab-banners" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg space-y-6">
-            <h2 class="text-lg font-bold text-emerald-400 border-b border-slate-700 pb-2">🖼️ إدارة البنرات الإعلانية (رفع من المعرض)</h2>
-            <form onsubmit="addBanner(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h2 class="text-lg font-bold text-emerald-400">🖼️ استعراض وإدارة البنرات الإعلانية الحالية</h2>
+                <button onclick="loadBanners()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-md transition">🔄 تحديث</button>
+            </div>
+            <form onsubmit="addBanner(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end bg-slate-900/50 p-4 rounded-xl border border-slate-750">
                 <div>
                     <label class="block text-xs font-bold text-slate-300 mb-1">عنوان البنر</label>
-                    <input type="text" id="bannerTitle" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white" placeholder="اسم العرض أو البنر">
+                    <input type="text" id="bannerTitle" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white" placeholder="اسم البنر">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">اختر صورة من الجوال</label>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">اختر صورة من المعرض</label>
                     <input type="file" id="bannerFile" accept="image/*" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-300">
                 </div>
-                <button type="submit" id="btnUploadBanner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 transition">رفع وإضافة البنر</button>
+                <button type="submit" id="btnUploadBanner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 transition">رفع وإضافة بنر جديد</button>
             </form>
             <div id="bannersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- البنرات المرفوعة -->
+                <p class="text-slate-500 text-sm">جاري تحميل البنرات...</p>
             </div>
         </div>
 
         <!-- 3. قسم الوظائف -->
         <div id="tab-jobs" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg space-y-6">
-            <h2 class="text-lg font-bold text-emerald-400 border-b border-slate-700 pb-2">💼 إدارة الفرص والوظائف (صدارة للتوظيف)</h2>
-            <form onsubmit="addJob(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h2 class="text-lg font-bold text-emerald-400">💼 إدارة الوظائف وصور الشركات (صدارة للتوظيف)</h2>
+                <button onclick="loadJobs()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-md transition">🔄 تحديث</button>
+            </div>
+            <form onsubmit="addJob(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end bg-slate-900/50 p-4 rounded-xl border border-slate-750">
                 <input type="text" id="jobTitle" placeholder="مسمى الوظيفة" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
                 <input type="text" id="companyName" placeholder="اسم الشركة" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
                 <input type="text" id="jobLocation" placeholder="الموقع / المدينة" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">شعار الشركة (اختياري)</label>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">شعار الشركة من المعرض</label>
                     <input type="file" id="jobLogoFile" accept="image/*" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-slate-300">
                 </div>
-                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 md:col-span-4 transition">نشر الوظيفة</button>
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 md:col-span-4 transition">نشر وظيفة جديدة</button>
             </form>
             <div id="jobsList" class="space-y-3">
-                <!-- قائمة الوظائف -->
+                <p class="text-slate-500 text-sm">جاري تحميل الوظائف...</p>
             </div>
         </div>
 
         <!-- 4. قسم الكفاءات والخبراء -->
         <div id="tab-talents" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg space-y-6">
-            <h2 class="text-lg font-bold text-emerald-400 border-b border-slate-700 pb-2">⭐ إدارة الكفاءات والمدربين</h2>
-            <form onsubmit="addTalent(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h2 class="text-lg font-bold text-emerald-400">⭐ إدارة الكفاءات والصور الشخصية للمدربين</h2>
+                <button onclick="loadTalents()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-md transition">🔄 تحديث</button>
+            </div>
+            <form onsubmit="addTalent(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end bg-slate-900/50 p-4 rounded-xl border border-slate-750">
                 <input type="text" id="talentName" placeholder="اسم الخبير / المدرب" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
                 <input type="text" id="talentRole" placeholder="التخصص / المسمى الوظيفي" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
                 <div>
                     <label class="block text-xs font-bold text-slate-300 mb-1">الصورة الشخصية من المعرض</label>
                     <input type="file" id="talentPhotoFile" accept="image/*" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-slate-300">
                 </div>
-                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 md:col-span-3 transition">حفظ الكفاءة</button>
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 md:col-span-3 transition">حفظ الكفاءة وصورتها</button>
             </form>
             <div id="talentsList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- قائمة الكفاءات -->
+                <p class="text-slate-500 text-sm">جاري تحميل الكفاءات...</p>
             </div>
         </div>
 
@@ -152,7 +161,7 @@
         <div id="tab-users" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg space-y-4">
             <div class="flex justify-between items-center border-b border-slate-700 pb-2">
                 <h2 class="text-lg font-bold text-emerald-400">👥 قاعدة بيانات المسجلين والحسابات</h2>
-                <button onclick="loadUsers()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-md transition">🔄 تحديث القائمة</button>
+                <button onclick="loadUsers()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-md transition">🔄 تحديث</button>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-right text-sm">
@@ -164,7 +173,7 @@
                         </tr>
                     </thead>
                     <tbody id="usersTableBody" class="divide-y divide-slate-700 text-slate-300">
-                        <tr><td colspan="3" class="text-center p-4 text-slate-500">جاري التحميل من السحابة...</td></tr>
+                        <tr><td colspan="3" class="text-center p-4 text-slate-500">جاري تحميل الحسابات...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -172,17 +181,20 @@
 
         <!-- 6. قسم شركاء النجاح -->
         <div id="tab-partners" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg space-y-6">
-            <h2 class="text-lg font-bold text-emerald-400 border-b border-slate-700 pb-2">🤝 إدارة شركاء النجاح (رفع الشعارات)</h2>
-            <form onsubmit="addPartner(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h2 class="text-lg font-bold text-emerald-400">🤝 إدارة شركاء النجاح وشعارات الجهات</h2>
+                <button onclick="loadPartners()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-md transition">🔄 تحديث</button>
+            </div>
+            <form onsubmit="addPartner(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end bg-slate-900/50 p-4 rounded-xl border border-slate-750">
                 <input type="text" id="partnerName" placeholder="اسم الجهة / الشريك" required class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">اختر الشعار من الجوال</label>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">اختر الشعار من المعرض</label>
                     <input type="file" id="partnerLogoFile" accept="image/*" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-slate-300">
                 </div>
-                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 transition">إضافة الشريك</button>
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 transition">إضافة الشريك وشعاره</button>
             </form>
             <div id="partnersList" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <!-- الشركاء -->
+                <p class="text-slate-500 text-sm">جاري تحميل شركاء النجاح...</p>
             </div>
         </div>
 
@@ -193,7 +205,7 @@
         const SUPABASE_ANON_KEY = 'ضع_مفتاح_ANON_KEY_هنا';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // دالة الرفع السحابية المباشرة من معرض الهاتف إلى Supabase Storage
+        // دالة الرفع السحابية المباشرة من المعرض وتوليد الرابط العام
         async function uploadFileToStorage(fileInputId, folder = 'uploads') {
             const fileInput = document.getElementById(fileInputId);
             if (!fileInput || !fileInput.files || fileInput.files.length === 0) return null;
@@ -202,13 +214,12 @@
             const fileExt = file.name.split('.').pop();
             const fileName = `${folder}/${Date.now()}_${Math.floor(Math.random() * 1000)}.${fileExt}`;
 
-            const { data, error } = await supabaseClient.storage
+            const { error } = await supabaseClient.storage
                 .from('platform-files')
                 .upload(fileName, file, { cacheControl: '3600', upsert: true });
 
             if (error) {
-                console.error("خطأ رفع الملف:", error);
-                alert("حدث خطأ أثناء رفع الصورة السحابية.");
+                alert("حدث خطأ أثناء رفع الصورة إلى السحابة.");
                 return null;
             }
 
@@ -274,7 +285,7 @@
                     tbody.appendChild(row);
                 });
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-rose-400">فشل جلب الشهادات من السحابة.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-rose-400">فشل الجلب.</td></tr>`;
             }
         }
 
@@ -297,31 +308,30 @@
             }
         }
 
-        // --- 2. البنرات (مع رفع الملف) ---
+        // --- 2. البنرات (استعراض الصور الحالية من السحابة) ---
         async function loadBanners() {
             const container = document.getElementById('bannersList');
+            container.innerHTML = `<p class="text-slate-500 text-sm">جاري جلب البنرات من السحابة...</p>`;
             try {
                 const { data } = await supabaseClient.from('banners').select('*').order('created_at', { ascending: false });
                 if (!data || data.length === 0) {
-                    container.innerHTML = `<p class="col-span-3 text-slate-500">لا توجد بنرات مسجلة.</p>`;
+                    container.innerHTML = `<p class="col-span-3 text-slate-500">لا توجد بنرات مسجلة في المنصة حالياً.</p>`;
                     return;
                 }
                 container.innerHTML = data.map(b => `
                     <div class="bg-slate-900 border border-slate-700 rounded-lg p-3 flex flex-col gap-2">
-                        <img src="${b.image_url}" class="w-full h-32 object-cover rounded-md" alt="Banner">
-                        <p class="font-bold text-white text-xs">${b.title}</p>
+                        <img src="${b.image_url}" class="w-full h-32 object-cover rounded-md border border-slate-700" alt="Banner">
+                        <p class="font-bold text-white text-xs">${b.title || 'بنر إعلاني'}</p>
                         <button onclick="deleteRecord('banners', '${b.id}', loadBanners)" class="bg-rose-600 text-white text-xs py-1 rounded">حذف البنر</button>
                     </div>
                 `).join('');
-            } catch (e) {}
+            } catch (e) {
+                container.innerHTML = `<p class="text-rose-400 text-sm">فشل تحميل البنرات.</p>`;
+            }
         }
 
         async function addBanner(e) {
             e.preventDefault();
-            const btn = document.getElementById('btnUploadBanner');
-            btn.innerText = "جاري الرفع...";
-            btn.disabled = true;
-
             const title = document.getElementById('bannerTitle').value;
             const imageUrl = await uploadFileToStorage('bannerFile', 'banners');
 
@@ -332,23 +342,22 @@
                 document.getElementById('bannerFile').value = '';
                 loadBanners();
             }
-            btn.innerText = "رفع وإضافة البنر";
-            btn.disabled = false;
         }
 
-        // --- 3. الوظائف ---
+        // --- 3. الوظائف (استعراض شعارات الشركات) ---
         async function loadJobs() {
             const container = document.getElementById('jobsList');
+            container.innerHTML = `<p class="text-slate-500 text-sm">جاري جلب الوظائف...</p>`;
             try {
                 const { data } = await supabaseClient.from('jobs').select('*').order('created_at', { ascending: false });
                 if (!data || data.length === 0) {
-                    container.innerHTML = `<p class="text-slate-500">لا توجد وظائف مسجلة.</p>`;
+                    container.innerHTML = `<p class="text-slate-500">لا توجد وظائف معلنة.</p>`;
                     return;
                 }
                 container.innerHTML = data.map(j => `
                     <div class="bg-slate-900 border border-slate-700 rounded-lg p-3 flex justify-between items-center">
                         <div class="flex items-center gap-3">
-                            ${j.logo_url ? `<img src="${j.logo_url}" class="w-10 h-10 object-contain rounded-md bg-white p-1">` : ''}
+                            ${j.logo_url ? `<img src="${j.logo_url}" class="w-12 h-12 object-contain rounded-md bg-white p-1 border">` : '<div class="w-12 h-12 bg-slate-800 rounded-md flex items-center justify-center text-xs">بدون شعار</div>'}
                             <div>
                                 <h4 class="font-bold text-emerald-400">${j.title}</h4>
                                 <p class="text-xs text-slate-400">${j.company} - ${j.location}</p>
@@ -372,9 +381,10 @@
             loadJobs();
         }
 
-        // --- 4. الكفاءات ---
+        // --- 4. الكفاءات (استعراض الصور الشخصية للخبراء) ---
         async function loadTalents() {
             const container = document.getElementById('talentsList');
+            container.innerHTML = `<p class="text-slate-500 text-sm">جاري جلب الكفاءات...</p>`;
             try {
                 const { data } = await supabaseClient.from('talents').select('*');
                 if (!data || data.length === 0) {
@@ -384,7 +394,7 @@
                 container.innerHTML = data.map(t => `
                     <div class="bg-slate-900 border border-slate-700 rounded-lg p-3 flex items-center justify-between gap-3">
                         <div class="flex items-center gap-3">
-                            <img src="${t.photo_url}" class="w-12 h-12 rounded-full object-cover border border-emerald-500">
+                            <img src="${t.photo_url}" class="w-12 h-12 rounded-full object-cover border-2 border-emerald-500">
                             <div>
                                 <p class="font-bold text-white text-xs">${t.name}</p>
                                 <p class="text-xs text-slate-400">${t.role}</p>
@@ -415,7 +425,7 @@
             try {
                 const { data } = await supabaseClient.from('users').select('*');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="3" class="text-center p-4 text-slate-500">لا توجد حسابات مسجلة حالياً.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="3" class="text-center p-4 text-slate-500">لا توجد حسابات مسجلة.</td></tr>`;
                     return;
                 }
                 tbody.innerHTML = data.map(u => `
@@ -428,18 +438,19 @@
             } catch (e) {}
         }
 
-        // --- 6. شركاء النجاح ---
+        // --- 6. شركاء النجاح (استعراض الشعارات) ---
         async function loadPartners() {
             const container = document.getElementById('partnersList');
+            container.innerHTML = `<p class="text-slate-500 text-sm">جاري جلب شركاء النجاح...</p>`;
             try {
                 const { data } = await supabaseClient.from('partners').select('*');
                 if (!data || data.length === 0) {
-                    container.innerHTML = `<p class="col-span-4 text-slate-500">لا يوجد شركاء مسجلين.</p>`;
+                    container.innerHTML = `<p class="col-span-4 text-slate-500">لا توجد شعارات شركاء مسجلة.</p>`;
                     return;
                 }
                 container.innerHTML = data.map(p => `
                     <div class="bg-slate-900 border border-slate-700 rounded-lg p-3 flex flex-col items-center gap-2">
-                        <img src="${p.logo_url}" class="h-16 object-contain">
+                        <img src="${p.logo_url}" class="h-16 object-contain bg-white rounded p-1 w-full">
                         <p class="font-bold text-xs text-white text-center">${p.name}</p>
                         <button onclick="deleteRecord('partners', '${p.id}', loadPartners)" class="bg-rose-600 text-white text-xs py-1 px-2 rounded">حذف</button>
                     </div>
@@ -454,7 +465,7 @@
 
             if (logo_url) {
                 await supabaseClient.from('partners').insert([{ name, logo_url }]);
-                alert('تم إضافة شريك النجاح بنجاح!');
+                alert('تم إضافة شريك النجاح وشعاره بنجاح!');
                 loadPartners();
             }
         }
@@ -468,6 +479,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             generateRandomSerial();
             loadCertificates();
+            loadBanners(); // جلب الصور والبنرات فوراً عند فتح لوحة التحكم
         });
     </script>
 </body>
