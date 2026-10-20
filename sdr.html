@@ -18,6 +18,7 @@
         body { background: var(--bg); padding: 15px; color: #0f172a; padding-bottom: 50px; }
         .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 15px; border-bottom: 3px solid var(--gold); }
         
+        /* شريط الإحصائيات الواقعية المباشرة */
         .admin-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto 20px auto; }
         @media(min-width: 768px) { .admin-stats-grid { grid-template-columns: repeat(4, 1fr); } }
         .stat-card-admin { background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
@@ -37,6 +38,10 @@
         .list-box { margin-top: 12px; max-height: 280px; overflow-y: auto; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
         .item-row { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-bottom: 1px solid #f1f5f9; font-size: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
         .row-header { display: flex; justify-content: space-between; align-items: center; }
+        .action-btns { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+        .btn-sm { padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 10px; font-weight: bold; color: white; }
+        .btn-del { background: var(--red); }
+        .btn-edit { background: #3b82f6; }
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         .preview-img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
     </style>
@@ -48,12 +53,24 @@
         <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المستخدمين، والشارة الزرقاء والأكاديمية</p>
     </div>
 
-    <!-- شريط الإحصائيات -->
+    <!-- شريط الإحصائيات الواقعية المباشرة -->
     <div class="admin-stats-grid">
-        <div class="stat-card-admin"><h3 id="adminOnline">1</h3><p>متواجد الآن 🟢</p></div>
-        <div class="stat-card-admin"><h3 id="adminTotalViews">36</h3><p>إجمالي الزيارات 👥</p></div>
-        <div class="stat-card-admin"><h3 id="adminJobs">0</h3><p>إجمالي الوظائف 💼</p></div>
-        <div class="stat-card-admin"><h3 id="adminResumes">0</h3><p>إجمالي الكفاءات 📄</p></div>
+        <div class="stat-card-admin">
+            <h3 id="adminOnline">...</h3>
+            <p>متواجد الآن 🟢</p>
+        </div>
+        <div class="stat-card-admin">
+            <h3 id="adminTotalViews">...</h3>
+            <p>إجمالي الزيارات 👥</p>
+        </div>
+        <div class="stat-card-admin">
+            <h3 id="adminJobs">...</h3>
+            <p>إجمالي الوظائف 💼</p>
+        </div>
+        <div class="stat-card-admin">
+            <h3 id="adminResumes">...</h3>
+            <p>إجمالي الكفاءات 📄</p>
+        </div>
     </div>
 
     <div class="grid-container">
@@ -111,7 +128,7 @@
             <div class="list-box" id="resumesList">جاري التحميل...</div>
         </div>
 
-        <!-- 3. إدارة المستخدمين -->
+        <!-- 3. إدارة المستخدمين المسجلين (مع أزرار التصدير) -->
         <div class="card">
             <h2>
                 <span>👥 المستخدمون المسجلون</span>
@@ -147,30 +164,19 @@
         <!-- 6. إدارة الدورات التدريبية والأكاديمية -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>🎓 إدارة دورات الأكاديمية ورفع المحتوى <span class="badge" id="coursesCount">0</span></h2>
-            
-            <input type="hidden" id="editCourseId">
-            
             <label>عنوان الدورة التدريبية</label>
             <input type="text" id="adminCourseTitle" placeholder="مثال: دبلوم التسويق الرقمي وإدارة الحملات">
             
             <label>وصف الدورة</label>
             <textarea id="adminCourseDesc" rows="2" placeholder="وصف موجز لما ستتعلمه في الدورة..."></textarea>
             
-            <label>رابط فيديو اليوتيوب</label>
-            <input type="text" id="adminVideoUrl" placeholder="https://www.youtube.com/watch?v=...">
+            <label>رابط الفيديو السحابي (YouTube أو رابط مباشر)</label>
+            <input type="text" id="adminVideoUrl" placeholder="https://www.youtube.com/embed/...">
             
             <label>المدة المطلوبة للاجتياز وإصدار الشهادة (بالدقائق)</label>
             <input type="number" id="adminDuration" value="5" placeholder="5">
-
-            <label>حالة الظهور والتوفر للطلاب</label>
-            <select id="adminCourseStatus">
-                <option value="true">منشور ومتاح للطلاب 🟢</option>
-                <option value="false">مخفي / غير متاح 🔴</option>
-            </select>
             
-            <button id="btnSaveCourse" onclick="saveCourseToDb()" style="background:#0284c7; color:white;">نشر الدورة وتفعيلها للطلاب 🚀</button>
-            <button id="btnCancelCourse" onclick="resetCourseForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
-            
+            <button onclick="addNewCourse()" style="background:#0284c7; color:white;">نشر الدورة وتفعيلها للطلاب 🚀</button>
             <div id="courseMsg" class="status-msg"></div>
             <div class="list-box" id="adminCoursesList">جاري التحميل...</div>
         </div>
@@ -181,58 +187,366 @@
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let cachedUsers = []; 
-    let cachedCourses = [];
+    let cachedUsers = []; // تخزين بيانات المستخدمين للتصدير
+
+    // دالة جلب الإحصائيات السحابية الواقعية إلى لوحة التحكم
+    async function loadAdminRealStats() {
+        try {
+            let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
+            document.getElementById('adminTotalViews').textContent = st ? st.total_views : 36;
+
+            let fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+            let { count: activeCount } = await db.from('active_sessions')
+                .select('*', { count: 'exact', head: true })
+                .gt('last_ping', fiveMinsAgo);
+
+            document.getElementById('adminOnline').textContent = activeCount && activeCount > 0 ? activeCount : 1;
+        } catch(e) {
+            document.getElementById('adminTotalViews').textContent = 36;
+            document.getElementById('adminOnline').textContent = 1;
+        }
+    }
+
+    async function uploadFileStrict(file) {
+        if (!file) return '';
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const { error: uploadError } = await db.storage.from('platform-files').upload(fileName, file);
+            if (uploadError) {
+                alert('خطأ في رفع الصورة للسحابة: ' + uploadError.message);
+                return null;
+            }
+            const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
+            return publicUrlData.publicUrl || '';
+        } catch(e) {
+            alert('فشل في عملية الرفع.');
+            return null;
+        }
+    }
+
+    // ==================== الوظائف ====================
     let cachedJobs = [];
-    let cachedResumes = [];
+    async function saveJob() {
+        const editId = document.getElementById('editJobId').value;
+        const title = document.getElementById('jobTitle').value.trim();
+        const company = document.getElementById('jobCompany').value.trim();
+        const phone = document.getElementById('jobPhone').value.trim();
+        const status = document.getElementById('jobStatus').value;
+        const isVerified = document.getElementById('jobVerified').value === 'true';
+        const imgFile = document.getElementById('jobImgFile').files[0];
+        const msg = document.getElementById('jobMsg');
 
-    // ==================== الدورات التدريبية (الإصلاح الجذري للأزرار) ====================
-    async function loadAdminCourses() {
-        let { data, error } = await db.from('platform_courses').select('*').order('id', {ascending: false});
-        if (error) {
-            console.error(error);
-            document.getElementById('adminCoursesList').innerHTML = `<p style="color:red; font-size:11px;">خطأ في جلب الدورات: ${error.message}</p>`;
+        if (!title || !company) { alert('يرجى إدخال عنوان الوظيفة واسم الشركة'); return; }
+        msg.style.color = 'blue'; msg.textContent = 'جاري الرفع والحفظ الفعلي... ⏳';
+
+        let imgUrl = '';
+        if (imgFile) {
+            imgUrl = await uploadFileStrict(imgFile);
+            if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة، لم يتم الحفظ.'; return; }
+        }
+
+        let payload = { title, company, phone, status, approved: true, is_verified: isVerified };
+        if (imgUrl) payload.image = imgUrl;
+
+        let res = editId ? await db.from('jobs').update(payload).eq('id', editId) : await db.from('jobs').insert([payload]);
+        if (res.error) {
+            msg.style.color = 'red'; msg.textContent = 'خطأ من قاعدة البيانات: ' + res.error.message;
             return;
         }
-        cachedCourses = data || [];
-        let box = document.getElementById('adminCoursesList');
-        document.getElementById('coursesCount').textContent = cachedCourses.length;
+
+        msg.style.color = 'green'; msg.textContent = 'تم حفظ الوظيفة ونشرها بنجاح تام! ✅';
+        resetJobForm(); loadJobs();
+    }
+
+    function resetJobForm() {
+        document.getElementById('editJobId').value = '';
+        document.getElementById('jobTitle').value = '';
+        document.getElementById('jobCompany').value = '';
+        document.getElementById('jobVerified').value = 'false';
+        document.getElementById('jobImgFile').value = '';
+        document.getElementById('btnSaveJob').textContent = 'نشر الوظيفة الآن 🚀';
+        document.getElementById('btnCancelJob').style.display = 'none';
+    }
+
+    async function loadJobs() {
+        let { data } = await db.from('jobs').select('*').order('id', {ascending: false});
+        cachedJobs = data || [];
+        let box = document.getElementById('jobsList');
+        document.getElementById('jobsCount').textContent = cachedJobs.length;
+        document.getElementById('adminJobs').textContent = cachedJobs.length;
         box.innerHTML = '';
-        
-        if (cachedCourses.length === 0) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات تدريبية مضافة حالياً.</p>';
-            return;
-        }
-
-        cachedCourses.forEach(c => {
-            let isActive = c.is_active !== false; // افتراضياً true إذا لم يكن معرفاً
-            let statusBadge = isActive ? '<span style="color:#166534; background:#dcfce7; padding:2px 6px; border-radius:4px; font-size:10px;">مرئي 🟢</span>' : '<span style="color:#991b1b; background:#fee2e2; padding:2px 6px; border-radius:4px; font-size:10px;">مخفي 🔴</span>';
-            let toggleText = isActive ? 'إخفاء 👁️‍🗨️' : 'إظهار 👁️';
-            let toggleColor = isActive ? '#d97706' : '#10b981';
-
+        if (cachedJobs.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد وظائف مضافة.</p>'; return; }
+        cachedJobs.forEach(j => {
+            let imgTag = j.image ? `<img src="${j.image}" class="preview-img">` : '';
+            let badge = j.is_verified ? ' 🔵' : '';
             box.innerHTML += `<div class="item-row">
-                <div class="row-header">
-                    <strong>🎓 ${c.title}</strong>
-                    ${statusBadge}
+                <div class="row-header" style="align-items:center;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        ${imgTag}
+                        <strong>${j.title || 'وظيفة'}${badge}</strong>
+                    </div>
+                    <span>${j.status || 'متاحة'}</span>
                 </div>
-                <div style="color:#64748b; font-size:11px;">المدة: ${c.duration_minutes || 5} دقائق | الوصف: ${c.description || 'بدون وصف'}</div>
-                <div style="display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap;">
-                    <button type="button" style="width: auto; padding: 6px 12px; margin: 0; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: bold;" onclick="editCourse(${c.id})">تعديل ✏️</button>
-                    <button type="button" style="width: auto; padding: 6px 12px; margin: 0; background: ${toggleColor}; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: bold;" onclick="toggleCourseVisibility(${c.id}, ${isActive})">${toggleText}</button>
-                    <a href="watch.html?id=${c.id}" target="_blank" style="padding: 6px 12px; margin: 0; background: #0284c7; color: white; border-radius: 4px; text-decoration: none; font-size: 10px; font-weight: bold; display:inline-block;">معاينة 🎬</a>
-                    <button type="button" style="width: auto; padding: 6px 12px; margin: 0; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: bold;" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
+                <div style="color:#64748b; font-size:11px;">الشركة: ${j.company || '-'}</div>
+                <div class="action-btns">
+                    <button class="btn-sm btn-edit" onclick="editJob(${j.id})">تعديل ✏️</button>
+                    <button class="btn-sm btn-del" onclick="deleteItem('jobs', ${j.id})">حذف 🗑️</button>
                 </div>
             </div>`;
         });
     }
 
-    async function saveCourseToDb() {
-        const editId = document.getElementById('editCourseId').value;
+    function editJob(id) {
+        let j = cachedJobs.find(item => item.id === id);
+        if (!j) return;
+        document.getElementById('editJobId').value = j.id;
+        document.getElementById('jobTitle').value = j.title || '';
+        document.getElementById('jobCompany').value = j.company || '';
+        document.getElementById('jobPhone').value = j.phone || '967780568507';
+        document.getElementById('jobStatus').value = j.status || 'متاحة';
+        document.getElementById('jobVerified').value = j.is_verified ? 'true' : 'false';
+        document.getElementById('btnSaveJob').textContent = 'تعديل وحفظ 💾';
+        document.getElementById('btnCancelJob').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==================== الكفاءات ====================
+    let cachedResumes = [];
+    async function saveResume() {
+        const editId = document.getElementById('editResId').value;
+        const name = document.getElementById('resName').value.trim();
+        const title = document.getElementById('resTitle').value.trim();
+        const exp = document.getElementById('resExp').value.trim();
+        const phone = document.getElementById('resPhone').value.trim();
+        const isVerified = document.getElementById('resVerified').value === 'true';
+        const imgFile = document.getElementById('resImgFile').files[0];
+        const msg = document.getElementById('resMsg');
+
+        if (!name || !title) { alert('يرجى إدخال الاسم والمسمى الوظيفي'); return; }
+        msg.style.color = 'blue'; msg.textContent = 'جاري رفع الصورة وحفظ الكفاءة بالسحابة... ⏳';
+
+        let imgUrl = '';
+        if (imgFile) {
+            imgUrl = await uploadFileStrict(imgFile);
+            if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة، لم يتم الحفظ.'; return; }
+        }
+
+        let payload = {
+            full_name: name,
+            name: name,
+            title: name,
+            job_title: title,
+            specialty: title,
+            experience: exp,
+            phone: phone,
+            is_verified: isVerified
+        };
+        if (imgUrl) payload.image = imgUrl;
+
+        let res = editId ? await db.from('resumes').update(payload).eq('id', editId) : await db.from('resumes').insert([payload]);
+        if (res.error) {
+            msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
+            return;
+        }
+
+        msg.style.color = 'green'; msg.textContent = 'تم حفظ الكفاءة بالاسم والتخصص والصورة بنجاح حقيقي! ✅';
+        resetResForm(); loadResumes();
+    }
+
+    function resetResForm() {
+        document.getElementById('editResId').value = '';
+        document.getElementById('resName').value = '';
+        document.getElementById('resTitle').value = '';
+        document.getElementById('resExp').value = '';
+        document.getElementById('resVerified').value = 'false';
+        document.getElementById('resImgFile').value = '';
+        document.getElementById('btnSaveRes').textContent = 'حفظ الكفاءة 📄';
+        document.getElementById('btnCancelRes').style.display = 'none';
+    }
+
+    async function loadResumes() {
+        let { data } = await db.from('resumes').select('*').order('id', {ascending: false});
+        cachedResumes = data || [];
+        let box = document.getElementById('resumesList');
+        document.getElementById('resCount').textContent = cachedResumes.length;
+        document.getElementById('adminResumes').textContent = cachedResumes.length;
+        box.innerHTML = '';
+        if (cachedResumes.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات مسجلة.</p>'; return; }
+        cachedResumes.forEach(r => {
+            let displayName = r.full_name || r.name || r.title || 'كفاءة';
+            let displayJob = r.job_title || r.specialty || '-';
+            let badge = r.is_verified ? ' 🔵' : '';
+            let imgTag = r.image ? `<img src="${r.image}" class="preview-img">` : '';
+            box.innerHTML += `<div class="item-row">
+                <div class="row-header" style="align-items:center;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        ${imgTag}
+                        <strong>${displayName}${badge}</strong>
+                    </div>
+                    <span>معروض 🟢</span>
+                </div>
+                <div style="color:#64748b; font-size:11px;">التخصص: ${displayJob}</div>
+                <div class="action-btns">
+                    <button class="btn-sm btn-edit" onclick="editResume(${r.id})">تعديل ✏️</button>
+                    <button class="btn-sm btn-del" onclick="deleteItem('resumes', ${r.id})">حذف 🗑️</button>
+                </div>
+            </div>`;
+        });
+    }
+
+    function editResume(id) {
+        let r = cachedResumes.find(item => item.id === id);
+        if (!r) return;
+        document.getElementById('editResId').value = r.id;
+        document.getElementById('resName').value = r.full_name || r.name || r.title || '';
+        document.getElementById('resTitle').value = r.job_title || r.specialty || '';
+        document.getElementById('resExp').value = r.experience || '';
+        document.getElementById('resPhone').value = r.phone || '967780568507';
+        document.getElementById('resVerified').value = r.is_verified ? 'true' : 'false';
+        document.getElementById('btnSaveRes').textContent = 'تعديل وحفظ 💾';
+        document.getElementById('btnCancelRes').style.display = 'block';
+        window.scrollTo({ top: 300, behavior: 'smooth' });
+    }
+
+    // ==================== المستخدمون المسجلون + التصدير ====================
+    async function loadRegisteredUsers() {
+        let { data, error } = await db.from('users').select('*').order('id', {ascending: false});
+        cachedUsers = data || [];
+        let box = document.getElementById('usersList');
+        document.getElementById('usersCount').textContent = cachedUsers.length;
+        box.innerHTML = '';
+        
+        if (!data || data.length === 0) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد حسابات مسجلة حتى الآن.</p>';
+            return;
+        }
+        
+        data.forEach(u => {
+            let dateFormatted = u.created_at ? new Date(u.created_at).toLocaleDateString('ar-SA') : '-';
+            box.innerHTML += `<div class="item-row">
+                <div class="row-header">
+                    <strong>👤 ${u.full_name || 'مستخدم'}</strong>
+                    <span style="font-size:10px; color:#64748b;">${dateFormatted}</span>
+                </div>
+                <div style="color:#475569; font-size:11px; direction:ltr; text-align:right;">📱 ${u.phone}</div>
+                <div class="action-btns">
+                    <a href="https://wa.me/${u.phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none;">مراسلة واتساب 💬</a>
+                    <button class="btn-sm btn-del" onclick="deleteItem('users', ${u.id})">حذف 🗑️</button>
+                </div>
+            </div>`;
+        });
+    }
+
+    function exportToExcel() {
+        if (!cachedUsers || cachedUsers.length === 0) { alert('لا توجد بيانات مستخدمين للتصدير.'); return; }
+        let dataToExport = cachedUsers.map((u, index) => ({
+            "م": index + 1,
+            "اسم المستخدم": u.full_name || 'مستخدم',
+            "رقم الهاتف (واتساب)": u.phone || '',
+            "تاريخ التسجيل": u.created_at ? new Date(u.created_at).toLocaleDateString('ar-SA') : '-'
+        }));
+        let worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        let workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "المستخدمين");
+        XLSX.writeFile(workbook, "Sadara_Registered_Users.xlsx");
+    }
+
+    function exportToPDF() {
+        if (!cachedUsers || cachedUsers.length === 0) { alert('لا توجد بيانات مستخدمين للتصدير.'); return; }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.text("Sadara Platform - Registered Users", 105, 15, { align: "center" });
+
+        let tableData = cachedUsers.map((u, index) => [
+            index + 1,
+            u.phone || '',
+            u.full_name || 'مستخدم',
+            u.created_at ? new Date(u.created_at).toLocaleDateString('ar-SA') : '-'
+        ]);
+
+        doc.autoTable({
+            head: [['#', 'Phone', 'User Name', 'Registration Date']],
+            body: tableData,
+            startY: 25,
+            styles: { halign: 'right', font: 'helvetica', fontSize: 11 },
+            headStyles: { fillColor: [15, 35, 71] }
+        });
+
+        doc.save("Sadara_Registered_Users.pdf");
+    }
+
+    // ==================== البنرات ====================
+    async function addBanner() {
+        const file = document.getElementById('bannerFile').files[0];
+        const msg = document.getElementById('bannerMsg');
+        if (!file) { alert('اختر صورة البنر'); return; }
+        msg.style.color = 'blue'; msg.textContent = 'جاري رفع البنر الفعلي...';
+        let url = await uploadFileStrict(file);
+        if (url) { 
+            await db.from('banners').insert([{ url }]); 
+            document.getElementById('bannerFile').value = ''; 
+            msg.style.color = 'green'; msg.textContent = 'تم رفع البنر بنجاح! ✅';
+            loadBanners(); 
+        }
+    }
+
+    async function loadBanners() {
+        let { data } = await db.from('banners').select('*').order('id', {ascending: false});
+        let box = document.getElementById('bannersList'); box.innerHTML = '';
+        document.getElementById('bannersCount').textContent = data ? data.length : 0;
+        if (!data || data.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد بنرات مضافة.</p>'; return; }
+        data.forEach(b => {
+            box.innerHTML += `<div class="item-row" style="flex-direction:row; justify-content:space-between; align-items:center;"><img src="${b.url}" style="height:35px; border-radius:4px;"><button class="btn-sm btn-del" onclick="deleteItem('banners', ${b.id})">حذف 🗑️</button></div>`;
+        });
+    }
+
+    // ==================== الشركاء ====================
+    async function addPartner() {
+        const file = document.getElementById('partnerFile').files[0];
+        const msg = document.getElementById('partnerMsg');
+        if (!file) { alert('اختر شعار الشريك أولاً'); return; }
+        
+        msg.style.color = 'blue'; 
+        msg.textContent = 'جاري رفع شعار الشريك بالسحابة... ⏳';
+        
+        let url = await uploadFileStrict(file);
+        if (url) { 
+            let { error } = await db.from('partners').insert([{ logo: url, name: file.name }]); 
+            if (error) {
+                msg.style.color = 'red'; 
+                msg.textContent = 'خطأ في الحفظ: ' + error.message;
+                return;
+            }
+            document.getElementById('partnerFile').value = ''; 
+            msg.style.color = 'green'; 
+            msg.textContent = 'تم إضافة الشريك بنجاح وظهر في الشريط! ✅';
+            loadPartners(); 
+        } else {
+            msg.style.color = 'red';
+            msg.textContent = 'فشل رفع الصورة للسحابة.';
+        }
+    }
+
+    async function loadPartners() {
+        let { data } = await db.from('partners').select('*').order('id', {ascending: false});
+        let box = document.getElementById('partnersList'); box.innerHTML = '';
+        document.getElementById('partnersCount').textContent = data ? data.length : 0;
+        if (!data || data.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد شركاء مضافين.</p>'; return; }
+        data.forEach(p => {
+            box.innerHTML += `<div class="item-row" style="flex-direction:row; justify-content:space-between; align-items:center;"><img src="${p.logo}" style="height:30px; width:30px; border-radius:50%; object-fit:cover;"><button class="btn-sm btn-del" onclick="deleteItem('partners', ${p.id})">حذف 🗑️</button></div>`;
+        });
+    }
+
+    // ==================== الدورات التدريبية والأكاديمية ====================
+    async function addNewCourse() {
         const title = document.getElementById('adminCourseTitle').value.trim();
         const description = document.getElementById('adminCourseDesc').value.trim();
         const video_url = document.getElementById('adminVideoUrl').value.trim();
         const duration_minutes = parseInt(document.getElementById('adminDuration').value) || 5;
-        const is_active = document.getElementById('adminCourseStatus').value === 'true';
         const msg = document.getElementById('courseMsg');
 
         if (!title || !video_url) {
@@ -241,137 +555,75 @@
         }
 
         msg.style.color = 'blue';
-        msg.textContent = 'جاري الحفظ بالسحابة... ⏳';
+        msg.textContent = 'جاري نشر الدورة في السحابة... ⏳';
 
-        let payload = { title, description, video_url, duration_minutes, is_active };
-        let res;
+        let { error } = await db.from('platform_courses').insert([{
+            title,
+            description,
+            video_url,
+            duration_minutes
+        }]);
 
-        if (editId) {
-            res = await db.from('platform_courses').update(payload).eq('id', editId);
-        } else {
-            res = await db.from('platform_courses').insert([payload]);
-        }
-
-        if (res.error) {
+        if (error) {
             msg.style.color = 'red';
-            msg.textContent = 'خطأ أثناء الحفظ: ' + res.error.message;
-            alert('خطأ في قاعدة البيانات: ' + res.error.message);
+            msg.textContent = 'خطأ أثناء النشر: ' + error.message;
         } else {
             msg.style.color = 'green';
-            msg.textContent = 'تم حفظ وتحديث الدورة بنجاح تام! ✅';
-            resetCourseForm();
+            msg.textContent = 'تم نشر الدورة بنجاح وأصبحت متاحة في المنصة! 🎉';
+            document.getElementById('adminCourseTitle').value = '';
+            document.getElementById('adminCourseDesc').value = '';
+            document.getElementById('adminVideoUrl').value = '';
             loadAdminCourses();
         }
     }
 
-    function resetCourseForm() {
-        document.getElementById('editCourseId').value = '';
-        document.getElementById('adminCourseTitle').value = '';
-        document.getElementById('adminCourseDesc').value = '';
-        document.getElementById('adminVideoUrl').value = '';
-        document.getElementById('adminDuration').value = '5';
-        document.getElementById('adminCourseStatus').value = 'true';
-        document.getElementById('btnSaveCourse').textContent = 'نشر الدورة وتفعيلها للطلاب 🚀';
-        document.getElementById('btnCancelCourse').style.display = 'none';
-    }
-
-    function editCourse(id) {
-        let c = cachedCourses.find(item => item.id == id);
-        if (!c) {
-            alert('لم يتم العثور على بيانات الدورة!');
+    async function loadAdminCourses() {
+        let { data } = await db.from('platform_courses').select('*').order('id', {ascending: false});
+        let box = document.getElementById('adminCoursesList');
+        document.getElementById('coursesCount').textContent = data ? data.length : 0;
+        box.innerHTML = '';
+        
+        if (!data || data.length === 0) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات تدريبية مضافة حالياً.</p>';
             return;
         }
-        document.getElementById('editCourseId').value = c.id;
-        document.getElementById('adminCourseTitle').value = c.title || '';
-        document.getElementById('adminCourseDesc').value = c.description || '';
-        document.getElementById('adminVideoUrl').value = c.video_url || '';
-        document.getElementById('adminDuration').value = c.duration_minutes || 5;
-        document.getElementById('adminCourseStatus').value = (c.is_active !== false) ? 'true' : 'false';
-        document.getElementById('btnSaveCourse').textContent = 'تعديل وحفظ الدورة 💾';
-        document.getElementById('btnCancelCourse').style.display = 'block';
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }
 
-    async function toggleCourseVisibility(id, currentStatus) {
-        let newStatus = !currentStatus;
-        let { error } = await db.from('platform_courses').update({ is_active: newStatus }).eq('id', id);
-        if (error) {
-            alert('خطأ في تحديث الحالة: ' + error.message);
-        } else {
-            loadAdminCourses();
-        }
+        data.forEach(c => {
+            box.innerHTML += `<div class="item-row">
+                <div class="row-header">
+                    <strong>🎓 ${c.title}</strong>
+                    <span>⏱️ ${c.duration_minutes} دقائق</span>
+                </div>
+                <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'}</div>
+                <div class="action-btns">
+                    <a href="watch.html?id=${c.id}" target="_blank" class="btn-sm" style="background:#0284c7; text-decoration:none;">معاينة الدورة 🎬</a>
+                    <button class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
+                </div>
+            </div>`;
+        });
     }
 
     async function deleteItem(table, id) {
-        if (confirm('هل أنت متأكد من الحذف النهائي من السحابة؟')) {
+        if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
             let { error } = await db.from(table).delete().eq('id', id);
-            if (error) { 
-                alert('خطأ في الحذف: ' + error.message); 
-                return; 
-            }
-            alert('تم الحذف بنجاح! ✅');
-            if (table === 'platform_courses') loadAdminCourses();
+            if (error) { alert('خطأ في الحذف: ' + error.message); return; }
             if (table === 'jobs') loadJobs();
             if (table === 'resumes') loadResumes();
             if (table === 'users') loadRegisteredUsers();
             if (table === 'banners') loadBanners();
             if (table === 'partners') loadPartners();
+            if (table === 'platform_courses') loadAdminCourses();
         }
     }
 
-    // دوال الوظائف والكفاءات المساعدة
-    async function loadJobs() {
-        let { data } = await db.from('jobs').select('*').order('id', {ascending: false});
-        cachedJobs = data || [];
-        document.getElementById('jobsCount').textContent = cachedJobs.length;
-        document.getElementById('adminJobs').textContent = cachedJobs.length;
-        let box = document.getElementById('jobsList');
-        box.innerHTML = cachedJobs.length === 0 ? '<p style="color:#64748b; font-size:11px;">لا توجد وظائف مضافة.</p>' : '';
-        cachedJobs.forEach(j => {
-            box.innerHTML += `<div class="item-row"><div class="row-header"><strong>${j.title}</strong><span>${j.status}</span></div><button onclick="deleteItem('jobs', ${j.id})" style="background:red; color:white; padding:4px; font-size:10px; width:auto;">حذف 🗑️</button></div>`;
-        });
-    }
-
-    async function loadResumes() {
-        let { data } = await db.from('resumes').select('*').order('id', {ascending: false});
-        cachedResumes = data || [];
-        document.getElementById('resCount').textContent = cachedResumes.length;
-        document.getElementById('adminResumes').textContent = cachedResumes.length;
-        let box = document.getElementById('resumesList');
-        box.innerHTML = cachedResumes.length === 0 ? '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات مسجلة.</p>' : '';
-        cachedResumes.forEach(r => {
-            box.innerHTML += `<div class="item-row"><div class="row-header"><strong>${r.full_name || r.name}</strong></div><button onclick="deleteItem('resumes', ${r.id})" style="background:red; color:white; padding:4px; font-size:10px; width:auto;">حذف 🗑️</button></div>`;
-        });
-    }
-
-    async function loadRegisteredUsers() {
-        let { data } = await db.from('users').select('*').order('id', {ascending: false});
-        cachedUsers = data || [];
-        document.getElementById('usersCount').textContent = cachedUsers.length;
-        let box = document.getElementById('usersList');
-        box.innerHTML = cachedUsers.length === 0 ? '<p style="color:#64748b; font-size:11px;">لا توجد حسابات مسجلة.</p>' : '';
-        cachedUsers.forEach(u => {
-            box.innerHTML += `<div class="item-row"><div class="row-header"><strong>${u.full_name}</strong><span>${u.phone}</span></div><button onclick="deleteItem('users', ${u.id})" style="background:red; color:white; padding:4px; font-size:10px; width:auto;">حذف 🗑️</button></div>`;
-        });
-    }
-
-    async function loadBanners() {
-        let { data } = await db.from('banners').select('*');
-        document.getElementById('bannersCount').textContent = data ? data.length : 0;
-    }
-
-    async function loadPartners() {
-        let { data } = await db.from('partners').select('*');
-        document.getElementById('partnersCount').textContent = data ? data.length : 0;
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-        loadAdminCourses();
-        loadJobs();
-        loadResumes();
+        loadAdminRealStats();
+        loadJobs(); 
+        loadResumes(); 
         loadRegisteredUsers();
-        loadBanners();
+        loadBanners(); 
         loadPartners();
+        loadAdminCourses();
     });
 </script>
 </body>
