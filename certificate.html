@@ -251,7 +251,7 @@
 
             <div class="cert-field cert-serial" id="certSerial">---</div>
             
-            <!-- عنصر صورة الباركود المباشر والمضمون 100% -->
+            <!-- مربع رمز الـ QR -->
             <div class="cert-field qr-box">
                 <img id="qrImage" src="" alt="QR Code" crossorigin="anonymous">
             </div>
@@ -305,17 +305,16 @@
             document.getElementById('courseHours').innerText = studentData.hours;
             document.getElementById('certSerial').innerText = studentData.certificate_code;
 
-            // 🌟 تضمين تفاصيل الشهادة النصية مباشرة بداخل الباركود ليعمل فوراً دون الاعتماد على نطاق إنترنت معطل
-            const certDetailsText = 
-`SADARAH CERTIFICATE
-ID: ${studentData.certificate_code}
-Name: ${studentData.full_name}
-Course: ${studentData.course_name}
-Hours: ${studentData.hours} Hours
-Date: ${studentData.created_at}
-Status: Verified`;
+            // 🌟 النص التوثيقي المباشر المضمن في الـ QR بدون أي رابط متصفح خارجي
+            const certDetailsText = `توثيق شهادة رقمية - منصة صدارة
+اسم الطالب: ${studentData.full_name}
+الدورة: ${studentData.course_name}
+رقم الشهادة: ${studentData.certificate_code}
+التاريخ: ${studentData.created_at}
+عدد الساعات: ${studentData.hours} ساعة
+الحالة: معتمدة وموثقة`;
 
-            // 🌟 توليد الباركود المباشر عبر API موثوق
+            // 🌟 توليد الباركود الجديد
             const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(certDetailsText)}&color=000000&bgcolor=ffffff`;
             
             document.getElementById('qrImage').src = qrApiUrl;
