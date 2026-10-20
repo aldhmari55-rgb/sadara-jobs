@@ -1,38 +1,115 @@
-<div class="container">
-    <h2 class="section-title">الدورات التدريبية المعتمدة</h2>
-    <div class="courses-grid" id="dynamicCoursesGrid">
-        <!-- يتم جلب الدورات وتعبئتها تلقائياً هنا من السحابة -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دورات صدارة التدريبية | sadarah.top</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; --text-dark: #0f172a; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg-light); color: var(--text-dark); direction: rtl; text-align: right; padding-bottom: 50px; }
+        header { background: #0a1324; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
+        header h1 { font-size: 1.2rem; color: #38bdf8; }
+        .back-btn { background: #1e293b; color: #fff; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 12px; border: 1px solid var(--gold); }
+        .container { max-width: 900px; margin: 25px auto; padding: 0 16px; }
+        .section-title { font-size: 1.3rem; margin-bottom: 15px; color: var(--primary); border-right: 4px solid var(--gold); padding-right: 10px; }
+        .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .course-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between; }
+        .course-header { background: linear-gradient(135deg, #0a1324, var(--primary)); color: #fff; padding: 15px; }
+        .course-header h3 { font-size: 1.1rem; margin-bottom: 4px; }
+        .course-body { padding: 15px; }
+        .course-body p { color: #64748b; font-size: 0.9rem; margin-bottom: 10px; line-height: 1.5; }
+        .course-footer { padding: 15px; background: #f1f5f9; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; }
+        .price { font-weight: 700; color: #059669; font-size: 1rem; }
+        .watch-btn { background: #2563eb; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
+        .watch-btn:hover { background: #1d4ed8; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎓 منصة صدارة للتدريب والأكاديمية</h1>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> العودة للرئيسية</a>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">الدورات التدريبية المعتمدة</h2>
+        
+        <div class="courses-grid" id="coursesGrid">
+            <!-- سيتم تحميل الدورات هنا أو عرض الدورات الافتراضية -->
+        </div>
     </div>
-</div>
 
-<script>
-    const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
-    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <script>
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function loadDynamicCourses() {
-        let { data: courses, error } = await db.from('platform_courses').select('*').order('id', {ascending: false});
-        let grid = document.getElementById('dynamicCoursesGrid');
-        grid.innerHTML = '';
+        async function loadCoursesPage() {
+            let grid = document.getElementById('coursesGrid');
+            grid.innerHTML = '<p style="color:#64748b; text-align:center; grid-column: 1/-1;">جاري تحميل الدورات...</p>';
 
-        if(!courses || courses.length === 0) {
-            grid.innerHTML = '<p style="color:#64748b;">جاري إعداد دورات جديدة قريباً...</p>';
-            return;
+            try {
+                let { data: courses, error } = await db.from('platform_courses').select('*').order('id', {ascending: false});
+                
+                if (error || !courses || courses.length === 0) {
+                    // عرض الدورات التأسيسية الافتراضية إذا لم تكن هناك دورات مسجلة في الجدول بعد
+                    renderDefaultCourses(grid);
+                    return;
+                }
+
+                grid.innerHTML = '';
+                courses.forEach(c => {
+                    grid.innerHTML += `
+                        <div class="course-card">
+                            <div class="course-header">
+                                <h3>${c.title}</h3>
+                            </div>
+                            <div class="course-body">
+                                <p>${c.description || 'دورة تدريبية احترافية مع شهادة معتمدة وساعات حضور.'}</p>
+                            </div>
+                            <div class="course-footer">
+                                <span class="price"><i class="fa-solid fa-clock"></i> ${c.duration_minutes} دقائق</span>
+                                <a href="watch.html?id=${c.id}" class="watch-btn"><i class="fa-solid fa-play"></i> ابدأ الدورة الآن</a>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch(e) {
+                renderDefaultCourses(grid);
+            }
         }
 
-        courses.forEach(c => {
-            grid.innerHTML += `
-                <div class="course-card" style="background:#fff; border-radius:12px; padding:20px; border:1px solid #cbd5e1; box-shadow:0 4px 6px rgba(0,0,0,0.05);">
-                    <h3 style="color:#0f2347; font-size:1.2rem; margin-bottom:10px;">${c.title}</h3>
-                    <p style="color:#64748b; font-size:0.95rem; margin-bottom:15px; line-height:1.5;">${c.description || 'دورة تدريبية متكاملة مع شهادة إتمام معتمدة.'}</p>
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #f1f5f9; padding-top:15px;">
-                        <span style="color:#059669; font-weight:bold;">⏱️ المدة: ${c.duration_minutes} دقائق</span>
-                        <a href="watch.html?id=${c.id}" style="background:#2563eb; color:white; padding:8px 16px; border-radius:8px; text-decoration:none; font-weight:bold;">ابدأ الدورة الآن 🎬</a>
-                    </div>
-                </div>
-            `;
-        });
-    }
+        function renderDefaultCourses(grid) {
+            const defaultCourses = [
+                { title: "دورة إعداد السيرة الذاتية (CV) باحترافية", desc: "تعلم تصميم سيرة ذاتية منافسة تزيد من فرص قبولك الوظيفي.", duration: 5 },
+                { title: "دورة اجتياز المقابلات الشخصية بنجاح", desc: "استراتيجيات الإجابة على الأسئلة ولغة الجسد الاحترافية.", duration: 5 },
+                { title: "دورة مهارات العرض والإلقاء المؤثر", desc: "طور مهاراتك في التحدث أمام الجمهور بثقة تامة.", duration: 5 }
+            ];
 
-    document.addEventListener('DOMContentLoaded', loadDynamicCourses);
-</script>
+            grid.innerHTML = '';
+            defaultCourses.forEach(c => {
+                grid.innerHTML += `
+                    <div class="course-card">
+                        <div class="course-header">
+                            <h3>${c.title}</h3>
+                        </div>
+                        <div class="course-body">
+                            <p>${c.desc}</p>
+                        </div>
+                        <div class="course-footer">
+                            <span class="price"><i class="fa-solid fa-clock"></i> ${c.duration} دقائق</span>
+                            <a href="https://wa.me/967780568507?text=مرحبا،%20أرغب%20بالاشتراك%20في%20${encodeURIComponent(c.title)}" target="_blank" class="watch-btn" style="background:#25d366;"><i class="fa-brands fa-whatsapp"></i> اشترك عبر الواتساب</a>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadCoursesPage);
+    </script>
+</body>
+</html>
