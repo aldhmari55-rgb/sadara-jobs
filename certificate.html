@@ -117,11 +117,11 @@
         .seal-signature { position: relative; text-align: right; min-width: 220px; padding-top: 10px; }
         .circle-stamp-img {
             position: absolute;
-            top: -15px;
+            top: -25px;
             right: 15px;
-            width: 100px;
+            width: 105px;
             height: auto;
-            opacity: 0.85;
+            opacity: 0.9;
             pointer-events: none;
             z-index: 10;
         }
@@ -136,10 +136,10 @@
             justify-content: center;
         }
         .rect-stamp-img {
-            max-height: 55px;
+            max-height: 60px;
             width: auto;
             object-fit: contain;
-            opacity: 0.9;
+            opacity: 0.95;
         }
 
         .qr-section { text-align: center; }
@@ -194,7 +194,8 @@
 
                 <!-- 1. الشعار أعلى المنتصف وتحته اسم الشركة -->
                 <div class="cert-header">
-                    <img src="IMG-20260822-WA0045.jpg" id="mainLogo" class="main-logo-img" alt="شعار صدارة">
+                    <!-- ملاحظة: يرجى التأكد من مسار الشعار أو استبداله برابط مباشر إن لم يظهر -->
+                    <img src="IMG-20260822-WA0045.jpg" id="mainLogo" class="main-logo-img" alt="شعار صدارة" onerror="this.src='https://via.placeholder.com/150?text=Sadarah+Logo'">
                     
                     <div class="org-logo-title">منصة صدارة للتدريب والأكاديمية</div>
                     <div class="org-sub">Sadarah Training Platform & Academy</div>
@@ -214,18 +215,18 @@
                 <!-- 3. التذييل والأختام والباركود -->
                 <div class="cert-footer">
                     
-                    <!-- الختم الدائري ينزل فوق كلام الاعتماد -->
+                    <!-- الختم الدائري -->
                     <div class="seal-signature">
-                        <img src="٢٠٢٦٠٩٣٠_٠٣٥٥١٣.png" id="circleStamp" class="circle-stamp-img" alt="الختم الدائري">
+                        <img src="٢٠٢٦٠٩٣٠_٠٣٥٥١٣.png" id="circleStamp" class="circle-stamp-img" alt="الختم الدائري" onerror="this.style.display='none'">
                         
                         <p class="sig-title">الإدارة العامة والاعتماد</p>
                         <p class="sig-sub">شركة صدارة للتسويق والخدمات الرقمية</p>
                         <p style="font-size: 9px; color: #94a3b8; margin-top: 4px; position: relative; z-index: 2;">صادرة رسمياً وموثقة سحابياً</p>
                     </div>
 
-                    <!-- الختم المستطيل في المنطقة الفاضية بجانب الختم الدائري -->
+                    <!-- الختم المستطيل -->
                     <div class="rect-stamp-box">
-                        <img src="٢٠٢٦٠٩٣٠_٠٤١٧١٢.png" id="rectStamp" class="rect-stamp-img" alt="ختم الإدارة العامة المستطيل">
+                        <img src="٢٠٢٦٠٩٣٠_٠٤١٧١٢.png" id="rectStamp" class="rect-stamp-img" alt="ختم الإدارة العامة المستطيل" onerror="this.style.display='none'">
                     </div>
 
                     <!-- الباركود QR -->
@@ -270,6 +271,9 @@
         document.getElementById('codeTextDisplay').textContent = "كود التحقق: " + data.verification_code;
 
         let verifyUrl = window.location.origin + `/verify.html?code=${data.verification_code}`;
+        
+        // تفريغ وتوليد الباركود من جديد لمنع التكرار
+        document.getElementById("qrcode").innerHTML = "";
         new QRCode(document.getElementById("qrcode"), {
             text: verifyUrl,
             width: 60,
