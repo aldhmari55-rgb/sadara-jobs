@@ -71,7 +71,7 @@
             background-color: rgba(16, 185, 129, 0.1);
         }
 
-        /* قالب الشهادة القائم على الصورة الرسمية الجديدة PNG */
+        /* قالب الشهادة برابط الصورة الرسمي الجديد */
         .certificate-wrapper {
             position: relative;
             width: 1000px;
@@ -85,21 +85,33 @@
             overflow: hidden;
         }
 
-        /* 1. اسم المتدرب: بداخل المستطيل المخصص له */
+        /* 1. اسم المتدرب */
         .cert-field.student-name {
             position: absolute;
-            top: 47.5%;
+            top: 47%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 70%;
             text-align: center;
-            font-size: 30px;
+            font-size: 28px;
             font-weight: 900;
             color: #065f46;
-            line-height: 1.2;
         }
 
-        /* 2. اسم الدورة التدريبية: أسفل عبارة "دورة تدريبية باسم" */
+        /* 2. عبارة "وذلك لحضوره الدورة التدريبية" */
+        .cert-field.intro-text {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        /* 3. مسمى الدورة التدريبية */
         .cert-field.course-title {
             position: absolute;
             top: 61.5%;
@@ -107,23 +119,25 @@
             transform: translate(-50%, -50%);
             width: 75%;
             text-align: center;
-            font-size: 23px;
+            font-size: 22px;
             font-weight: 800;
             color: #1e293b;
         }
 
-        /* 3. تاريخ الإصدار: بجانب "وكان ذلك بتاريخ" */
-        .cert-field.issue-date {
+        /* 4. تفاصيل التاريخ وعدد الساعات */
+        .cert-field.meta-details {
             position: absolute;
-            top: 64.8%;
-            right: 42%;
-            font-size: 16px;
+            top: 67.5%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            text-align: center;
+            font-size: 15px;
             font-weight: 700;
-            color: #1e293b;
-            direction: ltr;
+            color: #475569;
         }
 
-        /* 4. رقم الشهادة (السيريال): بجانب خانة رقم الشهادة بدون تداخل مع الأختام */
+        /* 5. رقم الشهادة (السيريال) */
         .cert-field.cert-serial {
             position: absolute;
             bottom: 12.8%;
@@ -134,7 +148,7 @@
             direction: ltr;
         }
 
-        /* 5. مربع رمز الـ QR code للتحقق */
+        /* 6. مربع رمز الـ QR للتحقق */
         .cert-field.qr-box {
             position: absolute;
             bottom: 8.5%;
@@ -178,13 +192,24 @@
     <div class="certificate-wrapper" id="certificateCard">
         <div id="loadingOverlay" class="loading-overlay">جاري تحميل بيانات الشهادة...</div>
 
-        <!-- العناصر الديناميكية -->
+        <!-- 1. اسم المتدرب -->
         <div class="cert-field student-name" id="studentName">---</div>
+        
+        <!-- 2. جملة التمهيد -->
+        <div class="cert-field intro-text">وذلك لحضوره بنجاح الدورة التدريبية الموسومة بـ:</div>
+        
+        <!-- 3. مسمى الدورة -->
         <div class="cert-field course-title" id="courseTitle">---</div>
-        <div class="cert-field issue-date" id="issueDate">---</div>
+        
+        <!-- 4. التاريخ وعدد الساعات (تُجلب من قاعدة البيانات) -->
+        <div class="cert-field meta-details">
+            وذلك بتاريخ: <span id="issueDate">---</span> | بواقع: <span id="courseHours">---</span> ساعة تدريبية
+        </div>
+
+        <!-- 5. رقم الشهادة -->
         <div class="cert-field cert-serial" id="certSerial">---</div>
 
-        <!-- رمز الـ QR -->
+        <!-- 6. رمز الـ QR -->
         <div class="cert-field qr-box" id="qrcode"></div>
     </div>
 
@@ -205,18 +230,21 @@
                     .single();
 
                 if (error || !data) {
+                    // بيانات تجريبية افتراضية في حال عدم الاتصال المباشر
                     renderCertificateData({
                         full_name: 'عبدالرحمن عبدالله صالح الذماري',
                         course_name: 'إدارة الأعمال والتسويق الرقمي الحديث',
                         certificate_code: certCode,
-                        created_at: '2026-10-20'
+                        created_at: '2026-10-20',
+                        hours: '30'
                     });
                 } else {
                     renderCertificateData({
                         full_name: data.full_name,
                         course_name: data.course_name,
                         certificate_code: data.certificate_code,
-                        created_at: new Date(data.created_at).toISOString().split('T')[0]
+                        created_at: new Date(data.created_at).toISOString().split('T')[0],
+                        hours: data.hours || '20'
                     });
                 }
             } catch (err) {
@@ -230,6 +258,7 @@
             document.getElementById('studentName').innerText = studentData.full_name;
             document.getElementById('courseTitle').innerText = studentData.course_name;
             document.getElementById('issueDate').innerText = studentData.created_at;
+            document.getElementById('courseHours').innerText = studentData.hours;
             document.getElementById('certSerial').innerText = studentData.certificate_code;
 
             const verificationUrl = `https://sadarajobs.com/verify-certificate?id=${studentData.certificate_code}`;
