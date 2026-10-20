@@ -7,10 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- مكتبات تصدير Excel و PDF -->
+    <!-- مكتبة تصدير Excel فقط -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
     <style>
         :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --red: #ef4444; --bg: #f8fafc; }
@@ -62,7 +60,7 @@
 
     <div class="grid-container">
 
-        <!-- 1. كشف الشهادات الصادرة والطلاب (مع إمكانية التصدير إلى PDF و Excel) -->
+        <!-- 1. كشف الشهادات الصادرة والطلاب (مع إمكانية التصدير إلى PDF عربي و Excel) -->
         <div class="card" style="grid-column: 1 / -1; border-top: 4px solid var(--gold);">
             <h2>
                 <span>🎓 كشف الشهادات المعتمدة الصادرة للطلاب</span>
@@ -177,7 +175,6 @@
     let cachedResumes = [];
     let cachedCourses = [];
 
-    // جلب وحفظ الشهادات الصادرة والطلاب
     async function loadCertificates() {
         let { data, error } = await db.from('course_certificates').select('*').order('id', {ascending: false});
         cachedCertificates = data || [];
@@ -210,29 +207,93 @@
         });
     }
 
-    // تصدير كشف الشهادات المعتمدة إلى PDF
+    // تصدير كشف الشهادات إلى ملف PDF عربي أنيق وعالي الدقة
     function exportCertificatesToPDF() {
-        if (!cachedCertificates.length) { alert('لا توجد شهادات صادرة لتصديرها.'); return; }
-        const { jsPDF } = window.jspdf; 
-        const doc = new jsPDF();
-        
-        doc.text("Sadara Platform - Issued Certificates Report", 105, 15, { align: "center" });
-        
-        let body = cachedCertificates.map((c, i) => [
-            i + 1,
-            c.verification_code || '-',
-            c.course_name || '-',
-            c.student_name || '-',
-            c.created_at ? new Date(c.created_at).toLocaleDateString('ar-SA') : '-'
-        ]);
-        
-        doc.autoTable({ 
-            head: [['#', 'Code', 'Course', 'Student Name', 'Date']], 
-            body: body, 
-            startY: 25 
+        if (!cachedCertificates || !cachedCertificates.length) { 
+            alert('لا توجد شهادات صادرة لتصديرها.'); 
+            return; 
+        }
+
+        let printWindow = window.open('', '_blank');
+        let rowsHTML = '';
+
+        cachedCertificates.forEach((c, i) => {
+            let dateFormatted = c.created_at ? new Date(c.created_at).toLocaleDateString('ar-SA') : '-';
+            rowsHTML += `
+                <tr>
+                    <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">${i + 1}</td>
+                    <td style="border: 1px solid #cbd5e1; padding: 8px; font-weight: bold; color: #0f2347;">${c.student_name || 'غير محدد'}</td>
+                    <td style="border: 1px solid #cbd5e1; padding: 8px;">${c.course_name || 'غير محدد'}</td>
+                    <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center; font-weight: bold; color: #059669; direction: ltr;">${c.verification_code || '-'}</td>
+                    <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">${c.attendance_hours || 'ساعات معتمدة'}</td>
+                    <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center;">${dateFormatted}</td>
+                </tr>
+            `;
         });
-        
-        doc.save("Sadara_Certificates_Report.pdf");
+
+        let fullHTML = `
+            <!DOCTYPE html>
+            <html lang="ar" dir="rtl">
+            <head>
+                <meta charset="UTF-8">
+                <title>كشف الشهادات المعتمدة الصادرة - منصة صدارة</title>
+                <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+                <style>
+                    * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+                    body { padding: 20px; background: #fff; color: #0f172a; direction: rtl; text-align: right; }
+                    .report-header { text-align: center; border-bottom: 3px solid #d4af37; padding-bottom: 12px; margin-bottom: 20px; }
+                    .report-header h1 { font-size: 22px; color: #0f2347; margin-bottom: 4px; }
+                    .report-header p { font-size: 12px; color: #64748b; }
+                    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+                    th { background: #0f2347; color: white; border: 1px solid #0f2347; padding: 10px; text-align: center; font-size: 13px; }
+                    tr:nth-child(even) { background: #f8fafc; }
+                    .footer-info { margin-top: 30px; display: flex; justify-content: space-between; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 10px; }
+                    
+                    @media print {
+                        @page { size: A4 portrait; margin: 15mm; }
+                        body { padding: 0; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="report-header">
+                    <h1>🎓 منصة صدارة للتدريب والأكاديمية</h1>
+                    <p>كشف تفصيلي بالشهادات المعتمدة الصادرة للطلاب والكوادر التدريبية</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 25%;">اسم الطالب</th>
+                            <th style="width: 30%;">اسم الدورة التدريبية</th>
+                            <th style="width: 15%;">كود التحقق</th>
+                            <th style="width: 12%;">الساعات</th>
+                            <th style="width: 13%;">تاريخ الإصدار</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHTML}
+                    </tbody>
+                </table>
+
+                <div class="footer-info">
+                    <div>إجمالي الشهادات في الكشف: <b>${cachedCertificates.length} شهادة</b></div>
+                    <div>الموقع الرسمي: sadarah.top</div>
+                    <div>تاريخ التصدير: ${new Date().toLocaleDateString('ar-SA')}</div>
+                </div>
+
+                <script>
+                    window.onload = function() {
+                        window.print();
+                    };
+                <\/script>
+            </body>
+            </html>
+        `;
+
+        printWindow.document.write(fullHTML);
+        printWindow.document.close();
     }
 
     // تصدير كشف الشهادات إلى Excel
@@ -243,6 +304,7 @@
             "اسم الطالب": c.student_name || '', 
             "اسم الدورة": c.course_name || '', 
             "كود التحقق": c.verification_code || '',
+            "الساعات": c.attendance_hours || 'ساعات معتمدة',
             "تاريخ الإصدار": c.created_at ? new Date(c.created_at).toLocaleDateString('ar-SA') : '-' 
         }));
         let ws = XLSX.utils.json_to_sheet(dataToExport); 
