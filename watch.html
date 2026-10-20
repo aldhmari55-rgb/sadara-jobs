@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- مكتبة مشغل الفيديو المحترفة لتغطية يوتيوب وتحويله لمشغل خاص بالمنصة -->
+    <!-- مكتبة مشغل الفيديو المحترفة -->
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
 
@@ -19,7 +19,7 @@
         h1 { color: var(--primary); font-size: 20px; margin-bottom: 5px; }
         .desc { color: #64748b; font-size: 13px; margin-bottom: 15px; }
         
-        /* حاوية مشغل الفيديو المخصص */
+        /* حاوية مشغل الفيديو مع طبقة عزل نهائية لإخفاء النصوص العلوية */
         .player-wrapper {
             position: relative;
             width: 100%;
@@ -30,7 +30,18 @@
             margin-bottom: 20px;
         }
 
-        /* تخصيص ألوان مشغل منصة صدارة */
+        /* طبقة حماية شفافة تغطي الجزء العلوي بالكامل لمنع ظهور أو النقر على عناوين يوتيوب */
+        .video-shield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            z-index: 99;
+            background: transparent;
+            pointer-events: auto;
+        }
+
         .plyr--full-ui input[type=range] { color: #2563eb; }
         .plyr__control--overlaid { background: rgba(15, 35, 71, 0.9); }
         .plyr--video .plyr__control:hover { background: #2563eb; }
@@ -54,7 +65,6 @@
 
     let playerInstance = null;
 
-    // استخراج معرف فيديو يوتيوب من أي رابط مدخل
     function getYouTubeId(url) {
         if (!url) return '';
         let videoId = '';
@@ -93,6 +103,8 @@
             <p class="desc">${course.description || 'لا يوجد وصف متاح.'}</p>
             
             <div class="player-wrapper">
+                <!-- طبقة عزل علوية تمنع رؤية أو تفاعل النصوص العلوية -->
+                <div class="video-shield"></div>
                 <div id="player" data-plyr-provider="youtube" data-plyr-embed-id="${firstVideoId}"></div>
             </div>
 
@@ -114,7 +126,6 @@
         html += `</div>`;
         container.innerHTML = html;
 
-        // تشغيل المشغل المخصص وحظر تحويلات يوتيوب
         playerInstance = new Plyr('#player', {
             controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
             youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
