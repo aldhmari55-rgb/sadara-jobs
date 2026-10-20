@@ -174,6 +174,7 @@
         </div>
 
     </div>
+
 <script>
     const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
@@ -533,9 +534,14 @@
         });
     }
 
-    // ==================== الدورات التدريبية (نشر، تعديل، وحذف مباشر بدون تعقيد) ====================
+    // ==================== الدورات التدريبية (مع تشخيص الأخطاء المباشر) ====================
     async function loadAdminCourses() {
-        let { data } = await db.from('platform_courses').select('*').order('id', {ascending: false});
+        let { data, error } = await db.from('platform_courses').select('*').order('id', {ascending: false});
+        if (error) {
+            console.error("خطأ جلب الدورات:", error);
+            document.getElementById('adminCoursesList').innerHTML = `<p style="color:red; font-size:11px;">خطأ في الجلب: ${error.message}</p>`;
+            return;
+        }
         cachedCourses = data || [];
         let box = document.getElementById('adminCoursesList');
         document.getElementById('coursesCount').textContent = cachedCourses.length;
@@ -550,7 +556,7 @@
             box.innerHTML += `<div class="item-row">
                 <div class="row-header">
                     <strong>🎓 ${c.title}</strong>
-                    <span>⏱️ ${c.duration_minutes || 5} دقائق</span>
+                    <span>⏱️ ${c.duration_minutes || 5} دقائق (ID: ${c.id})</span>
                 </div>
                 <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'}</div>
                 <div style="display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap;">
@@ -582,6 +588,7 @@
         let res;
 
         if (editId) {
+            // تنفيذ التعديل مع طباعة الخطأ إن وجد
             res = await db.from('platform_courses').update(payload).eq('id', editId);
         } else {
             res = await db.from('platform_courses').insert([payload]);
@@ -589,8 +596,8 @@
 
         if (res.error) {
             msg.style.color = 'red';
-            msg.textContent = 'خطأ أثناء الحفظ: ' + res.error.message;
-            alert('خطأ في قاعدة البيانات: ' + res.error.message);
+            msg.textContent = 'خطأ سحابي: ' + res.error.message;
+            alert('فشل الحفظ من قاعدة البيانات: ' + res.error.message);
         } else {
             msg.style.color = 'green';
             msg.textContent = 'تم حفظ وتحديث الدورة بنجاح تام! ✅';
@@ -611,7 +618,10 @@
 
     function editCourse(id) {
         let c = cachedCourses.find(item => item.id == id);
-        if (!c) return;
+        if (!c) {
+            alert('تعذر العثور على بيانات الدورة برقم ID: ' + id);
+            return;
+        }
         document.getElementById('editCourseId').value = c.id;
         document.getElementById('adminCourseTitle').value = c.title || '';
         document.getElementById('adminCourseDesc').value = c.description || '';
@@ -623,13 +633,17 @@
     }
 
     async function deleteItem(table, id) {
-        if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
+        if (confirm('هل أنت متأكد من الحذف النهائي للـ ID رقم: ' + id + '؟')) {
+            // تنفيذ الحذف مع التقاط رسالة الخطأ الصريحة
             let { error } = await db.from(table).delete().eq('id', id);
+            
             if (error) { 
-                alert('خطأ في الحذف: ' + error.message); 
+                alert('رفضت قاعدة البيانات الحذف للأسباب التالية:\n' + error.message); 
+                console.error("Delete Error:", error);
                 return; 
             }
-            alert('تم الحذف بنجاح! ✅');
+            
+            alert('تم الحذف بنجاح من السحابة! ✅');
             if (table === 'jobs') loadJobs();
             if (table === 'resumes') loadResumes();
             if (table === 'users') loadRegisteredUsers();
