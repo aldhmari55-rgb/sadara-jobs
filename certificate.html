@@ -305,17 +305,19 @@
             document.getElementById('courseHours').innerText = studentData.hours;
             document.getElementById('certSerial').innerText = studentData.certificate_code;
 
-            // 🌟 النص التوثيقي المباشر المضمن في الـ QR بدون أي رابط متصفح خارجي
-            const certDetailsText = `توثيق شهادة رقمية - منصة صدارة
-اسم الطالب: ${studentData.full_name}
-الدورة: ${studentData.course_name}
-رقم الشهادة: ${studentData.certificate_code}
-التاريخ: ${studentData.created_at}
-عدد الساعات: ${studentData.hours} ساعة
-الحالة: معتمدة وموثقة`;
+            // 🌟 الربط الديناميكي الدقيق: قراءة رابط الصفحة الحالي تلقائياً وتحديث كود الشهادة به
+            let currentUrl;
+            try {
+                currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('id', studentData.certificate_code);
+            } catch (e) {
+                currentUrl = `https://sadarah.top/?id=${studentData.certificate_code}`;
+            }
 
-            // 🌟 توليد الباركود الجديد
-            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(certDetailsText)}&color=000000&bgcolor=ffffff`;
+            const targetVerificationUrl = currentUrl.toString();
+
+            // 🌟 توليد الباركود لرابط التحقق الفعلي المباشر
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(targetVerificationUrl)}&color=000000&bgcolor=ffffff`;
             
             document.getElementById('qrImage').src = qrApiUrl;
         }
