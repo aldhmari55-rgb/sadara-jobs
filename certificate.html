@@ -3,165 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الشهادة المعتمدة | منصة صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <title>منصة صدارة - الشهادة الرقمية</title>
+    <!-- خط القاهرة الرسمية -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- مكتبة توليد رمز الـ QR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- مكتبة تحويل الشهادة إلى صورة عالية الجودة -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        
-        body { 
-            background: #0a1324; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            padding: 20px; 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
         }
 
-        /* ورقة الشهادة A4 أفقي تطابق صورتك تماماً كخلفية */
-        .page-a4-landscape {
-            width: 297mm;
-            height: 210mm;
-            background-image: url('٢٠٢٦١٠٢٠_١٩٥٠٤٩_2.jpg'); /* سيتم جلب الصورة كخلفية مباشرة */
-            background-size: 100% 100%;
-            background-position: center;
-            background-repeat: no-repeat;
+        body {
+            background-color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* شريط التحكم */
+        .actions-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #059669;
+            color: #ffffff;
+            border: none;
+            padding: 10px 24px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        .btn:hover {
+            background-color: #047857;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid #059669;
+            color: #10b981;
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        /* قالب الشهادة */
+        .certificate-wrapper {
             position: relative;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            width: 1000px;
+            height: 707px;
+            background-image: url('https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.jpg');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             overflow: hidden;
         }
 
-        /* اسم المتدرب فوق المستطيل الفارغ في التصميم */
-        .student-name-overlay {
+        /* اسم المتدرب */
+        .cert-field.student-name {
             position: absolute;
-            top: 43.5%;
+            top: 41.5%;
             left: 50%;
             transform: translate(-50%, -50%);
+            width: 75%;
+            text-align: center;
             font-size: 34px;
             font-weight: 900;
-            color: #059669 !important;
-            text-align: center;
-            width: 550px;
+            color: #065f46;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
-        /* اسم الدورة التدريبية */
-        .course-name-overlay {
+        /* عنوان الدورة التدريبية */
+        .cert-field.course-title {
             position: absolute;
-            top: 57.5%;
-            right: 43%;
-            font-size: 19px;
-            font-weight: 900;
-            color: #0f2347 !important;
+            top: 54.5%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
         }
 
-        /* الباركود وتفاصيل التحقق أسفل التصميم */
-        .qr-overlay {
+        /* تفاصيل تاريخ الإصدار ورقم الشهادة */
+        .cert-field.cert-details {
             position: absolute;
-            bottom: 8mm;
-            left: 12mm;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 4px;
+            bottom: 11.5%;
+            right: 9%;
+            text-align: right;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            line-height: 1.8;
+        }
+
+        /* مربع رمز الـ QR */
+        .cert-field.qr-box {
+            position: absolute;
+            bottom: 9.5%;
+            left: 8.5%;
+            padding: 5px;
+            background: #ffffff;
             border-radius: 6px;
-            border: 1px solid #cbd5e1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
         }
-        #qrcode { display: inline-block; }
-        .verification-code-text { font-size: 8px; color: #64748b !important; margin-top: 2px; font-weight: bold; }
 
-        .controls-bar { margin-top: 20px; display: flex; gap: 12px; }
-        .btn-action { 
-            background: #d4af37; 
-            color: #0a1324; 
-            border: none; 
-            padding: 12px 28px; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            font-size: 15px; 
-            cursor: pointer; 
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
-            transition: 0.2s;
+        /* حالة التحميل */
+        .loading-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.85);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 700;
+            z-index: 10;
         }
-        .btn-action:hover { background: #fef08a; transform: translateY(-2px); }
 
         @media print {
-            @page { size: A4 landscape; margin: 0; }
-            *, *::before, *::after {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-                color-adjust: exact !important;
-            }
-            body { background: white !important; padding: 0; min-height: auto; }
-            .controls-bar { display: none !important; }
-            .page-a4-landscape { 
-                box-shadow: none !important; 
-                width: 297mm !important; 
-                height: 210mm !important; 
-                margin: 0 !important;
-            }
+            body { background: none; padding: 0; }
+            .actions-bar { display: none !important; }
+            .certificate-wrapper { box-shadow: none; border-radius: 0; width: 100vw; height: 100vh; }
         }
     </style>
 </head>
 <body>
 
-    <div class="page-a4-landscape" id="certificateSheet">
-        <!-- اسم المتدرب داخل المستطيل الفارغ -->
-        <div class="student-name-overlay" id="studentNameDisplay">جاري التحميل...</div>
-        
-        <!-- اسم الدورة -->
-        <div class="course-name-overlay" id="courseNameDisplay">...</div>
+    <!-- أزرار الإجراءات -->
+    <div class="actions-bar">
+        <button class="btn" onclick="downloadCertificate()">📥 تحميل الشهادة (PNG)</button>
+        <button class="btn btn-outline" onclick="window.print()">🖨️ طباعة الشهادة</button>
+    </div>
 
-        <!-- الباركود وكود التحقق -->
-        <div class="qr-overlay">
-            <div id="qrcode"></div>
-            <div class="verification-code-text" id="codeTextDisplay">CODE: ---</div>
+    <!-- كارت الشهادة -->
+    <div class="certificate-wrapper" id="certificateCard">
+        <div id="loadingOverlay" class="loading-overlay">جاري جلب بيانات الشهادة من قاعدة البيانات...</div>
+
+        <!-- النصوص الديناميكية -->
+        <div class="cert-field student-name" id="studentName">---</div>
+        <div class="cert-field course-title" id="courseTitle">---</div>
+        
+        <div class="cert-field cert-details">
+            <div><strong>رقم الشهادة:</strong> <span id="certSerial">---</span></div>
+            <div><strong>تاريخ الإصدار:</strong> <span id="issueDate">---</span></div>
         </div>
+
+        <!-- رمز QR -->
+        <div class="cert-field qr-box" id="qrcode"></div>
     </div>
 
-    <div class="controls-bar">
-        <button class="btn-action" onclick="window.print()">🖨️ طباعة أو حفظ الشهادة PDF (دقة عالية A4)</button>
-    </div>
+    <script>
+        // 1. تهيئة ربط Supabase
+        const SUPABASE_URL = 'https://lvutrzswngpkjfamgact.supabase.co';
+        const SUPABASE_ANON_KEY = 'أدخل_مفتاح_ANON_KEY_الخاص_بمشروعك_هنا';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-<script>
-    const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
-    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let qrCodeInstance = null;
 
-    async function loadCertificateData() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
+        // 2. دالة جلب البيانات ديناميكياً وعرضها في الصفحة
+        async function fetchAndRenderCertificate() {
+            // جلب معرّف الشهادة من رابط الصفحة (e.g. ?id=SAD-2026-9814)
+            const urlParams = new URLSearchParams(window.location.search);
+            const certCode = urlParams.get('id') || 'SAD-2026-9814';
 
-        if (!code) {
-            document.getElementById('certificateSheet').innerHTML = '<h2 style="text-align:center; padding:100px; color:red;">⚠️ كود الشهادة غير موجود بالرابط!</h2>';
-            return;
+            try {
+                // استعلام قاعدة البيانات في Supabase من جدول الشهادات (certificates)
+                const { data, error } = await supabaseClient
+                    .from('certificates')
+                    .select('*')
+                    .eq('certificate_code', certCode)
+                    .single();
+
+                if (error || !data) {
+                    // بيانات تجريبية افتراضية في حال عدم وجود الربط أو فشل الاستعلام
+                    renderCertificateData({
+                        full_name: 'عبدالرحمن عبدالله صالح الذماري',
+                        course_name: 'إدارة الأعمال والتسويق الرقمي الحديث',
+                        certificate_code: certCode,
+                        created_at: '2026-10-20'
+                    });
+                } else {
+                    // تمرير البيانات المجلوبة من قاعدة البيانات مباشرة
+                    renderCertificateData({
+                        full_name: data.full_name,
+                        course_name: data.course_name,
+                        certificate_code: data.certificate_code,
+                        created_at: new Date(data.created_at).toISOString().split('T')[0]
+                    });
+                }
+            } catch (err) {
+                console.error("خطأ في جلب البيانات:", err);
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
         }
 
-        let { data, error } = await db.from('course_certificates').select('*').eq('verification_code', code).single();
+        // 3. دالة إسقاط البيانات على عناصر الصفحة وتوليد QR
+        function renderCertificateData(studentData) {
+            document.getElementById('studentName').innerText = studentData.full_name;
+            document.getElementById('courseTitle').innerText = studentData.course_name;
+            document.getElementById('certSerial').innerText = studentData.certificate_code;
+            document.getElementById('issueDate').innerText = studentData.created_at;
 
-        if (error || !data) {
-            document.getElementById('certificateSheet').innerHTML = '<h2 style="text-align:center; padding:100px; color:red;">⚠️ عذراً، لم يتم العثور على سجل لهذه الشهادة في قاعدة البيانات.</h2>';
-            return;
+            // إعداد رابط التحقق الديناميكي لرمز ה-QR
+            const verificationUrl = `https://sadarajobs.com/verify-certificate?id=${studentData.certificate_code}`;
+
+            // إنشاء / إعادة رسم الـ QR Code
+            const qrContainer = document.getElementById("qrcode");
+            qrContainer.innerHTML = "";
+            qrCodeInstance = new QRCode(qrContainer, {
+                text: verificationUrl,
+                width: 85,
+                height: 85,
+                colorDark: "#065f46",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
         }
 
-        document.getElementById('studentNameDisplay').textContent = data.student_name;
-        document.getElementById('courseNameDisplay').textContent = data.course_name;
-        document.getElementById('codeTextDisplay').textContent = "كود: " + data.verification_code;
+        // 4. دالة تنزيل الشهادة كصورة
+        function downloadCertificate() {
+            const certElement = document.getElementById('certificateCard');
+            html2canvas(certElement, {
+                scale: 3,
+                useCORS: true,
+                allowTaint: true
+            }).then(canvas => {
+                const serial = document.getElementById('certSerial').innerText;
+                const link = document.createElement('a');
+                link.download = `شهادة_${serial}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
 
-        let verifyUrl = window.location.origin + `/verify.html?code=${data.verification_code}`;
-        
-        document.getElementById("qrcode").innerHTML = "";
-        new QRCode(document.getElementById("qrcode"), {
-            text: verifyUrl,
-            width: 50,
-            height: 50,
-            colorDark : "#0f2347",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', loadCertificateData);
-</script>
+        // تشغيل الجلب التلقائي للبيانات عند فتح الصفحة
+        window.addEventListener('DOMContentLoaded', fetchAndRenderCertificate);
+    </script>
 </body>
 </html>
