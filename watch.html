@@ -3,73 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>التحقق الرسمي من الشهادة | صدارة</title>
+    <title>غرفة التدريب التفاعلية | صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: #f8f9fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; direction: rtl; padding: 15px; }
-        .card { background: #fff; padding: 30px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); width: 100%; max-width: 500px; text-align: center; border-top: 6px solid #059669; }
-        h2 { color: #0f172a; margin-bottom: 15px; font-size: 22px; }
-        .status { font-size: 1.1rem; color: #059669; font-weight: bold; margin-bottom: 20px; background: #dcfce7; padding: 10px; border-radius: 8px; }
-        .info-box { text-align: right; background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; line-height: 2; }
-        .info-box p { font-size: 14px; color: #334155; }
-        .info-box span { font-weight: bold; color: #0f2347; }
-        .error { color: #dc2626; font-weight: bold; background: #fee2e2; padding: 12px; border-radius: 8px; }
+        body { background: #0f172a; color: white; padding: 20px; direction: rtl; text-align: right; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 15px; }
+        .back-btn { background: #334155; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 13px; }
+        .video-box { background: #1e293b; border-radius: 12px; overflow: hidden; margin-bottom: 20px; border: 1px solid #475569; position: relative; aspect-ratio: 16/9; }
+        .video-box iframe { width: 100%; height: 100%; border: none; }
+        .progress-box { background: #1e293b; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #475569; }
+        .timer-display { font-size: 1.3rem; font-weight: bold; color: #38bdf8; margin: 10px 0; }
+        .claim-btn { background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: none; margin-top: 15px; transition: 0.3s; }
+        .claim-btn:hover { background: #059669; }
+        .completed-notice { background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; padding: 15px; border-radius: 10px; margin-bottom: 15px; color: #34d399; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>التحقق الرسمي من الشهادة</h2>
-        <div id="result">جاري جلب البيانات من السحابة... 🔍</div>
+    <div class="container">
+        <div class="header">
+            <h1 id="courseTitleText" style="font-size: 1.2rem; color: #f8fafc;">جاري التحقق من حالة الدورة...</h1>
+            <a href="courses.html" class="back-btn">⬅️ العودة للدورات</a>
+        </div>
+
+        <div id="noticeContainer"></div>
+
+        <div class="video-box" id="videoContainer">
+            <!-- سيتم حقن فيديو اليوتيوب هنا -->
+        </div>
+
+        <div class="progress-box">
+            <h3>📊 نظام تتابُع الحضور والمشاهدة الذكي</h3>
+            <div class="timer-display" id="timerText">جاري مزامنة بياناتك من السحابة...</div>
+            <p id="statusMsg" style="color: #94a3b8; font-size: 0.9rem;">يمكنك متابعة الفيديو أو استلام شهادتك المعتمدة فوراً عند الاكتمال.</p>
+            <button class="claim-btn" id="claimCertBtn" onclick="openArabicCertificate()">🎓 عرض وتحميل شهادتك الرسمية (عربي)</button>
+        </div>
     </div>
+
+    <canvas id="qrCanvas" style="display:none;"></canvas>
 
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function verifyCertificate() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-            const resultDiv = document.getElementById('result');
+        let courseData = null;
+        let watchedSeconds = 0;
+        let requiredSeconds = 300; 
+        let timerInterval = null;
+        const studentPhone = localStorage.getItem('sadara_logged_phone') || 'Guest_User';
+        const studentName = localStorage.getItem('sadara_logged_name') || 'عبدالرحمن عبدالله الذماري';
 
-            if (!code) {
-                resultDiv.innerHTML = `<p class="error">⚠️ رابط التحقق غير صالح أو غير مكتمل!</p>`;
+        async function initWatchPage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseId = urlParams.get('id');
+
+            if(!courseId) {
+                alert('لم يتم تحديد الدورة التدريبية!');
+                window.location.href = 'courses.html';
                 return;
             }
 
-            try {
-                let { data, error } = await db
-                    .from('course_certificates')
-                    .select('*')
-                    .eq('verification_code', code.trim())
-                    .maybeSingle();
+            let { data: course, error } = await db.from('platform_courses').select('*').eq('id', courseId).single();
+            if(error || !course) {
+                alert('عذراً، هذه الدورة غير متوفرة حالياً.');
+                window.location.href = 'courses.html';
+                return;
+            }
 
-                if (error || !data) {
-                    resultDiv.innerHTML = `<p class="error">⚠️ عذراً، هذه الشهادة غير مسجلة في قاعدة بيانات منصة صدارة أو أن كود التحقق غير صحيح!</p>`;
-                    return;
+            courseData = course;
+            requiredSeconds = (courseData.duration_minutes || 5) * 60;
+            document.getElementById('courseTitleText').textContent = courseData.title;
+            
+            let ytUrl = courseData.video_url;
+            let embedUrl = "";
+            if (ytUrl.includes('youtu.be/')) {
+                let videoId = ytUrl.split('youtu.be/')[1].split('?')[0];
+                embedUrl = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+            } else if (ytUrl.includes('watch?v=')) {
+                let videoId = ytUrl.split('watch?v=')[1].split('&')[0];
+                embedUrl = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+            } else {
+                embedUrl = ytUrl;
+            }
+            document.getElementById('videoContainer').innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+
+            let { data: existingCert } = await db.from('course_certificates')
+                .select('*')
+                .eq('student_name', studentName)
+                .eq('course_name', courseData.title)
+                .single();
+
+            if (existingCert) {
+                document.getElementById('noticeContainer').innerHTML = `
+                    <div class="completed-notice">
+                        🎉 لقد أتممت هذه الدورة مسبقاً واستلمت شهادتك المعتمدة! يمكنك مراجعة المحتوى أو فتح الشهادة في أي وقت.
+                    </div>
+                `;
+                document.getElementById('timerText').textContent = "✅ تمت دراسة واجتياز الدورة بنجاح مسبقاً";
+                document.getElementById('statusMsg').textContent = "أنت في وضع المراجعة والاستعراض.";
+                document.getElementById('claimCertBtn').style.display = 'inline-block';
+                document.getElementById('claimCertBtn').textContent = "📄 عرض وتحميل شهادتك المعتمدة";
+            } else {
+                let { data: progressData } = await db.from('student_progress')
+                    .select('*')
+                    .eq('student_phone', studentPhone)
+                    .eq('course_id', courseId)
+                    .single();
+
+                if (progressData) {
+                    watchedSeconds = progressData.watched_seconds || 0;
                 }
 
-                resultDiv.innerHTML = `
-                    <div class="status">✅ شهادة معتمدة وصحيحة 100%</div>
-                    <div class="info-box">
-                        <p>اسم المتدرب: <span>${data.student_name}</span></p>
-                        <p>اسم الدورة: <span>${data.course_name}</span></p>
-                        <p>تفاصيل الفترة: <span>${data.grade}</span></p>
-                        <p>عدد الساعات: <span>${data.attendance_hours}</span></p>
-                        <p>رقم التحقق: <span style="color:#2563eb;">${data.verification_code}</span></p>
-                    </div>
-                    <p style="font-size:11px; color:#64748b;">صادرة رسمياً ومعتمدة عبر منصة صدارة (sadarah.top)</p>
-                `;
-            } catch(e) {
-                resultDiv.innerHTML = `<p class="error">حدث خطأ في الاتصال بقاعدة البيانات.</p>`;
+                startTrackingTimer();
             }
         }
 
-        verifyCertificate();
-    </script>
+        function startTrackingTimer() {
+            if(timerInterval) return;
+            timerInterval = setInterval(async () => {
+                watchedSeconds++;
+                let remaining = requiredSeconds - watchedSeconds;
+                
+                if (watchedSeconds % 10 === 0) {
+                    await db.from('student_progress').upsert({
+                        student_phone: studentPhone,
+                        student_name: studentName,
+                        course_id: courseData.id,
+                        watched_seconds: watchedSeconds
+                    }, { onConflict: 'student_phone,course_id' });
+                }
 
+                if(remaining <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timerText').textContent = "✅ اكتملت مدة الدورة بنجاح تام!";
+                    document.getElementById('claimCertBtn').style.display = 'inline-block';
+                    document.getElementById('statusMsg').textContent = "أنت مؤهل الآن لاستلام شهادتك الرسمية.";
+                } else {
+                    let mins = Math.floor(remaining / 60);
+                    let secs = remaining % 60;
+                    document.getElementById('timerText').textContent = `الوقت المتبقي لاجتياز الدورة: ${mins} دقيقة و ${secs} ثانية`;
+                }
+            }, 1000);
+        }
+
+        async function openArabicCertificate() {
+            let { data: existingCert } = await db.from('course_certificates')
+                .select('*')
+                .eq('student_name', studentName)
+                .eq('course_name', courseData.title)
+                .single();
+
+            let verificationCode = existingCert ? existingCert.verification_code : ('SAD-' + Math.random().toString(36).substring(2, 9).toUpperCase());
+            
+            if (!existingCert) {
+                let startDate = new Date(Date.now() - (courseData.duration_minutes * 60 * 1000)).toLocaleDateString('ar-YE');
+                let endDate = new Date().toLocaleDateString('ar-YE');
+                
+                await db.from('course_certificates').insert([{
+                    student_name: studentName,
+                    course_name: courseData.title,
+                    grade: 'من تاريخ ' + startDate + ' إلى تاريخ ' + endDate,
+                    attendance_hours: courseData.duration_minutes + ' ساعات تدريبية',
+                    verification_code: verificationCode
+                }]);
+            }
+
+            const verificationUrl = `https://sadarah.top/verify.html?code=${verificationCode}`;
+
+            // توليد الـ QR Code كصورة Base64
+            QRCode.toDataURL(verificationUrl, { width: 150 }, function (err, qrCodeDataUrl) {
+                let startDate = new Date(Date.now() - (courseData.duration_minutes * 60 * 1000)).toLocaleDateString('ar-YE');
+                let endDate = new Date().toLocaleDateString('ar-YE');
+
+                // فتح نافذة جديدة تحتوي على الشهادة المصممة باللغة العربية الفصحى وبشكل فاخر ومذهل
+                let win = window.open('', '_blank');
+                win.document.write(`
+                    <!DOCTYPE html>
+                    <html lang="ar" dir="rtl">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>شهادة إتمام - ${studentName}</title>
+                        <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+                        <style>
+                            body { font-family: 'Tajawal', sans-serif; background: #e2e8f0; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+                            .cert-card { background: #fff; width: 900px; padding: 50px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 10px solid #0f2347; position: relative; text-align: center; }
+                            .header-title { color: #0f2347; font-size: 32px; font-weight: 900; margin-bottom: 5px; }
+                            .sub-title { color: #d4af37; font-size: 18px; font-weight: bold; margin-bottom: 30px; }
+                            .body-text { font-size: 20px; color: #334155; line-height: 2.2; margin-bottom: 30px; }
+                            .student-name { font-size: 30px; font-weight: 900; color: #0f2347; border-bottom: 3px solid #d4af37; display: inline-block; padding: 0 20px; margin: 10px 0; }
+                            .course-name { font-size: 24px; font-weight: bold; color: #2563eb; }
+                            .footer-box { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; border-top: 2px solid #e2e8f0; padding-top: 20px; text-align: right; }
+                            .qr-box img { width: 100px; height: 100px; }
+                            .print-btn { background: #2563eb; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+                            @media print { .print-btn { display: none; } body { background: white; padding: 0; } .cert-card { box-shadow: none; border: 5px solid #0f2347; width: 100%; } }
+                        </style>
+                    </head>
+                    <body>
+                        <div style="text-align: center;">
+                            <div class="cert-card">
+                                <div class="header-title">منصة صدارة للتوظيف والخدمات الرقمية</div>
+                                <div class="sub-title">SADARAH PLATFORM (sadarah.top)</div>
+                                
+                                <h1 style="color: #1e293b; font-size: 36px; margin: 20px 0; font-weight: 900;">شهادة إتمام دورة تدريبية</h1>
+                                
+                                <div class="body-text">
+                                    تُشهد إدارة منصة صدارة بأن المتدرب/ة:<br>
+                                    <span class="student-name">${studentName}</span><br>
+                                    قد حضر لدينا واجتاز بنجاح الدورة التدريبية الموسومة بـ:<br>
+                                    <span class="course-name">"${courseData.title}"</span><br>
+                                    وذلك في الفترة من تاريخ <b>${startDate}</b> إلى تاريخ <b>${endDate}</b> بإجمالي حضور وقدره <b>${courseData.duration_minutes} ساعات تدريبية</b>.<br>
+                                    مع تمنياتنا له دوام التوفيق والنجاح في مسيرته المهنية والعملية.
+                                </div>
+
+                                <div class="footer-box">
+                                    <div>
+                                        <p style="font-size: 14px; color: #64748b; font-weight: bold;">رقم التحقق: ${verificationCode}</p>
+                                        <p style="font-size: 14px; color: #0f2347; font-weight: bold; margin-top: 5px;">التوقيع والاعتماد: إدارة منصة صدارة</p>
+                                    </div>
+                                    <div class="qr-box">
+                                        <img src="${qrCodeDataUrl}" alt="QR Code">
+                                        <p style="font-size: 10px; color: #64748b; margin-top: 2px;">امسح للتحقق</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="print-btn" onclick="window.print()">🖨️ طباعة أو حفظ الشهادة كـ PDF</button>
+                        </div>
+                    </body>
+                    </html>
+                `);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initWatchPage);
+    </script>
 </body>
 </html>
