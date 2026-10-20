@@ -40,10 +40,9 @@
         .action-btns { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
         .btn-sm { padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 10px; font-weight: bold; color: white; }
         .btn-del { background: var(--red); }
+        .btn-edit { background: #3b82f6; }
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         .preview-img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
-        
-        /* تصميم حقول الدروس الديناميكية */
         .lesson-group { background: #f1f5f9; padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid #cbd5e1; }
     </style>
 </head>
@@ -137,7 +136,7 @@
             <input type="file" id="bannerFile" accept="image/*">
             <button onclick="addBanner()">رفع البنر للسلايدر 📤</button>
             <div id="bannerMsg" class="status-msg"></div>
-            <div class="list-box" id="bannersList"></div>
+            <div class="list-box" id="bannersList">جاري التحميل...</div>
         </div>
 
         <!-- 5. شركاء النجاح -->
@@ -147,10 +146,10 @@
             <input type="file" id="partnerFile" accept="image/*">
             <button onclick="addPartner()">إضافة الشريك للشريط 🔄</button>
             <div id="partnerMsg" class="status-msg"></div>
-            <div class="list-box" id="partnersList"></div>
+            <div class="list-box" id="partnersList">جاري التحميل...</div>
         </div>
 
-        <!-- 6. نظام رفع الدورات والدروس المرتبة الجديد -->
+        <!-- 6. نظام رفع الدورات والدروس المرتبة -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>🎓 رفع الدورة والدروس المرتبة <span class="badge" id="coursesCount">0</span></h2>
             
@@ -167,8 +166,8 @@
             <div id="lessonsContainer">
                 <div class="lesson-group">
                     <label>مسمى الدرس (عنوان الفيديو)</label>
-                    <input type="text" class="lesson-title" placeholder="مثال: الدرس الأول: مقدمة في التسويق">
-                    <label>رابط الفيديو (YouTube أو رابط مباشر)</label>
+                    <input type="text" class="lesson-title" placeholder="مثال: الدرس الأول: مقدمة">
+                    <label>رابط الفيديو</label>
                     <input type="text" class="lesson-url" placeholder="https://www.youtube.com/watch?v=...">
                 </div>
             </div>
@@ -182,6 +181,7 @@
         </div>
 
     </div>
+
 <script>
     const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
@@ -541,7 +541,7 @@
         });
     }
 
-    // ==================== نظام الدورات والدروس المرتبة الجديد ====================
+    // ==================== نظام الدورات والدروس المرتبة ====================
     function addLessonField() {
         let container = document.getElementById('lessonsContainer');
         container.innerHTML += `
@@ -563,7 +563,6 @@
             return;
         }
 
-        // جمع كافة الدروس المدخلة ديناميكياً
         let titles = document.querySelectorAll('.lesson-title');
         let urls = document.querySelectorAll('.lesson-url');
         let lessonsArray = [];
@@ -582,7 +581,7 @@
         let { error } = await db.from('platform_courses').insert([{
             title: title,
             description: description,
-            lessons: lessonsArray // حفظ الدروس كقائمة منظمة (JSON)
+            lessons: lessonsArray
         }]);
 
         if (error) {
