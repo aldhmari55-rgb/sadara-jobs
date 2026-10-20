@@ -148,7 +148,7 @@
             <div class="list-box" id="partnersList">جاري التحميل...</div>
         </div>
 
-        <!-- 6. نظام رفع وإدارة الدورات والدروس المرتبة -->
+        <!-- 6. نظام رفع وإدارة الدورات والدروس المرتبة (محدث بالكامل مع التعديل والحذف وتغيير الحالة) -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>
                 <span id="formTitleText">🎓 رفع وإدارة الدورات والدروس المرتبة</span>
@@ -490,12 +490,22 @@
 
         msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ في السحابة... ⏳';
         let payload = { title, description, is_active, lessons: lessonsArray };
-        let res = editId ? await db.from('platform_courses').update(payload).eq('id', editId) : await db.from('platform_courses').insert([payload]);
+        let res;
 
-        if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ سحابي: ' + res.error.message; }
-        else {
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ الدورة بنجاح تام! ✅';
-            resetCourseForm(); loadAdminCourses();
+        if (editId) {
+            res = await db.from('platform_courses').update(payload).eq('id', editId);
+        } else {
+            res = await db.from('platform_courses').insert([payload]);
+        }
+
+        if (res.error) { 
+            msg.style.color = 'red'; 
+            msg.textContent = 'خطأ سحابي: ' + res.error.message; 
+        } else {
+            msg.style.color = 'green'; 
+            msg.textContent = 'تم حفظ وتحديث الدورة بنجاح تام! ✅';
+            resetCourseForm(); 
+            loadAdminCourses();
         }
     }
 
@@ -557,10 +567,14 @@
         document.getElementById('courseMainDesc').value = c.description || '';
         document.getElementById('courseStatus').value = (c.is_active !== false) ? 'true' : 'false';
         
-        let container = document.getElementById('lessonsContainer'); container.innerHTML = '';
+        let container = document.getElementById('lessonsContainer'); 
+        container.innerHTML = '';
+        
         if (c.lessons && Array.isArray(c.lessons) && c.lessons.length > 0) {
             c.lessons.forEach(l => { addLessonField(l.lesson_title, l.video_url); });
-        } else { addLessonField('', ''); }
+        } else { 
+            addLessonField('', ''); 
+        }
 
         document.getElementById('btnSaveCourse').textContent = 'تعديل وحفظ الدورة 💾';
         document.getElementById('btnCancelCourse').style.display = 'block';
@@ -570,14 +584,15 @@
 
     async function toggleStatus(id, currentStatus) {
         let { error } = await db.from('platform_courses').update({ is_active: !currentStatus }).eq('id', id);
-        if (error) { alert('خطأ: ' + error.message); return; }
+        if (error) { alert('خطأ في تغيير الحالة: ' + error.message); return; }
         loadAdminCourses();
     }
 
     async function deleteItem(table, id) {
         if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
             let { error } = await db.from(table).delete().eq('id', id);
-            if (error) { alert('خطأ: ' + error.message); return; }
+            if (error) { alert('خطأ في الحذف: ' + error.message); return; }
+            alert('تم الحذف بنجاح! ✅');
             if (table === 'jobs') loadJobs();
             if (table === 'resumes') loadResumes();
             if (table === 'users') loadRegisteredUsers();
