@@ -3,32 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>التحقق من اعتماد الشهادة | صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>التحقق الرسمي من الشهادة | صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body { background: #f8f9fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; direction: rtl; }
-        .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); width: 100%; max-width: 500px; text-align: center; border-top: 6px solid #059669; }
-        h2 { color: #0f172a; margin-bottom: 10px; }
-        .status { font-size: 1.1rem; color: #059669; font-weight: bold; margin-bottom: 20px; }
-        .info-box { text-align: right; background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .info-box p { margin-bottom: 8px; font-size: 1rem; color: #334155; }
-        .info-box span { font-weight: bold; color: #0f172a; }
-        .error { color: #dc2626; font-weight: bold; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: #f8f9fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; direction: rtl; padding: 15px; }
+        .card { background: #fff; padding: 30px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); width: 100%; max-width: 500px; text-align: center; border-top: 6px solid #059669; }
+        h2 { color: #0f172a; margin-bottom: 15px; font-size: 22px; }
+        .status { font-size: 1.1rem; color: #059669; font-weight: bold; margin-bottom: 20px; background: #dcfce7; padding: 10px; border-radius: 8px; }
+        .info-box { text-align: right; background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; line-height: 2; }
+        .info-box p { font-size: 14px; color: #334155; }
+        .info-box span { font-weight: bold; color: #0f2347; }
+        .error { color: #dc2626; font-weight: bold; background: #fee2e2; padding: 12px; border-radius: 8px; }
     </style>
 </head>
 <body>
 
     <div class="card">
         <h2>التحقق الرسمي من الشهادة</h2>
-        <div id="result">جاري جلب البيانات من السحابة...</div>
+        <div id="result">جاري جلب البيانات من السحابة... 🔍</div>
     </div>
 
     <script>
-        const SUPABASE_URL = 'ضع_رابط_supabase_هنا';
-        const SUPABASE_ANON_KEY = 'ضع_مفتاح_anon_هنا';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         async function verifyCertificate() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -36,33 +36,36 @@
             const resultDiv = document.getElementById('result');
 
             if (!code) {
-                resultDiv.innerHTML = `<p class="error">رابط التحقق غير صالح أو غير مكتمل!</p>`;
+                resultDiv.innerHTML = `<p class="error">⚠️ رابط التحقق غير صالح أو غير مكتمل!</p>`;
                 return;
             }
 
-            const { data, error } = await supabaseClient
-                .from('course_certificates')
-                .select('*')
-                .eq('verification_code', code)
-                .single();
+            try {
+                let { data, error } = await db
+                    .from('course_certificates')
+                    .select('*')
+                    .eq('verification_code', code.trim())
+                    .maybeSingle();
 
-            if (error || !data) {
-                resultDiv.innerHTML = `<p class="error">⚠️ عذراً، هذه الشهادة غير مسجلة في قاعدة بيانات منصة صدارة أو أن الكود غير صحيح!</p>`;
-                return;
+                if (error || !data) {
+                    resultDiv.innerHTML = `<p class="error">⚠️ عذراً، هذه الشهادة غير مسجلة في قاعدة بيانات منصة صدارة أو أن كود التحقق غير صحيح!</p>`;
+                    return;
+                }
+
+                resultDiv.innerHTML = `
+                    <div class="status">✅ شهادة معتمدة وصحيحة 100%</div>
+                    <div class="info-box">
+                        <p>اسم المتدرب: <span>${data.student_name}</span></p>
+                        <p>اسم الدورة: <span>${data.course_name}</span></p>
+                        <p>تفاصيل الفترة: <span>${data.grade}</span></p>
+                        <p>عدد الساعات: <span>${data.attendance_hours}</span></p>
+                        <p>رقم التحقق: <span style="color:#2563eb;">${data.verification_code}</span></p>
+                    </div>
+                    <p style="font-size:11px; color:#64748b;">صادرة رسمياً ومعتمدة عبر منصة صدارة (sadarah.top)</p>
+                `;
+            } catch(e) {
+                resultDiv.innerHTML = `<p class="error">حدث خطأ في الاتصال بقاعدة البيانات.</p>`;
             }
-
-            resultDiv.innerHTML = `
-                <p class="status">✅ شهادة معتمدة وصحيحة 100%</p>
-                <div class="info-box">
-                    <p>اسم المتدرب: <span>${data.student_name}</span></p>
-                    <p>اسم الدورة: <span>${data.course_name}</span></p>
-                    <p>التقدير النهائي: <span>${data.grade}</span></p>
-                    <p>ساعات الحضور: <span>${data.attendance_hours}</span></p>
-                    <p>تاريخ الاصدار: <span>${new Date(data.issue_date).toLocaleDateString('ar-YE')}</span></p>
-                    <p>رقم التحقق: <span>${data.verification_code}</span></p>
-                </div>
-                <p style="font-size:0.85rem; color:#64748b;">صادرة رسمياً عبر منصة صدارة للتوظيف والخدمات الرقمية (sadarah.top)</p>
-            `;
         }
 
         verifyCertificate();
