@@ -38,18 +38,18 @@
 
         /* الإطار الملكي المزدوج المزين بالزوايا الذهبية */
         .outer-border {
-            border: 4px solid #0f2347;
+            border: 4px solid #0f2347 !important;
             height: 100%;
             padding: 6mm;
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            background: #fff;
+            background: #fff !important;
         }
 
         .inner-gold-border {
-            border: 2px solid #d4af37;
+            border: 2px solid #d4af37 !important;
             height: 100%;
             padding: 25px 35px;
             display: flex;
@@ -63,58 +63,60 @@
             position: absolute;
             width: 30px;
             height: 30px;
-            border: 3px solid #d4af37;
+            border: 3px solid #d4af37 !important;
         }
-        .top-left { top: -2px; left: -2px; border-right: none; border-bottom: none; }
-        .top-right { top: -2px; right: -2px; border-left: none; border-bottom: none; }
-        .bottom-left { bottom: -2px; left: -2px; border-right: none; border-top: none; }
-        .bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+        .top-left { top: -2px; left: -2px; border-right: none !important; border-bottom: none !important; }
+        .top-right { top: -2px; right: -2px; border-left: none !important; border-bottom: none !important; }
+        .bottom-left { bottom: -2px; left: -2px; border-right: none !important; border-top: none !important; }
+        .bottom-right { bottom: -2px; right: -2px; border-left: none !important; border-top: none !important; }
 
         /* الرأس والعناوين */
         .cert-header { text-align: center; margin-bottom: 10px; }
-        .org-logo-title { font-size: 28px; font-weight: 900; color: #0f2347; letter-spacing: 0.5px; }
-        .org-sub { font-size: 13px; color: #d4af37; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
-        .cert-badge-title { font-size: 32px; font-family: 'Amiri', serif; font-weight: bold; color: #0f2347; margin-top: 10px; border-bottom: 2px solid #d4af37; display: inline-block; padding: 0 25px 5px 25px; }
+        .org-logo-title { font-size: 28px; font-weight: 900; color: #0f2347 !important; letter-spacing: 0.5px; }
+        .org-sub { font-size: 13px; color: #d4af37 !important; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+        .cert-badge-title { font-size: 32px; font-family: 'Amiri', serif; font-weight: bold; color: #0f2347 !important; margin-top: 10px; border-bottom: 2px solid #d4af37 !important; display: inline-block; padding: 0 25px 5px 25px; }
 
         /* جسم الشهادة واسم الطالب */
         .cert-body { text-align: center; margin: 15px 0; }
-        .cert-to-text { font-size: 15px; color: #475569; margin-bottom: 8px; }
+        .cert-to-text { font-size: 15px; color: #475569 !important; margin-bottom: 8px; }
         .student-name-box { 
             font-size: 32px; 
             font-weight: 900; 
-            color: #059669; 
+            color: #059669 !important; 
             padding: 5px 20px;
             display: inline-block;
             margin-bottom: 12px;
-            border-bottom: 2px dashed #d4af37;
+            border-bottom: 2px dashed #d4af37 !important;
         }
-        .course-completion-text { font-size: 16px; color: #1e293b; line-height: 1.8; max-width: 80%; margin: 0 auto; }
-        .course-title-highlight { color: #0f2347; font-weight: 900; font-size: 22px; text-decoration: underline #d4af37; }
+        .course-completion-text { font-size: 16px; color: #1e293b !important; line-height: 1.8; max-width: 80%; margin: 0 auto; }
+        .course-title-highlight { color: #0f2347 !important; font-weight: 900; font-size: 22px; text-decoration: underline #d4af37; }
 
-        /* التذييل والتوقيع والباركود */
-        .cert-footer { display: flex; justify-content: space-between; align-items: flex-end; padding-top: 15px; border-top: 1px solid #e2e8f0; }
+        /* التذييل والتوقيع وختم الجودة مع الباركود */
+        .cert-footer { display: flex; justify-content: space-between; align-items: flex-end; padding-top: 15px; border-top: 1px solid #e2e8f0 !important; }
         .seal-signature { text-align: right; }
-        .sig-title { font-size: 13px; font-weight: bold; color: #0f2347; }
-        .sig-sub { font-size: 10px; color: #64748b; margin-top: 3px; }
+        .sig-title { font-size: 13px; font-weight: bold; color: #0f2347 !important; }
+        .sig-sub { font-size: 10px; color: #64748b !important; margin-top: 3px; }
+        
         .gold-badge-stamp { 
             width: 65px; 
             height: 65px; 
-            background: linear-gradient(135deg, #d4af37, #fef08a, #b45309); 
+            background: #d4af37 !important;
+            background: linear-gradient(135deg, #d4af37, #fef08a, #b45309) !important; 
             border-radius: 50%; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            color: #0f2347; 
+            color: #0f2347 !important; 
             font-weight: 900; 
             font-size: 10px; 
             box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);
-            border: 2px solid #fff;
+            border: 2px solid #fff !important;
             text-align: center;
         }
 
         .qr-section { text-align: center; }
-        #qrcode { background: #fff; padding: 4px; border: 1px solid #cbd5e1; border-radius: 6px; display: inline-block; }
-        .verification-code-text { font-size: 9px; color: #64748b; margin-top: 4px; font-weight: bold; }
+        #qrcode { background: #fff !important; padding: 4px; border: 1px solid #cbd5e1 !important; border-radius: 6px; display: inline-block; }
+        .verification-code-text { font-size: 9px; color: #64748b !important; margin-top: 4px; font-weight: bold; }
 
         /* شريط أزرار التحكم بالطباعة */
         .controls-bar { margin-top: 20px; display: flex; gap: 12px; }
@@ -132,42 +134,51 @@
         }
         .btn-action:hover { background: #fef08a; transform: translateY(-2px); }
 
-        /* إعدادات الطباعة بدقة A4 عالية بدون هوامش خارجية */
+        /* إعدادات الطباعة الحازمة للألوان والتدرجات الذهبية */
         @media print {
-            @page { size: A4 landscape; margin: 0; }
-            body { background: white; padding: 0; min-height: auto; }
+            @page { 
+                size: A4 landscape; 
+                margin: 0; 
+            }
+            
+            /* إجبار المتصفح على طباعة خلفيات وألوان الـ CSS بالكامل */
+            *, *::before, *::after {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            body { background: white !important; padding: 0; min-height: auto; }
             .controls-bar { display: none !important; }
+            
             .page-a4-landscape { 
-                box-shadow: none; 
-                width: 297mm; 
-                height: 210mm; 
-                border: none;
-                margin: 0;
+                box-shadow: none !important; 
+                width: 297mm !important; 
+                height: 210mm !important; 
+                border: none !important;
+                margin: 0 !important;
+                padding: 10mm !important;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- صفحة الشهادة أفقية مقاس A4 -->
     <div class="page-a4-landscape" id="certificateSheet">
         <div class="outer-border">
             <div class="inner-gold-border">
                 
-                <!-- الزوايا الذهبية -->
                 <div class="corner-decoration top-left"></div>
                 <div class="corner-decoration top-right"></div>
                 <div class="corner-decoration bottom-left"></div>
                 <div class="corner-decoration bottom-right"></div>
 
-                <!-- الرأس -->
                 <div class="cert-header">
                     <div class="org-logo-title">منصة صدارة للتدريب والأكاديمية</div>
                     <div class="org-sub">Sadarah Training Platform & Academy</div>
                     <div><span class="cert-badge-title">شهادة إتمام دورة تدريبية</span></div>
                 </div>
 
-                <!-- محتوى الشهادة -->
                 <div class="cert-body">
                     <p class="cert-to-text">تشهد إدارة المنصة بأن المتدرب / المتدربة:</p>
                     <div class="student-name-box" id="studentNameDisplay">جاري التحميل...</div>
@@ -177,7 +188,6 @@
                     </p>
                 </div>
 
-                <!-- التذييل والتوقيع وختم الجودة مع الباركود -->
                 <div class="cert-footer">
                     <div class="seal-signature">
                         <p class="sig-title">الإدارة العامة والاعتماد</p>
@@ -185,12 +195,10 @@
                         <p style="font-size: 9px; color: #94a3b8; margin-top: 4px;">صادرة رسمياً وموثقة سحابياً</p>
                     </div>
 
-                    <!-- الشعار/الختم الذهبي -->
                     <div class="gold-badge-stamp">
                         معتمدة<br>صدارة
                     </div>
 
-                    <!-- قسم الـ QR Code للتحقق السريع -->
                     <div class="qr-section">
                         <div id="qrcode"></div>
                         <div class="verification-code-text" id="codeTextDisplay">CODE: ---</div>
@@ -201,7 +209,6 @@
         </div>
     </div>
 
-    <!-- أزرار الحفظ والطباعة -->
     <div class="controls-bar">
         <button class="btn-action" onclick="window.print()">🖨️ طباعة أو حفظ الشهادة PDF (دقة عالية A4)</button>
     </div>
@@ -231,7 +238,6 @@
         document.getElementById('courseNameDisplay').textContent = data.course_name;
         document.getElementById('codeTextDisplay').textContent = "كود التحقق: " + data.verification_code;
 
-        // توليد باركود التحقق الذكي (QR Code)
         let verifyUrl = window.location.origin + `/verify.html?code=${data.verification_code}`;
         new QRCode(document.getElementById("qrcode"), {
             text: verifyUrl,
