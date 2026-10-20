@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة صدارة - الشهادة الرقمية</title>
+    <title>منصة صدارة - الشهادة الرقمية الرسمية</title>
     <!-- خط القاهرة الرسمي -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     
@@ -32,7 +32,7 @@
             padding: 20px;
         }
 
-        /* شريط التحكم */
+        /* شريط أزرار التحكم */
         .actions-bar {
             display: flex;
             gap: 12px;
@@ -71,12 +71,12 @@
             background-color: rgba(16, 185, 129, 0.1);
         }
 
-        /* قالب الشهادة برابط الصورة الجديد */
+        /* قالب الشهادة القائم على الصورة الرسمية الجديدة PNG */
         .certificate-wrapper {
             position: relative;
             width: 1000px;
             height: 707px;
-            background-image: url('https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificateg.jpg');
+            background-image: url('https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.png');
             background-size: 100% 100%;
             background-repeat: no-repeat;
             background-position: center;
@@ -85,7 +85,7 @@
             overflow: hidden;
         }
 
-        /* 1. اسم المتدرب */
+        /* 1. اسم المتدرب: بداخل المستطيل المخصص له */
         .cert-field.student-name {
             position: absolute;
             top: 47.5%;
@@ -99,7 +99,7 @@
             line-height: 1.2;
         }
 
-        /* 2. اسم الدورة التدريبية */
+        /* 2. اسم الدورة التدريبية: أسفل عبارة "دورة تدريبية باسم" */
         .cert-field.course-title {
             position: absolute;
             top: 61.5%;
@@ -112,7 +112,7 @@
             color: #1e293b;
         }
 
-        /* 3. تاريخ الإصدار */
+        /* 3. تاريخ الإصدار: بجانب "وكان ذلك بتاريخ" */
         .cert-field.issue-date {
             position: absolute;
             top: 64.8%;
@@ -123,7 +123,7 @@
             direction: ltr;
         }
 
-        /* 4. رقم الشهادة السيريال */
+        /* 4. رقم الشهادة (السيريال): بجانب خانة رقم الشهادة بدون تداخل مع الأختام */
         .cert-field.cert-serial {
             position: absolute;
             bottom: 12.8%;
@@ -134,7 +134,7 @@
             direction: ltr;
         }
 
-        /* 5. مربع رمز الـ QR */
+        /* 5. مربع رمز الـ QR code للتحقق */
         .cert-field.qr-box {
             position: absolute;
             bottom: 8.5%;
@@ -145,7 +145,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
-        /* شاشة التحميل */
+        /* شاشة جلب البيانات */
         .loading-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -168,7 +168,7 @@
 </head>
 <body>
 
-    <!-- أزرار الإجراءات -->
+    <!-- شريط الأزرار -->
     <div class="actions-bar">
         <button class="btn" onclick="downloadCertificate()">📥 تحميل الشهادة (PNG)</button>
         <button class="btn btn-outline" onclick="window.print()">🖨️ طباعة الشهادة</button>
@@ -176,9 +176,9 @@
 
     <!-- كارت الشهادة -->
     <div class="certificate-wrapper" id="certificateCard">
-        <div id="loadingOverlay" class="loading-overlay">جاري جلب بيانات الشهادة...</div>
+        <div id="loadingOverlay" class="loading-overlay">جاري تحميل بيانات الشهادة...</div>
 
-        <!-- النصوص الديناميكية -->
+        <!-- العناصر الديناميكية -->
         <div class="cert-field student-name" id="studentName">---</div>
         <div class="cert-field course-title" id="courseTitle">---</div>
         <div class="cert-field issue-date" id="issueDate">---</div>
