@@ -78,11 +78,11 @@
             justify-content: center;
         }
 
-        .main-logo-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 6px;
+        .main-logo-img {
+            max-height: 75px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 4px;
         }
 
         .org-logo-title { font-size: 24px; font-weight: 900; color: #0f2347 !important; }
@@ -113,30 +113,20 @@
             border-top: 1px solid #e2e8f0 !important; 
         }
         
-        /* جهة الاعتماد والختم الدائري */
+        /* جهة الاعتماد والختم الدائري فوق الكلام */
         .seal-signature { position: relative; text-align: right; min-width: 220px; padding-top: 10px; }
-        
-        .circle-stamp-container {
+        .circle-stamp-img {
             position: absolute;
             top: -45px;
-            right: 20px;
-            width: 105px;
-            height: 105px;
-            border: 3px solid #0f2347;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            right: 15px;
+            width: 95px;
+            height: auto;
+            opacity: 0.95;
+            pointer-events: none;
             z-index: 10;
         }
-        .circle-stamp-inner {
-            text-align: center;
-            padding: 5px;
-        }
 
-        .sig-title { font-size: 13px; font-weight: bold; color: #0f2347 !important; position: relative; z-index: 2; margin-top: 35px; }
+        .sig-title { font-size: 13px; font-weight: bold; color: #0f2347 !important; position: relative; z-index: 2; }
         .sig-sub { font-size: 10px; color: #64748b !important; margin-top: 2px; position: relative; z-index: 2; }
         
         /* الختم المستطيل */
@@ -145,13 +135,11 @@
             align-items: center;
             justify-content: center;
         }
-        .rect-stamp-design {
-            border: 2px solid #0f2347;
-            padding: 8px 18px;
-            border-radius: 6px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        .rect-stamp-img {
+            max-height: 52px;
+            width: auto;
+            object-fit: contain;
+            opacity: 0.95;
         }
 
         .qr-section { text-align: center; }
@@ -204,16 +192,9 @@
                 <div class="corner-decoration bottom-left"></div>
                 <div class="corner-decoration bottom-right"></div>
 
-                <!-- 1. الشعار أعلى المنتصف -->
+                <!-- 1. الشعار أعلى المنتصف (مدمج بدقة مباشرة) -->
                 <div class="cert-header">
-                    <div class="main-logo-box">
-                        <!-- شعار صدارة الرسمي بتصميم احترافي -->
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#0f2347"/>
-                            <path d="M2 17L12 22L22 17" stroke="#0f2347" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M2 12L12 17L22 12" stroke="#0f2347" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200" id="mainLogo" class="main-logo-img" alt="شعار صدارة">
                     <div class="org-logo-title">منصة صدارة للتدريب والأكاديمية</div>
                     <div class="org-sub">Sadarah Training Platform & Academy</div>
                     <div><span class="cert-badge-title">شهادة إتمام دورة تدريبية</span></div>
@@ -232,27 +213,36 @@
                 <!-- 3. التذييل والأختام والباركود -->
                 <div class="cert-footer">
                     
-                    <!-- الختم الدائري الرسمي -->
+                    <!-- الختم الدائري فوق الكلام -->
                     <div class="seal-signature">
-                        <div class="circle-stamp-container">
-                            <div class="circle-stamp-inner">
-                                <div style="font-size: 8px; font-weight: 900; color: #0f2347;">شركة صدارة للتسويق والخدمات الرقمية</div>
-                                <div style="font-size: 14px; font-weight: bold; color: #d4af37; margin: 2px 0;">SADARAH</div>
-                                <div style="font-size: 7px; color: #64748b;">الإدارة العامة والاعتماد</div>
-                            </div>
-                        </div>
+                        <svg class="circle-stamp-img" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="150" cy="150" r="140" fill="none" stroke="#0f2347" stroke-width="6"/>
+                            <circle cx="150" cy="150" r="125" fill="none" stroke="#0f2347" stroke-width="2"/>
+                            <path id="curve" d="M 30, 150 A 120,120 0 0,1 270,150" fill="transparent"/>
+                            <text font-size="22" font-weight="bold" fill="#0f2347" font-family="Tajawal">
+                                <textPath href="#curve" startOffset="50%" text-anchor="middle">شركة صدارة للتسويق والخدمات الرقمية</textPath>
+                            </text>
+                            <text x="150" y="240" font-size="16" font-weight="bold" fill="#0f2347" text-anchor="middle" font-family="Tajawal">Sadarah Digital Marketing</text>
+                            <g transform="translate(150, 120) scale(0.6)">
+                                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#0f2347"/>
+                                <path d="M2 17L12 22L22 17" stroke="#0f2347" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2 12L12 17L22 12" stroke="#0f2347" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </g>
+                        </svg>
+                        
                         <p class="sig-title">الإدارة العامة والاعتماد</p>
                         <p class="sig-sub">شركة صدارة للتسويق والخدمات الرقمية</p>
                         <p style="font-size: 9px; color: #94a3b8; margin-top: 2px; position: relative; z-index: 2;">صادرة رسمياً وموثقة سحابياً</p>
                     </div>
 
-                    <!-- الختم المستطيل الرسمي -->
+                    <!-- الختم المستطيل -->
                     <div class="rect-stamp-box">
-                        <div class="rect-stamp-design">
-                            <div style="font-size: 9px; font-weight: bold; color: #0f2347;">شركة صدارة للتسويق والخدمات الرقمية</div>
-                            <div style="font-size: 12px; font-weight: 900; color: #059669; margin: 2px 0;">الإدارة العامة (معتمد)</div>
-                            <div style="font-size: 8px; color: #64748b;">Sadarah Digital Marketing</div>
-                        </div>
+                        <svg class="rect-stamp-img" viewBox="0 0 350 120" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="5" y="5" width="340" height="110" rx="6" fill="none" stroke="#0f2347" stroke-width="4"/>
+                            <text x="175" y="35" font-size="16" font-weight="bold" fill="#0f2347" text-anchor="middle" font-family="Tajawal">شركة صدارة للتسويق والخدمات الرقمية</text>
+                            <text x="175" y="60" font-size="13" fill="#64748b" text-anchor="middle" font-family="Tajawal">Sadarah Digital Marketing and Services Company</text>
+                            <text x="175" y="95" font-size="22" font-weight="900" fill="#059669" text-anchor="middle" font-family="Tajawal">الإدارة العامة</text>
+                        </svg>
                     </div>
 
                     <!-- الباركود QR -->
@@ -294,7 +284,6 @@
 
         document.getElementById('studentNameDisplay').textContent = data.student_name;
         document.getElementById('courseNameDisplay').textContent = data.course_name;
-        document.getElementById('codeTextDigital') ? document.getElementById('codeTextDigital').textContent = data.verification_code : null;
         document.getElementById('codeTextDisplay').textContent = "كود التحقق: " + data.verification_code;
 
         let verifyUrl = window.location.origin + `/verify.html?code=${data.verification_code}`;
