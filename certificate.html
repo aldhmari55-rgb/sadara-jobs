@@ -20,71 +20,125 @@
             padding: 20px; 
         }
 
-        /* ورقة الشهادة A4 أفقي */
+        /* ورقة الشهادة A4 أفقي بتصميم مطابق تماماً لصورتك */
         .page-a4-landscape {
             width: 297mm;
             height: 210mm;
-            background-image: url('certificate-bg.jpg'); /* ضع هنا مسار أو رابط صورة الشهادة الخاصة بك */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background: #fcfbf9;
+            border: 12px solid #d4af37;
+            padding: 15mm;
             position: relative;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             overflow: hidden;
         }
 
-        /* الحقول النصية المتطابقة مع مكانها فوق الصورة */
-        .student-name-overlay {
-            position: absolute;
-            top: 42%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 36px;
+        /* رأس الشهادة والشعار والأختام العلوية */
+        .cert-header {
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-title {
+            font-size: 26px;
             font-weight: 900;
-            color: #059669 !important;
-            text-align: center;
-            width: 600px;
+            color: #0f2347;
+            margin-top: 5px;
         }
 
-        .course-name-overlay {
-            position: absolute;
-            top: 56%;
-            right: 42%;
-            font-size: 20px;
+        .logo-sub {
+            font-size: 12px;
+            color: #d4af37;
             font-weight: bold;
-            color: #0f2347 !important;
+            letter-spacing: 1px;
         }
 
-        .hours-overlay {
-            position: absolute;
-            top: 62%;
-            right: 68%;
+        .cert-main-title {
+            font-size: 38px;
+            font-family: 'Amiri', serif;
+            font-weight: bold;
+            color: #0f2347;
+            margin-top: 15px;
+        }
+
+        .cert-subtitle {
             font-size: 16px;
-            font-weight: bold;
-            color: #1e293b !important;
+            color: #475569;
+            margin-top: 5px;
         }
 
-        .date-overlay {
-            position: absolute;
-            top: 62%;
-            right: 40%;
-            font-size: 16px;
-            font-weight: bold;
-            color: #1e293b !important;
-        }
-
-        /* الباركود وتفاصيل التحقق أسفل الشهادة */
-        .qr-overlay {
-            position: absolute;
-            bottom: 12mm;
-            left: 15mm;
+        /* صندوق اسم الطالب المتطابق مع التصميم */
+        .cert-body {
             text-align: center;
-            background: rgba(255, 255, 255, 0.85);
-            padding: 4px;
+            margin: 15px 0;
+        }
+
+        .student-name-box {
+            font-size: 38px;
+            font-weight: 900;
+            color: #0f2347;
+            background: #ffffff;
+            border: 3px solid #0f2347;
+            border-radius: 50px;
+            padding: 10px 40px;
+            display: inline-block;
+            margin: 15px 0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            min-width: 500px;
+        }
+
+        .completion-text {
+            font-size: 18px;
+            color: #1e293b;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .course-highlight {
+            color: #0f2347;
+            font-size: 22px;
+            font-weight: 900;
+            text-decoration: underline #d4af37;
+        }
+
+        /* تذييل الشهادة (الأختام والباركود) */
+        .cert-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-top: 2px solid #e2e8f0;
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+
+        .stamp-box {
+            border: 2px solid #0f2347;
+            background: #ffffff;
+            padding: 8px 15px;
             border-radius: 6px;
+            text-align: center;
         }
-        #qrcode { display: inline-block; }
-        .verification-code-text { font-size: 9px; color: #64748b !important; margin-top: 2px; font-weight: bold; }
+
+        .qr-section {
+            text-align: center;
+        }
+
+        #qrcode {
+            background: #fff;
+            padding: 4px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .verification-code {
+            font-size: 10px;
+            color: #64748b;
+            font-weight: bold;
+            margin-top: 4px;
+        }
 
         .controls-bar { margin-top: 20px; display: flex; gap: 12px; }
         .btn-action { 
@@ -115,6 +169,7 @@
                 width: 297mm !important; 
                 height: 210mm !important; 
                 margin: 0 !important;
+                border: 10px solid #d4af37 !important;
             }
         }
     </style>
@@ -122,22 +177,43 @@
 <body>
 
     <div class="page-a4-landscape" id="certificateSheet">
-        <!-- اسم المتدرب فوق المستطيل المخصص له -->
-        <div class="student-name-overlay" id="studentNameDisplay">جاري التحميل...</div>
-        
-        <!-- اسم الدورة التدريبية -->
-        <div class="course-name-overlay" id="courseNameDisplay">...</div>
+        <!-- رأس الشهادة -->
+        <div class="cert-header">
+            <div style="font-weight: 900; color: #0f2347; font-size: 18px;">SADARAH</div>
+            <div style="font-size: 10px; color: #64748b;">– MARKETING AGENCY – نحو نجاح رقمي مستدام</div>
+            <div class="cert-main-title">شهادة اتمام</div>
+            <div class="cert-subtitle">منحت هذه الشهادة بكل فخر الى</div>
+        </div>
 
-        <!-- عدد الساعات (إذا توفرت في قاعدة البيانات أو تُترك افتراضية) -->
-        <div class="hours-overlay" id="hoursDisplay">--</div>
+        <!-- جسم الشهادة واسم الطالب -->
+        <div class="cert-body">
+            <div class="student-name-box" id="studentNameDisplay">جاري التحميل...</div>
+            <div class="completion-text">
+                لاستكماله بنجاح دورة تدريبية باسم:<br>
+                <span class="course-highlight" id="courseNameDisplay">...</span>
+            </div>
+        </div>
 
-        <!-- تاريخ الإصدار -->
-        <div class="date-overlay" id="dateDisplay">--</div>
+        <!-- التذييل والأختام والباركود -->
+        <div class="cert-footer">
+            <!-- ختم الإدارة العامة -->
+            <div class="stamp-box">
+                <div style="font-size: 9px; font-weight: bold; color: #0f2347;">شركة صدارة للتسويق والخدمات الرقمية</div>
+                <div style="font-size: 14px; font-weight: 900; color: #059669; margin: 2px 0;">الادارة العامة</div>
+                <div style="font-size: 8px; color: #64748b;">Sadarah Digital Marketing and Services Company</div>
+            </div>
 
-        <!-- الباركود وكود التحقق -->
-        <div class="qr-overlay">
-            <div id="qrcode"></div>
-            <div class="verification-code-text" id="codeTextDisplay">CODE: ---</div>
+            <!-- الختم الدائري الاعتماد -->
+            <div style="text-align: center; font-size: 11px; font-weight: bold; color: #0f2347;">
+                <div style="border: 2px dashed #0f2347; border-radius: 50%; width: 75px; height: 75px; display: flex; align-items: center; justify-content: center; margin: 0 auto 4px auto; background: rgba(15,35,71,0.02); font-size: 8px;">اعتماد المنصة</div>
+                اعتماد شركة صدارة للتسويق والخدمات الرقمية
+            </div>
+
+            <!-- الباركود QR -->
+            <div class="qr-section">
+                <div id="qrcode"></div>
+                <div class="verification-code" id="codeTextDisplay">CODE: ---</div>
+            </div>
         </div>
     </div>
 
@@ -155,21 +231,19 @@
         const code = urlParams.get('code');
 
         if (!code) {
-            document.getElementById('certificateSheet').innerHTML = '<h2 style="text-align:center; padding:50px; color:red;">⚠️ كود الشهادة غير موجود بالرابط!</h2>';
+            document.getElementById('certificateSheet').innerHTML = '<h2 style="text-align:center; padding:100px; color:red;">⚠️ كود الشهادة غير موجود بالرابط!</h2>';
             return;
         }
 
         let { data, error } = await db.from('course_certificates').select('*').eq('verification_code', code).single();
 
         if (error || !data) {
-            document.getElementById('certificateSheet').innerHTML = '<h2 style="text-align:center; padding:50px; color:red;">⚠️ عذراً، لم يتم العثور على سجل لهذه الشهادة في قاعدة البيانات.</h2>';
+            document.getElementById('certificateSheet').innerHTML = '<h2 style="text-align:center; padding:100px; color:red;">⚠️ عذراً، لم يتم العثور على سجل لهذه الشهادة في قاعدة البيانات.</h2>';
             return;
         }
 
         document.getElementById('studentNameDisplay').textContent = data.student_name;
         document.getElementById('courseNameDisplay').textContent = data.course_name;
-        if(data.hours) document.getElementById('hoursDisplay').textContent = data.hours;
-        if(data.created_at) document.getElementById('dateDisplay').textContent = new Date(data.created_at).toLocaleDateString('ar-SA');
         document.getElementById('codeTextDisplay').textContent = "كود: " + data.verification_code;
 
         let verifyUrl = window.location.origin + `/verify.html?code=${data.verification_code}`;
