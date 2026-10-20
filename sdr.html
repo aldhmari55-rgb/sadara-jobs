@@ -24,7 +24,7 @@
         <header class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-6 shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <h1 class="text-2xl font-black text-emerald-400">لوحة تحكم منصة صدارة السحابية</h1>
-                <p class="text-slate-400 text-sm mt-1">الإدارة الشاملة واستعراض السجلات السحابية المباشرة من Supabase</p>
+                <p class="text-slate-400 text-sm mt-1">الإدارة الشاملة ورفع الصور المباشر لجميع أقسام المنصة</p>
             </div>
             <a href="https://sadarah.top" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-md">
                 🌐 زيارة المنصة الرسمية
@@ -109,17 +109,17 @@
                     <label class="block text-xs font-bold text-slate-300 mb-1">صورة البنر من المعرض</label>
                     <input type="file" id="bannerFile" accept="image/*" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-300">
                 </div>
-                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 transition">رفع وإضافة البنر</button>
+                <button type="submit" id="btnUploadBanner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 transition">رفع وإضافة البنر</button>
             </form>
             <div id="bannersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <p class="text-slate-500 text-sm">جاري جلب البنرات...</p>
+                <p class="text-slate-500 text-sm">جاري الجلب...</p>
             </div>
         </div>
 
         <!-- 3. قسم الوظائف -->
         <div id="tab-jobs" class="tab-content bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg space-y-6">
             <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-                <h2 class="text-lg font-bold text-emerald-400">💼 إدارة الوظائف والشركات (صدارة للتوظيف)</h2>
+                <h2 class="text-lg font-bold text-emerald-400">💼 إدارة الوظائف وصور الشركات (صدارة للتوظيف)</h2>
                 <button onclick="loadJobs()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-md transition">🔄 تحديث</button>
             </div>
             <form onsubmit="addJob(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end bg-slate-900/50 p-4 rounded-xl border border-slate-750">
@@ -133,7 +133,7 @@
                 <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 md:col-span-4 transition">نشر وظيفة جديدة</button>
             </form>
             <div id="jobsList" class="space-y-3">
-                <p class="text-slate-500 text-sm">جاري جلب الوظائف...</p>
+                <p class="text-slate-500 text-sm">جاري الجلب...</p>
             </div>
         </div>
 
@@ -153,7 +153,7 @@
                 <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 md:col-span-3 transition">حفظ الكفاءة وصورتها</button>
             </form>
             <div id="talentsList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <p class="text-slate-500 text-sm">جاري جلب الكفاءات...</p>
+                <p class="text-slate-500 text-sm">جاري الجلب...</p>
             </div>
         </div>
 
@@ -194,7 +194,7 @@
                 <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm py-2.5 transition">إضافة الشريك وشعاره</button>
             </form>
             <div id="partnersList" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <p class="text-slate-500 text-sm">جاري جلب شركاء النجاح...</p>
+                <p class="text-slate-500 text-sm">جاري الجلب...</p>
             </div>
         </div>
 
@@ -205,6 +205,7 @@
         const SUPABASE_ANON_KEY = 'ضع_مفتاح_ANON_KEY_هنا';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // دالة الرفع السحابية المباشرة إلى Storage bucket
         async function uploadFileToStorage(fileInputId, folder = 'uploads') {
             const fileInput = document.getElementById(fileInputId);
             if (!fileInput || !fileInput.files || fileInput.files.length === 0) return null;
@@ -218,7 +219,7 @@
                 .upload(fileName, file, { cacheControl: '3600', upsert: true });
 
             if (error) {
-                alert("حدث خطأ أثناء رفع الصورة السحابية.");
+                alert("حدث خطأ أثناء رفع الصورة إلى السحابة.");
                 return null;
             }
 
@@ -266,9 +267,9 @@
                 }
                 tbody.innerHTML = data.map(cert => `
                     <tr class="hover:bg-slate-750 transition">
-                        <td class="p-3 font-mono text-xs text-emerald-400">${cert.certificate_code}</td>
-                        <td class="p-3 font-bold">${cert.full_name}</td>
-                        <td class="p-3 text-slate-300">${cert.course_name}</td>
+                        <td class="p-3 font-mono text-xs text-emerald-400">${cert.certificate_code || cert.code || '---'}</td>
+                        <td class="p-3 font-bold">${cert.full_name || cert.name || '---'}</td>
+                        <td class="p-3 text-slate-300">${cert.course_name || cert.course || '---'}</td>
                         <td class="p-3 text-emerald-300">${cert.hours || 30} س</td>
                         <td class="p-3 flex gap-2">
                             <a href="https://sadarah.top/certificate.html?id=${cert.certificate_code}" target="_blank" class="bg-sky-600 hover:bg-sky-700 text-white px-2.5 py-1 rounded text-xs transition">عرض</a>
@@ -277,7 +278,7 @@
                     </tr>
                 `).join('');
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-rose-400">فشل جلب الشهادات.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-rose-400">لا توجد شهادات مسجلة حالياً.</td></tr>`;
             }
         }
 
@@ -319,7 +320,7 @@
                     </div>
                 `).join('');
             } catch (e) {
-                container.innerHTML = `<p class="text-rose-400 text-sm">فشل جلب البنرات (تأكد من اسم جدول banners في قاعدة البيانات).</p>`;
+                container.innerHTML = `<p class="col-span-3 text-slate-500">لا توجد بنرات مسجلة حالياً.</p>`;
             }
         }
 
@@ -358,7 +359,7 @@
                     </div>
                 `).join('');
             } catch (e) {
-                container.innerHTML = `<p class="text-rose-400 text-sm">فشل جلب الوظائف.</p>`;
+                container.innerHTML = `<p class="text-slate-500">لا توجد وظائف معلنة حالياً.</p>`;
             }
         }
 
@@ -397,7 +398,7 @@
                     </div>
                 `).join('');
             } catch (e) {
-                container.innerHTML = `<p class="text-rose-400 text-sm">فشل جلب الكفاءات.</p>`;
+                container.innerHTML = `<p class="col-span-3 text-slate-500">لا توجد كفاءات مسجلة حالياً.</p>`;
             }
         }
 
@@ -431,7 +432,7 @@
                     </tr>
                 `).join('');
             } catch (e) {
-                tbody.innerHTML = `<tr><td colspan="3" class="text-center p-4 text-rose-400">فشل جلب الحسابات.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center p-4 text-slate-500">لا توجد حسابات مسجلة حالياً.</td></tr>`;
             }
         }
 
@@ -454,7 +455,7 @@
                     </div>
                 `).join('');
             } catch (e) {
-                container.innerHTML = `<p class="text-rose-400 text-sm">فشل جلب شركاء النجاح.</p>`;
+                container.innerHTML = `<p class="col-span-4 text-slate-500">لا توجد شعارات شركاء مسجلة حالياً.</p>`;
             }
         }
 
