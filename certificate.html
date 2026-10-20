@@ -9,8 +9,6 @@
     
     <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- مكتبة توليد رمز الـ QR -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <!-- مكتبة تحويل العناصر إلى صور -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- مكتبة توليد ملفات PDF برمجياً -->
@@ -100,7 +98,7 @@
             z-index: 1;
         }
 
-        /* نصوص الشهادة والـ QR فوق الصورة (مصححة ومفعلة) */
+        /* نصوص الشهادة والـ QR فوق الصورة */
         .cert-content {
             position: absolute;
             top: 0;
@@ -173,7 +171,7 @@
             direction: ltr;
         }
 
-        /* 6. مربع رمز الـ QR */
+        /* 6. مربع رمز الـ QR المحدث لصورة مباشرة */
         .cert-field.qr-box {
             position: absolute;
             bottom: 8.5%;
@@ -182,9 +180,17 @@
             background: #ffffff;
             border-radius: 6px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            width: 86px;
+            height: 86px;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .cert-field.qr-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .loading-overlay {
@@ -244,7 +250,11 @@
             </div>
 
             <div class="cert-field cert-serial" id="certSerial">---</div>
-            <div class="cert-field qr-box" id="qrcode"></div>
+            
+            <!-- عنصر صورة الباركود المباشر والمضمون 100% -->
+            <div class="cert-field qr-box">
+                <img id="qrImage" src="" alt="QR Code" crossorigin="anonymous">
+            </div>
         </div>
     </div>
 
@@ -295,24 +305,13 @@
             document.getElementById('courseHours').innerText = studentData.hours;
             document.getElementById('certSerial').innerText = studentData.certificate_code;
 
-            // تنسيق بيانات الباركود لتظهر بشكل مباشر ومستقر
-            const qrPayload = `SADARAH CERTIFICATE\nID: ${studentData.certificate_code}\nName: ${studentData.full_name}\nCourse: ${studentData.course_name}\nDate: ${studentData.created_at}\nHours: ${studentData.hours}h`;
+            // 🌟 رابط التحقق الرسمي والربط المباشر بكشف الشهادات
+            const verifyUrl = `https://sadarajobs.com/verify-certificate?id=${encodeURIComponent(studentData.certificate_code)}`;
 
-            const qrContainer = document.getElementById("qrcode");
-            qrContainer.innerHTML = "";
+            // 🌟 توليد الباركود فوراً ورسمه عبر المولد المباشر السريع للصور الموثوقة
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(verifyUrl)}&color=000000&bgcolor=ffffff`;
             
-            try {
-                new QRCode(qrContainer, {
-                    text: qrPayload,
-                    width: 78,
-                    height: 78,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.L
-                });
-            } catch (e) {
-                console.error("خطأ في توليد الباركود:", e);
-            }
+            document.getElementById('qrImage').src = qrApiUrl;
         }
 
         function downloadPNG() {
