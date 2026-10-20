@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دورات صدارة التدريبية | sadarah.top</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: #f8f9fa; color: #333; direction: rtl; text-align: right; }
+        header { background: #0f172a; color: #fff; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { font-size: 1.5rem; color: #38bdf8; }
+        .back-btn { background: #334155; color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: 0.3s; }
+        .back-btn:hover { background: #475569; }
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        .section-title { font-size: 1.8rem; margin-bottom: 20px; color: #0f172a; border-right: 5px solid #38bdf8; padding-right: 10px; }
+        .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .course-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between; }
+        .course-header { background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; padding: 20px; }
+        .course-header h3 { font-size: 1.3rem; margin-bottom: 5px; }
+        .course-body { padding: 20px; }
+        .course-body p { color: #64748b; font-size: 0.95rem; margin-bottom: 15px; line-height: 1.6; }
+        .course-footer { padding: 20px; background: #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+        .price { font-weight: 700; color: #059669; font-size: 1.1rem; }
+        .enroll-btn { background: #2563eb; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; transition: 0.3s; }
+        .enroll-btn:hover { background: #1d4ed8; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎓 منصة صدارة للتدريب والتطوير</h1>
+        <a href="index.html" class="back-btn">⬅️ العودة للرئيسية</a>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">الدورات التدريبية المعتمدة</h2>
+        
+        <div class="courses-grid">
+            <!-- دورة 1 -->
+            <div class="course-card">
+                <div class="course-header">
+                    <h3>دورة إعداد السيرة الذاتية (CV) باحترافية</h3>
+                </div>
+                <div class="course-body">
+                    <p>تعلم كيف تصمم سيرة ذاتية تنافسية تزيد من فرص قبولك في كبرى الشركات، مع شهادة معتمدة وساعات حضور.</p>
+                </div>
+                <div class="course-footer">
+                    <span class="price">متاحة الآن</span>
+                    <a href="https://wa.me/967780568507?text=أرغب+بالاشتراك+في+دورة+إعداد+السيرة+الذاتية" target="_blank" class="enroll-btn">اشترك عبر الواتساب</a>
+                </div>
+            </div>
+
+            <!-- دورة 2 -->
+            <div class="course-card">
+                <div class="course-header">
+                    <h3>دورة اجتياز المقابلات الشخصية بنجاح</h3>
+                </div>
+                <div class="course-body">
+                    <p>استراتيجيات الإجابة على الأسئلة الصعبة، لغة الجسد، والثقة بالنفس أثناء المقابلات الوظيفية.</p>
+                </div>
+                <div class="course-footer">
+                    <span class="price">متاحة الآن</span>
+                    <a href="https://wa.me/967780568507?text=أرغب+بالاشتراك+في+دورة+اجتياز+المقابلات+الشخصية" target="_blank" class="enroll-btn">اشترك عبر الواتساب</a>
+                </div>
+            </div>
+
+            <!-- دورة 3 -->
+            <div class="course-card">
+                <div class="course-header">
+                    <h3>دورة مهارات العرض والإلقاء المؤثر</h3>
+                </div>
+                <div class="course-body">
+                    <p>طور مهاراتك في التحدث أمام الجمهور، مواجهة الخوف، وإيصال الأفكار بثلاثة وسلاسة تامة.</p>
+                </div>
+                <div class="course-footer">
+                    <span class="price">متاحة الآن</span>
+                    <a href="https://wa.me/967780568507?text=أرغب+بالاشتراك+في+دورة+مهارات+العرض+والإلقاء" target="_blank" class="enroll-btn">اشترك عبر الواتساب</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
