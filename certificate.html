@@ -71,12 +71,12 @@
             background-color: rgba(16, 185, 129, 0.1);
         }
 
-        /* قالب الشهادة */
+        /* قالب الشهادة برابط الصورة الجديد */
         .certificate-wrapper {
             position: relative;
             width: 1000px;
             height: 707px;
-            background-image: url('https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.jpg');
+            background-image: url('https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificateg.jpg');
             background-size: 100% 100%;
             background-repeat: no-repeat;
             background-position: center;
@@ -85,7 +85,7 @@
             overflow: hidden;
         }
 
-        /* 1. اسم المتدرب: ينزل إلى منتصف المستطيل الأزرق تماماً */
+        /* 1. اسم المتدرب */
         .cert-field.student-name {
             position: absolute;
             top: 47.5%;
@@ -99,7 +99,7 @@
             line-height: 1.2;
         }
 
-        /* 2. اسم الدورة التدريبية: ينزل أسفل جملة "لاستكماله بنجاح دورة تدريبية باسم" */
+        /* 2. اسم الدورة التدريبية */
         .cert-field.course-title {
             position: absolute;
             top: 61.5%;
@@ -112,7 +112,7 @@
             color: #1e293b;
         }
 
-        /* 3. تاريخ الإصدار: يوضع بوضوح في الفراغ المجاور لـ "وكان ذلك بتاريخ" */
+        /* 3. تاريخ الإصدار */
         .cert-field.issue-date {
             position: absolute;
             top: 64.8%;
@@ -123,7 +123,7 @@
             direction: ltr;
         }
 
-        /* 4. رقم الشهادة السيريال: يوضع بجانب عبارة "رقم الشهادة" أقصى اليسار بعيداً عن الختم */
+        /* 4. رقم الشهادة السيريال */
         .cert-field.cert-serial {
             position: absolute;
             bottom: 12.8%;
@@ -134,7 +134,7 @@
             direction: ltr;
         }
 
-        /* 5. مربع رمز الـ QR: يثبت بالزاوية اليسرى المخصصة له */
+        /* 5. مربع رمز الـ QR */
         .cert-field.qr-box {
             position: absolute;
             bottom: 8.5%;
@@ -178,19 +178,13 @@
     <div class="certificate-wrapper" id="certificateCard">
         <div id="loadingOverlay" class="loading-overlay">جاري جلب بيانات الشهادة...</div>
 
-        <!-- 1. اسم المتدرب (داخل المستطيل) -->
+        <!-- النصوص الديناميكية -->
         <div class="cert-field student-name" id="studentName">---</div>
-        
-        <!-- 2. اسم الدورة (أسفل عبارة "باسم") -->
         <div class="cert-field course-title" id="courseTitle">---</div>
-        
-        <!-- 3. تاريخ الإصدار (بجانب "وكان ذلك بتاريخ") -->
         <div class="cert-field issue-date" id="issueDate">---</div>
-
-        <!-- 4. رقم الشهادة (في مكان السيريال المحدد) -->
         <div class="cert-field cert-serial" id="certSerial">---</div>
 
-        <!-- 5. رمز الـ QR -->
+        <!-- رمز الـ QR -->
         <div class="cert-field qr-box" id="qrcode"></div>
     </div>
 
