@@ -18,7 +18,6 @@
         body { background: var(--bg); padding: 15px; color: #0f172a; padding-bottom: 50px; }
         .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 15px; border-bottom: 3px solid var(--gold); }
         
-        /* شريط الإحصائيات الواقعية المباشرة */
         .admin-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto 20px auto; }
         @media(min-width: 768px) { .admin-stats-grid { grid-template-columns: repeat(4, 1fr); } }
         .stat-card-admin { background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
@@ -55,22 +54,10 @@
 
     <!-- شريط الإحصائيات الواقعية المباشرة -->
     <div class="admin-stats-grid">
-        <div class="stat-card-admin">
-            <h3 id="adminOnline">...</h3>
-            <p>متواجد الآن 🟢</p>
-        </div>
-        <div class="stat-card-admin">
-            <h3 id="adminTotalViews">...</h3>
-            <p>إجمالي الزيارات 👥</p>
-        </div>
-        <div class="stat-card-admin">
-            <h3 id="adminJobs">...</h3>
-            <p>إجمالي الوظائف 💼</p>
-        </div>
-        <div class="stat-card-admin">
-            <h3 id="adminResumes">...</h3>
-            <p>إجمالي الكفاءات 📄</p>
-        </div>
+        <div class="stat-card-admin"><h3 id="adminOnline">...</h3><p>متواجد الآن 🟢</p></div>
+        <div class="stat-card-admin"><h3 id="adminTotalViews">...</h3><p>إجمالي الزيارات 👥</p></div>
+        <div class="stat-card-admin"><h3 id="adminJobs">...</h3><p>إجمالي الوظائف 💼</p></div>
+        <div class="stat-card-admin"><h3 id="adminResumes">...</h3><p>إجمالي الكفاءات 📄</p></div>
     </div>
 
     <div class="grid-container">
@@ -128,7 +115,7 @@
             <div class="list-box" id="resumesList">جاري التحميل...</div>
         </div>
 
-        <!-- 3. إدارة المستخدمين المسجلين (مع أزرار التصدير) -->
+        <!-- 3. إدارة المستخدمين المسجلين -->
         <div class="card">
             <h2>
                 <span>👥 المستخدمون المسجلون</span>
@@ -178,12 +165,6 @@
             
             <label>المدة المطلوبة للاجتياز وإصدار الشهادة (بالدقائق)</label>
             <input type="number" id="adminDuration" value="5" placeholder="5">
-
-            <label>حالة الظهور والتوفر للطلاب</label>
-            <select id="adminCourseStatus">
-                <option value="true">منشور ومتاح للطلاب 🟢</option>
-                <option value="false">مخفي / غير متاح 🔴</option>
-            </select>
             
             <button id="btnSaveCourse" onclick="saveCourseToDb()" style="background:#0284c7; color:white;">نشر الدورة وتفعيلها للطلاب 🚀</button>
             <button id="btnCancelCourse" onclick="resetCourseForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
@@ -203,7 +184,6 @@
     let cachedJobs = [];
     let cachedResumes = [];
 
-    // دالة جلب الإحصائيات السحابية الواقعية إلى لوحة التحكم
     async function loadAdminRealStats() {
         try {
             let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
@@ -553,7 +533,7 @@
         });
     }
 
-    // ==================== الدورات التدريبية والأكاديمية (التحكم الكامل: نشر، تعديل، إخفاء، حذف) ====================
+    // ==================== الدورات التدريبية (نشر، تعديل، وحذف مباشر بدون تعقيد) ====================
     async function loadAdminCourses() {
         let { data } = await db.from('platform_courses').select('*').order('id', {ascending: false});
         cachedCourses = data || [];
@@ -567,20 +547,14 @@
         }
 
         cachedCourses.forEach(c => {
-            let isActive = c.is_active !== false;
-            let statusBadge = isActive ? '<span style="color:#166534; background:#dcfce7; padding:2px 6px; border-radius:4px; font-size:10px;">مرئي 🟢</span>' : '<span style="color:#991b1b; background:#fee2e2; padding:2px 6px; border-radius:4px; font-size:10px;">مخفي 🔴</span>';
-            let toggleText = isActive ? 'إخفاء 👁️‍🗨️' : 'إظهار 👁️';
-            let toggleColor = isActive ? '#d97706' : '#10b981';
-
             box.innerHTML += `<div class="item-row">
                 <div class="row-header">
                     <strong>🎓 ${c.title}</strong>
-                    ${statusBadge}
+                    <span>⏱️ ${c.duration_minutes || 5} دقائق</span>
                 </div>
-                <div style="color:#64748b; font-size:11px;">المدة: ${c.duration_minutes || 5} دقائق | الوصف: ${c.description || 'بدون وصف'}</div>
+                <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'}</div>
                 <div style="display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap;">
                     <button type="button" class="btn-sm btn-edit" style="width: auto; padding: 6px 12px; margin: 0;" onclick="editCourse(${c.id})">تعديل ✏️</button>
-                    <button type="button" class="btn-sm" style="width: auto; padding: 6px 12px; margin: 0; background: ${toggleColor};" onclick="toggleCourseVisibility(${c.id}, ${isActive})">${toggleText}</button>
                     <a href="watch.html?id=${c.id}" target="_blank" class="btn-sm" style="width: auto; padding: 6px 12px; margin: 0; background:#0284c7; text-decoration:none; display:inline-block;">معاينة 🎬</a>
                     <button type="button" class="btn-sm btn-del" style="width: auto; padding: 6px 12px; margin: 0;" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
                 </div>
@@ -594,7 +568,6 @@
         const description = document.getElementById('adminCourseDesc').value.trim();
         const video_url = document.getElementById('adminVideoUrl').value.trim();
         const duration_minutes = parseInt(document.getElementById('adminDuration').value) || 5;
-        const is_active = document.getElementById('adminCourseStatus').value === 'true';
         const msg = document.getElementById('courseMsg');
 
         if (!title || !video_url) {
@@ -605,7 +578,7 @@
         msg.style.color = 'blue';
         msg.textContent = 'جاري الحفظ في السحابة... ⏳';
 
-        let payload = { title, description, video_url, duration_minutes, is_active };
+        let payload = { title, description, video_url, duration_minutes };
         let res;
 
         if (editId) {
@@ -617,9 +590,10 @@
         if (res.error) {
             msg.style.color = 'red';
             msg.textContent = 'خطأ أثناء الحفظ: ' + res.error.message;
+            alert('خطأ في قاعدة البيانات: ' + res.error.message);
         } else {
             msg.style.color = 'green';
-            msg.textContent = 'تم حفظ الدورة وتحديثها بنجاح تام! ✅';
+            msg.textContent = 'تم حفظ وتحديث الدورة بنجاح تام! ✅';
             resetCourseForm();
             loadAdminCourses();
         }
@@ -631,7 +605,6 @@
         document.getElementById('adminCourseDesc').value = '';
         document.getElementById('adminVideoUrl').value = '';
         document.getElementById('adminDuration').value = '5';
-        document.getElementById('adminCourseStatus').value = 'true';
         document.getElementById('btnSaveCourse').textContent = 'نشر الدورة وتفعيلها للطلاب 🚀';
         document.getElementById('btnCancelCourse').style.display = 'none';
     }
@@ -644,26 +617,19 @@
         document.getElementById('adminCourseDesc').value = c.description || '';
         document.getElementById('adminVideoUrl').value = c.video_url || '';
         document.getElementById('adminDuration').value = c.duration_minutes || 5;
-        document.getElementById('adminCourseStatus').value = (c.is_active !== false) ? 'true' : 'false';
         document.getElementById('btnSaveCourse').textContent = 'تعديل وحفظ الدورة 💾';
         document.getElementById('btnCancelCourse').style.display = 'block';
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
-    async function toggleCourseVisibility(id, currentStatus) {
-        let newStatus = !currentStatus;
-        let { error } = await db.from('platform_courses').update({ is_active: newStatus }).eq('id', id);
-        if (error) {
-            alert('خطأ في التحديث: ' + error.message);
-        } else {
-            loadAdminCourses();
-        }
-    }
-
     async function deleteItem(table, id) {
         if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
             let { error } = await db.from(table).delete().eq('id', id);
-            if (error) { alert('خطأ في الحذف: ' + error.message); return; }
+            if (error) { 
+                alert('خطأ في الحذف: ' + error.message); 
+                return; 
+            }
+            alert('تم الحذف بنجاح! ✅');
             if (table === 'jobs') loadJobs();
             if (table === 'resumes') loadResumes();
             if (table === 'users') loadRegisteredUsers();
