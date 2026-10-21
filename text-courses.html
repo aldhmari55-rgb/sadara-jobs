@@ -25,11 +25,12 @@
         .card p { font-size: 13px; color: #334155; text-align: justify; margin-bottom: 12px; }
         
         .quiz-section { background: #f1f5f9; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px solid #cbd5e1; }
-        .quiz-q { font-weight: bold; font-size: 13px; color: var(--primary); margin-top: 10px; }
-        .quiz-opt { display: block; font-size: 12px; margin: 6px 0; cursor: pointer; color: #1e293b; }
+        .quiz-q { font-weight: bold; font-size: 13px; color: var(--primary); margin-top: 14px; background: #fff; padding: 6px 10px; border-radius: 6px; border-right: 3px solid var(--gold); }
+        .quiz-opt { display: block; font-size: 12px; margin: 6px 0 6px 12px; cursor: pointer; color: #1e293b; }
         .quiz-opt input { margin-left: 6px; }
         
-        .btn-submit { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 12px; width: 100%; }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 18px; width: 100%; transition: 0.3s; }
+        .btn-submit:hover { background: #1e3a8a; }
         
         /* حاوية عرض وتوليد الشهادة */
         .cert-wrapper { display: none; margin-top: 25px; text-align: center; }
@@ -40,7 +41,6 @@
         .action-btn-green { background: var(--green); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
         .action-btn-blue { background: #0284c7; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
 
-        /* إخفاء عناصر الصفحة أثناء الطباعة لطباعة الشهادة فقط */
         @media print {
             body * { visibility: hidden; }
             .cert-wrapper, .cert-wrapper * { visibility: visible; }
@@ -60,25 +60,64 @@
 
         <!-- الدورة التدريبية -->
         <article class="card">
-            <h2>دورة أساسيات التسويق الرقمي وإدارة الحملات الإعلانية</h2>
-            <p>التسويق الرقمي هو عملية استخدام المنصات السحابية والشبكات الاجتماعية للوصول إلى الجمهور المستهدف وزيادة المبيعات. تعتمد الفعالية التسويقية على تحديد الجمهور بدقة، صياغة محتوى جذاب، ومتابعة النتائج وتحليل الأرقام للوصول لأفضل عائد استثماري.</p>
+            <h2>دورة احتراف التسويق الرقمي وإدارة الحملات الإعلانية المدفوعة</h2>
             
-            <p><b>أهم عناصر الحملة الناجحة:</b> تحديد الهدف الفعلي (وعي، مبيعات، رسائل)، واختيار المنصة المناسبة للجمهور المحتوي على اهتمامات متوافقة مع المنتج أو الخدمة.</p>
+            <p><b>1. مقدمة في التسويق الرقمي:</b> يُقصد بالتسويق الرقمي استخدام شبكة الإنترنت والوسائط الرقمية لوصول العلامة التجارية إلى عملائها المحتملين. يتفوق التسويق الرقمي على التقليدي بالقدرة الدقيقة على استهداف الجمهور وتتبع العائد على الاستثمار (ROI).</p>
+            
+            <p><b>2. تحديد الجمهور المستهدف (Target Audience):</b> نجاح أي حملة يعتمد على صياغة "شخصية العميل" (Buyer Persona) بناءً على الموقع الجغرافي، العمر، الاهتمامات، والسلوك الشراعي، مما يقلل النفقات غير المجدية.</p>
 
-            <!-- قسم الاختبار -->
+            <p><b>3. قمع التسويق (Marketing Funnel):</b> يمر العميل بثلاث مراحل رئيسية: الوعي (Awareness)، الاهتمام والتقييم (Consideration)، ثم مرحلة اتخاذ القرار والتحويل (Conversion).</p>
+
+            <p><b>4. التسويق عبر المحتوى (Content Marketing):</b> يعتبر المحتوى هو الركيزة الأساسية للثقة؛ فالإعلانات المباشرة دون تقديم قيمة توعوية تفقد فاعليتها سريعاً. تقديم الحلول للمشكلات يبني ولاءً مستداماً.</p>
+
+            <p><b>5. مؤشرات الأداء الرئيسية (KPIs):</b> تشمل أهم المتركس: نسبة النقر إلى الظهور (CTR)، تكلفة النقر (CPC)، وتكلفة الاستحواذ على العميل (CPA). المتابعة اليومية لهذه الأرقام تسمح بتحسين أداء الحملات.</p>
+
+            <!-- قسم الاختبار: 10 أسئلة -->
             <div class="quiz-section">
-                <h3 style="font-size: 14px; color: var(--gold);">📝 اختبار إتمام الدورة:</h3>
+                <h3 style="font-size: 14px; color: var(--gold);">📝 اختبار إتمام الدورة (10 أسئلة الشاملة):</h3>
                 
-                <div class="quiz-q">1. ما هو الهدف الأساسي من تحديد الجمهور المستهدف في الحملة؟</div>
-                <label class="quiz-opt"><input type="radio" name="q1" value="0"> زيادة تكلفة الإعلان دون فائدة</label>
-                <label class="quiz-opt"><input type="radio" name="q1" value="1"> الوصول للأشخاص الأكثر اهتماماً وتحسين النتائج</label>
+                <div class="quiz-q">1. ما الفارق الجوهري الرئيسي بين التسويق الرقمي والتسويق التقليدي؟</div>
+                <label class="quiz-opt"><input type="radio" name="q1" value="1"> القدرة على استهداف الجمهور بدقة وتتبع النتائج بالأرقام</label>
+                <label class="quiz-opt"><input type="radio" name="q1" value="0"> التسويق الرقمي لا يتطلب أي ميزانية مالية إطلاقاً</label>
 
-                <div class="quiz-q">2. أي مما يلي يُعد من عناصر الحملة الإعلانية الناجحة؟</div>
-                <label class="quiz-opt"><input type="radio" name="q2" value="1"> تحديد الهدف الواضح ومتابعة التحليلات</label>
-                <label class="quiz-opt"><input type="radio" name="q2" value="0"> نشر إعلانات غير موجهة وبشكل عشوائي</label>
+                <div class="quiz-q">2. ماذا تعني صياغة "شخصية العميل" (Buyer Persona)؟</div>
+                <label class="quiz-opt"><input type="radio" name="q2" value="0"> تصميم صورة شخصية لمدير الشركة</label>
+                <label class="quiz-opt"><input type="radio" name="q2" value="1"> تحديد نموذج مفصل للعميل المثالي بناءً على الاهتمامات والسلوك</label>
 
-                <label style="font-size: 11px; font-weight: bold; margin-top: 15px; display: block;">أدخل اسمك الكامل لطباعته على الشهادة عند الاجتياز:</label>
-                <input type="text" id="studentName" placeholder="مثال: عبدالرحمن عبدالله صالح الذماري" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 4px; font-size: 12px;">
+                <div class="quiz-q">3. ما هي أول مرحلة في "قمع التسويق" (Marketing Funnel)؟</div>
+                <label class="quiz-opt"><input type="radio" name="q3" value="1"> مرحلة الوعي بالبراند أو الخدمة (Awareness)</label>
+                <label class="quiz-opt"><input type="radio" name="q3" value="0"> مرحلة إتمام الشراء المباشر (Conversion)</label>
+
+                <div class="quiz-q">4. كيف يساهم "التسويق بالمحتوى" في زيادة المبيعات؟</div>
+                <label class="quiz-opt"><input type="radio" name="q4" value="1"> بتقديم حلول ومعلومات قيمة تتسبب في بناء الثقة والولاء</label>
+                <label class="quiz-opt"><input type="radio" name="q4" value="0"> بنشر إعلانات عشوائية بكثرة دون شرح فائدة المنتج</label>
+
+                <div class="quiz-q">5. ماذا يمثل الاختصار (CTR) في تحليل الحملات الإعلانية؟</div>
+                <label class="quiz-opt"><input type="radio" name="q5" value="1"> نسبة النقر إلى الظهور (Click-Through Rate)</label>
+                <label class="quiz-opt"><input type="radio" name="q5" value="0"> إجمالي عدد المبيعات اليومية فقط</label>
+
+                <div class="quiz-q">6. متى يفضل الانتقال لمرحلة حملات التحويل (Conversion)؟</div>
+                <label class="quiz-opt"><input type="radio" name="q6" value="1"> بعد بناء الوعي واستهداف الجمهور الذي أبدى اهتماماً سابقاً</label>
+                <label class="quiz-opt"><input type="radio" name="q6" value="0"> في اليوم الأول مباشرة دون أي تعريف بالخدمة</label>
+
+                <div class="quiz-q">7. ما فائدة متابعة "تكلفة النقر" (CPC) بانتظام؟</div>
+                <label class="quiz-opt"><input type="radio" name="q7" value="1"> تقليل النفقات وتوجيه الميزانية للإعلانات الأكثر كفاءة</label>
+                <label class="quiz-opt"><input type="radio" name="q7" value="0"> زيادة سعر الإعلان على المنصة بشكل اختياري</label>
+
+                <div class="quiz-q">8. ما هو الهدف الأساسي من إعادة الاستهداف (Retargeting)؟</div>
+                <label class="quiz-opt"><input type="radio" name="q8" value="1"> الوصول للزوار الذين تفاعلوا سابقاً ولم يكملوا الشراء</label>
+                <label class="quiz-opt"><input type="radio" name="q8" value="0"> إيقاف الحملات الإعلانية بشكل كامل</label>
+
+                <div class="quiz-q">9. ما هو العنصر الأهم لجعل نص الإعلان (Ad Copy) جذباً للعميل؟</div>
+                <label class="quiz-opt"><input type="radio" name="q9" value="1"> إبراز الفائدة المباشرة وتضمين دعوة واضحة لاتخاذ إجراء (CTA)</label>
+                <label class="quiz-opt"><input type="radio" name="q9" value="0"> كتابة مقال طويل جداً وتجاهل أزرار التواصل</label>
+
+                <div class="quiz-q">10. أين تكمن أهمية اختبارات أداء الإعلان (A/B Testing)؟</div>
+                <label class="quiz-opt"><input type="radio" name="q10" value="1"> مقارنة تصميمين أو نصين لمعرفة الأفضل تحقيقاً للنتائج</label>
+                <label class="quiz-opt"><input type="radio" name="q10" value="0"> التوقف عن الإعلان عبر شبكات التواصل</label>
+
+                <label style="font-size: 11px; font-weight: bold; margin-top: 18px; display: block;">أدخل اسمك الكامل لطباعته على الشهادة عند النجاح:</label>
+                <input type="text" id="studentName" placeholder="مثال: عبدالرحمن عبدالله صالح الذماري" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 4px; font-size: 12px;">
 
                 <button class="btn-submit" onclick="evaluateQuiz()">تقديم الاختبار وتصحيح الإجابات 🎓</button>
             </div>
@@ -102,23 +141,22 @@
 
         function evaluateQuiz() {
             const name = document.getElementById('studentName').value.trim();
-            const q1 = document.querySelector('input[name="q1"]:checked');
-            const q2 = document.querySelector('input[name="q2"]:checked');
+            if (!name) { alert('يرجى كتابة اسمك الكامل لإصداره على الشهادة.'); return; }
 
-            if (!name) {
-                alert('يرجى كتابة اسمك الكامل لإصداره على الشهادة.');
-                return;
+            let score = 0;
+            for (let i = 1; i <= 10; i++) {
+                let ans = document.querySelector(`input[name="q${i}"]:checked`);
+                if (!ans) {
+                    alert(`يرجى الإجابة على السؤال رقم (${i}) قبل تقديم الاختبار.`);
+                    return;
+                }
+                if (ans.value === "1") score++;
             }
 
-            if (!q1 || !q2) {
-                alert('يرجى الإجابة على جميع الأسئلة قبل تقديم الاختبار.');
-                return;
-            }
-
-            if (q1.value === "1" && q2.value === "1") {
-                generateCertificate(name, "أساسيات التسويق الرقمي وإدارة الحملات الإعلانية");
+            if (score >= 8) { // اشترطنا الإجابة عن 8/10 على الأقل للاجتياز
+                generateCertificate(name, "احتراف التسويق الرقمي وإدارة الحملات الإعلانية");
             } else {
-                alert('إجابة غير صحيحة، يرجى إعادة قراءة الدورة والمحاولة مرة أخرى.');
+                alert(`حصلت على (${score} من 10). يجب الحصول على 8/10 على الأقل لاجتياز الاختبار واستحقاق الشهادة. يرجى إعادة قراءة الدرس والمحاولة مرة أخرى!`);
             }
         }
 
@@ -130,28 +168,23 @@
             img.src = templateImgUrl;
 
             img.onload = function () {
-                // رسم صورة القالب الأساسية
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                // كتابة اسم الطالب في المنتصف
                 ctx.font = "bold 38px 'Tajawal', sans-serif";
-                ctx.fillStyle = "#d4af37"; // لون ذهبي متناسق مع القالب
+                ctx.fillStyle = "#d4af37";
                 ctx.textAlign = "center";
                 ctx.fillText(studentName, canvas.width / 2, 420);
 
-                // كتابة اسم الدورة
-                ctx.font = "bold 24px 'Tajawal', sans-serif";
+                ctx.font = "bold 22px 'Tajawal', sans-serif";
                 ctx.fillStyle = "#0f2347";
                 ctx.fillText("قد اجتاز بنجاح اختبار دورة: " + courseTitle, canvas.width / 2, 500);
 
-                // كتابة التاريخ والجهة في الأسفل
                 const todayDate = new Date().toLocaleDateString('ar-EG');
                 ctx.font = "18px 'Tajawal', sans-serif";
                 ctx.fillStyle = "#475569";
                 ctx.textAlign = "right";
                 ctx.fillText("تاريخ الإصدار: " + todayDate, canvas.width - 120, 680);
 
-                // إظهار حاوية الشهادة والنزول إليها بمرونة
                 document.getElementById('certWrapper').style.display = 'block';
                 window.scrollTo({ top: document.getElementById('certWrapper').offsetTop - 20, behavior: 'smooth' });
             };
