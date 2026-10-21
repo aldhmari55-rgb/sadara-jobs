@@ -183,7 +183,21 @@
             <div class="list-box" id="certResultsList">جاري التحميل...</div>
         </div>
 
-        <!-- 9. نظام رفع وإدارة الدورات والدروس المرتبة -->
+        <!-- 9. إدارة الدورات النصية الجديدة -->
+        <div class="card">
+            <h2><span>📚 إدارة الدورات النصية</span><span class="badge" id="textCoursesCount">0</span></h2>
+            <input type="hidden" id="editTextCourseId">
+            <label>عنوان الدورة النصية</label>
+            <input type="text" id="tCourseTitle" placeholder="مثال: دورة احتراف التسويق الرقمي">
+            <label>محتوى الدورة (الفقرات والدروس النصية)</label>
+            <textarea id="tCourseContent" rows="4" placeholder="اكتب أو الصق محتوى الدورة النصية هنا..."></textarea>
+            <button id="btnSaveTCourse" onclick="saveTextCourse()" style="background:#0284c7; color:white;">نشر الدورة النصية 🚀</button>
+            <button id="btnCancelTCourse" onclick="resetTCourseForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء</button>
+            <div id="tCourseMsg" class="status-msg"></div>
+            <div class="list-box" id="textCoursesList">جاري التحميل...</div>
+        </div>
+
+        <!-- 10. نظام رفع وإدارة الدورات والدروس المرتبة -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>
                 <span id="formTitleText">🎓 رفع وإدارة الدورات والدروس المرتبة</span>
@@ -249,6 +263,7 @@
     let cachedReviews = [];
     let cachedArticles = [];
     let cachedCertResults = [];
+    let cachedTextCourses = [];
 
     async function loadAdminRealStats() {
         try {
@@ -277,6 +292,73 @@
             const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
             return publicUrlData.publicUrl || '';
         } catch(e) { alert('فشل في عملية الرفع.'); return null; }
+    }
+
+    // إدارة الدورات النصية
+    async function saveTextCourse() {
+        const editId = document.getElementById('editTextCourseId').value;
+        const title = document.getElementById('tCourseTitle').value.trim();
+        const content = document.getElementById('tCourseContent').value.trim();
+        const msg = document.getElementById('tCourseMsg');
+
+        if (!title || !content) { alert('يرجى إدخال عنوان الدورة النصية ومحتواها'); return; }
+        msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ بالسحابة... ⏳';
+
+        let payload = { title, content };
+        let res = editId ? await db.from('text_courses').update(payload).eq('id', editId) : await db.from('text_courses').insert([payload]);
+
+        if (res.error) {
+            msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
+        } else {
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ الدورة النصية بنجاح! ✅';
+            resetTCourseForm(); loadTextCourses();
+        }
+    }
+
+    function resetTCourseForm() {
+        document.getElementById('editTextCourseId').value = '';
+        document.getElementById('tCourseTitle').value = '';
+        document.getElementById('tCourseContent').value = '';
+        document.getElementById('btnSaveTCourse').textContent = 'نشر الدورة النصية 🚀';
+        document.getElementById('btnCancelTCourse').style.display = 'none';
+    }
+
+    async function loadTextCourses() {
+        let { data } = await db.from('text_courses').select('*').order('id', {ascending: false});
+        cachedTextCourses = data || [];
+        let box = document.getElementById('textCoursesList');
+        document.getElementById('textCoursesCount').textContent = cachedTextCourses.length;
+        box.innerHTML = '';
+
+        if (!cachedTextCourses.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات نصية مضافة.</p>';
+            return;
+        }
+
+        cachedTextCourses.forEach(tc => {
+            box.innerHTML += `
+                <div class="item-row">
+                    <div class="row-header">
+                        <strong>📚 ${tc.title}</strong>
+                    </div>
+                    <div style="color:#64748b; font-size:11px; max-height:40px; overflow:hidden;">${tc.content}</div>
+                    <div class="action-btns">
+                        <button class="btn-sm btn-edit" onclick="editTextCourse(${tc.id})">تعديل ✏️</button>
+                        <button class="btn-sm btn-del" onclick="deleteItem('text_courses', ${tc.id})">حذف 🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function editTextCourse(id) {
+        let tc = cachedTextCourses.find(item => item.id === id);
+        if (!tc) return;
+        document.getElementById('editTextCourseId').value = tc.id;
+        document.getElementById('tCourseTitle').value = tc.title || '';
+        document.getElementById('tCourseContent').value = tc.content || '';
+        document.getElementById('btnSaveTCourse').textContent = 'تعديل وحفظ 💾';
+        document.getElementById('btnCancelTCourse').style.display = 'block';
     }
 
     // إدارة المقالات والمدونة
@@ -799,6 +881,7 @@
             if (table === 'articles') loadArticles();
             if (table === 'platform_courses') loadAdminCourses();
             if (table === 'cert_results') loadCertResults();
+            if (table === 'text_courses') loadTextCourses();
         }
     }
 
@@ -813,6 +896,7 @@
         loadAdminReviews();
         loadAdminCourses();
         loadCertResults();
+        loadTextCourses();
     });
 </script>
 </body>
