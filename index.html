@@ -109,6 +109,7 @@
             </div>
             <a href="https://wa.me/967780568507?text=مرحبا،%20اريد%20حجز%20مساحة%20إعلانية%20مدفوعة%20في%20بنرات%20المنصة" target="_blank" class="ad-space-btn">احجز إعلانك الآن 🌟</a>
         </div>
+        
         <div class="action-banner">
             <div>
                 <h3 style="font-size: 13px; font-weight: 800;">تريد نشر وظيفة أو إضافة ملفك؟</h3>
@@ -138,7 +139,6 @@
         </div>
     </div>
 
-    <!-- نافذة الحسابات الذكية -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-card">
             <h3 style="color:var(--primary); font-size:15px; margin-bottom:5px;" id="modalTitle">تسجيل حساب جديد 🚀</h3>
@@ -239,7 +239,7 @@
                             <h3 style="font-size: 15px; color:#0f2347;">${j.title}</h3>
                             <span style="background:#dcfce7; color:#166534; padding:2px 6px; border-radius:10px; font-size:10px; font-weight:bold;">${j.status}</span>
                         </div>
-                        <p style="font-size: 12px; color:#64748b; margin-top:3px;">${j.company \vert{}\vert{} 'جهة عمل'} ${verifiedBadge}</p>
+                        <p style="font-size: 12px; color:#64748b; margin-top:3px;">${j.company || 'جهة عمل'} ${verifiedBadge}</p>
                         <a href="https://wa.me/${j.phone.replace(/[^0-9]/g, '')}" target="_blank" class="apply-btn">تقديم عبر الواتساب 🟢</a>
 
                         <div class="reviews-box">
