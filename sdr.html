@@ -294,7 +294,7 @@
         } catch(e) { alert('فشل في عملية الرفع.'); return null; }
     }
 
-    // إدارة الدورات النصية
+    // إدارة الدورات النصية (محدثة وتعمل بشكل كامل)
     async function saveTextCourse() {
         const editId = document.getElementById('editTextCourseId').value;
         const title = document.getElementById('tCourseTitle').value.trim();
@@ -305,13 +305,20 @@
         msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ بالسحابة... ⏳';
 
         let payload = { title, content };
-        let res = editId ? await db.from('text_courses').update(payload).eq('id', editId) : await db.from('text_courses').insert([payload]);
+        let res;
+
+        if (editId) {
+            res = await db.from('text_courses').update(payload).eq('id', editId);
+        } else {
+            res = await db.from('text_courses').insert([payload]);
+        }
 
         if (res.error) {
             msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
         } else {
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ الدورة النصية بنجاح! ✅';
-            resetTCourseForm(); loadTextCourses();
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ ودراسة النشر بنجاح! ✅';
+            resetTCourseForm(); 
+            loadTextCourses();
         }
     }
 
@@ -324,7 +331,9 @@
     }
 
     async function loadTextCourses() {
-        let { data } = await db.from('text_courses').select('*').order('id', {ascending: false});
+        let { data, error } = await db.from('text_courses').select('*').order('id', {ascending: false});
+        if (error) { console.error('خطأ في جلب الدورات النصية:', error); return; }
+        
         cachedTextCourses = data || [];
         let box = document.getElementById('textCoursesList');
         document.getElementById('textCoursesCount').textContent = cachedTextCourses.length;
@@ -352,13 +361,14 @@
     }
 
     function editTextCourse(id) {
-        let tc = cachedTextCourses.find(item => item.id === id);
+        let tc = cachedTextCourses.find(item => item.id == id);
         if (!tc) return;
         document.getElementById('editTextCourseId').value = tc.id;
         document.getElementById('tCourseTitle').value = tc.title || '';
         document.getElementById('tCourseContent').value = tc.content || '';
         document.getElementById('btnSaveTCourse').textContent = 'تعديل وحفظ 💾';
         document.getElementById('btnCancelTCourse').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // إدارة المقالات والمدونة
