@@ -18,7 +18,8 @@
         .hero-section { background: linear-gradient(135deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 25px 16px; text-align: center; margin-bottom: 20px; }
         .container { max-width: 800px; margin: 0 auto; padding: 0 16px; }
 
-        .resume-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 14px; border: 1px solid #e2e8f0; box-shadow: 0 3px 10px rgba(0,0,0,0.02); display: flex; gap: 14px; align-items: flex-start; }
+        .resume-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 14px; border: 1px solid #e2e8f0; box-shadow: 0 3px 10px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 14px; }
+        .resume-header-flex { display: flex; gap: 14px; align-items: flex-start; }
         .resume-img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: #f1f5f9; flex-shrink: 0; }
         .resume-info { flex: 1; }
         .resume-name { font-size: 15px; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 4px; }
@@ -28,6 +29,12 @@
         .whatsapp-contact-btn { background: var(--green); color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; }
 
         .loading-box { text-align: center; padding: 30px; color: #64748b; font-size: 13px; font-weight: bold; }
+
+        /* تنسيقات نظام التقييمات للكفاءات */
+        .resume-reviews-box { background: #f8fafc; border-radius: 10px; padding: 10px; border: 1px solid #cbd5e1; font-size: 12px; width: 100%; margin-top: 4px; }
+        .star-select-resume { font-size: 16px; color: #cbd5e1; cursor: pointer; display: inline-block; margin: 2px 0; }
+        .star-select-resume.active { color: var(--gold); }
+        .single-resume-review { background: white; padding: 6px 10px; border-radius: 6px; margin-top: 6px; border-right: 3px solid var(--gold); border-bottom: 1px solid #e2e8f0; }
     </style>
 </head>
 <body>
@@ -52,6 +59,8 @@
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let selectedResumeStarsMap = {};
 
         // شارة التحقق الزرقاء
         function getBlueBadgeHTML() {
@@ -80,26 +89,110 @@
                     let displayPhone = r.phone ? r.phone.replace(/[^0-9]/g, '') : '967780568507';
                     let displayImg = (r.image && r.image.trim() !== '') ? r.image : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
                     let verifiedBadge = r.is_verified ? getBlueBadgeHTML() : '';
+                    selectedResumeStarsMap[r.id] = 5;
 
                     box.innerHTML += `
                         <div class="resume-card">
-                            <img src="${displayImg}" class="resume-img" alt="صورة الكفاءة">
-                            <div class="resume-info">
-                                <div class="resume-name">
-                                    ${displayName} ${verifiedBadge}
+                            <div class="resume-header-flex">
+                                <img src="${displayImg}" class="resume-img" alt="صورة الكفاءة">
+                                <div class="resume-info">
+                                    <div class="resume-name">
+                                        ${displayName} ${verifiedBadge}
+                                    </div>
+                                    <div class="resume-title">${displayTitle}</div>
+                                    <div class="resume-exp">${displayExp}</div>
+                                    <a href="https://wa.me/${displayPhone}?text=مرحباً،%20تواصلت%20معك%20عبر%20منصة%20صدارة" target="_blank" class="whatsapp-contact-btn">
+                                        <i class="fa-brands fa-whatsapp"></i> تواصل عبر الواتساب
+                                    </a>
                                 </div>
-                                <div class="resume-title">${displayTitle}</div>
-                                <div class="resume-exp">${displayExp}</div>
-                                <a href="https://wa.me/${displayPhone}?text=مرحباً،%20تواصلت%20معك%20عبر%20منصة%20صدارة" target="_blank" class="whatsapp-contact-btn">
-                                    <i class="fa-brands fa-whatsapp"></i> تواصل عبر الواتساب
-                                </a>
+                            </div>
+
+                            <!-- قسم إضافة وتقييمات الكفاءات -->
+                            <div class="resume-reviews-box">
+                                <h4 style="font-size:12px; color:var(--primary); font-weight:bold;">⭐ تقييمات وتوصيات أصحاب الأعمال:</h4>
+                                
+                                <div style="margin: 4px 0;">
+                                    <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 1)">★</span>
+                                    <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 2)">★</span>
+                                    <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 3)">★</span>
+                                    <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 4)">★</span>
+                                    <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 5)">★</span>
+                                </div>
+
+                                <div style="display:flex; gap:5px; margin-top:4px;">
+                                    <input type="text" id="resumeReviewText_${r.id}" placeholder="اكتب توصية أو رأيك في التعامل مع هذا الشخص..." style="flex:1; padding:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11px; outline:none;">
+                                    <button onclick="submitResumeReview(${r.id})" style="background:var(--primary); color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">إرسال</button>
+                                </div>
+
+                                <div id="resumeReviewsList_${r.id}" style="margin-top:8px;">جاري تحميل التقييمات...</div>
                             </div>
                         </div>
                     `;
+
+                    loadResumeReviews(r.id);
                 });
             } catch (err) {
                 box.innerHTML = '<div class="loading-box" style="color:red;">حدث خطأ أثناء جلب البيانات.</div>';
             }
+        }
+
+        // --- دوال إدارة تقييمات الكفاءات ---
+        function setResumeStar(resumeId, stars) {
+            selectedResumeStarsMap[resumeId] = stars;
+        }
+
+        async function submitResumeReview(resumeId) {
+            const commentInput = document.getElementById(`resumeReviewText_${resumeId}`);
+            const comment = commentInput.value.trim();
+            const userName = localStorage.getItem('sadara_logged_name') || 'جهة عمل / زائر';
+
+            if (!comment) { alert('يرجى كتابة التوصية أو التعليق قبل الإرسال'); return; }
+
+            let { error } = await db.from('reviews').insert([{
+                item_type: 'resume',
+                item_id: resumeId,
+                user_name: userName,
+                rating: selectedResumeStarsMap[resumeId] || 5,
+                comment: comment
+            }]);
+
+            if (error) {
+                alert('خطأ أثناء إرسال التقييم: ' + error.message);
+            } else {
+                alert('شكراً لك! تم نشر التوصية بنجاح ✅');
+                commentInput.value = '';
+                loadResumeReviews(resumeId);
+            }
+        }
+
+        async function loadResumeReviews(resumeId) {
+            let { data: reviews } = await db.from('reviews')
+                .select('*')
+                .eq('item_type', 'resume')
+                .eq('item_id', resumeId)
+                .order('created_at', { ascending: false });
+
+            let listBox = document.getElementById(`resumeReviewsList_${resumeId}`);
+            if (!listBox) return;
+            listBox.innerHTML = '';
+
+            if (!reviews || !reviews.length) {
+                listBox.innerHTML = '<p style="font-size:10px; color:#94a3b8;">لا توجد توصيات حتى الآن. كن أول من يضيف تقييماً لهذا الخبير!</p>';
+                return;
+            }
+
+            reviews.forEach(r => {
+                let starsHTML = '★'.repeat(r.rating || 5);
+                listBox.innerHTML += `
+                    <div class="single-resume-review">
+                        <div style="display:flex; justify-content:space-between; font-weight:bold; color:#0f2347; font-size:11px;">
+                            <span>👤 ${r.user_name}</span>
+                            <span style="color:var(--gold);">${starsHTML}</span>
+                        </div>
+                        <p style="color:#475569; font-size:10px; margin-top:2px;">${r.comment}</p>
+                    </div>
+                `;
+            });
         }
 
         document.addEventListener('DOMContentLoaded', loadPublicResumes);
