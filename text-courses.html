@@ -24,15 +24,20 @@
         .card h2 { font-size: 17px; color: var(--primary); border-right: 4px solid var(--gold); padding-right: 10px; margin-bottom: 12px; }
         .card p { font-size: 13px; color: #334155; text-align: justify; margin-bottom: 12px; }
         
-        .quiz-section { background: #f1f5f9; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px solid #cbd5e1; }
+        /* زر تأكيد القراءة */
+        .read-confirm-box { background: #eff6ff; border: 2px dashed #38bdf8; padding: 15px; border-radius: 10px; text-align: center; margin-top: 25px; }
+        .btn-ready { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.3s; }
+        .btn-ready:disabled { background: #94a3b8; cursor: not-allowed; opacity: 0.7; }
+        
+        /* قسم الاختبار (مخفي حتى يؤكد القراءة) */
+        .quiz-section { display: none; background: #f1f5f9; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px solid #cbd5e1; }
         .quiz-q { font-weight: bold; font-size: 13px; color: var(--primary); margin-top: 14px; background: #fff; padding: 6px 10px; border-radius: 6px; border-right: 3px solid var(--gold); }
         .quiz-opt { display: block; font-size: 12px; margin: 6px 0 6px 12px; cursor: pointer; color: #1e293b; }
         .quiz-opt input { margin-left: 6px; }
         
-        .btn-submit { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 18px; width: 100%; transition: 0.3s; }
-        .btn-submit:hover { background: #1e3a8a; }
+        .btn-submit { background: var(--green); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 18px; width: 100%; transition: 0.3s; }
         
-        /* حاوية عرض وتوليد الشهادة */
+        /* حاوية الشهادة */
         .cert-wrapper { display: none; margin-top: 25px; text-align: center; }
         .canvas-container { max-width: 100%; overflow-x: auto; background: #fff; padding: 10px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         canvas { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; }
@@ -72,9 +77,21 @@
 
             <p><b>5. مؤشرات الأداء الرئيسية (KPIs):</b> تشمل أهم المتركس: نسبة النقر إلى الظهور (CTR)، تكلفة النقر (CPC)، وتكلفة الاستحواذ على العميل (CPA). المتابعة اليومية لهذه الأرقام تسمح بتحسين أداء الحملات.</p>
 
-            <!-- قسم الاختبار: 10 أسئلة -->
-            <div class="quiz-section">
-                <h3 style="font-size: 14px; color: var(--gold);">📝 اختبار إتمام الدورة (10 أسئلة الشاملة):</h3>
+            <p><b>6. إعادة الاستهداف (Retargeting):</b> استراتيجية تتيح لك عرض إعلانات مخصصة للأشخاص الذين زاروا موقعك أو تفاعلوا مع صفحاتك سابقاً ولم يكملوا عملية الشراء أو التواصل، مما يرفع معدل التحويل بشكل كبير.</p>
+
+            <p><b>7. اختبارات أداء الإعلان (A/B Testing):</b> مقارنة تصميمين أو نصين مختلفين لنفس الإعلان لمعرفة أيهما يحقق أفضل نتائج وتفاعل من الجمهور للتركيز عليه واستثمار الميزانية فيه.</p>
+
+            <!-- زر تأكيد القراءة والوقت المستغرق -->
+            <div class="read-confirm-box" id="readBox">
+                <p style="font-size: 12px; color: var(--primary); font-weight: bold; margin-bottom: 8px;" id="timerMsg">⏳ يرجى قراءة محتوى الدورة بالكامل (متبقي قليل من الوقت...)</p>
+                <button class="btn-ready" id="readyBtn" disabled onclick="unlockQuiz()">
+                    <i class="fa-solid fa-lock"></i> لقد قرأت المحتوى بالكامل وفهمته، ابدأ الاختبار 🚀
+                </button>
+            </div>
+
+            <!-- قسم الاختبار: 10 أسئلة (مخفي افتراضياً) -->
+            <div class="quiz-section" id="quizSection">
+                <h3 style="font-size: 14px; color: var(--gold); margin-bottom: 10px;">📝 اختبار إتمام الدورة (10 أسئلة شاملة):</h3>
                 
                 <div class="quiz-q">1. ما الفارق الجوهري الرئيسي بين التسويق الرقمي والتسويق التقليدي؟</div>
                 <label class="quiz-opt"><input type="radio" name="q1" value="1"> القدرة على استهداف الجمهور بدقة وتتبع النتائج بالأرقام</label>
@@ -137,6 +154,30 @@
     </div>
 
     <script>
+        // مؤقت زمني لضمان قراءة المحتوى (مثال: 60 ثانية أو دقيقة لتجربة مرنة، يمكنك جعلها 120 ثانية لدقيقتين)
+        let timeLeft = 60; 
+        const timerInterval = setInterval(() => {
+            timeLeft--;
+            const msgEl = document.getElementById('timerMsg');
+            const btnEl = document.getElementById('readyBtn');
+
+            if (timeLeft > 0) {
+                msgEl.innerHTML = `⏳ يرجى قراءة محتوى الدورة بعناية (يفتح زر الاختبار خلال ${timeLeft} ثانية)...`;
+            } else {
+                clearInterval(timerInterval);
+                msgEl.innerHTML = `✅ شكراً لقراءتك المستند بالكامل! يمكنك الآن فتح الاختبار.`;
+                btnEl.disabled = false;
+                btnEl.innerHTML = `<i class="fa-solid fa-lock-open"></i> لقد قرأت المحتوى بالكامل وفهمته، ابدأ الاختبار 🚀`;
+                btnEl.style.background = 'var(--green)';
+            }
+        }, 1000);
+
+        function unlockQuiz() {
+            document.getElementById('readBox').style.display = 'none';
+            document.getElementById('quizSection').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('quizSection').offsetTop - 20, behavior: 'smooth' });
+        }
+
         const templateImgUrl = "https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.png";
 
         function evaluateQuiz() {
@@ -153,10 +194,10 @@
                 if (ans.value === "1") score++;
             }
 
-            if (score >= 8) { // اشترطنا الإجابة عن 8/10 على الأقل للاجتياز
+            if (score >= 8) {
                 generateCertificate(name, "احتراف التسويق الرقمي وإدارة الحملات الإعلانية");
             } else {
-                alert(`حصلت على (${score} من 10). يجب الحصول على 8/10 على الأقل لاجتياز الاختبار واستحقاق الشهادة. يرجى إعادة قراءة الدرس والمحاولة مرة أخرى!`);
+                alert(`حصلت على (${score} من 10). يشترط الحصول على 8/10 على الأقل لاجتياز الاختبار واستحقاق الشهادة. راجع المستند وحاول مرة أخرى!`);
             }
         }
 
