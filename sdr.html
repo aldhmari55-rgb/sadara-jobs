@@ -51,7 +51,7 @@
 
     <div class="header">
         <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المدونة والمقالات، المستخدمين والدورات</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المدونة، المستخدمين، والدورات وسجلات الشهادات</p>
     </div>
 
     <div class="admin-stats-grid">
@@ -165,13 +165,25 @@
             <div class="list-box" id="partnersList">جاري التحميل...</div>
         </div>
 
-        <!-- 7. إدارة تقييمات المستخدمين المضافة -->
+        <!-- 7. إدارة تقييمات المستخدمين -->
         <div class="card">
             <h2><span>💬 تقييمات وتعليقات الزوار</span><span class="badge" id="reviewsCount">0</span></h2>
             <div class="list-box" id="adminReviewsList">جاري التحميل...</div>
         </div>
 
-        <!-- 8. نظام رفع وإدارة الدورات والدروس المرتبة -->
+        <!-- 8. سجل اختبارات والشهادات النصية المصدرة للطلاب -->
+        <div class="card">
+            <h2>
+                <span>📜 سجل الشهادات النصية</span>
+                <div style="display:flex; gap:5px; align-items:center;">
+                    <button onclick="exportCertToExcel()" class="btn-sm" style="background:#10b981; padding:5px 8px; font-size:10px; margin:0;">Excel 📊</button>
+                    <span class="badge" id="certCount">0</span>
+                </div>
+            </h2>
+            <div class="list-box" id="certResultsList">جاري التحميل...</div>
+        </div>
+
+        <!-- 9. نظام رفع وإدارة الدورات والدروس المرتبة -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>
                 <span id="formTitleText">🎓 رفع وإدارة الدورات والدروس المرتبة</span>
@@ -236,6 +248,7 @@
     let cachedCourses = [];
     let cachedReviews = [];
     let cachedArticles = [];
+    let cachedCertResults = [];
 
     async function loadAdminRealStats() {
         try {
@@ -515,6 +528,51 @@
         });
     }
 
+    // سجل الشهادات النصية
+    async function loadCertResults() {
+        let { data } = await db.from('cert_results').select('*').order('id', { ascending: false });
+        cachedCertResults = data || [];
+        let box = document.getElementById('certResultsList');
+        document.getElementById('certCount').textContent = cachedCertResults.length;
+        box.innerHTML = '';
+
+        if (!cachedCertResults.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد شهادات مصدّرة حتى الآن.</p>';
+            return;
+        }
+
+        cachedCertResults.forEach(c => {
+            let dateFormatted = c.created_at ? new Date(c.created_at).toLocaleDateString('ar-EG') : '-';
+            box.innerHTML += `
+                <div class="item-row">
+                    <div class="row-header">
+                        <strong>🎓 الطالب: ${c.student_name}</strong>
+                        <span style="color:green; font-weight:bold;">الدرجة: ${c.score} / 10</span>
+                    </div>
+                    <div style="color:#64748b; font-size:11px;">الدورة: ${c.course_name} | رقم الشهادة: #SDR-${c.id}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+                        <span style="font-size:10px; color:#475569;">تاريخ الإصدار: ${dateFormatted}</span>
+                        <button class="btn-sm btn-del" onclick="deleteItem('cert_results', ${c.id})">حذف السجل 🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function exportCertToExcel() {
+        if (!cachedCertResults.length) { alert('لا توجد سجلات شهادات للتصدير.'); return; }
+        let dataToExport = cachedCertResults.map((c, i) => ({
+            "م": i + 1,
+            "رقم الشهادة": `#SDR-${c.id}`,
+            "اسم الطالب": c.student_name,
+            "الدورة التدريبية": c.course_name,
+            "الدرجة": `${c.score} / 10`,
+            "تاريخ الإصدار": c.created_at ? new Date(c.created_at).toLocaleDateString('ar-EG') : '-'
+        }));
+        let ws = XLSX.utils.json_to_sheet(dataToExport); let wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "سجل الشهادات"); XLSX.writeFile(wb, "Sadara_Certificates.xlsx");
+    }
+
     function exportToExcel() {
         if (!cachedUsers.length) { alert('لا توجد بيانات.'); return; }
         let dataToExport = cachedUsers.map((u, i) => ({ "م": i + 1, "اسم المستخدم": u.full_name || 'مستخدم', "الهاتف": u.phone || '', "التاريخ": u.created_at ? new Date(u.created_at).toLocaleDateString('ar-SA') : '-' }));
@@ -740,6 +798,7 @@
             if (table === 'reviews') loadAdminReviews();
             if (table === 'articles') loadArticles();
             if (table === 'platform_courses') loadAdminCourses();
+            if (table === 'cert_results') loadCertResults();
         }
     }
 
@@ -753,6 +812,7 @@
         loadPartners(); 
         loadAdminReviews();
         loadAdminCourses();
+        loadCertResults();
     });
 </script>
 </body>
