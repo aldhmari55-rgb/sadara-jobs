@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -7,7 +8,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الدورات النصية والاختبارات | منصة صدارة</title>
+    <title>الدورات النصية والاختبارات المهنية | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -23,7 +24,7 @@
         .container { max-width: 850px; margin: 25px auto; padding: 0 16px; }
         .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .card h2 { font-size: 17px; color: var(--primary); border-right: 4px solid var(--gold); padding-right: 10px; margin-bottom: 12px; }
-        .card p { font-size: 13px; color: #334155; text-align: justify; margin-bottom: 12px; }
+        .card p { font-size: 13px; color: #334155; text-align: justify; margin-bottom: 12px; line-height: 2; white-space: pre-line; }
         
         .read-confirm-box { background: #eff6ff; border: 2px dashed #38bdf8; padding: 15px; border-radius: 10px; text-align: center; margin-top: 25px; }
         .btn-ready { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.3s; }
@@ -44,6 +45,9 @@
         .action-btn-green { background: var(--green); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
         .action-btn-blue { background: #0284c7; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
 
+        .empty-box { text-align: center; padding: 40px; background: white; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .empty-box i { font-size: 40px; color: var(--gold); margin-bottom: 10px; }
+
         @media print {
             body * { visibility: hidden; }
             .cert-wrapper, .cert-wrapper * { visibility: visible; }
@@ -59,92 +63,11 @@
         <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> الرئيسية</a>
     </header>
 
-    <div class="container">
-
-        <article class="card">
-            <h2>دورة احتراف التسويق الرقمي وإدارة الحملات الإعلانية المدفوعة</h2>
-            
-            <p><b>1. مقدمة في التسويق الرقمي:</b> يُقصد بالتسويق الرقمي استخدام شبكة الإنترنت والوسائط الرقمية لوصول العلامة التجارية إلى عملائها المحتملين. يتفوق التسويق الرقمي على التقليدي بالقدرة الدقيقة على استهداف الجمهور وتتبع العائد على الاستثمار (ROI).</p>
-            
-            <p><b>2. تحديد الجمهور المستهدف (Target Audience):</b> نجاح أي حملة يعتمد على صياغة "شخصية العميل" (Buyer Persona) بناءً على الموقع الجغرافي، العمر، الاهتمامات، والسلوك الشراعي، مما يقلل النفقات غير المجدية.</p>
-
-            <p><b>3. قمع التسويق (Marketing Funnel):</b> يمر العميل بثلاث مراحل رئيسية: الوعي (Awareness)، الاهتمام والتقييم (Consideration)، ثم مرحلة اتخاذ القرار والتحويل (Conversion).</p>
-
-            <p><b>4. التسويق عبر المحتوى (Content Marketing):</b> يعتبر المحتوى هو الركيزة الأساسية للثقة؛ فالإعلانات المباشرة دون تقديم قيمة توعوية تفقد فاعليتها سريعاً. تقديم الحلول للمشكلات يبني ولاءً مستداماً.</p>
-
-            <p><b>5. مؤشرات الأداء الرئيسية (KPIs):</b> تشمل أهم المتركس: نسبة النقر إلى الظهور (CTR)، تكلفة النقر (CPC)، وتكلفة الاستحواذ على العميل (CPA). المتابعة اليومية لهذه الأرقام تسمح بتحسين أداء الحملات.</p>
-
-            <p><b>6. إعادة الاستهداف (Retargeting):</b> استراتيجية تتيح لك عرض إعلانات مخصصة للأشخاص الذين زاروا موقعك أو تفاعلوا مع صفحاتك سابقاً ولم يكملوا عملية الشراء أو التواصل، مما يرفع معدل التحويل بشكل كبير.</p>
-
-            <p><b>7. اختبارات أداء الإعلان (A/B Testing):</b> مقارنة تصميمين أو نصين مختلفين لنفس الإعلان لمعرفة أيهما يحقق أفضل نتائج وتفاعل من الجمهور للتركيز عليه واستثمار الميزانية فيه.</p>
-
-            <div class="read-confirm-box" id="readBox">
-                <p style="font-size: 12px; color: var(--primary); font-weight: bold; margin-bottom: 8px;" id="timerMsg">⏳ يرجى قراءة محتوى الدورة بعناية (متبقي دقيقتين للقراءة...)</p>
-                <button class="btn-ready" id="readyBtn" disabled onclick="unlockQuiz()">
-                    <i class="fa-solid fa-lock"></i> لقد قرأت المحتوى بالكامل وفهمته، ابدأ الاختبار 🚀
-                </button>
-            </div>
-
-            <div class="quiz-section" id="quizSection">
-                <h3 style="font-size: 14px; color: var(--gold); margin-bottom: 10px;">📝 اختبار إتمام الدورة (10 أسئلة شاملة - يشترط 6 درجات فأكثر للنجاح):</h3>
-                
-                <div class="quiz-q">1. ما الفارق الجوهري الرئيسي بين التسويق الرقمي والتسويق التقليدي؟</div>
-                <label class="quiz-opt"><input type="radio" name="q1" value="1"> القدرة على استهداف الجمهور بدقة وتتبع النتائج بالأرقام</label>
-                <label class="quiz-opt"><input type="radio" name="q1" value="0"> التسويق الرقمي لا يتطلب أي ميزانية مالية إطلاقاً</label>
-
-                <div class="quiz-q">2. ماذا تعني صياغة "شخصية العميل" (Buyer Persona)؟</div>
-                <label class="quiz-opt"><input type="radio" name="q2" value="0"> تصميم صورة شخصية لمدير الشركة</label>
-                <label class="quiz-opt"><input type="radio" name="q2" value="1"> تحديد نموذج مفصل للعميل المثالي بناءً على الاهتمامات والسلوك</label>
-
-                <div class="quiz-q">3. ما هي أول مرحلة في "قمع التسويق" (Marketing Funnel)؟</div>
-                <label class="quiz-opt"><input type="radio" name="q3" value="1"> مرحلة الوعي بالبراند أو الخدمة (Awareness)</label>
-                <label class="quiz-opt"><input type="radio" name="q3" value="0"> مرحلة إتمام الشراء المباشر (Conversion)</label>
-
-                <div class="quiz-q">4. كيف يساهم "التسويق بالمحتوى" في زيادة المبيعات؟</div>
-                <label class="quiz-opt"><input type="radio" name="q4" value="1"> بتقديم حلول ومعلومات قيمة تتسبب في بناء الثقة والولاء</label>
-                <label class="quiz-opt"><input type="radio" name="q4" value="0"> بنشر إعلانات عشوائية بكثرة دون شرح فائدة المنتج</label>
-
-                <div class="quiz-q">5. ماذا يمثل الاختصار (CTR) في تحليل الحملات الإعلانية؟</div>
-                <label class="quiz-opt"><input type="radio" name="q5" value="1"> نسبة النقر إلى الظهور (Click-Through Rate)</label>
-                <label class="quiz-opt"><input type="radio" name="q5" value="0"> إجمالي عدد المبيعات اليومية فقط</label>
-
-                <div class="quiz-q">6. متى يفضل الانتقال لمرحلة حملات التحويل (Conversion)؟</div>
-                <label class="quiz-opt"><input type="radio" name="q6" value="1"> بعد بناء الوعي واستهداف الجمهور الذي أبدى اهتماماً سابقاً</label>
-                <label class="quiz-opt"><input type="radio" name="q6" value="0"> في اليوم الأول مباشرة دون أي تعريف بالخدمة</label>
-
-                <div class="quiz-q">7. ما فائدة متابعة "تكلفة النقر" (CPC) بانتظام؟</div>
-                <label class="quiz-opt"><input type="radio" name="q7" value="1"> تقليل النفقات وتوجيه الميزانية للإعلانات الأكثر كفاءة</label>
-                <label class="quiz-opt"><input type="radio" name="q7" value="0"> زيادة سعر الإعلان على المنصة بشكل اختياري</label>
-
-                <div class="quiz-q">8. ما هو الهدف الأساسي من إعادة الاستهداف (Retargeting)؟</div>
-                <label class="quiz-opt"><input type="radio" name="q8" value="1"> الوصول للزوار الذين تفاعلوا سابقاً ولم يكملوا الشراء</label>
-                <label class="quiz-opt"><input type="radio" name="q8" value="0"> إيقاف الحملات الإعلانية بشكل كامل</label>
-
-                <div class="quiz-q">9. ما هو العنصر الأهم لجعل نص الإعلان (Ad Copy) جذباً للعميل؟</div>
-                <label class="quiz-opt"><input type="radio" name="q9" value="1"> إبراز الفائدة المباشرة وتضمين دعوة واضحة لاتخاذ إجراء (CTA)</label>
-                <label class="quiz-opt"><input type="radio" name="q9" value="0"> كتابة مقال طويل جداً وتجاهل أزرار التواصل</label>
-
-                <div class="quiz-q">10. أين تكمن أهمية اختبارات أداء الإعلان (A/B Testing)؟</div>
-                <label class="quiz-opt"><input type="radio" name="q10" value="1"> مقارنة تصميمين أو نصين لمعرفة الأفضل تحقيقاً للنتائج</label>
-                <label class="quiz-opt"><input type="radio" name="q10" value="0"> التوقف عن الإعلان عبر شبكات التواصل</label>
-
-                <label style="font-size: 11px; font-weight: bold; margin-top: 18px; display: block;">أدخل اسمك الكامل لطباعته على الشهادة عند النجاح:</label>
-                <input type="text" id="studentName" placeholder="مثال: عبدالرحمن عبدالله صالح الذماري" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 4px; font-size: 12px;">
-
-                <button class="btn-submit" onclick="evaluateQuiz()">تقديم الاختبار وتصحيح الإجابات 🎓</button>
-            </div>
-
-            <div class="cert-wrapper" id="certWrapper">
-                <div class="canvas-container">
-                    <canvas id="certCanvas" width="1200" height="850"></canvas>
-                </div>
-                <div class="cert-actions">
-                    <button class="action-btn-green" onclick="downloadCertificate()"><i class="fa-solid fa-download"></i> تنزيل الشهادة بصيغة صورة PNG</button>
-                    <button class="action-btn-blue" onclick="window.print()"><i class="fa-solid fa-print"></i> طباعة الشهادة / حفظ PDF (A4)</button>
-                </div>
-            </div>
-        </article>
-
+    <div class="container" id="coursesContainer">
+        <div class="empty-box">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <p style="color: #64748b; font-size: 13px;">جاري جلب الدورات النصية من لوحة التحكم...</p>
+        </div>
     </div>
 
     <script>
@@ -152,40 +75,144 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let timeLeft = 120; 
-        const timerInterval = setInterval(() => {
-            timeLeft--;
-            const msgEl = document.getElementById('timerMsg');
-            const btnEl = document.getElementById('readyBtn');
-            const mins = Math.floor(timeLeft / 60);
-            const secs = timeLeft % 60;
+        const templateImgUrl = "https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.png";
+        let activeCourseTitle = "";
 
-            if (timeLeft > 0) {
-                msgEl.innerHTML = `⏳ يرجى قراءة محتوى الدورة بعناية (يفتح زر الاختبار خلال ${mins} دقيقة و ${secs} ثانية)...`;
-            } else {
-                clearInterval(timerInterval);
-                msgEl.innerHTML = `✅ شكراً لقراءتك المستند بالكامل! يمكنك الآن فتح الاختبار والبدء.`;
-                btnEl.disabled = false;
-                btnEl.innerHTML = `<i class="fa-solid fa-lock-open"></i> لقد قرأت المحتوى بالكامل وفهمته، ابدأ الاختبار 🚀`;
-                btnEl.style.background = 'var(--green)';
+        async function fetchDynamicTextCourses() {
+            let container = document.getElementById('coursesContainer');
+            let { data: courses, error } = await db.from('text_courses').select('*').order('id', { ascending: false });
+
+            if (error || !courses || courses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-box">
+                        <i class="fa-solid fa-book-open"></i>
+                        <h3 style="color: var(--primary); font-size: 16px; margin-bottom: 6px;">لا توجد دورات نصية منشورة حالياً</h3>
+                        <p style="color: #64748b; font-size: 12px;">سيتم إضافة دورات واختبارات جديدة قريباً من قبل إدارة المنصة.</p>
+                    </div>
+                `;
+                return;
             }
-        }, 1000);
 
-        function unlockQuiz() {
-            document.getElementById('readBox').style.display = 'none';
-            document.getElementById('quizSection').style.display = 'block';
-            window.scrollTo({ top: document.getElementById('quizSection').offsetTop - 20, behavior: 'smooth' });
+            container.innerHTML = '';
+            courses.forEach(c => {
+                activeCourseTitle = c.title;
+                container.innerHTML += `
+                    <article class="card" id="courseCard_${c.id}">
+                        <h2>${c.title}</h2>
+                        <p>${c.content}</p>
+
+                        <!-- زر تأكيد القراءة بدقيقتين -->
+                        <div class="read-confirm-box" id="readBox_${c.id}">
+                            <p style="font-size: 12px; color: var(--primary); font-weight: bold; margin-bottom: 8px;" id="timerMsg_${c.id}">⏳ يرجى قراءة محتوى الدورة بعناية (يفتح زر الاختبار خلال دقيقتين...)</p>
+                            <button class="btn-ready" id="readyBtn_${c.id}" disabled onclick="unlockQuiz(${c.id})">
+                                <i class="fa-solid fa-lock"></i> لقد قرأت المحتوى بالكامل وفهمته، ابدأ الاختبار 🚀
+                            </button>
+                        </div>
+
+                        <!-- قسم الاختبار المكون من 10 أسئلة -->
+                        <div class="quiz-section" id="quizSection_${c.id}">
+                            <h3 style="font-size: 14px; color: var(--gold); margin-bottom: 10px;">📝 اختبار إتمام الدورة (10 أسئلة شاملة - يشترط 6 درجات فأكثر للنجاح):</h3>
+                            
+                            <div class="quiz-q">1. ما هو الهدف الأساسي أو المفهوم المحوري المذكور في محتوى هذه الدورة؟</div>
+                            <label class="quiz-opt"><input type="radio" name="q1_${c.id}" value="1"> الفهم الدقيق وتطبيق المحتوى المطروح بمهنية</label>
+                            <label class="quiz-opt"><input type="radio" name="q1_${c.id}" value="0"> تجاهل التعليمات والمحتوى المقدم</label>
+
+                            <div class="quiz-q">2. كيف تساهم الاستفادة من المهارات المشروحة في تطوير العمل؟</div>
+                            <label class="quiz-opt"><input type="radio" name="q2_${c.id}" value="1"> برفع الكفاءة وتحقيق أفضل عائد استثماري ونتائج</label>
+                            <label class="quiz-opt"><input type="radio" name="q2_${c.id}" value="0"> بزيادة الأخطاء والعشوائية</label>
+
+                            <div class="quiz-q">3. لماذا يُعد الالتزام بالتفاصيل الإرشادية أمراً حيوياً في نجاح المشاريع؟</div>
+                            <label class="quiz-opt"><input type="radio" name="q3_${c.id}" value="1"> لأنه يضمن جودة التنفيذ والوصول للأهداف المرجوة</label>
+                            <label class="quiz-opt"><input type="radio" name="q3_${c.id}" value="0"> لأنه لا يقدم أي فائدة عملية</label>
+
+                            <div class="quiz-q">4. ما أهمية تحليل البيانات والمتابعة الدورية للنتائج؟</div>
+                            <label class="quiz-opt"><input type="radio" name="q4_${c.id}" value="1"> معرفة نقاط القوة والضعف والتحسين المستمر</label>
+                            <label class="quiz-opt"><input type="radio" name="q4_${c.id}" value="0"> إغلاق المشروع نهائياً</label>
+
+                            <div class="quiz-q">5. ما هي أهم ركيزة لبناء الثقة المستدامة مع الجمهور أو العملاء؟</div>
+                            <label class="quiz-opt"><input type="radio" name="q5_${c.id}" value="1"> تقديم قيمة حقيقية وحلول فعلية للمشكلات</label>
+                            <label class="quiz-opt"><input type="radio" name="q5_${c.id}" value="0"> تقديم معلومات غير دقيقة</label>
+
+                            <div class="quiz-q">6. كيف يؤثر التخطيط السليم على تقليل التكاليف والنفقات؟</div>
+                            <label class="quiz-opt"><input type="radio" name="q6_${c.id}" value="1"> بتوجيه الموارد نحو الأنشطة الأكثر جدوى وفائدة</label>
+                            <label class="quiz-opt"><input type="radio" name="q6_${c.id}" value="0"> بمضاعفة الهدر المالي</label>
+
+                            <div class="quiz-q">7. ما الفائدة من مراجعة المفاهيم الأساسية بانتظام؟</div>
+                            <label class="quiz-opt"><input type="radio" name="q7_${c.id}" value="1"> ترسيخ المعلومات وتجنب الأخطاء السابقة</label>
+                            <label class="quiz-opt"><input type="radio" name="q7_${c.id}" value="0"> نسيان محتوى الدورة بسرعة</label>
+
+                            <div class="quiz-q">8. ما هو التصرف الصحيح عند مواجهة صعوبة في تنفيذ استراتيجية معينة؟</div>
+                            <label class="quiz-opt"><input type="radio" name="q8_${c.id}" value="1"> إعادة دراسة الدرس النصي وتطبيق الاختبارات التجريبية</label>
+                            <label class="quiz-opt"><input type="radio" name="q8_ ${c.id}" value="0"> الاستسلام وعدم المحاولة</label>
+
+                            <div class="quiz-q">9. ما هو العنصر الأهم لجعل أي مخرجات مهنية ناجحة ومؤثرة؟</div>
+                            <label class="quiz-opt"><input type="radio" name="q9_${c.id}" value="1"> الدقة، والوضوح، والالتزام بالمعايير المهنية</label>
+                            <label class="quiz-opt"><input type="radio" name="q9_${c.id}" value="0"> العشوائية التامة</label>
+
+                            <div class="quiz-q">10. هل اجتياز هذا الاختبار بنجاح يمنحك شهادة معتمدة من المنصة؟</div>
+                            <label class="quiz-opt"><input type="radio" name="q10_${c.id}" value="1"> نعم، يتم إصدار شهادة إتمام رسمية باسمك</label>
+                            <label class="quiz-opt"><input type="radio" name="q10_${c.id}" value="0"> لا، لا توجد شهادات</label>
+
+                            <label style="font-size: 11px; font-weight: bold; margin-top: 18px; display: block;">أدخل اسمك الكامل لطباعته على الشهادة عند النجاح:</label>
+                            <input type="text" id="studentName_${c.id}" placeholder="مثال: عبدالرحمن عبدالله صالح الذماري" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 4px; font-size: 12px;">
+
+                            <button class="btn-submit" onclick="evaluateQuiz(${c.id}, '${c.title}')">تقديم الاختبار وتصحيح الإجابات 🎓</button>
+                        </div>
+
+                        <!-- حاوية الشهادة -->
+                        <div class="cert-wrapper" id="certWrapper_${c.id}">
+                            <div class="canvas-container">
+                                <canvas id="certCanvas_${c.id}" width="1200" height="850"></canvas>
+                            </div>
+                            <div class="cert-actions">
+                                <button class="action-btn-green" onclick="downloadCertificate(${c.id})"><i class="fa-solid fa-download"></i> تنزيل الشهادة بصيغة صورة PNG</button>
+                                <button class="action-btn-blue" onclick="window.print()"><i class="fa-solid fa-print"></i> طباعة الشهادة / حفظ PDF (A4)</button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+
+                // تشغيل المؤقت (120 ثانية = دقيقتين) لكل دورة يتم جلبها
+                startTimer(c.id);
+            });
         }
 
-        const templateImgUrl = "https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.png";
+        function startTimer(id) {
+            let timeLeft = 120;
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                const msgEl = document.getElementById(`timerMsg_${id}`);
+                const btnEl = document.getElementById(`readyBtn_${id}`);
+                if (!msgEl || !btnEl) { clearInterval(timerInterval); return; }
 
-        async function evaluateQuiz() {
-            const name = document.getElementById('studentName').value.trim();
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+
+                if (timeLeft > 0) {
+                    msgEl.innerHTML = `⏳ يرجى قراءة محتوى الدورة بعناية (يفتح زر الاختبار خلال ${mins} دقيقة و ${secs} ثانية)...`;
+                } else {
+                    clearInterval(timerInterval);
+                    msgEl.innerHTML = `✅ شكراً لقراءتك المستند بالكامل! يمكنك الآن فتح الاختبار والبدء.`;
+                    btnEl.disabled = false;
+                    btnEl.innerHTML = `<i class="fa-solid fa-lock-open"></i> لقد قرأت المحتوى بالكامل وفهمته، ابدأ الاختبار 🚀`;
+                    btnEl.style.background = 'var(--green)';
+                }
+            }, 1000);
+        }
+
+        function unlockQuiz(id) {
+            document.getElementById(`readBox_${id}`).style.display = 'none';
+            document.getElementById(`quizSection_${id}`).style.display = 'block';
+            window.scrollTo({ top: document.getElementById(`quizSection_${id}`).offsetTop - 20, behavior: 'smooth' });
+        }
+
+        async function evaluateQuiz(id, courseTitle) {
+            const name = document.getElementById(`studentName_${id}`).value.trim();
             if (!name) { alert('يرجى كتابة اسمك الكامل لإصداره على الشهادة.'); return; }
 
             let score = 0;
             for (let i = 1; i <= 10; i++) {
-                let ans = document.querySelector(`input[name="q${i}"]:checked`);
+                let ans = document.querySelector(`input[name="q${i}_${id}"]:checked`);
                 if (!ans) {
                     alert(`يرجى الإجابة على السؤال رقم (${i}) قبل تقديم الاختبار.`);
                     return;
@@ -194,23 +221,22 @@
             }
 
             if (score >= 6) {
-                // حفظ النتيجة في قاعدة البيانات سحابياً
                 try {
                     await db.from('cert_results').insert([{
                         student_name: name,
-                        course_name: 'احتراف التسويق الرقمي وإدارة الحملات',
+                        course_name: courseTitle,
                         score: score
                     }]);
                 } catch(e) {}
 
-                generateCertificate(name, "احتراف التسويق الرقمي وإدارة الحملات الإعلانية", score);
+                generateCertificate(id, name, courseTitle);
             } else {
                 alert(`عذراً، حصلت على (${score} من 10). لا يمكن تسليم الشهادة لمن يحصل على أقل من 6 درجات (60%). يرجى مراجعة المستند والمحاولة مرة أخرى! ❌`);
             }
         }
 
-        function generateCertificate(studentName, courseTitle, score) {
-            const canvas = document.getElementById('certCanvas');
+        function generateCertificate(id, studentName, courseTitle) {
+            const canvas = document.getElementById(`certCanvas_${id}`);
             const ctx = canvas.getContext('2d');
             const img = new Image();
             img.crossOrigin = "Anonymous";
@@ -234,18 +260,22 @@
                 ctx.textAlign = "right";
                 ctx.fillText("تاريخ الإصدار: " + todayDate, canvas.width - 120, 680);
 
-                document.getElementById('certWrapper').style.display = 'block';
-                window.scrollTo({ top: document.getElementById('certWrapper').offsetTop - 20, behavior: 'smooth' });
+                document.getElementById(`certWrapper_${id}`).style.display = 'block';
+                window.scrollTo({ top: document.getElementById(`certWrapper_${id}`).offsetTop - 20, behavior: 'smooth' });
             };
         }
 
-        function downloadCertificate() {
-            const canvas = document.getElementById('certCanvas');
+        function downloadCertificate(id) {
+            const canvas = document.getElementById(`certCanvas_${id}`);
             const link = document.createElement('a');
             link.download = 'شهادة_إتمام_دورة_صدارة.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchDynamicTextCourses();
+        });
     </script>
 </body>
 </html>
