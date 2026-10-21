@@ -27,7 +27,6 @@
         .watch-btn:hover { background: #1d4ed8; }
         .empty-box { text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; }
 
-        /* تنسيقات نظام تقييمات الدورات المضافة */
         .course-reviews-box { background: #f8fafc; padding: 12px 15px; border-top: 1px solid #e2e8f0; font-size: 12px; }
         .stars-selector { font-size: 16px; color: #cbd5e1; cursor: pointer; display: inline-block; margin: 4px 0; }
         .stars-selector.active { color: var(--gold); }
@@ -60,7 +59,6 @@
             let grid = document.getElementById('coursesGrid');
 
             try {
-                // جلب الدورات المنشورة فقط (is_active = true)
                 let { data: courses, error } = await db
                     .from('platform_courses')
                     .select('*')
@@ -90,11 +88,10 @@
                                 <a href="watch.html?id=${c.id}" class="watch-btn"><i class="fa-solid fa-play"></i> ابدأ مشاهدة الدورة</a>
                             </div>
 
-                            <!-- قسم إضافة وتقييمات الطلاب لهذه الدورة -->
                             <div class="course-reviews-box">
                                 <h4 style="font-size:12px; color:var(--primary); font-weight:bold;">⭐ تقييمات الطلاب وانطباع الشهادة:</h4>
                                 
-                                <div style="margin: 4px 0;">
+                                <div style="margin: 4px 0;" id="courseStarBox_${c.id}">
                                     <span class="stars-selector active" onclick="setCourseStar(${c.id}, 1)">★</span>
                                     <span class="stars-selector active" onclick="setCourseStar(${c.id}, 2)">★</span>
                                     <span class="stars-selector active" onclick="setCourseStar(${c.id}, 3)">★</span>
@@ -119,22 +116,29 @@
             }
         }
 
-        // --- دوال إدارة تقييمات الدورات ---
         function setCourseStar(courseId, stars) {
             selectedCourseStarsMap[courseId] = stars;
+            const starEls = document.querySelectorAll(`#courseStarBox_${courseId} .stars-selector`);
+            starEls.forEach((el, idx) => {
+                if (idx < stars) el.classList.add('active');
+                else el.classList.remove('active');
+            });
         }
 
         async function submitCourseReview(courseId) {
             const commentInput = document.getElementById(`courseReviewText_${courseId}`);
             const comment = commentInput.value.trim();
-            const userName = localStorage.getItem('sadara_logged_name') || 'طالب صدارة';
 
             if (!comment) { alert('يرجى كتابة تعليقك أولاً قبل الإرسال'); return; }
+
+            const userPhone = localStorage.getItem('sadara_logged_phone') || 'غير مسجل';
+            const userName = localStorage.getItem('sadara_logged_name') || 'طالب';
+            const fullIdentity = `${userName} (${userPhone})`;
 
             let { error } = await db.from('reviews').insert([{
                 item_type: 'course',
                 item_id: courseId,
-                user_name: userName,
+                user_name: fullIdentity,
                 rating: selectedCourseStarsMap[courseId] || 5,
                 comment: comment
             }]);
