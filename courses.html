@@ -26,6 +26,12 @@
         .watch-btn { background: #2563eb; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
         .watch-btn:hover { background: #1d4ed8; }
         .empty-box { text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; }
+
+        /* تنسيقات نظام تقييمات الدورات المضافة */
+        .course-reviews-box { background: #f8fafc; padding: 12px 15px; border-top: 1px solid #e2e8f0; font-size: 12px; }
+        .stars-selector { font-size: 16px; color: #cbd5e1; cursor: pointer; display: inline-block; margin: 4px 0; }
+        .stars-selector.active { color: var(--gold); }
+        .single-review { background: #ffffff; padding: 6px 10px; border-radius: 6px; margin-top: 6px; border-right: 3px solid var(--gold); border-bottom: 1px solid #e2e8f0; }
     </style>
 </head>
 <body>
@@ -48,6 +54,8 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        let selectedCourseStarsMap = {};
+
         async function loadCoursesPage() {
             let grid = document.getElementById('coursesGrid');
 
@@ -67,6 +75,8 @@
                 grid.innerHTML = '';
                 courses.forEach(c => {
                     let lessonsCount = (c.lessons && Array.isArray(c.lessons)) ? c.lessons.length : 0;
+                    selectedCourseStarsMap[c.id] = 5;
+
                     grid.innerHTML += `
                         <div class="course-card">
                             <div class="course-header">
@@ -79,12 +89,93 @@
                                 <span style="font-size:12px; font-weight:bold; color:#0f2347;"><i class="fa-solid fa-book"></i> ${lessonsCount} دروس</span>
                                 <a href="watch.html?id=${c.id}" class="watch-btn"><i class="fa-solid fa-play"></i> ابدأ مشاهدة الدورة</a>
                             </div>
+
+                            <!-- قسم إضافة وتقييمات الطلاب لهذه الدورة -->
+                            <div class="course-reviews-box">
+                                <h4 style="font-size:12px; color:var(--primary); font-weight:bold;">⭐ تقييمات الطلاب وانطباع الشهادة:</h4>
+                                
+                                <div style="margin: 4px 0;">
+                                    <span class="stars-selector active" onclick="setCourseStar(${c.id}, 1)">★</span>
+                                    <span class="stars-selector active" onclick="setCourseStar(${c.id}, 2)">★</span>
+                                    <span class="stars-selector active" onclick="setCourseStar(${c.id}, 3)">★</span>
+                                    <span class="stars-selector active" onclick="setCourseStar(${c.id}, 4)">★</span>
+                                    <span class="stars-selector active" onclick="setCourseStar(${c.id}, 5)">★</span>
+                                </div>
+
+                                <div style="display:flex; gap:5px; margin-top:4px;">
+                                    <input type="text" id="courseReviewText_${c.id}" placeholder="اكتب رأيك بالدورة واستلام الشهادة..." style="flex:1; padding:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11px; outline:none;">
+                                    <button onclick="submitCourseReview(${c.id})" style="background:var(--primary); color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">إرسال</button>
+                                </div>
+
+                                <div id="courseReviewsList_${c.id}" style="margin-top:8px;">جاري تحميل التعليقات...</div>
+                            </div>
                         </div>
                     `;
+
+                    loadCourseReviews(c.id);
                 });
             } catch(e) {
                 grid.innerHTML = `<div class="empty-box">عذراً، حدث خطأ في الاتصال بقاعدة البيانات.</div>`;
             }
+        }
+
+        // --- دوال إدارة تقييمات الدورات ---
+        function setCourseStar(courseId, stars) {
+            selectedCourseStarsMap[courseId] = stars;
+        }
+
+        async function submitCourseReview(courseId) {
+            const commentInput = document.getElementById(`courseReviewText_${courseId}`);
+            const comment = commentInput.value.trim();
+            const userName = localStorage.getItem('sadara_logged_name') || 'طالب صدارة';
+
+            if (!comment) { alert('يرجى كتابة تعليقك أولاً قبل الإرسال'); return; }
+
+            let { error } = await db.from('reviews').insert([{
+                item_type: 'course',
+                item_id: courseId,
+                user_name: userName,
+                rating: selectedCourseStarsMap[courseId] || 5,
+                comment: comment
+            }]);
+
+            if (error) {
+                alert('خطأ أثناء إرسال التقييم: ' + error.message);
+            } else {
+                alert('شكراً لك! تم نشر تقييمك للدورة بنجاح ✅');
+                commentInput.value = '';
+                loadCourseReviews(courseId);
+            }
+        }
+
+        async function loadCourseReviews(courseId) {
+            let { data: reviews } = await db.from('reviews')
+                .select('*')
+                .eq('item_type', 'course')
+                .eq('item_id', courseId)
+                .order('created_at', { ascending: false });
+
+            let listBox = document.getElementById(`courseReviewsList_${courseId}`);
+            if (!listBox) return;
+            listBox.innerHTML = '';
+
+            if (!reviews || !reviews.length) {
+                listBox.innerHTML = '<p style="font-size:10px; color:#94a3b8;">لا توجد تقييمات حتى الآن. كن أول من يقيّم هذه الدورة!</p>';
+                return;
+            }
+
+            reviews.forEach(r => {
+                let starsHTML = '★'.repeat(r.rating || 5);
+                listBox.innerHTML += `
+                    <div class="single-review">
+                        <div style="display:flex; justify-content:space-between; font-weight:bold; color:#0f2347; font-size:11px;">
+                            <span>👤 ${r.user_name}</span>
+                            <span style="color:var(--gold);">${starsHTML}</span>
+                        </div>
+                        <p style="color:#475569; font-size:10px; margin-top:2px;">${r.comment}</p>
+                    </div>
+                `;
+            });
         }
 
         document.addEventListener('DOMContentLoaded', loadCoursesPage);
