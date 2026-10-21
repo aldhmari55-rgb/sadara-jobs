@@ -30,7 +30,6 @@
 
         .loading-box { text-align: center; padding: 30px; color: #64748b; font-size: 13px; font-weight: bold; }
 
-        /* تنسيقات نظام التقييمات للكفاءات */
         .resume-reviews-box { background: #f8fafc; border-radius: 10px; padding: 10px; border: 1px solid #cbd5e1; font-size: 12px; width: 100%; margin-top: 4px; }
         .star-select-resume { font-size: 16px; color: #cbd5e1; cursor: pointer; display: inline-block; margin: 2px 0; }
         .star-select-resume.active { color: var(--gold); }
@@ -62,7 +61,6 @@
 
         let selectedResumeStarsMap = {};
 
-        // شارة التحقق الزرقاء
         function getBlueBadgeHTML() {
             return `<span title="حساب موثق" style="display:inline-flex; align-items:center; vertical-align:middle;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -107,11 +105,10 @@
                                 </div>
                             </div>
 
-                            <!-- قسم إضافة وتقييمات الكفاءات -->
                             <div class="resume-reviews-box">
                                 <h4 style="font-size:12px; color:var(--primary); font-weight:bold;">⭐ تقييمات وتوصيات أصحاب الأعمال:</h4>
                                 
-                                <div style="margin: 4px 0;">
+                                <div style="margin: 4px 0;" id="resumeStarBox_${r.id}">
                                     <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 1)">★</span>
                                     <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 2)">★</span>
                                     <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 3)">★</span>
@@ -136,22 +133,29 @@
             }
         }
 
-        // --- دوال إدارة تقييمات الكفاءات ---
         function setResumeStar(resumeId, stars) {
             selectedResumeStarsMap[resumeId] = stars;
+            const starEls = document.querySelectorAll(`#resumeStarBox_${resumeId} .star-select-resume`);
+            starEls.forEach((el, idx) => {
+                if (idx < stars) el.classList.add('active');
+                else el.classList.remove('active');
+            });
         }
 
         async function submitResumeReview(resumeId) {
             const commentInput = document.getElementById(`resumeReviewText_${resumeId}`);
             const comment = commentInput.value.trim();
-            const userName = localStorage.getItem('sadara_logged_name') || 'جهة عمل / زائر';
 
             if (!comment) { alert('يرجى كتابة التوصية أو التعليق قبل الإرسال'); return; }
+
+            const userPhone = localStorage.getItem('sadara_logged_phone') || 'غير مسجل';
+            const userName = localStorage.getItem('sadara_logged_name') || 'جهة عمل';
+            const fullIdentity = `${userName} (${userPhone})`;
 
             let { error } = await db.from('reviews').insert([{
                 item_type: 'resume',
                 item_id: resumeId,
-                user_name: userName,
+                user_name: fullIdentity,
                 rating: selectedResumeStarsMap[resumeId] || 5,
                 comment: comment
             }]);
