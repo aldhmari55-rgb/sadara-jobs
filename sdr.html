@@ -51,7 +51,7 @@
 
     <div class="header">
         <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المستخدمين، ورفع وإدارة الدورات والدروس المرتبة</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المدونة والمقالات، المستخدمين والدورات</p>
     </div>
 
     <div class="admin-stats-grid">
@@ -116,7 +116,23 @@
             <div class="list-box" id="resumesList">جاري التحميل...</div>
         </div>
 
-        <!-- 3. إدارة المستخدمين المسجلين -->
+        <!-- 3. نشر وإدارة مقالات المدونة -->
+        <div class="card">
+            <h2><span>📰 إدارة مقالات المدونة</span><span class="badge" id="articlesCount">0</span></h2>
+            <input type="hidden" id="editArticleId">
+            <label>عنوان المقال النصي</label>
+            <input type="text" id="artTitle" placeholder="عنوان المقال...">
+            <label>الملخص البسيط</label>
+            <input type="text" id="artSummary" placeholder="نبذة مختصرة...">
+            <label>محتوى المقال كاملاً</label>
+            <textarea id="artContent" rows="3" placeholder="محتوى وتفاصيل المقال..."></textarea>
+            <button id="btnSaveArt" onclick="saveArticle()" style="background:#0284c7; color:white;">نشر المقال 📝</button>
+            <button id="btnCancelArt" onclick="resetArtForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء</button>
+            <div id="artMsg" class="status-msg"></div>
+            <div class="list-box" id="articlesList">جاري التحميل...</div>
+        </div>
+
+        <!-- 4. إدارة المستخدمين المسجلين -->
         <div class="card">
             <h2>
                 <span>👥 المستخدمون المسجلون</span>
@@ -129,7 +145,7 @@
             <div class="list-box" id="usersList">جاري التحميل...</div>
         </div>
 
-        <!-- 4. البنرات الإعلانية -->
+        <!-- 5. البنرات الإعلانية -->
         <div class="card">
             <h2>🖼️ البنرات الإعلانية (السلايدر) <span class="badge" id="bannersCount">0</span></h2>
             <label>رفع صورة البنر</label>
@@ -139,7 +155,7 @@
             <div class="list-box" id="bannersList">جاري التحميل...</div>
         </div>
 
-        <!-- 5. شركاء النجاح -->
+        <!-- 6. شركاء النجاح -->
         <div class="card">
             <h2>🤝 شركاء النجاح (الشريط) <span class="badge" id="partnersCount">0</span></h2>
             <label>رفع شعار الشريك</label>
@@ -149,13 +165,13 @@
             <div class="list-box" id="partnersList">جاري التحميل...</div>
         </div>
 
-        <!-- 6. إدارة تقييمات المستخدمين المضافة -->
+        <!-- 7. إدارة تقييمات المستخدمين المضافة -->
         <div class="card">
             <h2><span>💬 تقييمات وتعليقات الزوار</span><span class="badge" id="reviewsCount">0</span></h2>
             <div class="list-box" id="adminReviewsList">جاري التحميل...</div>
         </div>
 
-        <!-- 7. نظام رفع وإدارة الدورات والدروس المرتبة -->
+        <!-- 8. نظام رفع وإدارة الدورات والدروس المرتبة -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>
                 <span id="formTitleText">🎓 رفع وإدارة الدورات والدروس المرتبة</span>
@@ -219,6 +235,7 @@
     let cachedResumes = [];
     let cachedCourses = [];
     let cachedReviews = [];
+    let cachedArticles = [];
 
     async function loadAdminRealStats() {
         try {
@@ -247,6 +264,76 @@
             const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
             return publicUrlData.publicUrl || '';
         } catch(e) { alert('فشل في عملية الرفع.'); return null; }
+    }
+
+    // إدارة المقالات والمدونة
+    async function saveArticle() {
+        const editId = document.getElementById('editArticleId').value;
+        const title = document.getElementById('artTitle').value.trim();
+        const summary = document.getElementById('artSummary').value.trim();
+        const content = document.getElementById('artContent').value.trim();
+        const msg = document.getElementById('artMsg');
+
+        if (!title || !content) { alert('يرجى إدخال عنوان المقال ومحتواه'); return; }
+        msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ بالسحابة... ⏳';
+
+        let payload = { title, summary, content };
+        let res = editId ? await db.from('articles').update(payload).eq('id', editId) : await db.from('articles').insert([payload]);
+
+        if (res.error) {
+            msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
+        } else {
+            msg.style.color = 'green'; msg.textContent = 'تم نشر المقال بنجاح! ✅';
+            resetArtForm(); loadArticles();
+        }
+    }
+
+    function resetArtForm() {
+        document.getElementById('editArticleId').value = '';
+        document.getElementById('artTitle').value = '';
+        document.getElementById('artSummary').value = '';
+        document.getElementById('artContent').value = '';
+        document.getElementById('btnSaveArt').textContent = 'نشر المقال 📝';
+        document.getElementById('btnCancelArt').style.display = 'none';
+    }
+
+    async function loadArticles() {
+        let { data } = await db.from('articles').select('*').order('id', {ascending: false});
+        cachedArticles = data || [];
+        let box = document.getElementById('articlesList');
+        document.getElementById('articlesCount').textContent = cachedArticles.length;
+        box.innerHTML = '';
+
+        if (!cachedArticles.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد مقالات مضافة.</p>';
+            return;
+        }
+
+        cachedArticles.forEach(a => {
+            box.innerHTML += `
+                <div class="item-row">
+                    <div class="row-header">
+                        <strong>📰 ${a.title}</strong>
+                    </div>
+                    <div style="color:#64748b; font-size:11px;">${a.summary || 'بدون ملخص'}</div>
+                    <div class="action-btns">
+                        <button class="btn-sm btn-edit" onclick="editArticle(${a.id})">تعديل ✏️</button>
+                        <button class="btn-sm btn-del" onclick="deleteItem('articles', ${a.id})">حذف 🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function editArticle(id) {
+        let a = cachedArticles.find(item => item.id === id);
+        if (!a) return;
+        document.getElementById('editArticleId').value = a.id;
+        document.getElementById('artTitle').value = a.title || '';
+        document.getElementById('artSummary').value = a.summary || '';
+        document.getElementById('artContent').value = a.content || '';
+        document.getElementById('btnSaveArt').textContent = 'تعديل وحفظ 💾';
+        document.getElementById('btnCancelArt').style.display = 'block';
     }
 
     async function saveJob() {
@@ -474,7 +561,6 @@
         data.forEach(p => { box.innerHTML += `<div class="item-row" style="flex-direction:row; justify-content:space-between; align-items:center;"><img src="${p.logo}" style="height:30px; width:30px; border-radius:50%; object-fit:cover;"><button class="btn-sm btn-del" onclick="deleteItem('partners', ${p.id})">حذف 🗑️</button></div>`; });
     }
 
-    // إدارة وتقييمات المستخدمين المضافة
     async function loadAdminReviews() {
         let { data } = await db.from('reviews').select('*').order('created_at', { ascending: false });
         cachedReviews = data || [];
@@ -638,7 +724,6 @@
         loadAdminCourses();
     }
 
-    // دالة الحذف المحسنة للتأكد من التنفيذ الفعلي بـ Supabase
     async function deleteItem(table, id) {
         if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
             let { error } = await db.from(table).delete().eq('id', id);
@@ -653,6 +738,7 @@
             if (table === 'banners') loadBanners();
             if (table === 'partners') loadPartners();
             if (table === 'reviews') loadAdminReviews();
+            if (table === 'articles') loadArticles();
             if (table === 'platform_courses') loadAdminCourses();
         }
     }
@@ -661,6 +747,7 @@
         loadAdminRealStats(); 
         loadJobs(); 
         loadResumes(); 
+        loadArticles();
         loadRegisteredUsers(); 
         loadBanners(); 
         loadPartners(); 
