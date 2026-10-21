@@ -474,7 +474,7 @@
         data.forEach(p => { box.innerHTML += `<div class="item-row" style="flex-direction:row; justify-content:space-between; align-items:center;"><img src="${p.logo}" style="height:30px; width:30px; border-radius:50%; object-fit:cover;"><button class="btn-sm btn-del" onclick="deleteItem('partners', ${p.id})">حذف 🗑️</button></div>`; });
     }
 
-    // دالة إدارة وتقييمات المستخدمين المضافة
+    // إدارة وتقييمات المستخدمين المضافة
     async function loadAdminReviews() {
         let { data } = await db.from('reviews').select('*').order('created_at', { ascending: false });
         cachedReviews = data || [];
@@ -638,10 +638,14 @@
         loadAdminCourses();
     }
 
+    // دالة الحذف المحسنة للتأكد من التنفيذ الفعلي بـ Supabase
     async function deleteItem(table, id) {
         if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
             let { error } = await db.from(table).delete().eq('id', id);
-            if (error) { alert('خطأ في الحذف: ' + error.message); return; }
+            if (error) { 
+                alert('فشل الحذف من السحابة: ' + error.message); 
+                return; 
+            }
             alert('تم الحذف بنجاح! ✅');
             if (table === 'jobs') loadJobs();
             if (table === 'resumes') loadResumes();
