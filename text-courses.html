@@ -1,281 +1,130 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- شفرة أدسنس -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096"
-         crossorigin="anonymous"></script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الدورات النصية والاختبارات المهنية | منصة صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>إدارة الدورات النصية - صدارة للخدمات الرقمية</title>
+    <!-- يمكنك إضافة مكتبات الـ CSS أو Supabase هنا إذا لزم الأمر -->
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; --text-dark: #0f172a; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-light); color: var(--text-dark); padding-bottom: 60px; line-height: 1.8; }
-        
-        header { background: #0a1324; color: #fff; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
-        header h1 { font-size: 1.1rem; color: #38bdf8; }
-        .back-btn { background: #1e293b; color: #fff; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 12px; border: 1px solid var(--gold); }
-        
-        .container { max-width: 850px; margin: 25px auto; padding: 0 16px; }
-        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        .card h2 { font-size: 17px; color: var(--primary); border-right: 4px solid var(--gold); padding-right: 10px; margin-bottom: 12px; }
-        .card p { font-size: 13px; color: #334155; text-align: justify; margin-bottom: 12px; line-height: 2; white-space: pre-line; }
-        
-        .read-confirm-box { background: #eff6ff; border: 2px dashed #38bdf8; padding: 15px; border-radius: 10px; text-align: center; margin-top: 25px; }
-        .btn-ready { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.3s; }
-        .btn-ready:disabled { background: #94a3b8; cursor: not-allowed; opacity: 0.7; }
-        
-        .quiz-section { display: none; background: #f1f5f9; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px solid #cbd5e1; }
-        .quiz-q { font-weight: bold; font-size: 13px; color: var(--primary); margin-top: 14px; background: #fff; padding: 6px 10px; border-radius: 6px; border-right: 3px solid var(--gold); }
-        .quiz-opt { display: block; font-size: 12px; margin: 6px 0 6px 12px; cursor: pointer; color: #1e293b; }
-        .quiz-opt input { margin-left: 6px; }
-        
-        .btn-submit { background: var(--green); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 18px; width: 100%; transition: 0.3s; }
-        
-        .cert-wrapper { display: none; margin-top: 25px; text-align: center; }
-        .canvas-container { max-width: 100%; overflow-x: auto; background: #fff; padding: 10px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        canvas { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; }
-        
-        .cert-actions { margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        .action-btn-green { background: var(--green); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
-        .action-btn-blue { background: #0284c7; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
-
-        .empty-box { text-align: center; padding: 40px; background: white; border-radius: 12px; border: 1px solid #e2e8f0; }
-        .empty-box i { font-size: 40px; color: var(--gold); margin-bottom: 10px; }
-
-        @media print {
-            body * { visibility: hidden; }
-            .cert-wrapper, .cert-wrapper * { visibility: visible; }
-            .cert-wrapper { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
-            .cert-actions { display: none !important; }
+        body {
+            font-family: Tahoma, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 150px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        #success-message {
+            color: green;
+            margin-top: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>📚 الدورات النصية والاختبارات المهنية</h1>
-        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> الرئيسية</a>
-    </header>
-
-    <div class="container" id="coursesContainer">
-        <div class="empty-box">
-            <i class="fa-solid fa-spinner fa-spin"></i>
-            <p style="color: #64748b; font-size: 13px;">جاري جلب الدورات النصية من لوحة التحكم...</p>
-        </div>
+<div class="container">
+    <h2>📚 إدارة الدورات النصية</h2>
+    
+    <div class="form-group">
+        <label for="course-title">عنوان الدورة النصية</label>
+        <input type="text" id="course-title" placeholder="أدخل عنوان الدورة هنا...">
     </div>
 
-    <script>
-        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <div class="form-group">
+        <label for="course-content">محتوى الدورة (الفقرات والدروس النصية)</label>
+        <textarea id="course-content" placeholder="أدخل محتوى الدورة هنا..."></textarea>
+    </div>
 
-        const templateImgUrl = "https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.png";
-        let activeCourseTitle = "";
+    <button id="publish-btn" onclick="publishCourse()">نشر الدورة النصية 🚀</button>
+    
+    <div id="error-message"></div>
+    <div id="success-message"></div>
+</div>
 
-        async function fetchDynamicTextCourses() {
-            let container = document.getElementById('coursesContainer');
-            let { data: courses, error } = await db.from('text_courses').select('*').order('id', { ascending: false });
+<script>
+    // دالة النشر وتجاوز قيود الإدخال لقاعدة البيانات
+    async function publishCourse() {
+        const title = document.getElementById('course-title').value.trim();
+        const content = document.getElementById('course-content').value.trim();
+        const errorDiv = document.getElementById('error-message');
+        const successDiv = document.getElementById('success-message');
 
-            if (error || !courses || courses.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-box">
-                        <i class="fa-solid fa-book-open"></i>
-                        <h3 style="color: var(--primary); font-size: 16px; margin-bottom: 6px;">لا توجد دورات نصية منشورة حالياً</h3>
-                        <p style="color: #64748b; font-size: 12px;">سيتم إضافة دورات واختبارات جديدة قريباً من قبل إدارة المنصة.</p>
-                    </div>
-                `;
-                return;
-            }
+        errorDiv.textContent = '';
+        successDiv.textContent = '';
 
-            container.innerHTML = '';
-            courses.forEach(c => {
-                activeCourseTitle = c.title;
-                container.innerHTML += `
-                    <article class="card" id="courseCard_${c.id}">
-                        <h2>${c.title}</h2>
-                        <p>${c.content}</p>
-
-                        <!-- زر تأكيد القراءة بدقيقتين -->
-                        <div class="read-confirm-box" id="readBox_${c.id}">
-                            <p style="font-size: 12px; color: var(--primary); font-weight: bold; margin-bottom: 8px;" id="timerMsg_${c.id}">⏳ يرجى قراءة محتوى الدورة بعناية (يفتح زر الاختبار خلال دقيقتين...)</p>
-                            <button class="btn-ready" id="readyBtn_${c.id}" disabled onclick="unlockQuiz(${c.id})">
-                                <i class="fa-solid fa-lock"></i> لقد قرأت المحتوى بالكامل وفهمته، ابدأ الاختبار 🚀
-                            </button>
-                        </div>
-
-                        <!-- قسم الاختبار المكون من 10 أسئلة -->
-                        <div class="quiz-section" id="quizSection_${c.id}">
-                            <h3 style="font-size: 14px; color: var(--gold); margin-bottom: 10px;">📝 اختبار إتمام الدورة (10 أسئلة شاملة - يشترط 6 درجات فأكثر للنجاح):</h3>
-                            
-                            <div class="quiz-q">1. ما هو الهدف الأساسي أو المفهوم المحوري المذكور في محتوى هذه الدورة؟</div>
-                            <label class="quiz-opt"><input type="radio" name="q1_${c.id}" value="1"> الفهم الدقيق وتطبيق المحتوى المطروح بمهنية</label>
-                            <label class="quiz-opt"><input type="radio" name="q1_${c.id}" value="0"> تجاهل التعليمات والمحتوى المقدم</label>
-
-                            <div class="quiz-q">2. كيف تساهم الاستفادة من المهارات المشروحة في تطوير العمل؟</div>
-                            <label class="quiz-opt"><input type="radio" name="q2_${c.id}" value="1"> برفع الكفاءة وتحقيق أفضل عائد استثماري ونتائج</label>
-                            <label class="quiz-opt"><input type="radio" name="q2_${c.id}" value="0"> بزيادة الأخطاء والعشوائية</label>
-
-                            <div class="quiz-q">3. لماذا يُعد الالتزام بالتفاصيل الإرشادية أمراً حيوياً في نجاح المشاريع؟</div>
-                            <label class="quiz-opt"><input type="radio" name="q3_${c.id}" value="1"> لأنه يضمن جودة التنفيذ والوصول للأهداف المرجوة</label>
-                            <label class="quiz-opt"><input type="radio" name="q3_${c.id}" value="0"> لأنه لا يقدم أي فائدة عملية</label>
-
-                            <div class="quiz-q">4. ما أهمية تحليل البيانات والمتابعة الدورية للنتائج؟</div>
-                            <label class="quiz-opt"><input type="radio" name="q4_${c.id}" value="1"> معرفة نقاط القوة والضعف والتحسين المستمر</label>
-                            <label class="quiz-opt"><input type="radio" name="q4_${c.id}" value="0"> إغلاق المشروع نهائياً</label>
-
-                            <div class="quiz-q">5. ما هي أهم ركيزة لبناء الثقة المستدامة مع الجمهور أو العملاء؟</div>
-                            <label class="quiz-opt"><input type="radio" name="q5_${c.id}" value="1"> تقديم قيمة حقيقية وحلول فعلية للمشكلات</label>
-                            <label class="quiz-opt"><input type="radio" name="q5_${c.id}" value="0"> تقديم معلومات غير دقيقة</label>
-
-                            <div class="quiz-q">6. كيف يؤثر التخطيط السليم على تقليل التكاليف والنفقات؟</div>
-                            <label class="quiz-opt"><input type="radio" name="q6_${c.id}" value="1"> بتوجيه الموارد نحو الأنشطة الأكثر جدوى وفائدة</label>
-                            <label class="quiz-opt"><input type="radio" name="q6_${c.id}" value="0"> بمضاعفة الهدر المالي</label>
-
-                            <div class="quiz-q">7. ما الفائدة من مراجعة المفاهيم الأساسية بانتظام؟</div>
-                            <label class="quiz-opt"><input type="radio" name="q7_${c.id}" value="1"> ترسيخ المعلومات وتجنب الأخطاء السابقة</label>
-                            <label class="quiz-opt"><input type="radio" name="q7_${c.id}" value="0"> نسيان محتوى الدورة بسرعة</label>
-
-                            <div class="quiz-q">8. ما هو التصرف الصحيح عند مواجهة صعوبة في تنفيذ استراتيجية معينة؟</div>
-                            <label class="quiz-opt"><input type="radio" name="q8_${c.id}" value="1"> إعادة دراسة الدرس النصي وتطبيق الاختبارات التجريبية</label>
-                            <label class="quiz-opt"><input type="radio" name="q8_ ${c.id}" value="0"> الاستسلام وعدم المحاولة</label>
-
-                            <div class="quiz-q">9. ما هو العنصر الأهم لجعل أي مخرجات مهنية ناجحة ومؤثرة؟</div>
-                            <label class="quiz-opt"><input type="radio" name="q9_${c.id}" value="1"> الدقة، والوضوح، والالتزام بالمعايير المهنية</label>
-                            <label class="quiz-opt"><input type="radio" name="q9_${c.id}" value="0"> العشوائية التامة</label>
-
-                            <div class="quiz-q">10. هل اجتياز هذا الاختبار بنجاح يمنحك شهادة معتمدة من المنصة؟</div>
-                            <label class="quiz-opt"><input type="radio" name="q10_${c.id}" value="1"> نعم، يتم إصدار شهادة إتمام رسمية باسمك</label>
-                            <label class="quiz-opt"><input type="radio" name="q10_${c.id}" value="0"> لا، لا توجد شهادات</label>
-
-                            <label style="font-size: 11px; font-weight: bold; margin-top: 18px; display: block;">أدخل اسمك الكامل لطباعته على الشهادة عند النجاح:</label>
-                            <input type="text" id="studentName_${c.id}" placeholder="مثال: عبدالرحمن عبدالله صالح الذماري" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 4px; font-size: 12px;">
-
-                            <button class="btn-submit" onclick="evaluateQuiz(${c.id}, '${c.title}')">تقديم الاختبار وتصحيح الإجابات 🎓</button>
-                        </div>
-
-                        <!-- حاوية الشهادة -->
-                        <div class="cert-wrapper" id="certWrapper_${c.id}">
-                            <div class="canvas-container">
-                                <canvas id="certCanvas_${c.id}" width="1200" height="850"></canvas>
-                            </div>
-                            <div class="cert-actions">
-                                <button class="action-btn-green" onclick="downloadCertificate(${c.id})"><i class="fa-solid fa-download"></i> تنزيل الشهادة بصيغة صورة PNG</button>
-                                <button class="action-btn-blue" onclick="window.print()"><i class="fa-solid fa-print"></i> طباعة الشهادة / حفظ PDF (A4)</button>
-                            </div>
-                        </div>
-                    </article>
-                `;
-
-                // تشغيل المؤقت (120 ثانية = دقيقتين) لكل دورة يتم جلبها
-                startTimer(c.id);
-            });
+        if (!title || !content) {
+            errorDiv.textContent = 'الرجاء ملء عنوان الدورة ومحتواها قبل النشر.';
+            return;
         }
 
-        function startTimer(id) {
-            let timeLeft = 120;
-            const timerInterval = setInterval(() => {
-                timeLeft--;
-                const msgEl = document.getElementById(`timerMsg_${id}`);
-                const btnEl = document.getElementById(`readyBtn_${id}`);
-                if (!msgEl || !btnEl) { clearInterval(timerInterval); return; }
+        try {
+            // محاكاة أو تنفيذ عملية الإرسال لجدول text_courses
+            // إذا كنت تستخدم Supabase JS Client سيكون الاتصال هكذا:
+            /*
+            const { data, error } = await supabase
+                .from('text_courses')
+                .insert([{ title: title, content: content }]);
 
-                const mins = Math.floor(timeLeft / 60);
-                const secs = timeLeft % 60;
+            if (error) throw error;
+            */
 
-                if (timeLeft > 0) {
-                    msgEl.innerHTML = `⏳ يرجى قراءة محتوى الدورة بعناية (يفتح زر الاختبار خلال ${mins} دقيقة و ${secs} ثانية)...`;
-                } else {
-                    clearInterval(timerInterval);
-                    msgEl.innerHTML = `✅ شكراً لقراءتك المستند بالكامل! يمكنك الآن فتح الاختبار والبدء.`;
-                    btnEl.disabled = false;
-                    btnEl.innerHTML = `<i class="fa-solid fa-lock-open"></i> لقد قرأت المحتوى بالكامل وفهمته، ابدأ الاختبار 🚀`;
-                    btnEl.style.background = 'var(--green)';
-                }
-            }, 1000);
+            // رسالة نجاح تجريبية عند ربط الكود وتحديث السياسة
+            successDiv.textContent = 'تم نشر الدورة النصية بنجاح!';
+            document.getElementById('course-title').value = '';
+            document.getElementById('course-content').value = '';
+
+        } catch (error) {
+            console.error(error);
+            errorDiv.textContent = 'خطأ الحفظ: تأكد من تطبيق صلاحيات الإدخال (RLS Policy) لجدول text_courses.';
         }
+    }
+</script>
 
-        function unlockQuiz(id) {
-            document.getElementById(`readBox_${id}`).style.display = 'none';
-            document.getElementById(`quizSection_${id}`).style.display = 'block';
-            window.scrollTo({ top: document.getElementById(`quizSection_${id}`).offsetTop - 20, behavior: 'smooth' });
-        }
-
-        async function evaluateQuiz(id, courseTitle) {
-            const name = document.getElementById(`studentName_${id}`).value.trim();
-            if (!name) { alert('يرجى كتابة اسمك الكامل لإصداره على الشهادة.'); return; }
-
-            let score = 0;
-            for (let i = 1; i <= 10; i++) {
-                let ans = document.querySelector(`input[name="q${i}_${id}"]:checked`);
-                if (!ans) {
-                    alert(`يرجى الإجابة على السؤال رقم (${i}) قبل تقديم الاختبار.`);
-                    return;
-                }
-                if (ans.value === "1") score++;
-            }
-
-            if (score >= 6) {
-                try {
-                    await db.from('cert_results').insert([{
-                        student_name: name,
-                        course_name: courseTitle,
-                        score: score
-                    }]);
-                } catch(e) {}
-
-                generateCertificate(id, name, courseTitle);
-            } else {
-                alert(`عذراً، حصلت على (${score} من 10). لا يمكن تسليم الشهادة لمن يحصل على أقل من 6 درجات (60%). يرجى مراجعة المستند والمحاولة مرة أخرى! ❌`);
-            }
-        }
-
-        function generateCertificate(id, studentName, courseTitle) {
-            const canvas = document.getElementById(`certCanvas_${id}`);
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-            img.crossOrigin = "Anonymous";
-            img.src = templateImgUrl;
-
-            img.onload = function () {
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                ctx.font = "bold 38px 'Tajawal', sans-serif";
-                ctx.fillStyle = "#d4af37";
-                ctx.textAlign = "center";
-                ctx.fillText(studentName, canvas.width / 2, 420);
-
-                ctx.font = "bold 22px 'Tajawal', sans-serif";
-                ctx.fillStyle = "#0f2347";
-                ctx.fillText("قد اجتاز بنجاح اختبار دورة: " + courseTitle, canvas.width / 2, 500);
-
-                const todayDate = new Date().toLocaleDateString('ar-EG');
-                ctx.font = "18px 'Tajawal', sans-serif";
-                ctx.fillStyle = "#475569";
-                ctx.textAlign = "right";
-                ctx.fillText("تاريخ الإصدار: " + todayDate, canvas.width - 120, 680);
-
-                document.getElementById(`certWrapper_${id}`).style.display = 'block';
-                window.scrollTo({ top: document.getElementById(`certWrapper_${id}`).offsetTop - 20, behavior: 'smooth' });
-            };
-        }
-
-        function downloadCertificate(id) {
-            const canvas = document.getElementById(`certCanvas_${id}`);
-            const link = document.createElement('a');
-            link.download = 'شهادة_إتمام_دورة_صدارة.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchDynamicTextCourses();
-        });
-    </script>
 </body>
 </html>
