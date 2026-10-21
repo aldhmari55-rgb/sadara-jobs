@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدونة ونصائح صدارة المهنية | sadarah.top</title>
+    <title>مدونة صدارة | المقالات والنصائح المهنية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --primary: #0f2347; --gold: #d4af37; --bg-light: #f8fafc; --text-dark: #0f172a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
@@ -15,54 +16,56 @@
         .back-btn { background: #1e293b; color: #fff; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 12px; border: 1px solid var(--gold); }
         .container { max-width: 900px; margin: 25px auto; padding: 0 16px; }
         .article-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        .article-card h2 { font-size: 16px; color: var(--primary); margin-bottom: 10px; border-right: 4px solid var(--gold); padding-right: 10px; }
-        .article-card p { font-size: 13px; color: #475569; margin-bottom: 10px; text-align: justify; }
-        .article-card ul { margin-right: 20px; font-size: 13px; color: #334155; margin-bottom: 10px; }
+        .article-card h2 { font-size: 16px; color: var(--primary); margin-bottom: 8px; border-right: 4px solid var(--gold); padding-right: 10px; }
+        .article-card .summary { font-size: 12px; font-weight: bold; color: #3b82f6; margin-bottom: 10px; }
+        .article-card .content { font-size: 13px; color: #334155; text-align: justify; white-space: pre-line; }
+        .date-label { font-size: 10px; color: #94a3b8; margin-top: 12px; text-align: left; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>📰 مدونة صدارة للنصائح المهنية والتطوير</h1>
+        <h1>📰 مدونة منصة صدارة للمقالات والنصائح</h1>
         <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> العودة للرئيسية</a>
     </header>
 
-    <div class="container">
-
-        <!-- المقال الأول -->
-        <article class="article-card">
-            <h2>1. كيف تكتب سيرة ذاتية احترافية تتجاوز أنظمة الفرز الذكي (ATS)؟</h2>
-            <p>السيرة الذاتية هي بوابتك الأولى للحصول على فرصة عمل. مع تطور أنظمة التوظيف، أصبحت الكثير من الشركات تعتمد على البرامج الذكية لفرز الملفات قبل أن يراها مسؤول الموارد البشرية.</p>
-            <ul>
-                <li><b>استخدم المسميات الوظيفية الواضحة:</b> اختر مسميات متعارف عليها مثل "محاسب عام" أو "مسوق رقمي".</li>
-                <li><b>ركز على الإنجازات والأرقام:</b> بدلاً من كتابة المهارات فقط، اذكر نتائج عملك (مثال: زيادات المبيعات بنسبة 20%).</li>
-                <li><b>تنسيق بسيط ونظيف:</b> تجنب التنسيقات المعقدة أو الألوان الصارخة واعتمد الترتيب الزمني التنازلي.</li>
-            </ul>
-        </article>
-
-        <!-- المقال الثاني -->
-        <article class="article-card">
-            <h2>2. أهم المهارات الأكثر طلباً في سوق العمل المحلي لعام 2026</h2>
-            <p>يشهد سوق العمل تحولاً سريعاً نحو المهارات المدمجة التي تجمع بين المعرفة الفنية والتواصل الرقمي. إليك أبرز المهارات المطلوب توفرها:</p>
-            <ul>
-                <li><b>إدارة الحملات الإعلانية والتسويق الرقمي:</b> القدرة على إدارة المنصات الرقمية وتحليل سلوك الزوار.</li>
-                <li><b>إدارة المحاسبة والأنظمة المالية:</b> إتقان البرامج المحاسبية السحابية وإعداد التقارير الدقيقة.</li>
-                <li><b>مهارات التواصل والتفاوض:</b> القدرة على العمل ضمن فريق وإدارة التعامل مع العملاء بمرونة.</li>
-            </ul>
-        </article>
-
-        <!-- المقال الثالث -->
-        <article class="article-card">
-            <h2>3. نصائح ذهبية لاجتياز المقابلات الشخصية بنجاح</h2>
-            <p>الاستعداد الجيد للمقابلة الشخصية يضاعف من فرص قبولك في الوظيفة ويمنحك ثقة عالية أثناء الحديث مع أصحاب الأعمال:</p>
-            <ul>
-                <li><b>دراسة نشاط الشركة:</b> اطلع على خدمات ومشاريع الجهة قبل المقابلة لتظهر اهتمامك الفعلي.</li>
-                <li><b>الوضوح والمصداقية:</b> أجب عن الأسئلة بوضوح ودون مبالغة في سرد الخبرات.</li>
-                <li><b>الاهتمام بالحضور المهني:</b> الالتزام بالموعد والمظهر اللائق يعكس انضباطك واحترافيتك.</li>
-            </ul>
-        </article>
-
+    <div class="container" id="blogContainer">
+        <div style="text-align:center; padding:30px; color:#64748b; font-size:12px;">جاري تحميل مقالات المدونة... ⏳</div>
     </div>
 
+    <script>
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function loadPublicBlog() {
+            let container = document.getElementById('blogContainer');
+            try {
+                let { data: articles, error } = await db.from('articles').select('*').order('id', { ascending: false });
+
+                if (error || !articles || articles.length === 0) {
+                    container.innerHTML = `<div style="text-align:center; background:white; padding:30px; border-radius:12px; border:1px dashed #cbd5e1; color:#64748b; font-size:12px;">لا توجد مقالات منشورة حالياً. أضف مقالاتك الأولى من لوحة التحكم! 🚀</div>`;
+                    return;
+                }
+
+                container.innerHTML = '';
+                articles.forEach(a => {
+                    let dateStr = a.created_at ? new Date(a.created_at).toLocaleDateString('ar-SA') : '';
+                    container.innerHTML += `
+                        <article class="article-card">
+                            <h2>${a.title}</h2>
+                            ${a.summary ? `<div class="summary">💡 ${a.summary}</div>` : ''}
+                            <div class="content">${a.content}</div>
+                            <div class="date-label">تاريخ النشر: ${dateStr}</div>
+                        </article>
+                    `;
+                });
+            } catch(e) {
+                container.innerHTML = `<div style="text-align:center; color:red; font-size:12px;">حدث خطأ أثناء تحميل المقالات.</div>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPublicBlog);
+    </script>
 </body>
 </html>
