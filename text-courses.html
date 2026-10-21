@@ -191,10 +191,10 @@
     </div>
 
     <script>
-        // إعدادات اتصال Supabase (نفس إعدادات موقعك الأساسية)
-        const SUPABASE_URL = 'ضع_رابط_مشروعك_هنا';
-        const SUPABASE_ANON_KEY = 'ضع_مفتاح_anon_هنا';
-        // const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // إعدادات اتصال Supabase بنفس مفاتيح لوحة التحكم الخاصة بك
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // دالة جلب وعرض الدورات الحقيقية من جدول text_courses
         async function fetchAndRenderCourses() {
@@ -202,7 +202,7 @@
 
             try {
                 // جلب الدورات من جدول text_courses مرتبة من الأحدث للأقدم
-                const { data: courses, error } = await supabase
+                const { data: courses, error } = await supabaseClient
                     .from('text_courses')
                     .select('*')
                     .order('id', { ascending: false });
@@ -252,8 +252,10 @@
             // يمكنك توجيه الطالب لصفحة الاختبار هنا
         }
 
-        // تنفيذ دالة الجلب عند تحميل الصفحة
-        // fetchAndRenderCourses();
+        // تنفيذ دالة الجلب تلقائياً عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchAndRenderCourses();
+        });
     </script>
 </body>
 </html>
