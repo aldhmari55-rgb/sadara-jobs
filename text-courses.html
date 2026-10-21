@@ -3,127 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة الدورات النصية - صدارة للخدمات الرقمية</title>
-    <!-- يمكنك إضافة مكتبات الـ CSS أو Supabase هنا إذا لزم الأمر -->
+    <title>الدورات النصية - صدارة للخدمات الرقمية</title>
+    <!-- استيراد مكتبة Supabase للاتصال وقراءة الدورات -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
             font-family: Tahoma, sans-serif;
-            background-color: #f4f7f6;
+            background-color: #f9f9f9;
             margin: 0;
             padding: 20px;
             direction: rtl;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         h2 {
             color: #333;
+            text-align: center;
+            margin-bottom: 30px;
         }
-        .form-group {
-            margin-bottom: 15px;
+        .course-card {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+        .course-title {
+            color: #007bff;
+            font-size: 20px;
+            margin-bottom: 10px;
         }
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
+        .course-content {
+            color: #444;
+            line-height: 1.6;
+            white-space: pre-line;
         }
-        textarea {
-            height: 150px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #error-message {
-            color: red;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        #success-message {
-            color: green;
-            margin-top: 10px;
-            font-weight: bold;
+        .loading {
+            text-align: center;
+            color: #666;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>📚 إدارة الدورات النصية</h2>
+    <h2>📖 الدورات النصية المتاحة للطلاب</h2>
     
-    <div class="form-group">
-        <label for="course-title">عنوان الدورة النصية</label>
-        <input type="text" id="course-title" placeholder="أدخل عنوان الدورة هنا...">
+    <!-- مكان عرض الدورات التي يتم جلبها من قاعدة البيانات -->
+    <div id="courses-container">
+        <div class="loading">جاري تحميل الدورات...</div>
     </div>
-
-    <div class="form-group">
-        <label for="course-content">محتوى الدورة (الفقرات والدروس النصية)</label>
-        <textarea id="course-content" placeholder="أدخل محتوى الدورة هنا..."></textarea>
-    </div>
-
-    <button id="publish-btn" onclick="publishCourse()">نشر الدورة النصية 🚀</button>
-    
-    <div id="error-message"></div>
-    <div id="success-message"></div>
 </div>
 
 <script>
-    // دالة النشر وتجاوز قيود الإدخال لقاعدة البيانات
-    async function publishCourse() {
-        const title = document.getElementById('course-title').value.trim();
-        const content = document.getElementById('course-content').value.trim();
-        const errorDiv = document.getElementById('error-message');
-        const successDiv = document.getElementById('success-message');
+    // إعداد اتصال Supabase (تأكد من مطابقة مفاتيح مشروعك)
+    const SUPABASE_URL = 'ضع_رابط_مشروعك_هنا';
+    const SUPABASE_ANON_KEY = 'ضع_مفتاح_anon_هنا';
+    
+    // إذا كنت تستخدم كايت أو كود جاهز مسبقاً في مشروعك للاتصال، استبدله بالاتصال الفعلي لديك
+    // const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        errorDiv.textContent = '';
-        successDiv.textContent = '';
-
-        if (!title || !content) {
-            errorDiv.textContent = 'الرجاء ملء عنوان الدورة ومحتواها قبل النشر.';
-            return;
-        }
-
+    async function loadTextCoursesForStudents() {
+        const container = document.getElementById('courses-container');
+        
         try {
-            // محاكاة أو تنفيذ عملية الإرسال لجدول text_courses
-            // إذا كنت تستخدم Supabase JS Client سيكون الاتصال هكذا:
-            /*
-            const { data, error } = await supabase
+            // جلب الدورات النصية من الجدول
+            const { data: courses, error } = await supabase
                 .from('text_courses')
-                .insert([{ title: title, content: content }]);
+                .select('*')
+                .order('id', { ascending: false });
 
             if (error) throw error;
-            */
 
-            // رسالة نجاح تجريبية عند ربط الكود وتحديث السياسة
-            successDiv.textContent = 'تم نشر الدورة النصية بنجاح!';
-            document.getElementById('course-title').value = '';
-            document.getElementById('course-content').value = '';
+            if (!courses || courses.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #777;">لا توجد دورات نصية منشورة حتى الآن.</p>';
+                return;
+            }
+
+            let html = '';
+            courses.forEach(course => {
+                html += `
+                    <div class="course-card">
+                        <div class="course-title">${course.title}</div>
+                        <div class="course-content">${course.content}</div>
+                        <!-- يمكنك إضافة أزرار الاختبارات أو المشاهدة هنا مستقبلاً -->
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
 
         } catch (error) {
             console.error(error);
-            errorDiv.textContent = 'خطأ الحفظ: تأكد من تطبيق صلاحيات الإدخال (RLS Policy) لجدول text_courses.';
+            container.innerHTML = '<p style="text-align: center; color: red;">حدث خطأ أثناء تحميل الدورات.</p>';
         }
     }
+
+    // استدعاء دالة العرض عند فتح الصفحة
+    // loadTextCoursesForStudents();
 </script>
 
 </body>
