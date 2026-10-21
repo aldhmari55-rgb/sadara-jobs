@@ -3,224 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الدورات النصية والاختبارات - صدارة للخدمات الرقمية</title>
-    <!-- استيراد خط تجملي أو استخدام خط النظام الاحترافي -->
+    <title>أكاديمية صدارة - الدورات والبرامج التأهيلية</title>
+    <!-- استيراد مكتبة Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --primary-color: #007bff;
-            --primary-hover: #0056b3;
-            --bg-color: #f4f7f6;
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
             --card-bg: #ffffff;
-            --text-main: #333333;
-            --text-muted: #666666;
-            --border-radius: 12px;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --radius: 16px;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            background-color: #f8fafc;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             direction: rtl;
             color: var(--text-main);
         }
 
-        .page-container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        /* رأس الصفحة الجميل */
-        .page-header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 20px;
-            background: linear-gradient(135deg, #007bff, #00c6ff);
+        /* هيدر أكاديمي فخم */
+        .hero-section {
+            background: var(--bg-gradient);
             color: white;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            padding: 50px 20px;
+            text-align: center;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+            margin-bottom: 40px;
         }
 
-        .page-header h1 {
-            margin: 0 0 10px 0;
-            font-size: 28px;
+        .hero-section h1 {
+            margin: 0 0 15px 0;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
-        .page-header p {
+        .hero-section p {
             margin: 0;
-            font-size: 16px;
-            opacity: 0.9;
+            font-size: 17px;
+            opacity: 0.85;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
-        /* تخطيط الشبكة والمربعات (Grid) */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px 50px 20px;
+        }
+
+        /* شبكة عرض الدورات الأكاديمية */
         .courses-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
         }
 
-        /* تصميم المربع / البطاقة لكل دورة */
+        /* تصميم المربع / البطاقة الأكاديمية الفاخرة */
         .course-card {
             background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-top: 4px solid var(--primary-color);
-        }
-
-        .course-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .course-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--text-main);
-            margin-bottom: 12px;
-        }
-
-        .course-snippet {
-            color: var(--text-muted);
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            flex-grow: 1;
-            white-space: pre-line;
-            display: -webkit-box;
-            -webkit-line-clamp: 3; /* عرض أول 3 أسطر فقط بشكل مرتب */
-            -webkit-box-orient: vertical;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+            position: relative;
             overflow: hidden;
         }
 
-        /* حاوية الأزرار داخل المربع */
-        .card-actions {
-            display: flex;
-            gap: 10px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--accent);
         }
 
-        .btn {
+        .course-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.1);
+            border-color: #cbd5e1;
+        }
+
+        .course-title {
+            font-size: 21px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .course-content-preview {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            white-space: pre-line;
+        }
+
+        /* أزرار أكاديمية احترافية */
+        .card-footer {
+            display: flex;
+            gap: 12px;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 18px;
+        }
+
+        .btn-action {
             flex: 1;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
             text-align: center;
-            text-decoration: none;
-            transition: background-color 0.2s;
+            border: none;
+            transition: background 0.2s, transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        .btn-read {
-            background-color: var(--primary-color);
+        .btn-view {
+            background-color: #eff6ff;
+            color: var(--accent);
+        }
+
+        .btn-view:hover {
+            background-color: #dbeafe;
+        }
+
+        .btn-exam {
+            background-color: var(--accent);
             color: white;
         }
 
-        .btn-read:hover {
-            background-color: var(--primary-hover);
+        .btn-exam:hover {
+            background-color: var(--accent-hover);
         }
 
-        .btn-quiz {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .btn-quiz:hover {
-            background-color: #218838;
-        }
-
-        /* حالة التحميل أو الفراغ */
-        .status-message {
+        /* رسائل الحالة والحمل */
+        .status-box {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 40px;
+            padding: 60px 20px;
             background: white;
-            border-radius: var(--border-radius);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             color: var(--text-muted);
             font-size: 18px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px dashed #cbd5e1;
         }
     </style>
 </head>
 <body>
 
-<div class="page-container">
-    <!-- هيدر الصفحة الجميل -->
-    <div class="page-header">
-        <h1>📚 الدورات النصية والاختبارات</h1>
-        <p>تصفح أحدث الدورات الإبداعية والمحتوى التعليمي الحصري لمنصة صدارة</p>
+    <!-- هيدر أكاديمي فخم -->
+    <div class="hero-section">
+        <h1>🎓 الدورات التأهيلية والبرامج النصية</h1>
+        <p>منصة صدارة للخدمات الرقمية والتنمية المهنية - طوّر مهاراتك الإبداعية والتقنية بأحدث المناهج المعتمدة.</p>
     </div>
 
-    <!-- شبكة عرض الدورات (مربعات منظمة) -->
-    <div id="courses-grid" class="courses-grid">
-        <div class="status-message">جاري تحميل الدورات الإبداعية...</div>
+    <div class="container">
+        <!-- شبكة عرض الدورات -->
+        <div id="courses-grid" class="courses-grid">
+            <div class="status-box">جاري مزامنة وتحميل الدورات الأكاديمية...</div>
+        </div>
     </div>
-</div>
 
-<script>
-    // كود جلب وعرض الدورات من قاعدة البيانات بشكل أنيق
-    async function loadStudentTextCourses() {
-        const gridContainer = document.getElementById('courses-grid');
-        
-        try {
-            // جلب البيانات من جدول text_courses
-            const { data: courses, error } = await supabase
-                .from('text_courses')
-                .select('*')
-                .order('id', { ascending: false });
+    <script>
+        // إعدادات اتصال Supabase (نفس إعدادات موقعك الأساسية)
+        const SUPABASE_URL = 'ضع_رابط_مشروعك_هنا';
+        const SUPABASE_ANON_KEY = 'ضع_مفتاح_anon_هنا';
+        // const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            if (error) throw error;
+        // دالة جلب وعرض الدورات الحقيقية من جدول text_courses
+        async function fetchAndRenderCourses() {
+            const grid = document.getElementById('courses-grid');
 
-            if (!courses || courses.length === 0) {
-                gridContainer.innerHTML = '<div class="status-message">لا توجد دورات نصية منشورة حالياً، ترقبونا قريباً!</div>';
-                return;
+            try {
+                // جلب الدورات من جدول text_courses مرتبة من الأحدث للأقدم
+                const { data: courses, error } = await supabase
+                    .from('text_courses')
+                    .select('*')
+                    .order('id', { ascending: false });
+
+                if (error) throw error;
+
+                if (!courses || courses.length === 0) {
+                    grid.innerHTML = '<div class="status-box">لا توجد دورات تدريبية منشورة حالياً. ترقبوا إطلاق أحدث البرامج قريباً!</div>';
+                    return;
+                }
+
+                let htmlContent = '';
+                courses.forEach(course => {
+                    htmlContent += `
+                        <div class="course-card">
+                            <div>
+                                <div class="course-title">${course.title}</div>
+                                <div class="course-content-preview">${course.content}</div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn-action btn-view" onclick="openCourseDetails('${course.id}')">
+                                    📖 استعراض الدورة
+                                </button>
+                                <button class="btn-action btn-exam" onclick="openCourseExam('${course.id}')">
+                                    ✍️ بدء الاختبار
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                grid.innerHTML = htmlContent;
+
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = '<div class="status-box" style="color: #ef4444;">حدث خطأ أثناء جلب الدورات من القاعدة. تأكد من إعدادات الاتصال.</div>';
             }
-
-            let cardsHtml = '';
-            courses.forEach(course => {
-                cardsHtml += `
-                    <div class="course-card">
-                        <div>
-                            <div class="course-title">${course.title}</div>
-                            <div class="course-snippet">${course.content}</div>
-                        </div>
-                        <div class="card-actions">
-                            <button class="btn btn-read" onclick="openCourse('${course.id}')">📖 مشاهدة</button>
-                            <button class="btn btn-quiz" onclick="openQuiz('${course.id}')">✍️ اختبار</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            gridContainer.innerHTML = cardsHtml;
-
-        } catch (error) {
-            console.error(error);
-            gridContainer.innerHTML = '<div class="status-message" style="color: red;">حدث خطأ أثناء تحميل الدورات. تأكد من الاتصال.</div>';
         }
-    }
 
-    // دوال تفاعلية للأزرار (يمكن ربطها بصفحات العرض أو النوافذ المنبثقة لاحقاً)
-    function openCourse(courseId) {
-        alert('فتح تفاصيل الدورة رقم: ' + courseId);
-        // يمكنك توجيه الطالب لصفحة قراءة الدورة الكاملة هنا
-    }
+        function openCourseDetails(id) {
+            alert('فتح تفاصيل الدورة الأكاديمية رقم: ' + id);
+            // يمكنك توجيه الطالب لصفحة عرض محتوى الدورة كاملاً هنا
+        }
 
-    function openQuiz(courseId) {
-        alert('الانتقال لاختبار الدورة رقم: ' + courseId);
-        // يمكنك توجيه الطالب لصفحة الاختبارات هنا
-    }
+        function openCourseExam(id) {
+            alert('الانتقال لاختبار الدورة رقم: ' + id);
+            // يمكنك توجيه الطالب لصفحة الاختبار هنا
+        }
 
-    // استدعاء دالة التحميل عند فتح الصفحة
-    // loadStudentTextCourses();
-</script>
-
+        // تنفيذ دالة الجلب عند تحميل الصفحة
+        // fetchAndRenderCourses();
+    </script>
 </body>
 </html>
