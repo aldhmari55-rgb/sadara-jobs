@@ -149,7 +149,13 @@
             <div class="list-box" id="partnersList">جاري التحميل...</div>
         </div>
 
-        <!-- 6. نظام رفع وإدارة الدورات والدروس المرتبة -->
+        <!-- 6. إدارة تقييمات المستخدمين المضافة -->
+        <div class="card">
+            <h2><span>💬 تقييمات وتعليقات الزوار</span><span class="badge" id="reviewsCount">0</span></h2>
+            <div class="list-box" id="adminReviewsList">جاري التحميل...</div>
+        </div>
+
+        <!-- 7. نظام رفع وإدارة الدورات والدروس المرتبة -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>
                 <span id="formTitleText">🎓 رفع وإدارة الدورات والدروس المرتبة</span>
@@ -160,7 +166,7 @@
                 <strong>📖 دليل إدارة الدورات السحابية:</strong><br>
                 • <b>النشر:</b> أدخل عنوان الدورة، الوصف، اختر حالتها، أضف الدروس وروابطها ثم اضغط نشر.<br>
                 • <b>التعديل:</b> اضغط زر (تعديل ✏️) أسفل الدورة لتصعد بياناتها هنا للتعديل المباشر.<br>
-                • <b>الإخفاء/الإظهار:</b> اضغط زر (إخفاء 🔴 / إظهار 🟢) لتتحكم بظظهورها الفوري للطلاب.<br>
+                • <b>الإخفاء/الإظهار:</b> اضغط زر (إخفاء 🔴 / إظهار 🟢) لتتحكم بظهورها الفوري للطلاب.<br>
                 • <b>الحذف:</b> اضغط زر (حذف 🗑️) لحذف الدورة ودروسها نهائياً من السحابة.
             </div>
             
@@ -212,6 +218,7 @@
     let cachedJobs = [];
     let cachedResumes = [];
     let cachedCourses = [];
+    let cachedReviews = [];
 
     async function loadAdminRealStats() {
         try {
@@ -230,7 +237,6 @@
         }
     }
 
-    // دالة الرفع السحابي الآمن والمباشر إلى Storage Bucket
     async function uploadFileStrict(file) {
         if (!file) return '';
         try {
@@ -468,6 +474,40 @@
         data.forEach(p => { box.innerHTML += `<div class="item-row" style="flex-direction:row; justify-content:space-between; align-items:center;"><img src="${p.logo}" style="height:30px; width:30px; border-radius:50%; object-fit:cover;"><button class="btn-sm btn-del" onclick="deleteItem('partners', ${p.id})">حذف 🗑️</button></div>`; });
     }
 
+    // دالة إدارة وتقييمات المستخدمين المضافة
+    async function loadAdminReviews() {
+        let { data } = await db.from('reviews').select('*').order('created_at', { ascending: false });
+        cachedReviews = data || [];
+        let box = document.getElementById('adminReviewsList');
+        document.getElementById('reviewsCount').textContent = cachedReviews.length;
+        box.innerHTML = '';
+
+        if (!cachedReviews || !cachedReviews.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد تقييمات أو تعليقات مسجلة حالياً.</p>';
+            return;
+        }
+
+        cachedReviews.forEach(rev => {
+            let typeLabel = rev.item_type === 'job' ? '💼 وظيفة' : (rev.item_type === 'course' ? '🎓 دورة' : '📄 كفاءة');
+            let starsHTML = '★'.repeat(rev.rating || 5);
+            let dateFormatted = rev.created_at ? new Date(rev.created_at).toLocaleDateString('ar-SA') : '-';
+
+            box.innerHTML += `
+                <div class="item-row">
+                    <div class="row-header">
+                        <strong>👤 المقيّم: ${rev.user_name || 'زائر'}</strong>
+                        <span style="color:var(--gold); font-size:12px;">${starsHTML}</span>
+                    </div>
+                    <div style="color:#334155; font-size:11px; margin-top:2px;">💬 التعليق: ${rev.comment || 'بدون تعليق'}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+                        <span style="color:#64748b; font-size:10px;">القسم: ${typeLabel} (ID: ${rev.item_id}) - ${dateFormatted}</span>
+                        <button class="btn-sm btn-del" onclick="deleteItem('reviews', ${rev.id})">حذف التقييم 🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
     function addLessonField(titleVal = '', urlVal = '') {
         let container = document.getElementById('lessonsContainer');
         container.innerHTML += `
@@ -608,12 +648,20 @@
             if (table === 'users') loadRegisteredUsers();
             if (table === 'banners') loadBanners();
             if (table === 'partners') loadPartners();
+            if (table === 'reviews') loadAdminReviews();
             if (table === 'platform_courses') loadAdminCourses();
         }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        loadAdminRealStats(); loadJobs(); loadResumes(); loadRegisteredUsers(); loadBanners(); loadPartners(); loadAdminCourses();
+        loadAdminRealStats(); 
+        loadJobs(); 
+        loadResumes(); 
+        loadRegisteredUsers(); 
+        loadBanners(); 
+        loadPartners(); 
+        loadAdminReviews();
+        loadAdminCourses();
     });
 </script>
 </body>
