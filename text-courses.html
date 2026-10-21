@@ -31,13 +31,22 @@
         
         .btn-submit { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 12px; width: 100%; }
         
-        /* تصميم الشهادة */
-        .cert-box { display: none; background: #fff; border: 10px solid var(--primary); padding: 30px; text-align: center; border-radius: 12px; margin-top: 25px; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-        .cert-box::after { content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 2px solid var(--gold); pointer-events: none; }
-        .cert-title { font-size: 22px; font-weight: 900; color: var(--primary); margin-bottom: 10px; }
-        .cert-name { font-size: 20px; font-weight: 900; color: var(--gold); margin: 15px 0; text-decoration: underline; }
-        .cert-footer { margin-top: 25px; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; color: #64748b; }
-        .print-btn { background: var(--green); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer; }
+        /* حاوية عرض وتوليد الشهادة */
+        .cert-wrapper { display: none; margin-top: 25px; text-align: center; }
+        .canvas-container { max-width: 100%; overflow-x: auto; background: #fff; padding: 10px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        canvas { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; }
+        
+        .cert-actions { margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .action-btn-green { background: var(--green); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+        .action-btn-blue { background: #0284c7; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+
+        /* إخفاء عناصر الصفحة أثناء الطباعة لطباعة الشهادة فقط */
+        @media print {
+            body * { visibility: hidden; }
+            .cert-wrapper, .cert-wrapper * { visibility: visible; }
+            .cert-wrapper { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
+            .cert-actions { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -49,7 +58,7 @@
 
     <div class="container">
 
-        <!-- الدورة الأولى -->
+        <!-- الدورة التدريبية -->
         <article class="card">
             <h2>دورة أساسيات التسويق الرقمي وإدارة الحملات الإعلانية</h2>
             <p>التسويق الرقمي هو عملية استخدام المنصات السحابية والشبكات الاجتماعية للوصول إلى الجمهور المستهدف وزيادة المبيعات. تعتمد الفعالية التسويقية على تحديد الجمهور بدقة، صياغة محتوى جذاب، ومتابعة النتائج وتحليل الأرقام للوصول لأفضل عائد استثماري.</p>
@@ -69,28 +78,28 @@
                 <label class="quiz-opt"><input type="radio" name="q2" value="0"> نشر إعلانات غير موجهة وبشكل عشوائي</label>
 
                 <label style="font-size: 11px; font-weight: bold; margin-top: 15px; display: block;">أدخل اسمك الكامل لطباعته على الشهادة عند الاجتياز:</label>
-                <input type="text" id="studentName" placeholder="مثال: عبدالرحمن عبدالله" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 4px; font-size: 12px;">
+                <input type="text" id="studentName" placeholder="مثال: عبدالرحمن عبدالله صالح الذماري" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 4px; font-size: 12px;">
 
                 <button class="btn-submit" onclick="evaluateQuiz()">تقديم الاختبار وتصحيح الإجابات 🎓</button>
             </div>
 
-            <!-- شهادة النجاح -->
-            <div class="cert-box" id="certificate">
-                <div class="cert-title">🎓 شهادة إتمام دورة تدريبية</div>
-                <p style="font-size: 12px; color: #475569;">تشهد منصة صدارة للوظائف والخدمات الرقمية بأن الطالب/ة:</p>
-                <div class="cert-name" id="certStudentName">اسم الطالب</div>
-                <p style="font-size: 12px; color: #475569;">قد اجتاز بنجاح اختبار دورة: <b>أساسيات التسويق الرقمي وإدارة الحملات الإعلانية</b> بنسبة 100%.</p>
-                <div class="cert-footer">
-                    <span>تاريخ الإصدار: 2026</span>
-                    <span>إدارة منصة صدارة الرقمية 🎖️</span>
+            <!-- حاوية الشهادة الناتجة -->
+            <div class="cert-wrapper" id="certWrapper">
+                <div class="canvas-container">
+                    <canvas id="certCanvas" width="1200" height="850"></canvas>
                 </div>
-                <button class="print-btn" onclick="window.print()"><i class="fa-solid fa-print"></i> طباعة الشهادة / حفظ PDF</button>
+                <div class="cert-actions">
+                    <button class="action-btn-green" onclick="downloadCertificate()"><i class="fa-solid fa-download"></i> تنزيل الشهادة بصيغة صورة PNG</button>
+                    <button class="action-btn-blue" onclick="window.print()"><i class="fa-solid fa-print"></i> طباعة الشهادة / حفظ PDF (A4)</button>
+                </div>
             </div>
         </article>
 
     </div>
 
     <script>
+        const templateImgUrl = "https://lvutrzswngpkjfamgact.supabase.co/storage/v1/object/public/platform-files/certificate.png";
+
         function evaluateQuiz() {
             const name = document.getElementById('studentName').value.trim();
             const q1 = document.querySelector('input[name="q1"]:checked');
@@ -107,13 +116,53 @@
             }
 
             if (q1.value === "1" && q2.value === "1") {
-                document.getElementById('certStudentName').textContent = name;
-                document.getElementById('certificate').style.display = 'block';
-                alert('تهانينا! لقد اجتزت الاختبار بنجاح وتم إصدار شهادتك بالأسفل 🎉');
-                window.scrollTo({ top: document.getElementById('certificate').offsetTop - 20, behavior: 'smooth' });
+                generateCertificate(name, "أساسيات التسويق الرقمي وإدارة الحملات الإعلانية");
             } else {
                 alert('إجابة غير صحيحة، يرجى إعادة قراءة الدورة والمحاولة مرة أخرى.');
             }
+        }
+
+        function generateCertificate(studentName, courseTitle) {
+            const canvas = document.getElementById('certCanvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.src = templateImgUrl;
+
+            img.onload = function () {
+                // رسم صورة القالب الأساسية
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                // كتابة اسم الطالب في المنتصف
+                ctx.font = "bold 38px 'Tajawal', sans-serif";
+                ctx.fillStyle = "#d4af37"; // لون ذهبي متناسق مع القالب
+                ctx.textAlign = "center";
+                ctx.fillText(studentName, canvas.width / 2, 420);
+
+                // كتابة اسم الدورة
+                ctx.font = "bold 24px 'Tajawal', sans-serif";
+                ctx.fillStyle = "#0f2347";
+                ctx.fillText("قد اجتاز بنجاح اختبار دورة: " + courseTitle, canvas.width / 2, 500);
+
+                // كتابة التاريخ والجهة في الأسفل
+                const todayDate = new Date().toLocaleDateString('ar-EG');
+                ctx.font = "18px 'Tajawal', sans-serif";
+                ctx.fillStyle = "#475569";
+                ctx.textAlign = "right";
+                ctx.fillText("تاريخ الإصدار: " + todayDate, canvas.width - 120, 680);
+
+                // إظهار حاوية الشهادة والنزول إليها بمرونة
+                document.getElementById('certWrapper').style.display = 'block';
+                window.scrollTo({ top: document.getElementById('certWrapper').offsetTop - 20, behavior: 'smooth' });
+            };
+        }
+
+        function downloadCertificate() {
+            const canvas = document.getElementById('certCanvas');
+            const link = document.createElement('a');
+            link.download = 'شهادة_إتمام_دورة_صدارة.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
         }
     </script>
 </body>
