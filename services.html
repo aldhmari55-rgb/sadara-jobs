@@ -62,52 +62,9 @@
             🏷️ تم تفعيل رابط إحالة خاص وموثق عبر المنصة ✅
         </div>
 
-        <div class="grid-services">
-
-            <div class="service-card">
-                <div>
-                    <h3>اشتراك Telegram Premium المميز ⭐</h3>
-                    <p>تفعيل اشتراك تلجرام بريميوم الرسمي بالحساب المباشر للاستفادة من مميزات السرعة والملفات الكبيرة.</p>
-                </div>
-                <div>
-                    <div class="price-tag">حسب الباقة المختارة</div>
-                    <button class="buy-btn" onclick="openOrderModal('اشتراك Telegram Premium')">طلب واشتراك الآن 🚀</button>
-                </div>
-            </div>
-
-            <div class="service-card">
-                <div>
-                    <h3>اشتراك ChatGPT Plus / Gemini Advanced 🤖</h3>
-                    <p>حسابات واشتراكات مدفوعة رسمية لأحدث نماذج الذكاء الاصطناعي الذكية للأعمال والدراسة.</p>
-                </div>
-                <div>
-                    <div class="price-tag">باقات شهرية وسنوية</div>
-                    <button class="buy-btn" onclick="openOrderModal('اشتراك الذكاء الاصطناعي (ChatGPT/Gemini)')">طلب واشتراك الآن 🚀</button>
-                </div>
-            </div>
-
-            <div class="service-card">
-                <div>
-                    <h3>تصميم الهويات البصرية والإعلانات 🎨</h3>
-                    <p>تصميم شعارات احترافية، بنرات إعلانية للمتاجر، وتصاميم مخصصة لمنصات التواصل الاجتماعي.</p>
-                </div>
-                <div>
-                    <div class="price-tag">خدمة مخصصة</div>
-                    <button class="buy-btn" onclick="openOrderModal('تصميم الهويات البصرية والإعلانات')">طلب الخدمة 🚀</button>
-                </div>
-            </div>
-
-            <div class="service-card">
-                <div>
-                    <h3>إدارة وتمويل الحملات الإعلانية 📢</h3>
-                    <p>إنشاء وإدارة حملات ممولة ومستهدفة على فيسبوك، انستغرام، وواتساب للوصول إلى العملاء داخل اليمن.</p>
-                </div>
-                <div>
-                    <div class="price-tag">حسب ميزانية الحملة</div>
-                    <button class="buy-btn" onclick="openOrderModal('إدارة وتفعيل الحملات الإعلانية')">طلب الخدمة 🚀</button>
-                </div>
-            </div>
-
+        <!-- شبكة الخدمات الديناميكية (تُجلب من قاعدة البيانات) -->
+        <div class="grid-services" id="dynamicServicesGrid">
+            <p style="text-align:center; color:#64748b; font-weight:bold; grid-column:1/-1;">جاري تحميل الخدمات المتاحة... ⏳</p>
         </div>
 
     </div>
@@ -157,7 +114,43 @@
 
         let currentAffiliateId = "مباشر";
 
-        // فحص رابط الإحالة ورصد الزيارات التلقائية للمسوق مع حماية الهوية والخصوصية
+        // جلب عرض الخدمات الديناميكية المضافة من لوحة التحكم
+        async function loadDynamicServices() {
+            const grid = document.getElementById('dynamicServicesGrid');
+            
+            let { data: services, error } = await db.from('platform_services')
+                .select('*')
+                .eq('is_active', true)
+                .order('id', { ascending: false });
+
+            if (error || !services || services.length === 0) {
+                grid.innerHTML = `
+                    <div style="text-align:center; padding:40px 15px; background:white; border-radius:12px; border:1px dashed #cbd5e1; grid-column: 1 / -1;">
+                        <p style="font-size:14px; color:#64748b; font-weight:bold;">لا توجد خدمات مضافة في المتجر حالياً 🛒</p>
+                        <p style="font-size:11px; color:#94a3b8; margin-top:5px;">سيتم إضافة خدمات واشتراكات جديدة قريباً جداً عبر لوحة التحكم.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = '';
+            services.forEach(s => {
+                grid.innerHTML += `
+                    <div class="service-card">
+                        <div>
+                            <h3>${s.title}</h3>
+                            <p>${s.description || 'خدمة رقمية مميزة مقدمة من منصة صدارة.'}</p>
+                        </div>
+                        <div>
+                            <div class="price-tag">${s.price}</div>
+                            <button class="buy-btn" onclick="openOrderModal('${s.title.replace(/'/g, "\\'")}')">طلب واشتراك الآن 🚀</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // فحص رابط الإحالة ورصد الزيارات التلقائية للمسوق
         async function checkAffiliateLink() {
             const urlParams = new URLSearchParams(window.location.search);
             const refParam = urlParams.get('ref') || urlParams.get('affiliate');
@@ -166,7 +159,6 @@
                 currentAffiliateId = refParam;
                 localStorage.setItem('sadara_affiliate_ref', refParam);
 
-                // البحث عن المسوق بـ ref_code أو phone وزيادة عداد الزيارات
                 try {
                     let { data: aff } = await db.from('affiliates').select('clicks, id').or(`ref_code.eq.${refParam},phone.eq.${refParam}`).single();
                     if (aff) {
@@ -268,7 +260,10 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', checkAffiliateLink);
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAffiliateLink();
+            loadDynamicServices();
+        });
     </script>
 </body>
 </html>
