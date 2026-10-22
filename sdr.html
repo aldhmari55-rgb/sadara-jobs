@@ -72,7 +72,7 @@
             <div class="list-box" id="affiliatesList">جاري تحميل المسوقين...</div>
         </div>
 
-        <!-- 🛒 إضافة جديدة: إدارة متجر الخدمات الرقمية -->
+        <!-- إدارة متجر الخدمات الرقمية -->
         <div class="card">
             <h2>
                 <span>🛒 إدارة متجر الخدمات الرقمية</span>
@@ -87,7 +87,7 @@
             <textarea id="serviceDesc" rows="2" placeholder="تفاصيل ومميزات الخدمة..."></textarea>
             
             <label>السعر / السعر التقديري</label>
-            <input type="text" id="servicePrice" placeholder="مثال: 5,000 YER أو حسب الباقة">
+            <input type="text" id="servicePrice" placeholder="مثال: 5000 أو 5,000 YER">
             
             <label>حالة العرض بالمتجر</label>
             <select id="serviceStatus">
@@ -342,7 +342,7 @@
         } catch(e) { alert('فشل في عملية الرفع.'); return null; }
     }
 
-    // إدارة متجر الخدمات الرقمية (إضافة، تعديل، إخفاء، حذف)
+    // إدارة متجر الخدمات الرقمية
     async function saveService() {
         const editId = document.getElementById('editServiceId').value;
         const title = document.getElementById('serviceTitle').value.trim();
@@ -428,7 +428,7 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // إدارة المسوقين بالعمولة والإحصائيات الشاملة
+    // إدارة المسوقين بالعمولة والإحصائيات
     async function loadAdminAffiliates() {
         let { data: affs, error } = await db.from('affiliates').select('*').order('id', { ascending: false });
         let box = document.getElementById('affiliatesList');
@@ -486,7 +486,82 @@
         }
     }
 
-    // إدارة الدورات النصية
+    // إدارة طلبات الخدمات وسندات التحويل واحتساب نسبة 10% تلقائياً
+    async function loadServiceOrders() {
+        let { data: orders } = await db.from('service_orders').select('*').order('id', { ascending: false });
+        let box = document.getElementById('serviceOrdersList');
+        if(!box) return;
+        document.getElementById('ordersCount').textContent = orders ? orders.length : 0;
+        box.innerHTML = '';
+
+        if (!orders || orders.length === 0) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات سداد أو خدمات جديدة حالياً.</p>';
+            return;
+        }
+
+        orders.forEach(o => {
+            let dateFormatted = o.created_at ? new Date(o.created_at).toLocaleDateString('ar-EG') : '-';
+            let estimatedPrice = 10000; 
+            
+            box.innerHTML += `
+                <div class="item-row">
+                    <div class="row-header">
+                        <strong>💎 الخدمة: ${o.service_name}</strong>
+                        <span style="color:var(--gold); font-weight:bold;">المسوق: ${o.affiliate_id || 'مباشر'}</span>
+                    </div>
+                    <div style="color:#334155; font-size:11px; margin-top:2px;">
+                        👤 العميل: <b>${o.client_name}</b> (${o.client_phone}) | 💳 وسيلة الدفع: ${o.payment_method}<br>
+                        🖼️ <b>سند التحويل المرفق:</b> <a href="${o.transaction_ref}" target="_blank" style="color:#0284c7; font-weight:bold;">معاينة صورة السند 🔍</a><br>
+                        📝 ملاحظات: ${o.notes || 'لا يوجد'}
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+                        <span style="font-size:10px; color:#64748b;">التاريخ: ${dateFormatted}</span>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn-sm" style="background:#10b981;" onclick="approveAffiliateCommission('${o.affiliate_id}', ${estimatedPrice})">اعتماد وعمولة 10% 💰</button>
+                            <a href="https://wa.me/${o.client_phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none;">واتساب العميل 💬</a>
+                            <button class="btn-sm btn-del" onclick="deleteItem('service_orders', ${o.id})">حذف 🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // اعتماد العمولة بنسبة 10% تلقائياً عند الموافقة عليها
+    async function approveAffiliateCommission(affRefCode, servicePrice) {
+        if (!affRefCode || affRefCode === 'مباشر') { 
+            alert('هذا الطلب مباشر ولا يتبع لمسوق.'); 
+            return; 
+        }
+        
+        let commissionAmount = Number(servicePrice) * 0.10; 
+        if (isNaN(commissionAmount) || commissionAmount <= 0) {
+            commissionAmount = 1000;
+        }
+        
+        let { data: aff } = await db.from('affiliates').select('*').or(`ref_code.eq.${affRefCode},phone.eq.${affRefCode}`).single();
+        
+        if (aff) {
+            let newSales = (aff.total_sales || 0) + 1;
+            let newEarnings = Number(aff.total_earnings || 0) + commissionAmount;
+            
+            let { error } = await db.from('affiliates').update({ 
+                total_sales: newSales, 
+                total_earnings: newEarnings 
+            }).eq('id', aff.id);
+
+            if (!error) {
+                alert(`تم اعتماد المبيعة بنجاح! 🎉 وتم احتساب وإضافة عمولة 10% للمسوق بقيمة (${commissionAmount} YER).`);
+                loadAdminAffiliates();
+                loadServiceOrders();
+            } else {
+                alert('خطأ أثناء تحديث عمولة المسوق: ' + error.message);
+            }
+        } else {
+            alert('لم يتم العثور على المسوق المرتبط بهذا الكود.');
+        }
+    }
+
     async function saveTextCourse() {
         const editId = document.getElementById('editTextCourseId').value;
         const title = document.getElementById('tCourseTitle').value.trim();
@@ -497,20 +572,13 @@
         msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ بالسحابة... ⏳';
 
         let payload = { title, content };
-        let res;
-
-        if (editId) {
-            res = await db.from('text_courses').update(payload).eq('id', editId);
-        } else {
-            res = await db.from('text_courses').insert([payload]);
-        }
+        let res = editId ? await db.from('text_courses').update(payload).eq('id', editId) : await db.from('text_courses').insert([payload]);
 
         if (res.error) {
             msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
         } else {
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ ودراسة النشر بنجاح! ✅';
-            resetTCourseForm(); 
-            loadTextCourses();
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الدورة بنجاح! ✅';
+            resetTCourseForm(); loadTextCourses();
         }
     }
 
@@ -524,10 +592,10 @@
 
     async function loadTextCourses() {
         let { data, error } = await db.from('text_courses').select('*').order('id', {ascending: false});
-        if (error) { console.error('خطأ في جلب الدورات النصية:', error); return; }
-        
+        if (error) return;
         cachedTextCourses = data || [];
         let box = document.getElementById('textCoursesList');
+        if(!box) return;
         document.getElementById('textCoursesCount').textContent = cachedTextCourses.length;
         box.innerHTML = '';
 
@@ -563,65 +631,6 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // إدارة طلبات الخدمات وعمولات المسوقين
-    async function loadServiceOrders() {
-        let { data: orders } = await db.from('service_orders').select('*').order('id', { ascending: false });
-        let box = document.getElementById('serviceOrdersList');
-        document.getElementById('ordersCount').textContent = orders ? orders.length : 0;
-        box.innerHTML = '';
-
-        if (!orders || orders.length === 0) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات سداد أو خدمات جديدة حالياً.</p>';
-            return;
-        }
-
-        orders.forEach(o => {
-            let dateFormatted = o.created_at ? new Date(o.created_at).toLocaleDateString('ar-EG') : '-';
-            box.innerHTML += `
-                <div class="item-row">
-                    <div class="row-header">
-                        <strong>💎 الخدمة: ${o.service_name}</strong>
-                        <span style="color:var(--gold); font-weight:bold;">المسوق: ${o.affiliate_id || 'مباشر'}</span>
-                    </div>
-                    <div style="color:#334155; font-size:11px; margin-top:2px;">
-                        👤 العميل: <b>${o.client_name}</b> (${o.client_phone}) | 💳 وسيلة الدفع: ${o.payment_method}<br>
-                        🖼️ <b>سند التحويل المرفق:</b> <a href="${o.transaction_ref}" target="_blank" style="color:#0284c7; font-weight:bold;">معاينة صورة السند 🔍</a><br>
-                        📝 ملاحظات: ${o.notes || 'لا يوجد'}
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-                        <span style="font-size:10px; color:#64748b;">التاريخ: ${dateFormatted}</span>
-                        <div style="display:flex; gap:5px;">
-                            <button class="btn-sm" style="background:#10b981;" onclick="approveAffiliateCommission('${o.affiliate_id}')">إعتماد عمولة المسوق 💰</button>
-                            <a href="https://wa.me/${o.client_phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none;">واتساب العميل 💬</a>
-                            <button class="btn-sm btn-del" onclick="deleteItem('service_orders', ${o.id})">حذف 🗑️</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    // اعتماد عمولة المسوق والبحث المزدوج بـ ref_code أو رقم الهاتف
-    async function approveAffiliateCommission(affRefCode) {
-        if (!affRefCode || affRefCode === 'مباشر') { 
-            alert('هذا الطلب مباشر ولا يتبع لمسوق.'); 
-            return; 
-        }
-        
-        let { data: aff } = await db.from('affiliates').select('*').or(`ref_code.eq.${affRefCode},phone.eq.${affRefCode}`).single();
-        
-        if (aff) {
-            let newSales = (aff.total_sales || 0) + 1;
-            let newEarnings = (aff.total_earnings || 0) + 1000;
-            await db.from('affiliates').update({ total_sales: newSales, total_earnings: newEarnings }).eq('id', aff.id);
-            alert('تم اعتماد المبيعة وتسجيل العمولة في حساب المسوق بنجاح! 🎉');
-            loadAdminAffiliates();
-        } else {
-            alert('لم يتم العثور على المسوق المرتبط بهذا الكود.');
-        }
-    }
-
-    // إدارة المقالات والمدونة
     async function saveArticle() {
         const editId = document.getElementById('editArticleId').value;
         const title = document.getElementById('artTitle').value.trim();
@@ -656,6 +665,7 @@
         let { data } = await db.from('articles').select('*').order('id', {ascending: false});
         cachedArticles = data || [];
         let box = document.getElementById('articlesList');
+        if(!box) return;
         document.getElementById('articlesCount').textContent = cachedArticles.length;
         box.innerHTML = '';
 
@@ -734,6 +744,7 @@
         let { data } = await db.from('jobs').select('*').order('id', {ascending: false});
         cachedJobs = data || [];
         let box = document.getElementById('jobsList');
+        if(!box) return;
         document.getElementById('jobsCount').textContent = cachedJobs.length;
         document.getElementById('adminJobs').textContent = cachedJobs.length;
         box.innerHTML = '';
@@ -813,6 +824,7 @@
         let { data } = await db.from('resumes').select('*').order('id', {ascending: false});
         cachedResumes = data || [];
         let box = document.getElementById('resumesList');
+        if(!box) return;
         document.getElementById('resCount').textContent = cachedResumes.length;
         document.getElementById('adminResumes').textContent = cachedResumes.length;
         box.innerHTML = '';
@@ -854,6 +866,7 @@
         let { data } = await db.from('users').select('*').order('id', {ascending: false});
         cachedUsers = data || [];
         let box = document.getElementById('usersList');
+        if(!box) return;
         document.getElementById('usersCount').textContent = cachedUsers.length;
         box.innerHTML = '';
         if (!data || data.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد حسابات مسجلة.</p>'; return; }
@@ -870,11 +883,11 @@
         });
     }
 
-    // سجل الشهادات النصية
     async function loadCertResults() {
         let { data } = await db.from('cert_results').select('*').order('id', { ascending: false });
         cachedCertResults = data || [];
         let box = document.getElementById('certResultsList');
+        if(!box) return;
         document.getElementById('certCount').textContent = cachedCertResults.length;
         box.innerHTML = '';
 
@@ -940,7 +953,7 @@
 
     async function loadBanners() {
         let { data } = await db.from('banners').select('*').order('id', {ascending: false});
-        let box = document.getElementById('bannersList'); box.innerHTML = '';
+        let box = document.getElementById('bannersList'); if(!box) return; box.innerHTML = '';
         document.getElementById('bannersCount').textContent = data ? data.length : 0;
         if (!data || !data.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد بنرات.</p>'; return; }
         data.forEach(b => { box.innerHTML += `<div class="item-row" style="flex-direction:row; justify-content:space-between; align-items:center;"><img src="${b.url}" style="height:35px; border-radius:4px;"><button class="btn-sm btn-del" onclick="deleteItem('banners', ${b.id})">حذف 🗑️</button></div>`; });
@@ -955,7 +968,7 @@
 
     async function loadPartners() {
         let { data } = await db.from('partners').select('*').order('id', {ascending: false});
-        let box = document.getElementById('partnersList'); box.innerHTML = '';
+        let box = document.getElementById('partnersList'); if(!box) return; box.innerHTML = '';
         document.getElementById('partnersCount').textContent = data ? data.length : 0;
         if (!data || !data.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد شركاء.</p>'; return; }
         data.forEach(p => { box.innerHTML += `<div class="item-row" style="flex-direction:row; justify-content:space-between; align-items:center;"><img src="${p.logo}" style="height:30px; width:30px; border-radius:50%; object-fit:cover;"><button class="btn-sm btn-del" onclick="deleteItem('partners', ${p.id})">حذف 🗑️</button></div>`; });
@@ -965,6 +978,7 @@
         let { data } = await db.from('reviews').select('*').order('created_at', { ascending: false });
         cachedReviews = data || [];
         let box = document.getElementById('adminReviewsList');
+        if(!box) return;
         document.getElementById('reviewsCount').textContent = cachedReviews.length;
         box.innerHTML = '';
 
@@ -1026,13 +1040,7 @@
 
         msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ في السحابة... ⏳';
         let payload = { title, description, is_active, lessons: lessonsArray };
-        let res;
-
-        if (editId) {
-            res = await db.from('platform_courses').update(payload).eq('id', editId);
-        } else {
-            res = await db.from('platform_courses').insert([payload]);
-        }
+        let res = editId ? await db.from('platform_courses').update(payload).eq('id', editId) : await db.from('platform_courses').insert([payload]);
 
         if (res.error) { 
             msg.style.color = 'red'; 
@@ -1066,6 +1074,7 @@
         let { data } = await db.from('platform_courses').select('*').order('id', {ascending: false});
         cachedCourses = data || [];
         let box = document.getElementById('adminCoursesList');
+        if(!box) return;
         document.getElementById('coursesCount').textContent = cachedCourses.length;
         box.innerHTML = '';
         if (!cachedCourses.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات مضافة.</p>'; return; }
