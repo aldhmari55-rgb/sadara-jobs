@@ -87,7 +87,7 @@
             <textarea id="serviceDesc" rows="2" placeholder="تفاصيل ومميزات الخدمة..."></textarea>
             
             <label>السعر / السعر التقديري</label>
-            <input type="text" id="servicePrice" placeholder="مثال: 5000 أو 5,000 YER">
+            <input type="text" id="servicePrice" placeholder="مثال: 1500 أو 1,500 YER">
             
             <label>حالة العرض بالمتجر</label>
             <select id="serviceStatus">
@@ -486,7 +486,7 @@
         }
     }
 
-    // إدارة طلبات الخدمات وسندات التحويل واحتساب نسبة 10% تلقائياً
+    // إدارة طلبات الخدمات وسندات التحويل واحتساب نسبة 20% تلقائياً
     async function loadServiceOrders() {
         let { data: orders } = await db.from('service_orders').select('*').order('id', { ascending: false });
         let box = document.getElementById('serviceOrdersList');
@@ -499,10 +499,16 @@
             return;
         }
 
-        orders.forEach(o => {
+        for (let o of orders) {
             let dateFormatted = o.created_at ? new Date(o.created_at).toLocaleDateString('ar-EG') : '-';
-            let estimatedPrice = 10000; 
             
+            // جلب سعر الخدمة الحقيقي من جدول platform_services بناءً على اسمها
+            let { data: srvData } = await db.from('platform_services').select('price').eq('title', o.service_name).single();
+            let servicePriceText = srvData ? srvData.price : '1500';
+            
+            let numericPrice = Number(servicePriceText.replace(/[^0-9.]/g, '')) || 1500;
+            let exactCommission = numericPrice * 0.20; // حساب 20% بدقة تامة
+
             box.innerHTML += `
                 <div class="item-row">
                     <div class="row-header">
@@ -511,33 +517,32 @@
                     </div>
                     <div style="color:#334155; font-size:11px; margin-top:2px;">
                         👤 العميل: <b>${o.client_name}</b> (${o.client_phone}) | 💳 وسيلة الدفع: ${o.payment_method}<br>
+                        💰 سعر الخدمة: <b>${numericPrice} YER</b> | 🎁 عمولة المسوق (20%): <b style="color:green;">${exactCommission} YER</b><br>
                         🖼️ <b>سند التحويل المرفق:</b> <a href="${o.transaction_ref}" target="_blank" style="color:#0284c7; font-weight:bold;">معاينة صورة السند 🔍</a><br>
                         📝 ملاحظات: ${o.notes || 'لا يوجد'}
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
                         <span style="font-size:10px; color:#64748b;">التاريخ: ${dateFormatted}</span>
                         <div style="display:flex; gap:5px;">
-                            <button class="btn-sm" style="background:#10b981;" onclick="approveAffiliateCommission('${o.affiliate_id}', ${estimatedPrice})">اعتماد وعمولة 10% 💰</button>
+                            <button class="btn-sm" style="background:#10b981;" onclick="approveAffiliateCommission('${o.affiliate_id}', ${numericPrice})">اعتماد وعمولة 20% (${exactCommission} YER) 💰</button>
                             <a href="https://wa.me/${o.client_phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none;">واتساب العميل 💬</a>
                             <button class="btn-sm btn-del" onclick="deleteItem('service_orders', ${o.id})">حذف 🗑️</button>
                         </div>
                     </div>
                 </div>
             `;
-        });
+        }
     }
 
-    // اعتماد العمولة بنسبة 10% تلقائياً عند الموافقة عليها
+    // اعتماد العمولة بنسبة 20% بدقة تامة بناءً على سعر الخدمة الفعلي
     async function approveAffiliateCommission(affRefCode, servicePrice) {
         if (!affRefCode || affRefCode === 'مباشر') { 
             alert('هذا الطلب مباشر ولا يتبع لمسوق.'); 
             return; 
         }
         
-        let commissionAmount = Number(servicePrice) * 0.10; 
-        if (isNaN(commissionAmount) || commissionAmount <= 0) {
-            commissionAmount = 1000;
-        }
+        let numericPrice = Number(servicePrice) || 1500;
+        let commissionAmount = numericPrice * 0.20; // خصم وحساب 20% بدقة تامة
         
         let { data: aff } = await db.from('affiliates').select('*').or(`ref_code.eq.${affRefCode},phone.eq.${affRefCode}`).single();
         
@@ -551,7 +556,7 @@
             }).eq('id', aff.id);
 
             if (!error) {
-                alert(`تم اعتماد المبيعة بنجاح! 🎉 وتم احتساب وإضافة عمولة 10% للمسوق بقيمة (${commissionAmount} YER).`);
+                alert(`تم اعتماد المبيعة بنجاح! 🎉 وتم احتساب وإضافة عمولة 20% للمسوق بقيمة (${commissionAmount} YER).`);
                 loadAdminAffiliates();
                 loadServiceOrders();
             } else {
