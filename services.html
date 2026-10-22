@@ -3,107 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر الخدمات الرقمية | منصة صدارة</title>
+    <title>متجر الخدمات والمنتجات | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg: #f8fafc; }
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); padding-bottom: 50px; color: #0f172a; }
+        body { background: var(--bg-light); padding-bottom: 50px; color: #0f172a; }
 
-        .header { background: var(--primary); color: white; padding: 20px; text-align: center; border-bottom: 3px solid var(--gold); }
-        .header h1 { font-size: 20px; font-weight: 900; }
-        .header p { font-size: 12px; opacity: 0.9; margin-top: 4px; }
+        .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); }
+        .back-btn { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 11px; }
 
-        .nav-bar { background: #0a1324; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212,175,55,0.2); }
-        .nav-btn { background: var(--gold); color: #0a1324; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; }
+        .hero-store { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 25px 16px; text-align: center; }
+        .main-container { max-width: 800px; margin: 15px auto; padding: 0 16px; }
 
-        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
+        /* شريط البحث وتصنيفات المتجر */
+        .search-cat-box { background: white; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .store-search { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 10px; }
+        .cat-tags-container { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+        .store-cat-tag { background: #f1f5f9; color: #334155; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; border: 1px solid #cbd5e1; transition: 0.2s; }
+        .store-cat-tag.active, .store-cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .affiliate-notice { background: #eff6ff; border: 1px solid #3b82f6; color: #1e40af; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; text-align: center; margin-bottom: 15px; display: none; }
+        .affiliate-badge-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 10px; border-radius: 10px; font-size: 11px; text-align: center; font-weight: bold; margin-bottom: 15px; }
 
-        .grid-services { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media(min-width: 600px) { .grid-services { grid-template-columns: 1fr 1fr; } }
+        /* كرت المنتج المحدث مع عرض الصور */
+        .product-card { background: white; border-radius: 12px; border: 1px solid #cbd5e1; padding: 14px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 8px; }
+        .product-img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .product-title-row { display: flex; justify-content: space-between; align-items: center; }
+        .product-title { font-size: 15px; font-weight: 900; color: var(--primary); }
+        .product-price { color: #10b981; font-weight: 900; font-size: 14px; }
+        .product-desc { font-size: 11px; color: #64748b; line-height: 1.5; }
+        .product-cat-label { background: #eff6ff; color: #0284c7; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; width: fit-content; }
+        .order-btn { background: var(--primary); color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 12px; margin-top: 5px; cursor: pointer; border: none; }
 
-        .service-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; }
-        .service-card h3 { font-size: 15px; color: var(--primary); margin-bottom: 6px; }
-        .service-card p { font-size: 11px; color: #64748b; line-height: 1.5; margin-bottom: 10px; }
-        .price-tag { font-size: 14px; font-weight: 900; color: #10b981; margin-bottom: 12px; }
-        .buy-btn { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; width: 100%; text-align: center; }
-        .buy-btn:hover { background: #1e3a8a; }
-
+        /* نافذة الطلب والسداد */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-card { background: white; padding: 20px; border-radius: 14px; width: 90%; max-width: 420px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
-        .modal-card h3 { color: var(--primary); font-size: 16px; margin-bottom: 10px; border-bottom: 2px solid #f1f5f9; padding-bottom: 6px; }
-        label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 10px; }
-        input, select, textarea { width: 100%; padding: 9px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
-        
-        .bank-info { background: #fffbebf8; border: 1px dashed var(--gold); padding: 10px; border-radius: 8px; font-size: 11px; color: #78350f; margin-top: 10px; line-height: 1.6; }
-        .btn-submit { background: var(--green); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; width: 100%; margin-top: 15px; }
-        .btn-cancel { background: transparent; color: #64748b; border: none; padding: 8px; font-weight: bold; font-size: 11px; cursor: pointer; width: 100%; margin-top: 5px; }
+        .modal-card { background: white; padding: 20px; border-radius: 14px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
+        .modal-card input, .modal-card select { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
     </style>
 </head>
 <body>
 
-    <div class="nav-bar">
-        <span style="color:white; font-weight:900; font-size:14px;">صدارة للخدمات الرقمية</span>
-        <a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
+    <div class="top-navbar">
+        <span style="font-weight: 900; font-size:14px;">صدارة للخدمات الرقمية</span>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
     </div>
 
-    <div class="header">
-        <h1>متجر الخدمات والاشتراكات الرقمية 🛒</h1>
-        <p>اختر الخدمة المطلوبة وقم بالسداد المباشر لتفعيل حسابك فوراً</p>
+    <div class="hero-store">
+        <h1 style="font-size: 18px;">متجر الخدمات والاشتراكات والمنتجات 🛒</h1>
+        <p style="font-size: 11px; opacity: 0.85; margin-top: 4px;">اختر المنتج المطلوب وقم بالطلب والسداد المباشر فوراً</p>
     </div>
 
-    <div class="container">
-        
-        <div class="affiliate-notice" id="affiliateNotice">
+    <div class="main-container">
+
+        <div class="affiliate-badge-info" id="affiliateBanner">
             🏷️ تم تفعيل رابط إحالة خاص وموثق عبر المنصة ✅
         </div>
 
-        <!-- شبكة الخدمات الديناميكية (تُجلب من قاعدة البيانات) -->
-        <div class="grid-services" id="dynamicServicesGrid">
-            <p style="text-align:center; color:#64748b; font-weight:bold; grid-column:1/-1;">جاري تحميل الخدمات المتاحة... ⏳</p>
+        <!-- شريط البحث والتصنيفات -->
+        <div class="search-cat-box">
+            <input type="text" id="storeSearchInput" class="store-search" placeholder="🔍 ابحث عن منتج أو خدمة بالاسم..." oninput="filterStore()">
+            <div class="cat-tags-container">
+                <span class="store-cat-tag active" onclick="filterStoreCategory('الكل', this)">الكل 🌐</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('اشتراكات', this)">🔑 اشتراكات رقمية</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('خدمات', this)">🛠️ خدمات</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('ملابس', this)">👗 ملابس وأزياء</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('تجميل', this)">💄 تجميل وعناية</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('منزل', this)">🏡 مستلزمات منزلية</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('أخرى', this)">📦 أخرى</span>
+            </div>
         </div>
 
+        <!-- قائمة المنتجات المحدثة -->
+        <div id="storeProductsList">جاري تحميل المتجر والمنتجات...</div>
     </div>
-
-    <!-- نافذة طلب الخدمة والدفع -->
+    <!-- نافذة طلب وإتمام السداد للمنتج -->
     <div class="modal-overlay" id="orderModal">
         <div class="modal-card">
-            <h3>تأكيد الطلب والسداد 💳</h3>
-            
-            <label>اسم الخدمة</label>
-            <input type="text" id="orderServiceName" readonly style="background:#f1f5f9; font-weight:bold;">
+            <h3 style="color:var(--primary); font-size:15px;" id="orderModalTitle">طلب المنتج 🚀</h3>
+            <p style="font-size:11px; color:#64748b; margin-bottom:10px;">أدخل بياناتك وأرفق صورة سند التحويل لتأكيد الطلب:</p>
 
-            <label>الاسم الكامل</label>
-            <input type="text" id="clientName" placeholder="مثال: علي محمد">
+            <label>اسمك الكامل</label>
+            <input type="text" id="clientName" placeholder="أحمد علي">
 
-            <label>رقم الواتساب للتواصل والتفعيل</label>
+            <label>رقم الواتساب للتواصل وتفعيل الخدمة</label>
             <input type="tel" id="clientPhone" placeholder="770000000">
 
-            <label>اختر طريقة السداد</label>
-            <select id="paymentMethod" onchange="toggleBankDetails()">
-                <option value="حاسب الكريمي">حاسب الكريمي (Point: 2628009)</option>
-                <option value="محفظة جيب">محفظة جيب Jeeb (780568507)</option>
+            <label>وسيلة الدفع / التحويل</label>
+            <select id="payMethod">
+                <option value="بنك الكريمي">بنك الكريمي (حساب: 3065171731)</option>
+                <option value="محفظة جيب">محفظة جيب / النجم</option>
+                <option value="حوالة إكسبرس">حوالة باسم: عبدالرحمن الذماري</option>
             </select>
 
-            <div class="bank-info" id="bankInfoBox">
-                📌 <b>بيانات التحويل عبر حاسب الكريمي:</b><br>
-                • رقم الحاسب: <b>2628009</b><br>
-                • الاسم: عبدالرحمن عبدالله صالح الذماري
-            </div>
-
-            <label>إرفاق صورة سند التحويل/الدفع (مطلوب) 📸</label>
-            <input type="file" id="receiptFile" accept="image/*">
+            <label>صورة سند التحويل (سند الدفع 📄)</label>
+            <input type="file" id="payReceiptFile" accept="image/*">
 
             <label>ملاحظات إضافية (اختياري)</label>
-            <textarea id="orderNotes" rows="2" placeholder="أي تفاصيل خاصة بالطلب..."></textarea>
+            <input type="text" id="orderNotes" placeholder="أية تفاصيل إضافية...">
 
-            <button class="btn-submit" onclick="submitServiceOrder()">تأكيد وإرسال الطلب الآن 🚀</button>
-            <button class="btn-cancel" onclick="closeOrderModal()">إلغاء</button>
-            <div id="orderStatusMsg" style="font-size:11px; text-align:center; font-weight:bold; margin-top:8px;"></div>
+            <button onclick="submitOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; margin-top:14px; cursor:pointer; font-size:12px;">تأكيد وتأكيد إرسال الطلب 📱</button>
+            <button onclick="closeOrderModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:11px;">إلغاء</button>
+            
+            <div id="orderStatusMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
         </div>
     </div>
 
@@ -112,158 +116,135 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let currentAffiliateId = "مباشر";
+        let allProducts = [];
+        let currentSelectedCategory = 'الكل';
+        let currentProductToOrder = null;
+        let affiliateRefCode = 'مباشر';
 
-        // جلب عرض الخدمات الديناميكية المضافة من لوحة التحكم
-        async function loadDynamicServices() {
-            const grid = document.getElementById('dynamicServicesGrid');
-            
-            let { data: services, error } = await db.from('platform_services')
-                .select('*')
-                .eq('is_active', true)
-                .order('id', { ascending: false });
+        async function initStore() {
+            // فحص رابط الإحالة الخاص بالمسوقين
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('ref')) {
+                affiliateRefCode = urlParams.get('ref');
+                document.getElementById('affiliateBanner').style.display = 'block';
+            } else {
+                document.getElementById('affiliateBanner').style.display = 'none';
+            }
 
-            if (error || !services || services.length === 0) {
-                grid.innerHTML = `
-                    <div style="text-align:center; padding:40px 15px; background:white; border-radius:12px; border:1px dashed #cbd5e1; grid-column: 1 / -1;">
-                        <p style="font-size:14px; color:#64748b; font-weight:bold;">لا توجد خدمات مضافة في المتجر حالياً 🛒</p>
-                        <p style="font-size:11px; color:#94a3b8; margin-top:5px;">سيتم إضافة خدمات واشتراكات جديدة قريباً جداً عبر لوحة التحكم.</p>
-                    </div>
-                `;
+            let { data, error } = await db.from('platform_services').select('*').eq('is_active', true).order('id', { ascending: false });
+            if (error) {
+                document.getElementById('storeProductsList').innerHTML = '<p style="text-align:center; color:red; font-size:12px;">حدث خطأ في تحميل المتجر.</p>';
                 return;
             }
 
-            grid.innerHTML = '';
-            services.forEach(s => {
-                grid.innerHTML += `
-                    <div class="service-card">
-                        <div>
-                            <h3>${s.title}</h3>
-                            <p>${s.description || 'خدمة رقمية مميزة مقدمة من منصة صدارة.'}</p>
+            allProducts = data || [];
+            renderStoreProducts(allProducts);
+        }
+
+        function filterStoreCategory(category, el) {
+            currentSelectedCategory = category;
+            document.querySelectorAll('.store-cat-tag').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            executeStoreFilter();
+        }
+
+        function filterStore() {
+            executeStoreFilter();
+        }
+
+        function executeStoreFilter() {
+            let query = document.getElementById('storeSearchInput').value.toLowerCase().trim();
+            let filtered = allProducts.filter(p => {
+                let matchCat = (currentSelectedCategory === 'الكل' || p.category === currentSelectedCategory);
+                let matchQuery = (!query || p.title.toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query)));
+                return matchCat && matchQuery;
+            });
+            renderStoreProducts(filtered);
+        }
+
+        function renderStoreProducts(productsList) {
+            let box = document.getElementById('storeProductsList');
+            box.innerHTML = '';
+
+            if (!productsList || productsList.length === 0) {
+                box.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:20px;">لا توجد منتجات مطابقة لبحثك حالياً.</p>';
+                return;
+            }
+
+            productsList.forEach(p => {
+                let imgHTML = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-img">` : '';
+                let catTag = p.category ? `<span class="product-cat-label">📁 ${p.category}</span>` : '';
+
+                box.innerHTML += `
+                    <div class="product-card">
+                        ${imgHTML}
+                        <div class="product-title-row">
+                            <span class="product-title">${p.title}</span>
+                            <span class="product-price">${p.price}</span>
                         </div>
-                        <div>
-                            <div class="price-tag">${s.price}</div>
-                            <button class="buy-btn" onclick="openOrderModal('${s.title.replace(/'/g, "\\'")}')">طلب واشتراك الآن 🚀</button>
-                        </div>
+                        ${catTag}
+                        <p class="product-desc">${p.description || 'بدون وصف إضافي'}</p>
+                        <button class="order-btn" onclick="openOrderModal(${p.id}, '${p.title}')">طلب واشتراك الآن 🚀</button>
                     </div>
                 `;
             });
         }
 
-        // فحص رابط الإحالة ورصد الزيارات التلقائية للمسوق
-        async function checkAffiliateLink() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const refParam = urlParams.get('ref') || urlParams.get('affiliate');
-
-            if (refParam) {
-                currentAffiliateId = refParam;
-                localStorage.setItem('sadara_affiliate_ref', refParam);
-
-                try {
-                    let { data: aff } = await db.from('affiliates').select('clicks, id').or(`ref_code.eq.${refParam},phone.eq.${refParam}`).single();
-                    if (aff) {
-                        let newClicks = (aff.clicks || 0) + 1;
-                        await db.from('affiliates').update({ clicks: newClicks }).eq('id', aff.id);
-                    }
-                } catch(e) {}
-            } else {
-                const savedRef = localStorage.getItem('sadara_affiliate_ref');
-                if (savedRef) currentAffiliateId = savedRef;
-            }
-
-            if (currentAffiliateId && currentAffiliateId !== "مباشر") {
-                document.getElementById('affiliateNotice').style.display = 'block';
-            }
-        }
-
-        async function uploadFileStrict(file) {
-            if (!file) return '';
-            try {
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-                const { error: uploadError } = await db.storage.from('platform-files').upload(fileName, file);
-                if (uploadError) { alert('خطأ في رفع صورة السند: ' + uploadError.message); return null; }
-                const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
-                return publicUrlData.publicUrl || '';
-            } catch(e) { alert('فشل في عملية رفع الصورة.'); return null; }
-        }
-
-        function openOrderModal(serviceName) {
-            document.getElementById('orderServiceName').value = serviceName;
+        function openOrderModal(productId, productTitle) {
+            currentProductToOrder = productTitle;
+            document.getElementById('orderModalTitle').textContent = `طلب: ${productTitle}`;
             document.getElementById('orderModal').style.display = 'flex';
-            toggleBankDetails();
         }
 
         function closeOrderModal() {
             document.getElementById('orderModal').style.display = 'none';
         }
 
-        function toggleBankDetails() {
-            const method = document.getElementById('paymentMethod').value;
-            const box = document.getElementById('bankInfoBox');
-            if (method === 'حاسب الكريمي') {
-                box.innerHTML = `📌 <b>بيانات التحويل عبر حاسب الكريمي:</b><br>• رقم الحاسب: <b>2628009</b><br>• الاسم: عبدالرحمن عبدالله صالح الذماري`;
-            } else {
-                box.innerHTML = `📌 <b>بيانات التحويل عبر محفظة جيب (Jeeb):</b><br>• رقم المحفظة: <b>780568507</b><br>• الاسم: عبدالرحمن عبدالله صالح الذماري`;
-            }
-        }
-
-        async function submitServiceOrder() {
-            const serviceName = document.getElementById('orderServiceName').value;
+        async function submitOrder() {
             const clientName = document.getElementById('clientName').value.trim();
             const clientPhone = document.getElementById('clientPhone').value.trim();
-            const paymentMethod = document.getElementById('paymentMethod').value;
+            const paymentMethod = document.getElementById('payMethod').value;
+            const payReceiptFile = document.getElementById('payReceiptFile').files[0];
             const notes = document.getElementById('orderNotes').value.trim();
-            const receiptFile = document.getElementById('receiptFile').files[0];
             const msg = document.getElementById('orderStatusMsg');
 
-            if (!clientName || !clientPhone) {
-                alert('يرجى إدخال الاسم ورقم الواتساب للتواصل');
-                return;
-            }
+            if (!clientName || !clientPhone) { alert('يرجى إدخال اسمك ورقم الواتساب'); return; }
+            if (!payReceiptFile) { alert('يرجى إرفاق صورة سند الدفع أو التحويل'); return; }
 
-            if (!receiptFile) {
-                alert('يرجى إرفاق صورة سند التحويل لتأكيد الطلب!');
-                return;
-            }
+            msg.style.color = 'blue'; msg.textContent = 'جاري إرسال ورفع الطلب... ⏳';
 
-            msg.style.color = 'blue';
-            msg.textContent = 'جاري رفع السند وإرسال الطلب... ⏳';
-
-            const receiptUrl = await uploadFileStrict(receiptFile);
-            if (!receiptUrl) {
-                msg.style.color = 'red';
-                msg.textContent = 'فشل رفع صورة السند. حاول مجدداً.';
-                return;
+            // رفع صورة السند
+            let receiptUrl = '';
+            try {
+                const fileExt = payReceiptFile.name.split('.').pop();
+                const fileName = `receipt_${Date.now()}.${fileExt}`;
+                const { error: uploadErr } = await db.storage.from('platform-files').upload(fileName, payReceiptFile);
+                if (uploadErr) { msg.style.color = 'red'; msg.textContent = 'فشل رفع صورة السند.'; return; }
+                const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
+                receiptUrl = publicUrlData.publicUrl;
+            } catch(e) {
+                msg.style.color = 'red'; msg.textContent = 'خطأ في عملية رفع صورة السند.'; return;
             }
 
             let { error } = await db.from('service_orders').insert([{
+                service_name: currentProductToOrder,
                 client_name: clientName,
                 client_phone: clientPhone,
-                service_name: serviceName,
                 payment_method: paymentMethod,
                 transaction_ref: receiptUrl,
-                affiliate_id: currentAffiliateId,
-                notes: notes
+                notes: notes,
+                affiliate_id: affiliateRefCode
             }]);
 
             if (error) {
-                msg.style.color = 'red';
-                msg.textContent = 'خطأ في حفظ الطلب: ' + error.message;
+                msg.style.color = 'red'; msg.textContent = 'خطأ في إرسال الطلب: ' + error.message;
             } else {
-                msg.style.color = 'green';
-                msg.textContent = 'تم إرسال طلبك وصورة السند بنجاح! سيتم التفعيل فوراً ✅';
-                setTimeout(() => {
-                    closeOrderModal();
-                    alert('شكراً لك! تم استلام طلبك وسند التحويل بنجاح، وسيتم التواصل معك عبر الواتساب لتفعيل الخدمة.');
-                }, 1000);
+                msg.style.color = 'green'; msg.textContent = 'تم إرسال طلبك بنجاح! سيتم التواصل معك عبر الواتساب لتأكيد الخدمة. ✅';
+                setTimeout(() => { closeOrderModal(); }, 1800);
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            checkAffiliateLink();
-            loadDynamicServices();
-        });
+        document.addEventListener('DOMContentLoaded', initStore);
     </script>
 </body>
 </html>
