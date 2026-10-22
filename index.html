@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- شفرة أدسنس - تم الحفاظ عليها بدقة متناهية دون أي تعديل -->
+    <!-- شفرة أدسنس - تم الحفاظ عليها في مكانها بدقة متناهية دون أي تعديل لسلامة المراجعة -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096"
          crossorigin="anonymous"></script>
 
@@ -23,12 +23,21 @@
         .mini-btn-courses { background: #f59e0b; color: white; border: none; }
         .mini-btn-services { background: #0284c7; color: white; border: none; }
         .mini-btn-affiliate { background: #10b981; color: white; border: none; }
+        .notification-bell-btn { background: #334155; color: var(--gold); position: relative; }
+        .notif-badge-dot { position: absolute; top: -3px; left: -3px; background: #ef4444; color: white; border-radius: 50%; font-size: 8px; padding: 2px 5px; font-weight: bold; }
 
         .channel-bar { background: #25d366; color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; }
         .channel-bar a { color: white; text-decoration: underline; margin-right: 5px; }
 
         .hero { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 24px 16px 35px; text-align: center; }
         .main-container { max-width: 800px; margin: -25px auto 0; padding: 0 16px; }
+
+        /* شريط البحث الذكي والتصنيفات الجديدة */
+        .search-filter-box { background: white; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .search-input-main { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 8px; }
+        .categories-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+        .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
         .stats-bar { background: white; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .stat-item h4 { font-size: 15px; font-weight: 900; color: var(--primary); }
@@ -67,6 +76,7 @@
         .ticker-content img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
+        /* نافذة خزنة الإشعارات المنبثقة */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; }
         .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 90%; max-width: 380px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
@@ -78,6 +88,9 @@
     <div class="top-navbar">
         <span style="font-weight: 900; font-size:14px;">صدارة للوظائف</span>
         <div class="nav-btns-group">
+            <button class="mini-btn notification-bell-btn" onclick="openNotificationsModal()">
+                <i class="fa-solid fa-bell"></i> الإشعارات <span class="notif-badge-dot" id="notifCountBadge">0</span>
+            </button>
             <a href="services.html" class="mini-btn mini-btn-services"><i class="fa-solid fa-store"></i> متجر الخدمات</a>
             <a href="affiliate.html" class="mini-btn mini-btn-affiliate"><i class="fa-solid fa-handshake-angle"></i> المسوقين</a>
             <a href="courses.html" class="mini-btn mini-btn-courses"><i class="fa-solid fa-graduation-cap"></i> دورات صدارة</a>
@@ -87,7 +100,6 @@
             </div>
         </div>
     </div>
-
     <div class="channel-bar">
         📢 انضم لمجتمعنا الرسمي على الواتساب لمتابعة جديد الوظائف والكفاءات:
         <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk?s=cl&p=a&mlu=4&ilr=4" target="_blank">اضغط هنا للانضمام للمجتمع 🟢</a>
@@ -98,6 +110,20 @@
     </div>
 
     <div class="main-container">
+        <!-- محرك البحث الذكي وتصنيفات الوظائف -->
+        <div class="search-filter-box">
+            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن وظيفة، خدمة، أو تخصص معين..." oninput="filterJobsAndServices()">
+            <div class="categories-tags" id="categoryTagsBox">
+                <span class="cat-tag active" onclick="filterByCategory('الكل', this)">الكل 🌐</span>
+                <span class="cat-tag" onclick="filterByCategory('محاسبية', this)">🧮 محاسبية</span>
+                <span class="cat-tag" onclick="filterByCategory('تسويقية', this)">📢 تسويقية</span>
+                <span class="cat-tag" onclick="filterByCategory('تجارية', this)">🛒 تجارية</span>
+                <span class="cat-tag" onclick="filterByCategory('برمجية', this)">💻 برمجية</span>
+                <span class="cat-tag" onclick="filterByCategory('عملية', this)">⚙️ عملية / ميدانية</span>
+                <span class="cat-tag" onclick="filterByCategory('أخرى', this)">📂 أخرى</span>
+            </div>
+        </div>
+
         <div class="stats-bar">
             <div class="stat-item"><h4 id="statOnline">1</h4><p>متواجد الآن 🟢</p></div>
             <div class="stat-item"><h4 id="statTotalViews">...</h4><p>إجمالي الزيارات 👥</p></div>
@@ -151,6 +177,21 @@
         </div>
     </div>
 
+    <!-- نافذة خزنة الإشعارات (Notification Vault) -->
+    <div class="modal-overlay" id="notificationsModal">
+        <div class="modal-card" style="max-width: 420px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="color:var(--primary); font-size:15px;">🔔 خزنة الإشعارات والتنبيهات</h3>
+                <button onclick="closeNotificationsModal()" style="background:transparent; border:none; color:#ef4444; font-size:14px; font-weight:bold; cursor:pointer; width:auto; padding:0; margin:0;">✕ إغلاق</button>
+            </div>
+            <p style="font-size:10px; color:#64748b; margin-bottom:10px;">سجل أحدث التنبيهات والوظائف والخدمات المضافة للمنصة:</p>
+            <div id="notificationsVaultList" style="max-height:260px; overflow-y:auto; border-top:1px solid #e2e8f0; padding-top:8px;">
+                <p style="font-size:11px; color:#64748b; text-align:center;">جاري تحميل التنبيهات...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل الحساب -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-card">
             <h3 style="color:var(--primary); font-size:15px; margin-bottom:5px;" id="modalTitle">تسجيل حساب جديد 🚀</h3>
@@ -183,6 +224,8 @@
 
         let isLoginMode = false;
         let selectedStarsMap = {};
+        let allGlobalJobs = [];
+        let currentSelectedCategory = 'الكل';
 
         function getBlueBadgeHTML() {
             return `<span title="جهة موثوقة" style="display:inline-flex; align-items:center; vertical-align:middle; margin-right:3px;">
@@ -194,6 +237,7 @@
 
         async function init() {
             checkActiveSession();
+            loadNotificationsVault();
             
             if (!localStorage.getItem('sadara_logged_phone')) {
                 setTimeout(() => { openAuthModal(); }, 800);
@@ -235,20 +279,51 @@
             (partners || []).forEach(p => { tBox.innerHTML += `<img src="${p.logo}">`; });
 
             let { data: jobs } = await db.from('jobs').select('*').eq('approved', true).order('id', {ascending: false});
+            allGlobalJobs = jobs || [];
+            renderFilteredJobs(allGlobalJobs);
+        }
+
+        // فلترة الوظائف حسب التصنيف والبحث الذكي
+        function filterByCategory(categoryName, el) {
+            currentSelectedCategory = categoryName;
+            document.querySelectorAll('.cat-tag').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            executeFiltering();
+        }
+
+        function filterJobsAndServices() {
+            executeFiltering();
+        }
+
+        function executeFiltering() {
+            let query = document.getElementById('searchInput').value.toLowerCase().trim();
+            let filtered = allGlobalJobs.filter(j => {
+                let matchCat = (currentSelectedCategory === 'الكل' || j.category === currentSelectedCategory);
+                let matchQuery = (!query || j.title.toLowerCase().includes(query) || (j.company && j.company.toLowerCase().includes(query)));
+                return matchCat && matchQuery;
+            });
+            renderFilteredJobs(filtered);
+        }
+
+        function renderFilteredJobs(jobsList) {
             let jBox = document.getElementById('jobsBox');
             jBox.innerHTML = '';
 
-            if (jobs && jobs.length > 0) {
-                for (let j of jobs) {
+            if (jobsList && jobsList.length > 0) {
+                for (let j of jobsList) {
                     let imgTag = (j.image && j.image.trim() !== '') ? `<img src="${j.image}">` : '';
                     let verifiedBadge = j.is_verified ? getBlueBadgeHTML() : '';
+                    let catBadge = j.category ? `<span style="background:#eff6ff; color:#0284c7; padding:2px 6px; border-radius:6px; font-size:10px; font-weight:bold; margin-right:5px;">📁 ${j.category}</span>` : '';
                     selectedStarsMap[j.id] = 5;
 
                     jBox.innerHTML += `
                     <div class="job-card">
                         ${imgTag}
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h3 style="font-size: 15px; color:#0f2347;">${j.title}</h3>
+                            <div>
+                                <h3 style="font-size: 15px; color:#0f2347; display:inline-block;">${j.title}</h3>
+                                ${catBadge}
+                            </div>
                             <span style="background:#dcfce7; color:#166534; padding:2px 6px; border-radius:10px; font-size:10px; font-weight:bold;">${j.status}</span>
                         </div>
                         <p style="font-size: 12px; color:#64748b; margin-top:3px;">${j.company || 'جهة عمل'} ${verifiedBadge}</p>
@@ -277,9 +352,38 @@
                     loadJobReviews(j.id);
                 }
             } else {
-                jBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px;">لا توجد وظائف معروضة حالياً.</p>';
+                jBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px;">لا توجد وظائف مطابقة لبحثك حالياً.</p>';
             }
         }
+
+        // إدارة خزنة الإشعارات
+        async function loadNotificationsVault() {
+            try {
+                let { data: jobs } = await db.from('jobs').select('title, company, created_at').order('id', {ascending: false}).limit(10);
+                let vaultBox = document.getElementById('notificationsVaultList');
+                let countBadge = document.getElementById('notifCountBadge');
+                
+                if (!jobs || jobs.length === 0) {
+                    vaultBox.innerHTML = '<p style="font-size:11px; color:#64748b; text-align:center;">لا توجد إشعارات سابقة.</p>';
+                    countBadge.textContent = '0';
+                    return;
+                }
+
+                countBadge.textContent = jobs.length;
+                vaultBox.innerHTML = '';
+                jobs.forEach(item => {
+                    vaultBox.innerHTML += `
+                        <div style="background:#f8fafc; border-right:3px solid var(--gold); padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px;">
+                            <div style="font-weight:bold; color:var(--primary);">💼 وظيفة جديدة: ${item.title}</div>
+                            <div style="color:#475569; margin-top:2px;">الجهة: ${item.company || 'صدارة'}</div>
+                        </div>
+                    `;
+                });
+            } catch(e) {}
+        }
+
+        function openNotificationsModal() { document.getElementById('notificationsModal').style.display = 'flex'; }
+        function closeNotificationsModal() { document.getElementById('notificationsModal').style.display = 'none'; }
 
         function setJobStar(jobId, stars) {
             selectedStarsMap[jobId] = stars;
@@ -443,13 +547,9 @@
         navigator.serviceWorker.register('/sw.js')
           .then(function(swReg) {
             console.log('Service Worker مسجل بنجاح', swReg);
-            
-            // طلب إذن الإشعارات من الزائر عند دخوله للموقع
             Notification.requestPermission().then(function(permission) {
               if (permission === 'granted') {
                 console.log('تم منح صلاحية الإشعارات بنجاح.');
-              } else {
-                console.log('تم رفض إذن الإشعارات من قبل المستخدم.');
               }
             });
           })
