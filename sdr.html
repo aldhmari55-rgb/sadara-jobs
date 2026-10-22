@@ -63,7 +63,7 @@
 
     <div class="grid-container">
 
-        <!-- إدارة المسوقين بالعمولة والإحصائيات -->
+        <!-- إدارة المسوقين بالعمولة والإحصائيات الشاملة -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>
                 <span>🤝 قائمة المسوقين بالعمولة والإحصائيات الشاملة</span>
@@ -330,6 +330,7 @@
             let totalEarned = Number(a.total_earnings || 0);
             let paidEarned = Number(a.paid_earnings || 0);
             let dueEarnings = totalEarned - paidEarned;
+            let refCodeDisplay = a.ref_code || 'كود غير معرّف';
 
             box.innerHTML += `
                 <div class="item-row" style="background:#fff; border:1px solid #cbd5e1; border-right:5px solid var(--gold);">
@@ -337,6 +338,7 @@
                         <strong>👤 المسوق: ${a.full_name || a.name || 'مسوق'} (${a.phone})</strong>
                         <span style="background:#eff6ff; color:#0284c7; padding:2px 6px; border-radius:4px; font-weight:bold;">${a.payout_method || 'وسيلة السداد'}: ${a.payout_number || '-'}</span>
                     </div>
+                    <div style="font-size:10px; color:#64748b; margin-top:2px;">🔑 المعرف الفريد المخفي: <b style="color:#1e40af;">${refCodeDisplay}</b></div>
                     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin:8px 0; background:#f8fafc; padding:8px; border-radius:6px; text-align:center; font-size:11px;">
                         <div>👀 الزوار عبر رابطة: <b>${clicksCount}</b></div>
                         <div>🛒 مبيعات ناجحة: <b>${salesCount}</b></div>
@@ -482,17 +484,23 @@
         });
     }
 
-    async function approveAffiliateCommission(affPhone) {
-        if (!affPhone || affPhone === 'مباشر') { alert('هذا الطلب مباشر ولا يتبع لمسوق.'); return; }
-        let { data: aff } = await db.from('affiliates').select('*').eq('phone', affPhone).single();
+    // اعتماد عمولة المسوق والبحث المزدوج بـ ref_code أو رقم الهاتف
+    async function approveAffiliateCommission(affRefCode) {
+        if (!affRefCode || affRefCode === 'مباشر') { 
+            alert('هذا الطلب مباشر ولا يتبع لمسوق.'); 
+            return; 
+        }
+        
+        let { data: aff } = await db.from('affiliates').select('*').or(`ref_code.eq.${affRefCode},phone.eq.${affRefCode}`).single();
+        
         if (aff) {
             let newSales = (aff.total_sales || 0) + 1;
-            let newEarnings = (aff.total_earnings || 0) + 1000;
+            let newEarnings = (aff.total_earnings || 0) + 1000; // قيمة العمولة المحسوبة
             await db.from('affiliates').update({ total_sales: newSales, total_earnings: newEarnings }).eq('id', aff.id);
             alert('تم اعتماد المبيعة وتسجيل العمولة في حساب المسوق بنجاح! 🎉');
             loadAdminAffiliates();
         } else {
-            alert('لم يتم العثور على المسوق بجدول البيانات.');
+            alert('لم يتم العثور على المسوق المرتبط بهذا الكود.');
         }
     }
 
