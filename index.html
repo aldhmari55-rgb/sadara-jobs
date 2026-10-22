@@ -436,5 +436,27 @@
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
+
+    <!-- سكربت تفعيل الإشعارات الفورية (Push Notifications) -->
+    <script>
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(swReg) {
+            console.log('Service Worker مسجل بنجاح', swReg);
+            
+            // طلب إذن الإشعارات من الزائر عند دخوله للموقع
+            Notification.requestPermission().then(function(permission) {
+              if (permission === 'granted') {
+                console.log('تم منح صلاحية الإشعارات بنجاح.');
+              } else {
+                console.log('تم رفض إذن الإشعارات من قبل المستخدم.');
+              }
+            });
+          })
+          .catch(function(error) {
+            console.error('خطأ في تسجيل الـ Service Worker', error);
+          });
+      }
+    </script>
 </body>
 </html>
