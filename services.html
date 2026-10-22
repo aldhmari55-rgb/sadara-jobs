@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر الخدمات الرقمية والاشتراكات | شركة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg: #f8fafc; --text: #0f172a; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 60px; line-height: 1.7; }
+        header { background: #0a1324; color: #fff; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
+        .back-btn { background: #1e293b; color: #fff; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 12px; border: 1px solid var(--gold); }
+        .container { max-width: 1000px; margin: 25px auto; padding: 0 16px; }
+        .hero-banner { background: linear-gradient(135deg, #0f2347, #1e3a8a); color: white; padding: 30px 20px; border-radius: 16px; text-align: center; margin-bottom: 25px; border-bottom: 4px solid var(--gold); }
+        .hero-banner h2 { font-size: 1.5rem; color: var(--gold); margin-bottom: 10px; }
+        .affiliate-alert { background: #fef3c7; border: 1px solid #f59e0b; color: #92400e; padding: 10px 15px; border-radius: 10px; font-size: 12px; text-align: center; margin-bottom: 20px; font-weight: bold; display: none; }
+        .section-title { font-size: 16px; color: var(--primary); font-weight: bold; margin: 25px 0 15px 0; border-right: 4px solid var(--gold); padding-right: 10px; display: flex; align-items: center; gap: 8px; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+        .service-card { background: white; border-radius: 14px; padding: 20px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between; }
+        .service-icon { width: 48px; height: 48px; background: #eff6ff; color: #0284c7; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 12px; }
+        .btn-buy { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; width: 100%; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; justify-content: center; align-items: center; padding: 15px; }
+        .modal-card { background: white; border-radius: 16px; max-width: 500px; width: 100%; padding: 22px; }
+        .bank-details-box { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 14px; border-radius: 10px; margin-top: 12px; font-size: 12px; color: #166534; line-height: 1.8; }
+        label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 10px; }
+        input, select, textarea { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        .btn-submit-order { background: var(--green); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: bold; width: 100%; margin-top: 15px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>💎 متجر خدمات صدارة الرقمية</h1>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
+    </header>
+
+    <div class="container">
+        <div class="affiliate-alert" id="affiliateNotice">
+            🤝 تم إحالتك عبر رابط تسويق بالعمولة خاص بالمسوق رقم: <span id="affiliateCodeDisplay">...</span>
+        </div>
+
+        <div class="hero-banner">
+            <h2>شركة صدارة للتسويق والخدمات الرقمية</h2>
+            <p>طلب وتسديد مباشر أونلاين للاشتراكات الرقمية، خدمات التصميم والمونتاج، وإدارة الحملات الإعلانية مع إرفاق سند التحويل للتفعيل الفوري.</p>
+        </div>
+
+        <!-- 1. الاشتراكات الرقمية -->
+        <div class="section-title"><i class="fa-solid fa-bolt" style="color:var(--gold);"></i> الاشتراكات والخدمات المدفوعة</div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div>
+                    <div class="service-icon"><i class="fa-solid fa-robot"></i></div>
+                    <h3>اشتراك شات جي بي تي (ChatGPT Plus)</h3>
+                    <p style="font-size:12px; color:#64748b; margin-bottom:12px;">تفعيل اشتراك شات جي بي تي بلس الأصلي مع الوصول لأحدث نماذج الذكاء الاصطناعي.</p>
+                </div>
+                <button class="btn-buy" onclick="openPaymentModal('اشتراك شات جي بي تي ChatGPT Plus')"><i class="fa-solid fa-credit-card"></i> شراء وإرفاق سند الدفع</button>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <div class="service-icon" style="color:#d97706;"><i class="fa-solid fa-brain"></i></div>
+                    <h3>اشتراك جمناي (Gemini Advanced)</h3>
+                    <p style="font-size:12px; color:#64748b; margin-bottom:12px;">اشتراك جمناي المتطور لزيادة إنتاجيتك في تحليل البيانات والأكواد.</p>
+                </div>
+                <button class="btn-buy" onclick="openPaymentModal('اشتراك جمناي Gemini Advanced')"><i class="fa-solid fa-credit-card"></i> شراء وإرفاق سند الدفع</button>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <div class="service-icon" style="color:#ef4444;"><i class="fa-brands fa-youtube"></i></div>
+                    <h3>اشتراك يوتيوب بريميوم (YouTube Premium)</h3>
+                    <p style="font-size:12px; color:#64748b; margin-bottom:12px;">مشاهدة بدون إعلانات مزعجة، تشغيل في الخلفية بجودة عالية.</p>
+                </div>
+                <button class="btn-buy" onclick="openPaymentModal('اشتراك يوتيوب بريميوم YouTube Premium')"><i class="fa-solid fa-credit-card"></i> شراء وإرفاق سند الدفع</button>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <div class="service-icon" style="color:#0284c7;"><i class="fa-brands fa-telegram"></i></div>
+                    <h3>اشتراك تليجرام بريميوم (Telegram Premium)</h3>
+                    <p style="font-size:12px; color:#64748b; margin-bottom:12px;">سرعة تحميل مضاعفة، رموز حصرية وتحويل الأصوات لنصوص.</p>
+                </div>
+                <button class="btn-buy" onclick="openPaymentModal('اشتراك تليجرام بريميوم Telegram Premium')"><i class="fa-solid fa-credit-card"></i> شراء وإرفاق سند الدفع</button>
+            </div>
+        </div>
+
+        <!-- 2. الحملات والتصميم -->
+        <div class="section-title"><i class="fa-solid fa-bullhorn" style="color:var(--gold);"></i> الإعلانات والتصميم والهويات</div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div>
+                    <div class="service-icon" style="color:#10b981;"><i class="fa-solid fa-chart-line"></i></div>
+                    <h3>إدارة الحملات الإعلانية الممولة</h3>
+                    <p style="font-size:12px; color:#64748b; margin-bottom:12px;">إطلاق حملات ممولة عالية الاستهداف على فيسبوك وتيك توك وجوجل.</p>
+                </div>
+                <button class="btn-buy" onclick="openPaymentModal('إدارة وإطلاق الحملات الإعلانية الممولة')"><i class="fa-solid fa-credit-card"></i> شراء وإرفاق سند الدفع</button>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <div class="service-icon" style="color:#8b5cf6;"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <h3>تصميم الهويات البصرية الكاملة</h3>
+                    <p style="font-size:12px; color:#64748b; margin-bottom:12px;">بناء الهويات البصرية من الألف إلى الياء (شعار، ألوان، خطوط ومطبوعات).</p>
+                </div>
+                <button class="btn-buy" onclick="openPaymentModal('تصميم الهويات البصرية الكاملة من الألف إلى الياء')"><i class="fa-solid fa-credit-card"></i> شراء وإرفاق سند الدفع</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الدفع وإرفاق سند التحويل -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px;">
+                <h3 id="modalServiceTitle" style="font-size:14px; color:var(--primary);">طلب الخدمة</h3>
+                <button onclick="closePaymentModal()" style="border:none; background:none; font-size:18px; cursor:pointer;">&times;</button>
+            </div>
+
+            <form onsubmit="submitDirectPayment(event)">
+                <input type="hidden" id="selectedServiceName">
+
+                <label>الاسم الكامل:</label>
+                <input type="text" id="clientName" placeholder="أدخل اسمك الكامل" required>
+
+                <label>رقم الواتساب للتواصل وتفعيل الخدمة:</label>
+                <input type="text" id="clientPhone" placeholder="مثال: 967780568507" required>
+
+                <label>اختر طريقة السداد المباشر:</label>
+                <select id="paymentGateway" onchange="updateBankBox()" required>
+                    <option value="حاسب الكريمي">نقطة حاسب بنك الكريمي (حاسب)</option>
+                    <option value="محفظة جيب">محفظة جيب الإلكترونية (Jeeb)</option>
+                </select>
+
+                <div class="bank-details-box" id="bankInfoContainer">
+                    <div id="kuraimiBox">
+                        🏦 <b>الدفع عبر حاسب بنك الكريمي:</b><br>
+                        • حوّل قيمة الخدمة إلى رقم نقطة حاسب الرسمية: <b style="color:#0f2347; font-size:14px;">2628009</b><br>
+                        • اسم الحساب: <b>شركة صدارة للتسويق والخدمات الرقمية</b>
+                    </div>
+                    <div id="jeebBox" style="display:none;">
+                        📱 <b>الدفع عبر محفظة جيب:</b><br>
+                        • حوّل قيمة الخدمة إلى رقم المحفظة الرسمي: <b style="color:#0f2347; font-size:14px;">780568507</b><br>
+                        • اسم الحساب: <b>عبدالرحمن عبدالله صالح الذماري</b>
+                    </div>
+                </div>
+
+                <label>إرفاق صورة سند التحويل / إشعار السداد (إجباري):</label>
+                <input type="file" id="receiptFile" accept="image/*" required>
+
+                <label>ملاحظات إضافية أو إيميل الحساب لتفعيله:</label>
+                <textarea id="orderNotes" rows="2" placeholder="تفاصيل الحساب المراد تفعيله..."></textarea>
+
+                <button type="submit" class="btn-submit-order" id="submitBtn">تأكيد وإرسال الطلب مع السند 🚀</button>
+            </form>
+        </div>
+    </div>
+
+<script>
+    const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let currentAffiliateId = "مباشر";
+
+    function checkAffiliateLink() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const refParam = urlParams.get('ref') || urlParams.get('affiliate');
+
+        if (refParam) {
+            currentAffiliateId = refParam;
+            localStorage.setItem('sadara_affiliate_id', refParam);
+        } else {
+            const savedRef = localStorage.getItem('sadara_affiliate_id');
+            if (savedRef) currentAffiliateId = savedRef;
+        }
+
+        if (currentAffiliateId && currentAffiliateId !== "مباشر") {
+            document.getElementById('affiliateNotice').style.display = 'block';
+            document.getElementById('affiliateCodeDisplay').textContent = currentAffiliateId;
+        }
+    }
+
+    function openPaymentModal(serviceName) {
+        document.getElementById('selectedServiceName').value = serviceName;
+        document.getElementById('modalServiceTitle').textContent = "طلب: " + serviceName;
+        document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closePaymentModal() {
+        document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    function updateBankBox() {
+        const gateway = document.getElementById('paymentGateway').value;
+        document.getElementById('kuraimiBox').style.display = gateway === 'حاسب الكريمي' ? 'block' : 'none';
+        document.getElementById('jeebBox').style.display = gateway === 'محفظة جيب' ? 'block' : 'none';
+    }
+
+    async function uploadReceiptFile(file) {
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `receipt_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const { error: uploadError } = await db.storage.from('platform-files').upload(fileName, file);
+            if (uploadError) { alert('خطأ في رفع صورة السند: ' + uploadError.message); return null; }
+            const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
+            return publicUrlData.publicUrl || '';
+        } catch(e) { alert('فشل رفع السند.'); return null; }
+    }
+
+    async function submitDirectPayment(e) {
+        e.preventDefault();
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'جاري رفع السند وحفظ الطلب... ⏳';
+
+        const serviceName = document.getElementById('selectedServiceName').value;
+        const name = document.getElementById('clientName').value.trim();
+        const phone = document.getElementById('clientPhone').value.trim();
+        const gateway = document.getElementById('paymentGateway').value;
+        const fileInput = document.getElementById('receiptFile').files[0];
+        const notes = document.getElementById('orderNotes').value.trim();
+
+        let receiptUrl = await uploadReceiptFile(fileInput);
+        if (!receiptUrl) { submitBtn.disabled = false; return; }
+
+        try {
+            await db.from('service_orders').insert([{
+                client_name: name,
+                client_phone: phone,
+                service_name: serviceName,
+                payment_method: gateway,
+                transaction_ref: receiptUrl,
+                affiliate_id: currentAffiliateId,
+                notes: notes
+            }]);
+
+            alert('تم تسجيل طلبك وإرفاق سند التحويل بنجاح! سيتم التحقق وتفعيل الخدمة فوراً. ✅');
+            closePaymentModal();
+        } catch (err) {
+            alert('حدث خطأ أثناء حفظ الطلب.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'تأكيد وإرسال الطلب مع السند 🚀';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', checkAffiliateLink);
+</script>
+</body>
+</html>
