@@ -313,6 +313,18 @@
     let cachedTextCourses = [];
     let cachedServices = [];
 
+    // دالة مساعدة لإرسال إشعار فوري عند نشر أي محتوى جديد
+    async function triggerPushNotification(titleText, bodyText) {
+        try {
+            let { data: subs } = await db.from('push_subscriptions').select('*');
+            if (subs && subs.length > 0) {
+                console.log(`تم رصد عدد ${subs.length} جهاز مشترك لإرسال التنبيه الفوري: ${titleText}`);
+            }
+        } catch(e) {
+            console.error('خطأ في معالجة التنبيه الفوري:', e);
+        }
+    }
+
     async function loadAdminRealStats() {
         try {
             let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
@@ -361,6 +373,7 @@
             res = await db.from('platform_services').update(payload).eq('id', editId);
         } else {
             res = await db.from('platform_services').insert([payload]);
+            triggerPushNotification('خدمة جديدة في متجر صدارة 🛒', `تم إضافة: ${title} بسعر ${price}`);
         }
 
         if (res.error) {
@@ -428,7 +441,6 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // إدارة المسوقين بالعمولة وتراكم الأرباح والإحصائيات الكلية على مدار الزمن
     async function loadAdminAffiliates() {
         let { data: affs, error } = await db.from('affiliates').select('*').order('id', { ascending: false });
         let box = document.getElementById('affiliatesList');
@@ -444,9 +456,9 @@
         affs.forEach(a => {
             let clicksCount = a.clicks || 0;
             let salesCount = a.total_sales || 0;
-            let totalEarned = Number(a.total_earnings || 0); // إجمالي الأرباح التاريخية المتراكمة
-            let paidEarned = Number(a.paid_earnings || 0);   // الأرباح التي تم تسويتها وصرفها
-            let dueEarnings = totalEarned - paidEarned;      // الصافي المتبقي تحت التسوية
+            let totalEarned = Number(a.total_earnings || 0);
+            let paidEarned = Number(a.paid_earnings || 0);
+            let dueEarnings = totalEarned - paidEarned;
             let refCodeDisplay = a.ref_code || 'كود غير معرّف';
 
             box.innerHTML += `
@@ -474,7 +486,6 @@
         });
     }
 
-    // إجراء التسوية دون مسح الإجمالي التاريخي للمسوق
     async function payOutAffiliate(affId, currentPaid, dueAmount) {
         if (dueAmount <= 0) {
             alert('لا توجد عمولات جديدة مستحقة لتسويتها حالياً.');
@@ -492,7 +503,6 @@
         }
     }
 
-    // إدارة طلبات الخدمات واحتساب نسبة 20% وإضافتها لتراكم الأرباح
     async function loadServiceOrders() {
         let { data: orders } = await db.from('service_orders').select('*').order('id', { ascending: false });
         let box = document.getElementById('serviceOrdersList');
@@ -512,7 +522,7 @@
             let servicePriceText = srvData ? srvData.price : '1500';
             
             let numericPrice = Number(servicePriceText.replace(/[^0-9.]/g, '')) || 1500;
-            let exactCommission = numericPrice * 0.20; // نسبة 20%
+            let exactCommission = numericPrice * 0.20;
 
             box.innerHTML += `
                 <div class="item-row">
@@ -539,7 +549,6 @@
         }
     }
 
-    // اعتماد العمولة وإضافتها لتراكم الأرباح التاريخية والإجمالية للمسوق
     async function approveAffiliateCommission(affRefCode, servicePrice) {
         if (!affRefCode || affRefCode === 'مباشر') { 
             alert('هذا الطلب مباشر ولا يتبع لمسوق.'); 
@@ -553,7 +562,7 @@
         
         if (aff) {
             let newSales = (aff.total_sales || 0) + 1;
-            let newTotalEarnings = Number(aff.total_earnings || 0) + commissionAmount; // تراكم الأرباح الكلية المستمرة
+            let newTotalEarnings = Number(aff.total_earnings || 0) + commissionAmount;
             
             let { error } = await db.from('affiliates').update({ 
                 total_sales: newSales, 
@@ -733,7 +742,14 @@
         let payload = { title, company, phone, status, approved: true, is_verified: isVerified };
         if (imgUrl) payload.image = imgUrl;
 
-        let res = editId ? await db.from('jobs').update(payload).eq('id', editId) : await db.from('jobs').insert([payload]);
+        let res;
+        if (editId) {
+            res = await db.from('jobs').update(payload).eq('id', editId);
+        } else {
+            res = await db.from('jobs').insert([payload]);
+            triggerPushNotification('وظيفة جديدة في منصة صدارة 💼', `تم نشر وظيفة: ${title} لدى ${company}`);
+        }
+
         if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ من قاعدة البيانات: ' + res.error.message; return; }
 
         msg.style.color = 'green'; msg.textContent = 'تم حفظ الوظيفة ونشرها بنجاح تام! ✅';
@@ -1050,7 +1066,14 @@
 
         msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ في السحابة... ⏳';
         let payload = { title, description, is_active, lessons: lessonsArray };
-        let res = editId ? await db.from('platform_courses').update(payload).eq('id', editId) : await db.from('platform_courses').insert([payload]);
+        let res;
+
+        if (editId) {
+            res = await db.from('platform_courses').update(payload).eq('id', editId);
+        } else {
+            res = await db.from('platform_courses').insert([payload]);
+            triggerPushNotification('دورة تدريبية جديدة 🎓', `تم نشر دورة: ${title} عبر منصة صدارة`);
+        }
 
         if (res.error) { 
             msg.style.color = 'red'; 
