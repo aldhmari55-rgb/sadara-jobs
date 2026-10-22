@@ -428,7 +428,7 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // إدارة المسوقين بالعمولة والإحصائيات
+    // إدارة المسوقين بالعمولة وتراكم الأرباح والإحصائيات الكلية على مدار الزمن
     async function loadAdminAffiliates() {
         let { data: affs, error } = await db.from('affiliates').select('*').order('id', { ascending: false });
         let box = document.getElementById('affiliatesList');
@@ -444,9 +444,9 @@
         affs.forEach(a => {
             let clicksCount = a.clicks || 0;
             let salesCount = a.total_sales || 0;
-            let totalEarned = Number(a.total_earnings || 0);
-            let paidEarned = Number(a.paid_earnings || 0);
-            let dueEarnings = totalEarned - paidEarned;
+            let totalEarned = Number(a.total_earnings || 0); // إجمالي الأرباح التاريخية المتراكمة
+            let paidEarned = Number(a.paid_earnings || 0);   // الأرباح التي تم تسويتها وصرفها
+            let dueEarnings = totalEarned - paidEarned;      // الصافي المتبقي تحت التسوية
             let refCodeDisplay = a.ref_code || 'كود غير معرّف';
 
             box.innerHTML += `
@@ -457,14 +457,14 @@
                     </div>
                     <div style="font-size:10px; color:#64748b; margin-top:2px;">🔑 المعرف الفريد المخفي: <b style="color:#1e40af;">${refCodeDisplay}</b></div>
                     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin:8px 0; background:#f8fafc; padding:8px; border-radius:6px; text-align:center; font-size:11px;">
-                        <div>👀 الزوار عبر رابطة: <b>${clicksCount}</b></div>
-                        <div>🛒 مبيعات ناجحة: <b>${salesCount}</b></div>
+                        <div>👀 الزوار: <b>${clicksCount}</b></div>
+                        <div>🛒 مبيعات: <b>${salesCount}</b></div>
                         <div>💰 عمولات مستحقة: <b style="color:green; font-size:12px;">${dueEarnings} YER</b></div>
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:10px; color:#64748b;">إجمالي الأرباح الكلية: ${totalEarned} YER | تم دفع: ${paidEarned} YER</span>
+                        <span style="font-size:10px; color:#64748b;">إجمالي الأرباح التاريخية: <b>${totalEarned} YER</b> | تم تسوية وصرف: ${paidEarned} YER</span>
                         <div style="display:flex; gap:5px;">
-                            <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, ${totalEarned})">تسوية وتصفير الحساب 💳</button>
+                            <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, ${paidEarned}, ${dueEarnings})">تسوية المستحقات 💳</button>
                             <a href="https://wa.me/${a.phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none;">مراسلة 💬</a>
                             <button class="btn-sm btn-del" onclick="deleteItem('affiliates', ${a.id})">حذف 🗑️</button>
                         </div>
@@ -474,19 +474,25 @@
         });
     }
 
-    async function payOutAffiliate(affId, currentTotal) {
-        if (confirm('هل تؤكد تسليم الأرباح والعمولات للمسوق وتصفير المستحق له؟')) {
-            let { error } = await db.from('affiliates').update({ paid_earnings: currentTotal }).eq('id', affId);
+    // إجراء التسوية دون مسح الإجمالي التاريخي للمسوق
+    async function payOutAffiliate(affId, currentPaid, dueAmount) {
+        if (dueAmount <= 0) {
+            alert('لا توجد عمولات جديدة مستحقة لتسويتها حالياً.');
+            return;
+        }
+        if (confirm(`هل تؤكد تسوية وصرف المبلغ المستحق (${dueAmount} YER) للمسوق؟`)) {
+            let newPaidTotal = currentPaid + dueAmount;
+            let { error } = await db.from('affiliates').update({ paid_earnings: newPaidTotal }).eq('id', affId);
             if (error) {
-                alert('خطأ في العملية: ' + error.message);
+                alert('خطأ في عملية التسوية: ' + error.message);
             } else {
-                alert('تم تسوية الحساب وتصفير العمولات المستحقة بنجاح! ✅');
+                alert('تمت تسوية الحساب بنجاح، وتبقى إجمالي الأرباح التاريخية محفوظة في سجلات المسوق! ✅');
                 loadAdminAffiliates();
             }
         }
     }
 
-    // إدارة طلبات الخدمات وسندات التحويل واحتساب نسبة 20% تلقائياً
+    // إدارة طلبات الخدمات واحتساب نسبة 20% وإضافتها لتراكم الأرباح
     async function loadServiceOrders() {
         let { data: orders } = await db.from('service_orders').select('*').order('id', { ascending: false });
         let box = document.getElementById('serviceOrdersList');
@@ -502,12 +508,11 @@
         for (let o of orders) {
             let dateFormatted = o.created_at ? new Date(o.created_at).toLocaleDateString('ar-EG') : '-';
             
-            // جلب سعر الخدمة الحقيقي من جدول platform_services بناءً على اسمها
             let { data: srvData } = await db.from('platform_services').select('price').eq('title', o.service_name).single();
             let servicePriceText = srvData ? srvData.price : '1500';
             
             let numericPrice = Number(servicePriceText.replace(/[^0-9.]/g, '')) || 1500;
-            let exactCommission = numericPrice * 0.20; // حساب 20% بدقة تامة
+            let exactCommission = numericPrice * 0.20; // نسبة 20%
 
             box.innerHTML += `
                 <div class="item-row">
@@ -534,7 +539,7 @@
         }
     }
 
-    // اعتماد العمولة بنسبة 20% بدقة تامة بناءً على سعر الخدمة الفعلي
+    // اعتماد العمولة وإضافتها لتراكم الأرباح التاريخية والإجمالية للمسوق
     async function approveAffiliateCommission(affRefCode, servicePrice) {
         if (!affRefCode || affRefCode === 'مباشر') { 
             alert('هذا الطلب مباشر ولا يتبع لمسوق.'); 
@@ -542,21 +547,21 @@
         }
         
         let numericPrice = Number(servicePrice) || 1500;
-        let commissionAmount = numericPrice * 0.20; // خصم وحساب 20% بدقة تامة
+        let commissionAmount = numericPrice * 0.20;
         
         let { data: aff } = await db.from('affiliates').select('*').or(`ref_code.eq.${affRefCode},phone.eq.${affRefCode}`).single();
         
         if (aff) {
             let newSales = (aff.total_sales || 0) + 1;
-            let newEarnings = Number(aff.total_earnings || 0) + commissionAmount;
+            let newTotalEarnings = Number(aff.total_earnings || 0) + commissionAmount; // تراكم الأرباح الكلية المستمرة
             
             let { error } = await db.from('affiliates').update({ 
                 total_sales: newSales, 
-                total_earnings: newEarnings 
+                total_earnings: newTotalEarnings 
             }).eq('id', aff.id);
 
             if (!error) {
-                alert(`تم اعتماد المبيعة بنجاح! 🎉 وتم احتساب وإضافة عمولة 20% للمسوق بقيمة (${commissionAmount} YER).`);
+                alert(`تم اعتماد المبيعة بنجاح! 🎉 وتمت إضافة عمولة 20% (${commissionAmount} YER) إلى إجمالي أرباح المسوق المتراكمة.`);
                 loadAdminAffiliates();
                 loadServiceOrders();
             } else {
