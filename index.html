@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- شفرة أدسنس -->
+    <!-- شفرة أدسنس - تم الحفاظ عليها بدقة متناهية دون أي تعديل -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096"
          crossorigin="anonymous"></script>
 
@@ -17,10 +17,12 @@
         body { background: var(--bg-light); padding-bottom: 90px; }
 
         .top-navbar { background: #0a1324; color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); }
-        .nav-btns-group { display: flex; align-items: center; gap: 5px; }
+        .nav-btns-group { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
         .mini-btn { background: #1e293b; color: white; border: 1px solid var(--gold); padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 3px; }
         .mini-btn-gold { background: var(--gold); color: #0a1324; border: none; }
         .mini-btn-courses { background: #f59e0b; color: white; border: none; }
+        .mini-btn-services { background: #0284c7; color: white; border: none; }
+        .mini-btn-affiliate { background: #10b981; color: white; border: none; }
 
         .channel-bar { background: #25d366; color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; }
         .channel-bar a { color: white; text-decoration: underline; margin-right: 5px; }
@@ -56,7 +58,7 @@
 
         .adsense-footer-links { background: #ffffff; border-radius: 12px; padding: 16px; margin: 20px 0 30px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .adsense-footer-links p { font-size: 11px; color: #64748b; margin-bottom: 8px; font-weight: bold; }
-        .adsense-footer-links a { color: var(--primary); text-decoration: none; font-size: 12px; font-weight: 800; margin: 0 8px; transition: color 0.2s; }
+        .adsense-footer-links a { color: var(--primary); text-decoration: none; font-size: 12px; font-weight: 800; margin: 0 6px; transition: color 0.2s; display: inline-block; margin-top: 4px; }
         .adsense-footer-links a:hover { color: var(--gold); }
 
         .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; }
@@ -76,9 +78,11 @@
     <div class="top-navbar">
         <span style="font-weight: 900; font-size:14px;">صدارة للوظائف</span>
         <div class="nav-btns-group">
+            <a href="services.html" class="mini-btn mini-btn-services"><i class="fa-solid fa-store"></i> متجر الخدمات</a>
+            <a href="affiliate.html" class="mini-btn mini-btn-affiliate"><i class="fa-solid fa-handshake-angle"></i> المسوقين</a>
             <a href="courses.html" class="mini-btn mini-btn-courses"><i class="fa-solid fa-graduation-cap"></i> دورات صدارة</a>
             <a href="resumes.html" class="mini-btn mini-btn-gold"><i class="fa-solid fa-users-viewfinder"></i> الكفاءات</a>
-            <div id="authArea">
+            <div id="authArea" style="display:inline-block;">
                 <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>
             </div>
         </div>
@@ -128,9 +132,10 @@
         <div class="adsense-footer-links">
             <p>© 2026 منصة صدارة للتسويق والخدمات الرقمية - جميع الحقوق محفوظة</p>
             <div>
+                <a href="services.html">متجر الخدمات الرقمية</a> |
+                <a href="affiliate.html">برنامج المسوقين</a> |
                 <a href="blog.html">المدونة والنصائح</a> |
-<a href="text-courses.html">الدورات النصية والاختبارات</a> |
-
+                <a href="text-courses.html">الدورات والاختبارات</a> |
                 <a href="privacy.html">سياسة الخصوصية</a> |
                 <a href="privacy.html#terms">شروط الاستخدام</a> |
                 <a href="privacy.html#about">من نحن</a> |
