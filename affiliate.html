@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- شفرة أدسنس -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>برنامج التسويق بالعمولة | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg: #f8fafc; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); padding-bottom: 50px; line-height: 1.7; }
+        header { background: #0a1324; color: #fff; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
+        .container { max-width: 800px; margin: 25px auto; padding: 0 16px; }
+        .card { background: white; border-radius: 14px; padding: 22px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 20px; }
+        .card h2 { font-size: 16px; color: var(--primary); border-right: 4px solid var(--gold); padding-right: 10px; margin-bottom: 12px; }
+        label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 10px; }
+        input, select { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; font-size: 13px; }
+        .link-box { background: #eff6ff; border: 2px dashed #0284c7; padding: 15px; border-radius: 10px; text-align: center; margin-top: 15px; }
+        .link-box input { text-align: center; font-weight: bold; color: #0284c7; background: white; margin-bottom: 8px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; text-align: center; }
+        .stat-item { background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; }
+        .stat-item h3 { font-size: 18px; color: var(--primary); }
+        .stat-item p { font-size: 11px; color: #64748b; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🤝 برنامج التسويق بالعمولة (الأفلييت)</h1>
+        <a href="index.html" style="color:white; text-decoration:none; font-size:12px; font-weight:bold;"><i class="fa-solid fa-house"></i> الرئيسية</a>
+    </header>
+
+    <div class="container">
+        
+        <!-- بطاقة التسجيل والولوج -->
+        <div class="card" id="authCard">
+            <h2>تسجيل مسوق جديد / الدخول للحساب</h2>
+            <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">انضم لشبكة مسوقي صدارة واحصل على عمولات مجزية عن كل مبيعة تتم عبر رابطك الخاص.</p>
+            
+            <form onsubmit="handleAffiliateAuth(event)">
+                <label>الاسم الكامل:</label>
+                <input type="text" id="affName" placeholder="أدخل اسمك الرباعي" required>
+
+                <label>رقم الواتساب (سيكون بمثابة معرّف حسابك):</label>
+                <input type="text" id="affPhone" placeholder="مثال: 772302393" required>
+
+                <label>وسيلة استلام العمولات والأرباح:</label>
+                <select id="affPayoutMethod" required>
+                    <option value="محفظة جيب">محفظة جيب (Jeeb)</option>
+                    <option value="بنك الكريمي">حساب بنك الكريمي (Kuraimi)</option>
+                </select>
+
+                <label>رقم الحساب / المحفظة لاستلام الأرباح:</label>
+                <input type="text" id="affPayoutNum" placeholder="أدخل رقم الحساب أو المحفظة الخاص بك" required>
+
+                <button type="submit" class="btn" id="btnSubmit">توليد رابط التسويق والبدء الآن 🚀</button>
+            </form>
+        </div>
+
+        <!-- لوحة التحكم الخاصة بالمسوق (تظهر بعد الدخول) -->
+        <div class="card" id="dashboardCard" style="display: none;">
+            <h2>مرحباً بك، <span id="affiliateNameDisplay" style="color:var(--gold);">...</span> 👋</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-item"><h3 id="affSalesCount">0</h3><p>عدد المبيعات الناجحة 🛒</p></div>
+                <div class="stat-item"><h3 id="affEarningsSum">0 ريال</h3><p>إجمالي العمولات المستحقة 💰</p></div>
+            </div>
+
+            <div class="link-box">
+                <label style="color: #0284c7; font-size: 12px; margin:0 0 5px 0;">🔗 رابط التسويق الخاص بك لمتجر الخدمات:</label>
+                <input type="text" id="affiliateGeneratedLink" readonly>
+                <button onclick="copyAffiliateLink()" class="btn" style="background:#0284c7; margin-top:5px;">نسخ الرابط الخاص بك 📋</button>
+            </div>
+            
+            <p style="font-size: 11px; color: #64748b; margin-top: 12px; text-align: center;">شارِك هذا الرابط مع عملائك. أي عملية شراء يتم إشعارها بالسند عبر هذا الرابط ستسجل عمولتها لحسابك تلقائياً!</p>
+        </div>
+
+    </div>
+
+<script>
+    const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function handleAffiliateAuth(e) {
+        e.preventDefault();
+        const name = document.getElementById('affName').value.trim();
+        const phone = document.getElementById('affPhone').value.trim().replace(/[^0-9]/g, '');
+        const method = document.getElementById('affPayoutMethod').value;
+        const payoutNum = document.getElementById('affPayoutNum').value.trim();
+
+        if (!phone) { alert('يرجى كتابة رقم الهاتف بشكل صحيح'); return; }
+
+        // التحقق مما إذا كان المسوق مسجلاً من قبل
+        let { data: existing } = await db.from('affiliates').select('*').eq('phone', phone).single();
+
+        if (!existing) {
+            let { data: inserted, error } = await db.from('affiliates').insert([{
+                full_name: name,
+                phone: phone,
+                payout_method: method,
+                payout_number: payoutNum
+            }]).select().single();
+
+            if (error) { alert('خطأ في التسجيل: ' + error.message); return; }
+            existing = inserted;
+        }
+
+        showAffiliateDashboard(existing);
+    }
+
+    function showAffiliateDashboard(affData) {
+        document.getElementById('authCard').style.display = 'none';
+        document.getElementById('dashboardCard').style.display = 'block';
+
+        document.getElementById('affiliateNameDisplay').textContent = affData.full_name;
+        document.getElementById('affSalesCount').textContent = affData.total_sales || 0;
+        document.getElementById('affEarningsSum').textContent = (affData.total_earnings || 0) + " YER";
+
+        // توليد الرابط الخاص بالمسوق تلقائياً
+        const uniqueLink = `${window.location.origin}/services.html?ref=${affData.phone}`;
+        document.getElementById('affiliateGeneratedLink').value = uniqueLink;
+    }
+
+    function copyAffiliateLink() {
+        const linkInput = document.getElementById('affiliateGeneratedLink');
+        linkInput.select();
+        document.execCommand("copy");
+        alert('تم نسخ رابط التسويق الخاص بك بنجاح! يمكنك الآن بدية الترويج. 📋✅');
+    }
+</script>
+</body>
+</html>
