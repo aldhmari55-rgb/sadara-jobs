@@ -197,6 +197,15 @@
             <div class="list-box" id="textCoursesList">جاري التحميل...</div>
         </div>
 
+        <!-- طلبات الخدمات وسندات التحويل وعمولات المسوقين -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>
+                <span>🛒 طلبات الخدمات وسندات التحويل المرفقة</span>
+                <span class="badge" id="ordersCount">0</span>
+            </h2>
+            <div class="list-box" id="serviceOrdersList">جاري التحميل...</div>
+        </div>
+
         <!-- 10. نظام رفع وإدارة الدورات والدروس المرتبة -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>
@@ -250,7 +259,6 @@
         </div>
 
     </div>
-
 <script>
     const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
@@ -294,7 +302,7 @@
         } catch(e) { alert('فشل في عملية الرفع.'); return null; }
     }
 
-    // إدارة الدورات النصية (محدثة وتعمل بشكل كامل)
+    // إدارة الدورات النصية
     async function saveTextCourse() {
         const editId = document.getElementById('editTextCourseId').value;
         const title = document.getElementById('tCourseTitle').value.trim();
@@ -305,20 +313,13 @@
         msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ بالسحابة... ⏳';
 
         let payload = { title, content };
-        let res;
-
-        if (editId) {
-            res = await db.from('text_courses').update(payload).eq('id', editId);
-        } else {
-            res = await db.from('text_courses').insert([payload]);
-        }
+        let res = editId ? await db.from('text_courses').update(payload).eq('id', editId) : await db.from('text_courses').insert([payload]);
 
         if (res.error) {
             msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
         } else {
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ ودراسة النشر بنجاح! ✅';
-            resetTCourseForm(); 
-            loadTextCourses();
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الدورة بنجاح! ✅';
+            resetTCourseForm(); loadTextCourses();
         }
     }
 
@@ -332,7 +333,7 @@
 
     async function loadTextCourses() {
         let { data, error } = await db.from('text_courses').select('*').order('id', {ascending: false});
-        if (error) { console.error('خطأ في جلب الدورات النصية:', error); return; }
+        if (error) return;
         
         cachedTextCourses = data || [];
         let box = document.getElementById('textCoursesList');
@@ -347,9 +348,7 @@
         cachedTextCourses.forEach(tc => {
             box.innerHTML += `
                 <div class="item-row">
-                    <div class="row-header">
-                        <strong>📚 ${tc.title}</strong>
-                    </div>
+                    <div class="row-header"><strong>📚 ${tc.title}</strong></div>
                     <div style="color:#64748b; font-size:11px; max-height:40px; overflow:hidden;">${tc.content}</div>
                     <div class="action-btns">
                         <button class="btn-sm btn-edit" onclick="editTextCourse(${tc.id})">تعديل ✏️</button>
@@ -369,6 +368,57 @@
         document.getElementById('btnSaveTCourse').textContent = 'تعديل وحفظ 💾';
         document.getElementById('btnCancelTCourse').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // إدارة طلبات الخدمات وعمولات المسوقين
+    async function loadServiceOrders() {
+        let { data: orders } = await db.from('service_orders').select('*').order('id', { ascending: false });
+        let box = document.getElementById('serviceOrdersList');
+        document.getElementById('ordersCount').textContent = orders ? orders.length : 0;
+        box.innerHTML = '';
+
+        if (!orders || orders.length === 0) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات سداد أو خدمات جديدة حالياً.</p>';
+            return;
+        }
+
+        orders.forEach(o => {
+            let dateFormatted = o.created_at ? new Date(o.created_at).toLocaleDateString('ar-EG') : '-';
+            box.innerHTML += `
+                <div class="item-row">
+                    <div class="row-header">
+                        <strong>💎 الخدمة: ${o.service_name}</strong>
+                        <span style="color:var(--gold); font-weight:bold;">المسوق: ${o.affiliate_id || 'مباشر'}</span>
+                    </div>
+                    <div style="color:#334155; font-size:11px; margin-top:2px;">
+                        👤 العميل: <b>${o.client_name}</b> (${o.client_phone}) | 💳 وسيلة الدفع: ${o.payment_method}<br>
+                        🖼️ <b>سند التحويل المرفق:</b> <a href="${o.transaction_ref}" target="_blank" style="color:#0284c7; font-weight:bold;">معاينة صورة السند 🔍</a><br>
+                        📝 ملاحظات: ${o.notes || 'لا يوجد'}
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+                        <span style="font-size:10px; color:#64748b;">التاريخ: ${dateFormatted}</span>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn-sm" style="background:#10b981;" onclick="approveAffiliateCommission('${o.affiliate_id}')">إعتماد عمولة المسوق 💰</button>
+                            <a href="https://wa.me/${o.client_phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none;">واتساب العميل 💬</a>
+                            <button class="btn-sm btn-del" onclick="deleteItem('service_orders', ${o.id})">حذف 🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    async function approveAffiliateCommission(affPhone) {
+        if (!affPhone || affPhone === 'مباشر') { alert('هذا الطلب مباشر ولا يتبع لمسوق.'); return; }
+        let { data: aff } = await db.from('affiliates').select('*').eq('phone', affPhone).single();
+        if (aff) {
+            let newSales = (aff.total_sales || 0) + 1;
+            let newEarnings = (aff.total_earnings || 0) + 1000;
+            await db.from('affiliates').update({ total_sales: newSales, total_earnings: newEarnings }).eq('id', aff.id);
+            alert('تم اعتماد المبيعة وتسجيل العمولة في حساب المسوق بنجاح! 🎉');
+        } else {
+            alert('لم يتم العثور على المسوق بجدول البيانات.');
+        }
     }
 
     // إدارة المقالات والمدونة
@@ -417,9 +467,7 @@
         cachedArticles.forEach(a => {
             box.innerHTML += `
                 <div class="item-row">
-                    <div class="row-header">
-                        <strong>📰 ${a.title}</strong>
-                    </div>
+                    <div class="row-header"><strong>📰 ${a.title}</strong></div>
                     <div style="color:#64748b; font-size:11px;">${a.summary || 'بدون ملخص'}</div>
                     <div class="action-btns">
                         <button class="btn-sm btn-edit" onclick="editArticle(${a.id})">تعديل ✏️</button>
@@ -441,6 +489,7 @@
         document.getElementById('btnCancelArt').style.display = 'block';
     }
 
+    // إدارة الوظائف
     async function saveJob() {
         const editId = document.getElementById('editJobId').value;
         const title = document.getElementById('jobTitle').value.trim();
@@ -457,16 +506,16 @@
         let imgUrl = '';
         if (imgFile) {
             imgUrl = await uploadFileStrict(imgFile);
-            if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة، لم يتم الحفظ.'; return; }
+            if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة.'; return; }
         }
 
         let payload = { title, company, phone, status, approved: true, is_verified: isVerified };
         if (imgUrl) payload.image = imgUrl;
 
         let res = editId ? await db.from('jobs').update(payload).eq('id', editId) : await db.from('jobs').insert([payload]);
-        if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ من قاعدة البيانات: ' + res.error.message; return; }
+        if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ: ' + res.error.message; return; }
 
-        msg.style.color = 'green'; msg.textContent = 'تم حفظ الوظيفة ونشرها بنجاح تام! ✅';
+        msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الوظيفة بنجاح! ✅';
         resetJobForm(); loadJobs();
     }
 
@@ -487,7 +536,7 @@
         document.getElementById('jobsCount').textContent = cachedJobs.length;
         document.getElementById('adminJobs').textContent = cachedJobs.length;
         box.innerHTML = '';
-        if (cachedJobs.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد وظائف مضافة.</p>'; return; }
+        if (!cachedJobs.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد وظائف مضافة.</p>'; return; }
         cachedJobs.forEach(j => {
             let imgTag = j.image ? `<img src="${j.image}" class="preview-img">` : '';
             let badge = j.is_verified ? ' 🔵' : '';
@@ -519,6 +568,7 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    // إدارة الكفاءات
     async function saveResume() {
         const editId = document.getElementById('editResId').value;
         const name = document.getElementById('resName').value.trim();
@@ -535,7 +585,7 @@
         let imgUrl = '';
         if (imgFile) {
             imgUrl = await uploadFileStrict(imgFile);
-            if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة، لم يتم الحفظ.'; return; }
+            if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة.'; return; }
         }
 
         let payload = { full_name: name, name, title: name, job_title: title, specialty: title, experience: exp, phone, is_verified: isVerified };
@@ -566,7 +616,7 @@
         document.getElementById('resCount').textContent = cachedResumes.length;
         document.getElementById('adminResumes').textContent = cachedResumes.length;
         box.innerHTML = '';
-        if (cachedResumes.length === 0) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات مسجلة.</p>'; return; }
+        if (!cachedResumes.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات مسجلة.</p>'; return; }
         cachedResumes.forEach(r => {
             let displayName = r.full_name || r.name || r.title || 'كفاءة';
             let displayJob = r.job_title || r.specialty || '-';
@@ -600,6 +650,7 @@
         window.scrollTo({ top: 300, behavior: 'smooth' });
     }
 
+    // إدارة المستخدمين والتصدير
     async function loadRegisteredUsers() {
         let { data } = await db.from('users').select('*').order('id', {ascending: false});
         cachedUsers = data || [];
@@ -620,7 +671,6 @@
         });
     }
 
-    // سجل الشهادات النصية
     async function loadCertResults() {
         let { data } = await db.from('cert_results').select('*').order('id', { ascending: false });
         cachedCertResults = data || [];
@@ -654,12 +704,7 @@
     function exportCertToExcel() {
         if (!cachedCertResults.length) { alert('لا توجد سجلات شهادات للتصدير.'); return; }
         let dataToExport = cachedCertResults.map((c, i) => ({
-            "م": i + 1,
-            "رقم الشهادة": `#SDR-${c.id}`,
-            "اسم الطالب": c.student_name,
-            "الدورة التدريبية": c.course_name,
-            "الدرجة": `${c.score} / 10`,
-            "تاريخ الإصدار": c.created_at ? new Date(c.created_at).toLocaleDateString('ar-EG') : '-'
+            "م": i + 1, "رقم الشهادة": `#SDR-${c.id}`, "اسم الطالب": c.student_name, "الدورة التدريبية": c.course_name, "الدرجة": `${c.score} / 10`, "تاريخ الإصدار": c.created_at ? new Date(c.created_at).toLocaleDateString('ar-EG') : '-'
         }));
         let ws = XLSX.utils.json_to_sheet(dataToExport); let wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "سجل الشهادات"); XLSX.writeFile(wb, "Sadara_Certificates.xlsx");
@@ -681,6 +726,7 @@
         doc.save("Sadara_Users.pdf");
     }
 
+    // إدارة البنرات والشركاء والتقييمات والدورات المرتبة
     async function addBanner() {
         const file = document.getElementById('bannerFile').files[0];
         if (!file) { alert('اختر البنر'); return; }
@@ -719,26 +765,17 @@
         box.innerHTML = '';
 
         if (!cachedReviews || !cachedReviews.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد تقييمات أو تعليقات مسجلة حالياً.</p>';
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد تقييمات مسجلة.</p>';
             return;
         }
 
         cachedReviews.forEach(rev => {
-            let typeLabel = rev.item_type === 'job' ? '💼 وظيفة' : (rev.item_type === 'course' ? '🎓 دورة' : '📄 كفاءة');
             let starsHTML = '★'.repeat(rev.rating || 5);
-            let dateFormatted = rev.created_at ? new Date(rev.created_at).toLocaleDateString('ar-SA') : '-';
-
             box.innerHTML += `
                 <div class="item-row">
-                    <div class="row-header">
-                        <strong>👤 المقيّم: ${rev.user_name || 'زائر'}</strong>
-                        <span style="color:var(--gold); font-size:12px;">${starsHTML}</span>
-                    </div>
-                    <div style="color:#334155; font-size:11px; margin-top:2px;">💬 التعليق: ${rev.comment || 'بدون تعليق'}</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
-                        <span style="color:#64748b; font-size:10px;">القسم: ${typeLabel} (ID: ${rev.item_id}) - ${dateFormatted}</span>
-                        <button class="btn-sm btn-del" onclick="deleteItem('reviews', ${rev.id})">حذف التقييم 🗑️</button>
-                    </div>
+                    <div class="row-header"><strong>👤 ${rev.user_name || 'زائر'}</strong><span style="color:var(--gold);">${starsHTML}</span></div>
+                    <div style="color:#334155; font-size:11px;">💬 ${rev.comment || 'بدون تعليق'}</div>
+                    <div class="action-btns"><button class="btn-sm btn-del" onclick="deleteItem('reviews', ${rev.id})">حذف 🗑️</button></div>
                 </div>
             `;
         });
@@ -776,22 +813,12 @@
 
         msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ في السحابة... ⏳';
         let payload = { title, description, is_active, lessons: lessonsArray };
-        let res;
+        let res = editId ? await db.from('platform_courses').update(payload).eq('id', editId) : await db.from('platform_courses').insert([payload]);
 
-        if (editId) {
-            res = await db.from('platform_courses').update(payload).eq('id', editId);
-        } else {
-            res = await db.from('platform_courses').insert([payload]);
-        }
-
-        if (res.error) { 
-            msg.style.color = 'red'; 
-            msg.textContent = 'خطأ سحابي: ' + res.error.message; 
-        } else {
-            msg.style.color = 'green'; 
-            msg.textContent = 'تم حفظ وتحديث الدورة بنجاح تام! ✅';
-            resetCourseForm(); 
-            loadAdminCourses();
+        if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ سحابي: ' + res.error.message; } 
+        else {
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ وتحديث الدورة بنجاح! ✅';
+            resetCourseForm(); loadAdminCourses();
         }
     }
 
@@ -822,25 +849,16 @@
 
         cachedCourses.forEach(c => {
             let isActive = c.is_active !== false;
-            let statusBadge = isActive ? '<span style="color:green; font-weight:bold;">متوفر 🟢</span>' : '<span style="color:red; font-weight:bold;">غير متوفر 🔴</span>';
-            let toggleText = isActive ? 'إخفاء 🔴' : 'إظهار 🟢';
-
-            let lessonsListHTML = '';
-            if (c.lessons && Array.isArray(c.lessons)) {
-                c.lessons.forEach((l, idx) => { lessonsListHTML += `<div style="font-size:11px; color:#334155; margin-right:10px;">🔹 ${idx + 1}. ${l.lesson_title}</div>`; });
-            }
-
+            let statusBadge = isActive ? '<span style="color:green;">متوفر 🟢</span>' : '<span style="color:red;">غير متوفر 🔴</span>';
             box.innerHTML += `<div class="item-row">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <strong>🎓 ${c.title} (${statusBadge})</strong>
                     <div style="display:flex; gap:5px;">
                         <button type="button" class="btn-sm btn-edit" onclick="editCourse(${c.id})">تعديل ✏️</button>
-                        <button type="button" class="btn-sm" style="background:#d97706;" onclick="toggleStatus(${c.id}, ${isActive})">${toggleText}</button>
+                        <button type="button" class="btn-sm" style="background:#d97706;" onclick="toggleStatus(${c.id}, ${isActive})">${isActive ? 'إخفاء 🔴' : 'إظهار 🟢'}</button>
                         <button type="button" class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
                     </div>
                 </div>
-                <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'}</div>
-                <div style="background:#f1f5f9; padding:6px; border-radius:6px; margin-top:4px;">${lessonsListHTML || 'بدون دروس'}</div>
             </div>`;
         });
     }
@@ -853,34 +871,25 @@
         document.getElementById('courseMainDesc').value = c.description || '';
         document.getElementById('courseStatus').value = (c.is_active !== false) ? 'true' : 'false';
         
-        let container = document.getElementById('lessonsContainer'); 
-        container.innerHTML = '';
-        
+        let container = document.getElementById('lessonsContainer'); container.innerHTML = '';
         if (c.lessons && Array.isArray(c.lessons) && c.lessons.length > 0) {
             c.lessons.forEach(l => { addLessonField(l.lesson_title, l.video_url); });
-        } else { 
-            addLessonField('', ''); 
-        }
+        } else { addLessonField('', ''); }
 
         document.getElementById('btnSaveCourse').textContent = 'تعديل وحفظ الدورة 💾';
         document.getElementById('btnCancelCourse').style.display = 'block';
-        document.getElementById('formTitleText').textContent = '✏️ تعديل الدورة الحالية';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     async function toggleStatus(id, currentStatus) {
-        let { error } = await db.from('platform_courses').update({ is_active: !currentStatus }).eq('id', id);
-        if (error) { alert('خطأ في تغيير الحالة: ' + error.message); return; }
+        await db.from('platform_courses').update({ is_active: !currentStatus }).eq('id', id);
         loadAdminCourses();
     }
 
     async function deleteItem(table, id) {
         if (confirm('هل أنت متأكد من الحذف النهائي؟')) {
             let { error } = await db.from(table).delete().eq('id', id);
-            if (error) { 
-                alert('فشل الحذف من السحابة: ' + error.message); 
-                return; 
-            }
+            if (error) { alert('فشل الحذف: ' + error.message); return; }
             alert('تم الحذف بنجاح! ✅');
             if (table === 'jobs') loadJobs();
             if (table === 'resumes') loadResumes();
@@ -892,21 +901,14 @@
             if (table === 'platform_courses') loadAdminCourses();
             if (table === 'cert_results') loadCertResults();
             if (table === 'text_courses') loadTextCourses();
+            if (table === 'service_orders') loadServiceOrders();
         }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        loadAdminRealStats(); 
-        loadJobs(); 
-        loadResumes(); 
-        loadArticles();
-        loadRegisteredUsers(); 
-        loadBanners(); 
-        loadPartners(); 
-        loadAdminReviews();
-        loadAdminCourses();
-        loadCertResults();
-        loadTextCourses();
+        loadAdminRealStats(); loadJobs(); loadResumes(); loadArticles();
+        loadRegisteredUsers(); loadBanners(); loadPartners(); loadAdminReviews();
+        loadAdminCourses(); loadCertResults(); loadTextCourses(); loadServiceOrders();
     });
 </script>
 </body>
