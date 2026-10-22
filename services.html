@@ -33,7 +33,6 @@
         .buy-btn { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; width: 100%; text-align: center; }
         .buy-btn:hover { background: #1e3a8a; }
 
-        /* Modal Order Form */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; }
         .modal-card { background: white; padding: 20px; border-radius: 14px; width: 90%; max-width: 420px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
         .modal-card h3 { color: var(--primary); font-size: 16px; margin-bottom: 10px; border-bottom: 2px solid #f1f5f9; padding-bottom: 6px; }
@@ -60,7 +59,7 @@
     <div class="container">
         
         <div class="affiliate-notice" id="affiliateNotice">
-            🏷️ تم تفعيل خصم خاص عبر رابط المسوق: <span id="affiliateCodeDisplay"></span>
+            🏷️ تم تفعيل رابط إحالة خاص وموثق عبر المنصة ✅
         </div>
 
         <div class="grid-services">
@@ -158,35 +157,33 @@
 
         let currentAffiliateId = "مباشر";
 
-        // فحص رابط الإحالة ورصد الزيارات التلقائية للمسوق
+        // فحص رابط الإحالة ورصد الزيارات التلقائية للمسوق مع حماية الهوية والخصوصية
         async function checkAffiliateLink() {
             const urlParams = new URLSearchParams(window.location.search);
             const refParam = urlParams.get('ref') || urlParams.get('affiliate');
 
             if (refParam) {
                 currentAffiliateId = refParam;
-                localStorage.setItem('sadara_affiliate_id', refParam);
+                localStorage.setItem('sadara_affiliate_ref', refParam);
 
-                // زيادة عداد الزيارات تلقائياً للمسوق في السحابة
+                // البحث عن المسوق بـ ref_code أو phone وزيادة عداد الزيارات
                 try {
-                    let { data: aff } = await db.from('affiliates').select('clicks').eq('phone', refParam).single();
+                    let { data: aff } = await db.from('affiliates').select('clicks, id').or(`ref_code.eq.${refParam},phone.eq.${refParam}`).single();
                     if (aff) {
                         let newClicks = (aff.clicks || 0) + 1;
-                        await db.from('affiliates').update({ clicks: newClicks }).eq('phone', refParam);
+                        await db.from('affiliates').update({ clicks: newClicks }).eq('id', aff.id);
                     }
                 } catch(e) {}
             } else {
-                const savedRef = localStorage.getItem('sadara_affiliate_id');
+                const savedRef = localStorage.getItem('sadara_affiliate_ref');
                 if (savedRef) currentAffiliateId = savedRef;
             }
 
             if (currentAffiliateId && currentAffiliateId !== "مباشر") {
                 document.getElementById('affiliateNotice').style.display = 'block';
-                document.getElementById('affiliateCodeDisplay').textContent = currentAffiliateId;
             }
         }
 
-        // رفع الصورة للسحابة
         async function uploadFileStrict(file) {
             if (!file) return '';
             try {
