@@ -51,7 +51,7 @@
 
     <div class="header">
         <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المدونة، المستخدمين، الدورات، والمسوقين</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المدونة، المستخدمين، المتجر، والدورات والمسوقين</p>
     </div>
 
     <div class="admin-stats-grid">
@@ -70,6 +70,36 @@
                 <span class="badge" id="affiliatesCount">0</span>
             </h2>
             <div class="list-box" id="affiliatesList">جاري تحميل المسوقين...</div>
+        </div>
+
+        <!-- 🛒 إضافة جديدة: إدارة متجر الخدمات الرقمية -->
+        <div class="card">
+            <h2>
+                <span>🛒 إدارة متجر الخدمات الرقمية</span>
+                <span class="badge" id="adminServicesCount">0</span>
+            </h2>
+            <input type="hidden" id="editServiceId">
+            
+            <label>اسم الخدمة</label>
+            <input type="text" id="serviceTitle" placeholder="مثال: اشتراك تلجرام بريميوم">
+            
+            <label>وصف الخدمة</label>
+            <textarea id="serviceDesc" rows="2" placeholder="تفاصيل ومميزات الخدمة..."></textarea>
+            
+            <label>السعر / السعر التقديري</label>
+            <input type="text" id="servicePrice" placeholder="مثال: 5,000 YER أو حسب الباقة">
+            
+            <label>حالة العرض بالمتجر</label>
+            <select id="serviceStatus">
+                <option value="true">معروض للعملاء 🟢</option>
+                <option value="false">مخفي 🔴</option>
+            </select>
+            
+            <button id="btnSaveService" onclick="saveService()" style="background:var(--primary); color:white;">نشر الخدمة بالمتجر 🚀</button>
+            <button id="btnCancelService" onclick="resetServiceForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
+            
+            <div id="serviceMsg" class="status-msg"></div>
+            <div class="list-box" id="adminServicesList">جاري التحميل...</div>
         </div>
 
         <!-- 1. إدارة الوظائف -->
@@ -281,6 +311,7 @@
     let cachedArticles = [];
     let cachedCertResults = [];
     let cachedTextCourses = [];
+    let cachedServices = [];
 
     async function loadAdminRealStats() {
         try {
@@ -309,6 +340,92 @@
             const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
             return publicUrlData.publicUrl || '';
         } catch(e) { alert('فشل في عملية الرفع.'); return null; }
+    }
+
+    // إدارة متجر الخدمات الرقمية (إضافة، تعديل، إخفاء، حذف)
+    async function saveService() {
+        const editId = document.getElementById('editServiceId').value;
+        const title = document.getElementById('serviceTitle').value.trim();
+        const description = document.getElementById('serviceDesc').value.trim();
+        const price = document.getElementById('servicePrice').value.trim();
+        const is_active = document.getElementById('serviceStatus').value === 'true';
+        const msg = document.getElementById('serviceMsg');
+
+        if (!title || !price) { alert('يرجى إدخال اسم الخدمة وسعرها!'); return; }
+
+        msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ في السحابة... ⏳';
+        let payload = { title, description, price, is_active };
+        let res;
+
+        if (editId) {
+            res = await db.from('platform_services').update(payload).eq('id', editId);
+        } else {
+            res = await db.from('platform_services').insert([payload]);
+        }
+
+        if (res.error) {
+            msg.style.color = 'red'; msg.textContent = 'خطأ سحابي: ' + res.error.message;
+        } else {
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الخدمة بنجاح! ✅';
+            resetServiceForm();
+            loadAdminServices();
+        }
+    }
+
+    function resetServiceForm() {
+        document.getElementById('editServiceId').value = '';
+        document.getElementById('serviceTitle').value = '';
+        document.getElementById('serviceDesc').value = '';
+        document.getElementById('servicePrice').value = '';
+        document.getElementById('serviceStatus').value = 'true';
+        document.getElementById('btnSaveService').textContent = 'نشر الخدمة بالمتجر 🚀';
+        document.getElementById('btnCancelService').style.display = 'none';
+    }
+
+    async function loadAdminServices() {
+        let { data } = await db.from('platform_services').select('*').order('id', { ascending: false });
+        cachedServices = data || [];
+        let box = document.getElementById('adminServicesList');
+        if(!box) return;
+        document.getElementById('adminServicesCount').textContent = cachedServices.length;
+        box.innerHTML = '';
+
+        if (!cachedServices.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد خدمات مضافة بالمتجر حالياً.</p>';
+            return;
+        }
+
+        cachedServices.forEach(s => {
+            let isActive = s.is_active !== false;
+            let statusBadge = isActive ? '<span style="color:green; font-weight:bold;">معروض 🟢</span>' : '<span style="color:red; font-weight:bold;">مخفي 🔴</span>';
+
+            box.innerHTML += `
+                <div class="item-row">
+                    <div class="row-header">
+                        <strong>💎 ${s.title} (${statusBadge})</strong>
+                        <span style="color:#10b981; font-weight:bold;">${s.price}</span>
+                    </div>
+                    <div style="color:#64748b; font-size:11px;">${s.description || 'بدون وصف'}</div>
+                    <div class="action-btns">
+                        <button class="btn-sm btn-edit" onclick="editService(${s.id})">تعديل ✏️</button>
+                        <button class="btn-sm btn-del" onclick="deleteItem('platform_services', ${s.id})">حذف 🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function editService(id) {
+        let s = cachedServices.find(item => item.id == id);
+        if (!s) return;
+        document.getElementById('editServiceId').value = s.id;
+        document.getElementById('serviceTitle').value = s.title || '';
+        document.getElementById('serviceDesc').value = s.description || '';
+        document.getElementById('servicePrice').value = s.price || '';
+        document.getElementById('serviceStatus').value = (s.is_active !== false) ? 'true' : 'false';
+        document.getElementById('btnSaveService').textContent = 'تعديل وحفظ الخدمة 💾';
+        document.getElementById('btnCancelService').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // إدارة المسوقين بالعمولة والإحصائيات الشاملة
@@ -495,7 +612,7 @@
         
         if (aff) {
             let newSales = (aff.total_sales || 0) + 1;
-            let newEarnings = (aff.total_earnings || 0) + 1000; // قيمة العمولة المحسوبة
+            let newEarnings = (aff.total_earnings || 0) + 1000;
             await db.from('affiliates').update({ total_sales: newSales, total_earnings: newEarnings }).eq('id', aff.id);
             alert('تم اعتماد المبيعة وتسجيل العمولة في حساب المسوق بنجاح! 🎉');
             loadAdminAffiliates();
@@ -1027,6 +1144,7 @@
             if (table === 'text_courses') loadTextCourses();
             if (table === 'service_orders') loadServiceOrders();
             if (table === 'affiliates') loadAdminAffiliates();
+            if (table === 'platform_services') loadAdminServices();
         }
     }
 
@@ -1044,6 +1162,7 @@
         loadTextCourses();
         loadServiceOrders();
         loadAdminAffiliates();
+        loadAdminServices();
     });
 </script>
 </body>
