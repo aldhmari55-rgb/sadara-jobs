@@ -1,138 +1,270 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- شفرة أدسنس -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>برنامج التسويق بالعمولة | منصة صدارة</title>
+    <title>برنامج التسويق بالعمولة (الأفلييت) | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg: #f8fafc; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); padding-bottom: 50px; line-height: 1.7; }
-        header { background: #0a1324; color: #fff; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
-        .container { max-width: 800px; margin: 25px auto; padding: 0 16px; }
-        .card { background: white; border-radius: 14px; padding: 22px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 20px; }
-        .card h2 { font-size: 16px; color: var(--primary); border-right: 4px solid var(--gold); padding-right: 10px; margin-bottom: 12px; }
-        label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 10px; }
-        input, select { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; font-size: 13px; }
-        .link-box { background: #eff6ff; border: 2px dashed #0284c7; padding: 15px; border-radius: 10px; text-align: center; margin-top: 15px; }
-        .link-box input { text-align: center; font-weight: bold; color: #0284c7; background: white; margin-bottom: 8px; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; text-align: center; }
-        .stat-item { background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; }
-        .stat-item h3 { font-size: 18px; color: var(--primary); }
-        .stat-item p { font-size: 11px; color: #64748b; }
+        body { background: var(--bg); padding-bottom: 50px; color: #0f172a; }
+
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; border-bottom: 3px solid var(--gold); }
+        .nav-bar { background: #0a1324; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212,175,55,0.2); }
+        .nav-btn { background: var(--gold); color: #0a1324; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; }
+
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+        .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); margin-bottom: 15px; }
+        
+        h2 { font-size: 16px; color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        label { font-size: 12px; font-weight: bold; color: #475569; display: block; margin-top: 10px; }
+        input, select { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
+        
+        .btn-main { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; width: 100%; margin-top: 15px; }
+        .btn-main:hover { opacity: 0.9; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; text-align: center; }
+        .stat-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; }
+        .stat-box h3 { font-size: 18px; font-weight: 900; color: var(--primary); }
+        .stat-box p { font-size: 11px; color: #64748b; font-weight: 700; margin-top: 2px; }
+
+        .link-box { background: #eff6ff; border: 1px dashed #3b82f6; padding: 12px; border-radius: 8px; text-align: center; margin-top: 15px; }
+        .link-input { background: white; direction: ltr; text-align: center; font-weight: bold; font-size: 12px; color: #1e40af; padding: 8px; border: 1px solid #bfdbfe; border-radius: 6px; width: 100%; margin-top: 6px; }
+        .copy-btn { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; margin-top: 8px; }
+        
+        .tab-buttons { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 10px; background: #e2e8f0; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; color: #475569; }
+        .tab-btn.active { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>🤝 برنامج التسويق بالعمولة (الأفلييت)</h1>
-        <a href="index.html" style="color:white; text-decoration:none; font-size:12px; font-weight:bold;"><i class="fa-solid fa-house"></i> الرئيسية</a>
-    </header>
+    <div class="nav-bar">
+        <span style="color:white; font-weight:900; font-size:14px;">برنامج صدارة للأفلييت</span>
+        <a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
+    </div>
+
+    <div class="header">
+        <h1>برنامج التسويق بالعمولة 🤝</h1>
+        <p>سوق لخدمات صدارة واحصل على أرباح وعمولات مجزية</p>
+    </div>
 
     <div class="container">
-        
-        <!-- بطاقة التسجيل والولوج -->
+
+        <!-- صندوق تسجيل الدخول أو التسجيل الجديد -->
         <div class="card" id="authCard">
-            <h2>تسجيل مسوق جديد / الدخول للحساب</h2>
-            <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">انضم لشبكة مسوقي صدارة واحصل على عمولات مجزية عن كل مبيعة تتم عبر رابطك الخاص.</p>
-            
-            <form onsubmit="handleAffiliateAuth(event)">
-                <label>الاسم الكامل:</label>
-                <input type="text" id="affName" placeholder="أدخل اسمك الرباعي" required>
+            <div class="tab-buttons">
+                <button class="tab-btn active" id="tabRegBtn" onclick="switchTab('reg')">تسجيل مسوق جديد 📝</button>
+                <button class="tab-btn" id="tabLoginBtn" onclick="switchTab('login')">تسجيل الدخول برقم الجوال 📲</button>
+            </div>
 
-                <label>رقم الواتساب (سيكون بمثابة معرّف حسابك):</label>
-                <input type="text" id="affPhone" placeholder="مثال: 772302393" required>
-
-                <label>وسيلة استلام العمولات والأرباح:</label>
-                <select id="affPayoutMethod" required>
-                    <option value="محفظة جيب">محفظة جيب (Jeeb)</option>
-                    <option value="بنك الكريمي">حساب بنك الكريمي (Kuraimi)</option>
+            <!-- نموذج تسجيل جديد -->
+            <div id="regSection">
+                <h2><span>إنشاء حساب مسوق جديد</span></h2>
+                <label>الاسم الكامل</label>
+                <input type="text" id="regName" placeholder="الاسم الثلاثي">
+                <label>رقم الواتساب (للتواصل وصرف الأرباح)</label>
+                <input type="tel" id="regPhone" placeholder="770000000">
+                <label>وسيلة استلام العمولات والأرباح</label>
+                <select id="regMethod">
+                    <option value="محفظة جيب">محفظة جيب Jeeb</option>
+                    <option value="حاسب الكريمي">حاسب الكريمي</option>
+                    <option value="شبكة حوالات">شبكة حوالات محلية</option>
                 </select>
+                <label>رقم الحساب / المحفظة لاستلام الأرباح</label>
+                <input type="text" id="regAccountNo" placeholder="رقم المحفظة أو الحساب">
+                <button class="btn-main" onclick="registerAffiliate()">إنشاء الحساب وبدء التسويق 🚀</button>
+            </div>
 
-                <label>رقم الحساب / المحفظة لاستلام الأرباح:</label>
-                <input type="text" id="affPayoutNum" placeholder="أدخل رقم الحساب أو المحفظة الخاص بك" required>
+            <!-- نموذج تسجيل الدخول السريع -->
+            <div id="loginSection" style="display:none;">
+                <h2><span>دخول المسوقين السريع</span></h2>
+                <label>رقم جوالك المسجل مسبقاً</label>
+                <input type="tel" id="loginPhone" placeholder="770000000">
+                <button class="btn-main" onclick="loginAffiliate()" style="background:var(--gold); color:#0a1324;">دخول إلى لوحة أرباحي 📊</button>
+            </div>
 
-                <button type="submit" class="btn" id="btnSubmit">توليد رابط التسويق والبدء الآن 🚀</button>
-            </form>
+            <div id="authMsg" style="font-size:11px; text-align:center; font-weight:bold; margin-top:10px;"></div>
         </div>
 
-        <!-- لوحة التحكم الخاصة بالمسوق (تظهر بعد الدخول) -->
-        <div class="card" id="dashboardCard" style="display: none;">
-            <h2>مرحباً بك، <span id="affiliateNameDisplay" style="color:var(--gold);">...</span> 👋</h2>
-            
+        <!-- لوحة تحكم المسوق (تظهر بعد الدخول) -->
+        <div class="card" id="dashboardCard" style="display:none;">
+            <h2>
+                <span>مرحباً، <span id="dashName" style="color:var(--gold);"></span> 👋</span>
+                <button onclick="logoutAffiliate()" style="width:auto; padding:4px 8px; background:#ef4444; font-size:10px; margin:0;">خروج 🚪</button>
+            </h2>
+
             <div class="stats-grid">
-                <div class="stat-item"><h3 id="affSalesCount">0</h3><p>عدد المبيعات الناجحة 🛒</p></div>
-                <div class="stat-item"><h3 id="affEarningsSum">0 ريال</h3><p>إجمالي العمولات المستحقة 💰</p></div>
+                <div class="stat-box">
+                    <h3 id="dashClicks">0</h3>
+                    <p>👀 الزيارات عبر رابطك</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="dashSales">0</h3>
+                    <p>🛒 المبيعات الناجحة</p>
+                </div>
+                <div class="stat-box" style="grid-column: span 2; background:#f0fdf4; border-color:#bbf7d0;">
+                    <h3 id="dashEarnings" style="color:green;">0 YER</h3>
+                    <p>💰 العمولات المستحقة المتبقية</p>
+                </div>
             </div>
 
             <div class="link-box">
-                <label style="color: #0284c7; font-size: 12px; margin:0 0 5px 0;">🔗 رابط التسويق الخاص بك لمتجر الخدمات:</label>
-                <input type="text" id="affiliateGeneratedLink" readonly>
-                <button onclick="copyAffiliateLink()" class="btn" style="background:#0284c7; margin-top:5px;">نسخ الرابط الخاص بك 📋</button>
+                <span style="font-size:11px; font-weight:bold; color:#1e40af;">🔗 رابط التسويق الخاص بك (فريد وآمن):</span>
+                <input type="text" id="dashLink" class="link-input" readonly>
+                <button class="copy-btn" onclick="copyAffiliateLink()">نسخ الرابط الخاص بك 📋</button>
             </div>
-            
-            <p style="font-size: 11px; color: #64748b; margin-top: 12px; text-align: center;">شارِك هذا الرابط مع عملائك. أي عملية شراء يتم إشعارها بالسند عبر هذا الرابط ستسجل عمولتها لحسابك تلقائياً!</p>
         </div>
 
     </div>
 
-<script>
-    const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
-    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <script>
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function handleAffiliateAuth(e) {
-        e.preventDefault();
-        const name = document.getElementById('affName').value.trim();
-        const phone = document.getElementById('affPhone').value.trim().replace(/[^0-9]/g, '');
-        const method = document.getElementById('affPayoutMethod').value;
-        const payoutNum = document.getElementById('affPayoutNum').value.trim();
-
-        if (!phone) { alert('يرجى كتابة رقم الهاتف بشكل صحيح'); return; }
-
-        // التحقق مما إذا كان المسوق مسجلاً من قبل
-        let { data: existing } = await db.from('affiliates').select('*').eq('phone', phone).single();
-
-        if (!existing) {
-            let { data: inserted, error } = await db.from('affiliates').insert([{
-                full_name: name,
-                phone: phone,
-                payout_method: method,
-                payout_number: payoutNum
-            }]).select().single();
-
-            if (error) { alert('خطأ في التسجيل: ' + error.message); return; }
-            existing = inserted;
+        function switchTab(tab) {
+            if (tab === 'reg') {
+                document.getElementById('regSection').style.display = 'block';
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('tabRegBtn').classList.add('active');
+                document.getElementById('tabLoginBtn').classList.remove('active');
+            } else {
+                document.getElementById('regSection').style.display = 'none';
+                document.getElementById('loginSection').style.display = 'block';
+                document.getElementById('tabLoginBtn').classList.add('active');
+                document.getElementById('tabRegBtn').classList.remove('active');
+            }
         }
 
-        showAffiliateDashboard(existing);
-    }
+        // توليد كود فريد وعشوائي وآمن لا يحمل رقم الهاتف
+        function generateUniqueRefCode() {
+            return 'sdr_' + Math.random().toString(36).substring(2, 8);
+        }
 
-    function showAffiliateDashboard(affData) {
-        document.getElementById('authCard').style.display = 'none';
-        document.getElementById('dashboardCard').style.display = 'block';
+        async function registerAffiliate() {
+            const name = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const method = document.getElementById('regMethod').value;
+            const accountNo = document.getElementById('regAccountNo').value.trim();
+            const msg = document.getElementById('authMsg');
 
-        document.getElementById('affiliateNameDisplay').textContent = affData.full_name;
-        document.getElementById('affSalesCount').textContent = affData.total_sales || 0;
-        document.getElementById('affEarningsSum').textContent = (affData.total_earnings || 0) + " YER";
+            if (!name || !phone || !accountNo) {
+                alert('يرجى إكمال كافة البيانات المطلوبة');
+                return;
+            }
 
-        // توليد الرابط الخاص بالمسوق تلقائياً
-        const uniqueLink = `${window.location.origin}/services.html?ref=${affData.phone}`;
-        document.getElementById('affiliateGeneratedLink').value = uniqueLink;
-    }
+            msg.style.color = 'blue';
+            msg.textContent = 'جاري إنشاء الحساب وتوليد الرابط الفريد... ⏳';
 
-    function copyAffiliateLink() {
-        const linkInput = document.getElementById('affiliateGeneratedLink');
-        linkInput.select();
-        document.execCommand("copy");
-        alert('تم نسخ رابط التسويق الخاص بك بنجاح! يمكنك الآن بدية الترويج. 📋✅');
-    }
-</script>
+            // التحقق إن كان الرقم مسجلاً من قبل
+            let { data: existing } = await db.from('affiliates').select('*').eq('phone', phone).single();
+            if (existing) {
+                alert('هذا الرقم مسجل مسبقاً! يمكنك تسجيل الدخول مباشرة من تبويب "تسجيل الدخول برقم الجوال".');
+                switchTab('login');
+                msg.textContent = '';
+                return;
+            }
+
+            const refCode = generateUniqueRefCode();
+
+            let { error } = await db.from('affiliates').insert([{
+                full_name: name,
+                name: name,
+                phone: phone,
+                payout_method: method,
+                payout_number: accountNo,
+                ref_code: refCode,
+                total_sales: 0,
+                total_earnings: 0,
+                paid_earnings: 0,
+                clicks: 0
+            }]);
+
+            if (error) {
+                msg.style.color = 'red';
+                msg.textContent = 'خطأ في التسجيل: ' + error.message;
+            } else {
+                alert('تم إنشاء حسابك بنجاح! 🎉');
+                loginWithData(phone);
+            }
+        }
+
+        async function loginAffiliate() {
+            const phone = document.getElementById('loginPhone').value.trim();
+            const msg = document.getElementById('authMsg');
+
+            if (!phone) {
+                alert('يرجى إدخال رقم الجوال');
+                return;
+            }
+
+            loginWithData(phone);
+        }
+
+        async function loginWithData(phone) {
+            let { data: aff, error } = await db.from('affiliates').select('*').eq('phone', phone).single();
+            const msg = document.getElementById('authMsg');
+
+            if (error || !aff) {
+                msg.style.color = 'red';
+                msg.textContent = 'لم يتم العثور على حساب بهذا الرقم. تأكد من الرقم أو سجل كمسوق جديد.';
+                return;
+            }
+
+            // حفظ الجلسة محلياً
+            localStorage.setItem('sadara_aff_phone', aff.phone);
+            showDashboard(aff);
+        }
+
+        function showDashboard(aff) {
+            document.getElementById('authCard').style.display = 'none';
+            document.getElementById('dashboardCard').style.display = 'block';
+
+            document.getElementById('dashName').textContent = aff.full_name || aff.name;
+            document.getElementById('dashClicks').textContent = aff.clicks || 0;
+            document.getElementById('dashSales').textContent = aff.total_sales || 0;
+            
+            let total = Number(aff.total_earnings || 0);
+            let paid = Number(aff.paid_earnings || 0);
+            document.getElementById('dashEarnings').textContent = (total - paid) + ' YER';
+
+            // إذا لم يكن لديه كود فريد قديم، نولد له كود ونحدثه
+            let refCode = aff.ref_code;
+            if (!refCode) {
+                refCode = generateUniqueRefCode();
+                db.from('affiliates').update({ ref_code: refCode }).eq('id', aff.id);
+            }
+
+            const uniqueLink = `${window.location.origin}/services.html?ref=${refCode}`;
+            document.getElementById('dashLink').value = uniqueLink;
+        }
+
+        function logoutAffiliate() {
+            localStorage.removeItem('sadara_aff_phone');
+            location.reload();
+        }
+
+        function copyAffiliateLink() {
+            const linkInput = document.getElementById('dashLink');
+            linkInput.select();
+            document.execCommand('copy');
+            alert('تم نسخ رابط التسويق الفريد بنجاح! 📋 شاركه مع أصدقائك وابدأ الأرباح.');
+        }
+
+        // التحقق التلقائي عند فتح الصفحة إذا كان مسجلاً دخول مسبقاً
+        window.addEventListener('DOMContentLoaded', async () => {
+            const savedPhone = localStorage.getItem('sadara_aff_phone');
+            if (savedPhone) {
+                let { data: aff } = await db.from('affiliates').select('*').eq('phone', savedPhone).single();
+                if (aff) {
+                    showDashboard(aff);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
