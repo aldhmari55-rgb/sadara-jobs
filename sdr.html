@@ -51,7 +51,7 @@
 
     <div class="header">
         <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المدونة، المستخدمين، المتجر، والدورات والمسوقين</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المدونة، المستخدمين، المتجر، والدورات والمسوقين مع نظام التصنيفات والإشعارات</p>
     </div>
 
     <div class="admin-stats-grid">
@@ -102,7 +102,7 @@
             <div class="list-box" id="adminServicesList">جاري التحميل...</div>
         </div>
 
-        <!-- 1. إدارة الوظائف -->
+        <!-- 1. إدارة الوظائف مع التصنيفات الجديدة -->
         <div class="card">
             <h2><span>💼 إدارة الوظائف</span><span class="badge" id="jobsCount">0</span></h2>
             <input type="hidden" id="editJobId">
@@ -110,6 +110,15 @@
             <input type="text" id="jobTitle" placeholder="مثال: محاسب عام">
             <label>اسم الشركة / الجهة</label>
             <input type="text" id="jobCompany" placeholder="شركة صدارة">
+            <label>تصنيف الوظيفة 📁</label>
+            <select id="jobCategory">
+                <option value="محاسبية">🧮 محاسبية</option>
+                <option value="تسويقية">📢 تسويقية</option>
+                <option value="تجارية">🛒 تجارية</option>
+                <option value="برمجية">💻 برمجية</option>
+                <option value="عملية">⚙️ عملية / ميدانية</option>
+                <option value="أخرى">📂 أخرى</option>
+            </select>
             <label>رقم الواتساب</label>
             <input type="text" id="jobPhone" value="967780568507">
             <label>الحالة</label>
@@ -124,7 +133,7 @@
             </select>
             <label>صورة الوظيفة</label>
             <input type="file" id="jobImgFile" accept="image/*">
-            <button id="btnSaveJob" onclick="saveJob()">نشر الوظيفة الآن 🚀</button>
+            <button id="btnSaveJob" onclick="saveJob()">نشر الوظيفة الآن وإرسال إشعار 🚀</button>
             <button id="btnCancelJob" onclick="resetJobForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء</button>
             <div id="jobMsg" class="status-msg"></div>
             <div class="list-box" id="jobsList">جاري التحميل...</div>
@@ -154,7 +163,6 @@
             <div id="resMsg" class="status-msg"></div>
             <div class="list-box" id="resumesList">جاري التحميل...</div>
         </div>
-
         <!-- 3. نشر وإدارة مقالات المدونة -->
         <div class="card">
             <h2><span>📰 إدارة مقالات المدونة</span><span class="badge" id="articlesCount">0</span></h2>
@@ -298,6 +306,7 @@
         </div>
 
     </div>
+
 <script>
     const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
@@ -313,7 +322,6 @@
     let cachedTextCourses = [];
     let cachedServices = [];
 
-    // دالة مساعدة لإرسال إشعار فوري عند نشر أي محتوى جديد
     async function triggerPushNotification(titleText, bodyText) {
         try {
             let { data: subs } = await db.from('push_subscriptions').select('*');
@@ -354,7 +362,6 @@
         } catch(e) { alert('فشل في عملية الرفع.'); return null; }
     }
 
-    // إدارة متجر الخدمات الرقمية
     async function saveService() {
         const editId = document.getElementById('editServiceId').value;
         const title = document.getElementById('serviceTitle').value.trim();
@@ -724,6 +731,7 @@
         const editId = document.getElementById('editJobId').value;
         const title = document.getElementById('jobTitle').value.trim();
         const company = document.getElementById('jobCompany').value.trim();
+        const category = document.getElementById('jobCategory').value;
         const phone = document.getElementById('jobPhone').value.trim();
         const status = document.getElementById('jobStatus').value;
         const isVerified = document.getElementById('jobVerified').value === 'true';
@@ -739,7 +747,7 @@
             if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة، لم يتم الحفظ.'; return; }
         }
 
-        let payload = { title, company, phone, status, approved: true, is_verified: isVerified };
+        let payload = { title, company, category, phone, status, approved: true, is_verified: isVerified };
         if (imgUrl) payload.image = imgUrl;
 
         let res;
@@ -747,7 +755,7 @@
             res = await db.from('jobs').update(payload).eq('id', editId);
         } else {
             res = await db.from('jobs').insert([payload]);
-            triggerPushNotification('وظيفة جديدة في منصة صدارة 💼', `تم نشر وظيفة: ${title} لدى ${company}`);
+            triggerPushNotification('وظيفة جديدة في منصة صدارة 💼', `تم نشر وظيفة: ${title} (${category}) لدى ${company}`);
         }
 
         if (res.error) { msg.style.color = 'red'; msg.textContent = 'خطأ من قاعدة البيانات: ' + res.error.message; return; }
@@ -760,6 +768,7 @@
         document.getElementById('editJobId').value = '';
         document.getElementById('jobTitle').value = '';
         document.getElementById('jobCompany').value = '';
+        document.getElementById('jobCategory').value = 'محاسبية';
         document.getElementById('jobVerified').value = 'false';
         document.getElementById('jobImgFile').value = '';
         document.getElementById('btnSaveJob').textContent = 'نشر الوظيفة الآن 🚀';
@@ -778,9 +787,10 @@
         cachedJobs.forEach(j => {
             let imgTag = j.image ? `<img src="${j.image}" class="preview-img">` : '';
             let badge = j.is_verified ? ' 🔵' : '';
+            let catTag = j.category ? `[${j.category}]` : '';
             box.innerHTML += `<div class="item-row">
                 <div class="row-header" style="align-items:center;">
-                    <div style="display:flex; align-items:center; gap:8px;">${imgTag}<strong>${j.title || 'وظيفة'}${badge}</strong></div>
+                    <div style="display:flex; align-items:center; gap:8px;">${imgTag}<strong>${catTag} ${j.title || 'وظيفة'}${badge}</strong></div>
                     <span>${j.status || 'متاحة'}</span>
                 </div>
                 <div style="color:#64748b; font-size:11px;">الشركة: ${j.company || '-'}</div>
@@ -798,6 +808,7 @@
         document.getElementById('editJobId').value = j.id;
         document.getElementById('jobTitle').value = j.title || '';
         document.getElementById('jobCompany').value = j.company || '';
+        document.getElementById('jobCategory').value = j.category || 'محاسبية';
         document.getElementById('jobPhone').value = j.phone || '967780568507';
         document.getElementById('jobStatus').value = j.status || 'متاحة';
         document.getElementById('jobVerified').value = j.is_verified ? 'true' : 'false';
