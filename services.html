@@ -2,17 +2,204 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>متجر الخدمات والمنتجات | منصة صدارة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- وسوم تحسين محركات البحث (SEO) لصفحة المتجر -->
+    <title>متجر الخدمات والاشتراكات الرقمية | منصة صدارة</title>
+    <meta name="description" content="تصفح واطلب أفضل الاشتراكات الرقمية، الخدمات التسويقية، والمنتجات الحصرية من متجر منصة صدارة في محافظة ذمار.">
+    <meta name="keywords" content="متجر صدارة, اشتراكات رقمية, خدمات تسويقية, منتجات, منصة صدارة, ذمار">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://sadarah.top/services.html">
+
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg-light); padding-bottom: 70px; color: #0f172a; }
+        .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(212,175,55,0.2); }
+        .home-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+        .hero-store { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 20px 16px; text-align: center; }
+        .main-container { max-width: 800px; margin: -20px auto 0; padding: 0 16px; }
+        
+        .store-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
+        @media(min-width: 600px) { .store-grid { grid-template-columns: repeat(2, 1fr); } }
+        
+        .product-card { background: white; border-radius: 12px; padding: 14px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; }
+        .product-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; background: #f1f5f9; }
+        .product-title { font-size: 15px; font-weight: bold; color: var(--primary); margin-bottom: 4px; }
+        .product-price { font-size: 14px; font-weight: 900; color: #10b981; margin: 6px 0; }
+        .product-desc { font-size: 12px; color: #64748b; margin-bottom: 10px; line-height: 1.4; }
+        
+        .buy-btn { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; text-align: center; text-decoration: none; display: block; width: 100%; transition: 0.2s; }
+        .buy-btn:hover { opacity: 0.9; }
+
+        /* نافذة إتمام الطلب */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; }
+        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 90%; max-width: 380px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
+        .modal-card input { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+    </style>
 </head>
 <body>
-    <div style="text-align:center; padding:20px;">
-        <h1>متجر الخدمات والاشتراكات الرقمية 🛒</h1>
+
+    <div class="top-navbar">
+        <a href="index.html" class="home-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
+        <span style="font-weight: 900; font-size:14px;">متجر صدارة</span>
     </div>
-    <div id="storeProductsList">جاري التحميل...</div>
+
+    <div class="hero-store">
+        <h1>متجر الخدمات والاشتراكات الرقمية 🛒</h1>
+        <p style="font-size: 11px; opacity: 0.8; margin-top: 4px;">اطلب خدمتك أو اشتراكك بكل سهولة وأمان</p>
+    </div>
+
+    <div class="main-container">
+        <div class="store-grid" id="storeProductsList">
+            <p style="grid-column: 1/-1; text-align:center; color:#64748b; padding:30px;">جاري تحميل المنتجات والخدمات...</p>
+        </div>
+    </div>
+
+    <!-- نافذة إتمام الطلب ورفع سند التحويل -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-card">
+            <h3 style="color:var(--primary); font-size:15px; margin-bottom:5px;">إتمام طلب الخدمة 💳</h3>
+            <p style="font-size:11px; color:#64748b; margin-bottom:10px;" id="selectedProductTitle">الخدمة المطلوبة</p>
+            
+            <label>اسمك الكريم</label>
+            <input type="text" id="clientName" placeholder="أدخل اسمك الكامل">
+
+            <label>رقم الواتساب للتواصل</label>
+            <input type="tel" id="clientPhone" placeholder="770000000">
+
+            <label>رابط أو صورة سند التحويل المالي 📷</label>
+            <input type="file" id="receiptFile" accept="image/*" style="background:#f1f5f9; padding:6px;">
+
+            <button onclick="submitOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-top:12px;">تأكيد وإرسال الطلب 🚀</button>
+            <button onclick="closeOrderModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:6px; cursor:pointer; font-size:10px;">إلغاء</button>
+            <div id="orderMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
+        </div>
+    </div>
+
     <script>
-        // سكريبت جلب الخدمات وتثبيت كود إحالة المسوق السابق بدون تعديل على آليته
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let selectedServiceObj = null;
+
+        // التقاط وتثبيت كود إحالة المسوق من الرابط (ref) وحفظه بالمتصفح
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        if (refCode) {
+            localStorage.setItem('sadara_affiliate_ref', refCode);
+            recordAffiliateClick(refCode);
+        }
+
+        async function recordAffiliateClick(code) {
+            try {
+                let { data: aff } = await db.from('affiliates').select('*').eq('code', code).single();
+                if (aff) {
+                    await db.from('affiliates').update({ clicks_count: (aff.clicks_count || 0) + 1 }).eq('id', aff.id);
+                }
+            } catch(e) {}
+        }
+
+        async function loadStoreProducts() {
+            let container = document.getElementById('storeProductsList');
+            try {
+                let { data, error } = await db.from('platform_services').select('*').eq('is_active', true).order('id', { ascending: false });
+                if (error || !data || data.length === 0) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#64748b; padding:30px;">لا توجد خدمات أو منتجات متوفرة حالياً.</p>';
+                    return;
+                }
+                container.innerHTML = '';
+                data.forEach(item => {
+                    let imgHtml = item.image ? `<img src="${item.image}">` : '<div style="height:160px; background:#e2e8f0; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:12px;">صورة الخدمة</div>';
+                    container.innerHTML += `
+                        <div class="product-card">
+                            <div>
+                                ${imgHtml}
+                                <div class="product-title">${item.title}</div>
+                                <div class="product-price">${item.price}</div>
+                                <div class="product-desc">${item.description || 'بدون تفاصيل إضافية'}</div>
+                            </div>
+                            <button class="buy-btn" onclick='openOrderModal(${JSON.stringify(item)})'>اطلب الخدمة الآن 🛒</button>
+                        </div>
+                    `;
+                });
+            } catch(e) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:red; padding:20px;">خطأ في الاتصال بقاعدة البيانات.</p>';
+            }
+        }
+
+        function openOrderModal(item) {
+            selectedServiceObj = item;
+            document.getElementById('selectedProductTitle').textContent = item.title + ' (' + item.price + ')';
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').style.display = 'none';
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientPhone').value = '';
+            document.getElementById('receiptFile').value = '';
+            document.getElementById('orderMsg').textContent = '';
+        }
+
+        async function submitOrder() {
+            let name = document.getElementById('clientName').value.trim();
+            let phone = document.getElementById('clientPhone').value.trim();
+            let fileInput = document.getElementById('receiptFile').files[0];
+            let msg = document.getElementById('orderMsg');
+
+            if (!name || !phone || !fileInput) {
+                alert('يرجى إكمال البيانات وارفاق سند التحويل المالي');
+                return;
+            }
+
+            msg.style.color = 'blue'; msg.textContent = 'جاري رفع السند وإرسال الطلب... ⏳';
+
+            try {
+                // رفع سند التحويل إلى التخزين
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`;
+                const { error: uploadErr } = await db.storage.from('platform-files').upload(fileName, fileInput);
+                if (uploadErr) { msg.style.color = 'red'; msg.textContent = 'خطأ في رفع السند.'; return; }
+                
+                const { data: pubData } = db.storage.from('platform-files').getPublicUrl(fileName);
+                let receiptUrl = pubData.publicUrl;
+
+                // تسجيل الطلب في جدول الطلبات
+                await db.from('service_orders').insert([{
+                    service_name: selectedServiceObj.title,
+                    client_name: name,
+                    client_phone: phone,
+                    transaction_ref: receiptUrl,
+                    affiliate_code: localStorage.getItem('sadara_affiliate_ref') || ''
+                }]);
+
+                // تحديث عدد المبيعات للمسوق إن وجد
+                let activeRef = localStorage.getItem('sadara_affiliate_ref');
+                if (activeRef) {
+                    let { data: aff } = await db.from('affiliates').select('*').eq('code', activeRef).single();
+                    if (aff) {
+                        let currentSales = aff.sales_count || aff.orders_count || 0;
+                        let currentEarnings = Number(aff.total_earnings || 0);
+                        await db.from('affiliates').update({ 
+                            sales_count: currentSales + 1,
+                            total_earnings: currentEarnings + 500 // عمولة افتراضية كمثال
+                        }).eq('id', aff.id);
+                    }
+                }
+
+                msg.style.color = 'green'; msg.textContent = 'تم إرسال طلبك بنجاح! سيتم التواصل معك قريباً ✅';
+                setTimeout(() => { closeOrderModal(); }, 2000);
+            } catch(e) {
+                msg.style.color = 'red'; msg.textContent = 'حدث خطأ غير متوقع.';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadStoreProducts);
     </script>
 </body>
 </html>
