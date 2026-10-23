@@ -8,16 +8,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --bg-light: #f8fafc; }
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-light); padding-bottom: 50px; color: #0f172a; }
 
-        .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); position: sticky; top: 0; z-index: 1000; }
-        .sidebar-toggle-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: bold; }
+        .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .sidebar-toggle-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: bold; }
 
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 19, 36, 0.75); backdrop-filter: blur(4px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .sidebar-overlay.active { opacity: 1; visibility: visible; }
-        .sidebar-drawer { position: fixed; top: 0; right: -310px; width: 300px; height: 100%; background: #0a1324; color: white; z-index: 99999; box-shadow: -5px 0 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-left: 2px solid var(--gold); }
+        .sidebar-drawer { position: fixed; top: 0; right: -310px; width: 300px; height: 100%; background: #0a1324; color: white; z-index: 99999; box-shadow: -5px 0 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; transition: all 0.3s ease; border-left: 2px solid var(--gold); }
         .sidebar-drawer.active { right: 0; }
         .sidebar-header { padding: 18px; background: #0f2347; border-bottom: 1px solid rgba(212, 175, 55, 0.3); display: flex; justify-content: space-between; align-items: center; }
         .sidebar-menu { padding: 15px 10px; flex: 1; overflow-y: auto; }
@@ -27,6 +27,8 @@
 
         .affiliate-badge-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 10px; border-radius: 10px; font-size: 11px; text-align: center; font-weight: bold; margin: 15px; display: none; }
         .product-card { background: white; border-radius: 12px; border: 1px solid #cbd5e1; padding: 14px; margin: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .product-img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e2e8f0; }
+        .order-btn { background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 8px; }
     </style>
 </head>
 <body>
@@ -40,18 +42,17 @@
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="sidebar-drawer" id="sidebarDrawer">
         <div class="sidebar-header">
-            <h3><i class="fa-solid fa-compass"></i> أقسام صدارة</h3>
+            <h3><i class="fa-solid fa-compass"></i> أقسام منصة صدارة</h3>
             <button style="background:transparent; color:#ef4444; border:none; font-size:18px; cursor:pointer;" onclick="toggleSidebar()">✕</button>
         </div>
         <div class="sidebar-menu">
             <a href="index.html" class="sidebar-item"><i class="fa-solid fa-house"></i> الرئيسية</a>
             <a href="services.html" class="sidebar-item active"><i class="fa-solid fa-store"></i> متجر الخدمات والمنتجات</a>
-            <a href="resumes.html" class="sidebar-item"><i class="fa-solid fa-users-viewfinder"></i> دليل الكفاءات</a>
+            <a href="resumes.html" class="sidebar-item"><i class="fa-solid fa-users-viewfinder"></i> دليل الكفاءات والخبراء</a>
             <a href="courses.html" class="sidebar-item"><i class="fa-solid fa-graduation-cap"></i> الدورات المرئية</a>
             <a href="text-courses.html" class="sidebar-item"><i class="fa-solid fa-book-open"></i> الدورات النصية والاختبارات</a>
             <a href="affiliate.html" class="sidebar-item"><i class="fa-solid fa-handshake-angle"></i> التسويق بالعمولة</a>
             <a href="privacy.html" class="sidebar-item"><i class="fa-solid fa-shield-halved"></i> الخصوصية والشروط</a>
-            <a href="sdr.html" class="sidebar-item" style="color:var(--gold);"><i class="fa-solid fa-lock"></i> لوحة التحكم</a>
         </div>
     </div>
 
@@ -74,7 +75,6 @@
         }
 
         async function initStore() {
-            // تثبيت وحفظ كود المسوق لمنع ضياع العمولة
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('ref')) {
                 affiliateRefCode = urlParams.get('ref');
@@ -97,13 +97,16 @@
 
             box.innerHTML = '';
             data.forEach(p => {
+                let imgHTML = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-img">` : '';
                 box.innerHTML += `
                     <div class="product-card">
+                        ${imgHTML}
                         <div style="display:flex; justify-content:space-between; font-weight:bold; color:#0f2347;">
                             <span>${p.title}</span>
                             <span style="color:#10b981;">${p.price}</span>
                         </div>
                         <p style="font-size:11px; color:#64748b; margin-top:4px;">${p.description || ''}</p>
+                        <button class="order-btn" onclick="alert('طلب خدمة: ' + '${p.title}')">طلب واشتراك الآن 🚀</button>
                     </div>
                 `;
             });
