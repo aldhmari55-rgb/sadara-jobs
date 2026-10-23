@@ -6,8 +6,6 @@
     <title>لوحة التحكم الشاملة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- مكتبات تصدير Excel و PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -17,13 +15,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); padding: 15px; color: #0f172a; padding-bottom: 60px; }
         .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 15px; border-bottom: 3px solid var(--gold); }
-        
         .admin-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto 20px auto; }
         @media(min-width: 768px) { .admin-stats-grid { grid-template-columns: repeat(4, 1fr); } }
         .stat-card-admin { background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .stat-card-admin h3 { font-size: 18px; font-weight: 900; color: var(--primary); }
         .stat-card-admin p { font-size: 11px; color: #64748b; font-weight: 700; margin-top: 2px; }
-
         .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1000px; margin: 0 auto; }
         @media(min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; } }
         .card { background: white; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
@@ -168,6 +164,7 @@
             <div id="jobMsg" class="status-msg"></div>
             <div class="list-box" id="jobsList">جاري التحميل...</div>
         </div>
+
         <!-- 5. إدارة الكفاءات والخبراء -->
         <div class="card">
             <h2><span>📄 إدارة الكفاءات</span><span class="badge" id="resCount">0</span></h2>
@@ -302,6 +299,7 @@
         </div>
 
     </div>
+
 <script>
     function checkAdminAuth() {
         let adminPass = localStorage.getItem('sadara_admin_auth');
@@ -446,7 +444,7 @@
         window.scrollTo({ top: 400, behavior: 'smooth' });
     }
 
-    // 2. متجر الخدمات
+    // 2. الخدمات والمنتجات
     async function saveServiceWithImage() {
         const editId = document.getElementById('editServiceId').value;
         const title = document.getElementById('serviceTitle').value.trim();
