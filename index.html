@@ -16,15 +16,35 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-light); padding-bottom: 90px; }
 
-        .top-navbar { background: #0a1324; color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); }
+        /* الشريط العلوي الموحد مع زر القائمة */
+        .top-navbar { background: #0a1324; color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); position: sticky; top: 0; z-index: 1000; }
+        .nav-left { display: flex; align-items: center; gap: 10px; }
+        .sidebar-toggle-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .sidebar-toggle-btn:hover { background: #f59e0b; }
+
+        /* تصميم القائمة الجانبية المنسدلة لجميع الشاشات */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 19, 36, 0.75); backdrop-filter: blur(4px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+        
+        .sidebar-drawer { position: fixed; top: 0; right: -310px; width: 300px; height: 100%; background: #0a1324; color: white; z-index: 99999; box-shadow: -5px 0 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-left: 2px solid var(--gold); }
+        .sidebar-drawer.active { right: 0; }
+
+        .sidebar-header { padding: 18px; background: #0f2347; border-bottom: 1px solid rgba(212, 175, 55, 0.3); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-header h3 { font-size: 15px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+        .sidebar-close-btn { background: rgba(255,255,255,0.1); color: #ef4444; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        .sidebar-menu { padding: 15px 10px; flex: 1; overflow-y: auto; }
+        .sidebar-section-title { font-size: 11px; color: #94a3b8; font-weight: bold; margin: 12px 10px 6px; text-transform: uppercase; }
+        .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; color: #e2e8f0; text-decoration: none; font-size: 13px; font-weight: bold; border-radius: 10px; margin-bottom: 4px; transition: 0.2s; }
+        .sidebar-item i { width: 20px; font-size: 15px; text-align: center; color: var(--gold); }
+        .sidebar-item:hover, .sidebar-item.active { background: rgba(212, 175, 55, 0.15); color: var(--gold); transform: translateX(-4px); }
+        .sidebar-item .badge { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-right: auto; }
+
+        .sidebar-footer { padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); background: #060d1a; text-align: center; font-size: 11px; color: #64748b; }
+
         .nav-btns-group { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
         .mini-btn { background: #1e293b; color: white; border: 1px solid var(--gold); padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 3px; }
         .mini-btn-gold { background: var(--gold); color: #0a1324; border: none; }
-        .mini-btn-courses { background: #f59e0b; color: white; border: none; }
-        .mini-btn-services { background: #0284c7; color: white; border: none; }
-        .mini-btn-affiliate { background: #10b981; color: white; border: none; }
-        .notification-bell-btn { background: #334155; color: var(--gold); position: relative; }
-        .notif-badge-dot { position: absolute; top: -3px; left: -3px; background: #ef4444; color: white; border-radius: 50%; font-size: 8px; padding: 2px 5px; font-weight: bold; }
 
         .channel-bar { background: #25d366; color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; }
         .channel-bar a { color: white; text-decoration: underline; margin-right: 5px; }
@@ -32,7 +52,6 @@
         .hero { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 24px 16px 35px; text-align: center; }
         .main-container { max-width: 800px; margin: -25px auto 0; padding: 0 16px; }
 
-        /* شريط البحث الذكي والتصنيفات الجديدة */
         .search-filter-box { background: white; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .search-input-main { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 8px; }
         .categories-tags { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -43,66 +62,64 @@
         .stat-item h4 { font-size: 15px; font-weight: 900; color: var(--primary); }
         .stat-item p { font-size: 10px; color: #64748b; font-weight: 700; }
 
-        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 12px; min-height: 130px; border: 1px solid #e2e8f0; }
-        .ad-slider-img { width: 100%; max-height: 240px; object-fit: cover; display: none; opacity: 0; transition: opacity 0.6s; }
-        .ad-slider-img.active { display: block; opacity: 1; }
-        .slider-dots { position: absolute; bottom: 8px; display: flex; gap: 6px; width:100%; justify-content:center; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); }
-        .dot.active { background: var(--gold); width: 18px; border-radius: 10px; }
-
-        .ad-space-banner { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .ad-space-btn { background: #0a1324; color: #f59e0b; padding: 7px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; text-decoration: none; white-space: nowrap; }
-
-        .action-banner { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 14px; padding: 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .action-btn { background: white; color: #059669; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; text-decoration: none; }
-
         .job-card { background: white; border-radius: 12px; padding: 14px; margin-bottom: 16px; border: 1px solid #e2e8f0; }
-        .job-card img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
         .apply-btn { background: var(--green); color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 11px; display: inline-block; margin-top: 8px; }
 
-        .reviews-box { background: #f8fafc; border-radius: 10px; padding: 10px; margin-top: 12px; border: 1px solid #cbd5e1; }
-        .star-select { font-size: 18px; color: #cbd5e1; cursor: pointer; display: inline-block; }
-        .star-select.active { color: var(--gold); }
-        .review-single { background: white; padding: 6px 10px; border-radius: 6px; margin-top: 6px; border-right: 3px solid var(--primary); font-size: 11px; }
-
-        .adsense-footer-links { background: #ffffff; border-radius: 12px; padding: 16px; margin: 20px 0 30px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        .adsense-footer-links p { font-size: 11px; color: #64748b; margin-bottom: 8px; font-weight: bold; }
-        .adsense-footer-links a { color: var(--primary); text-decoration: none; font-size: 12px; font-weight: 800; margin: 0 6px; transition: color 0.2s; display: inline-block; margin-top: 4px; }
-        .adsense-footer-links a:hover { color: var(--gold); }
-
-        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; }
-        .ticker-label { background: var(--gold); color: #0a1324; font-weight: 900; font-size: 10px; padding: 6px 10px; border-radius: 0 10px 10px 0; z-index: 10; white-space: nowrap; }
-        .ticker-content { display: flex; align-items: center; gap: 12px; animation: ticker 20s linear infinite; }
-        .ticker-content img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
-        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-        /* نافذة خزنة الإشعارات المنبثقة */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 90%; max-width: 380px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
-        .modal-card input, .modal-card select { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        .adsense-footer-links { background: #ffffff; border-radius: 12px; padding: 16px; margin: 20px 0 30px; text-align: center; border: 1px solid #e2e8f0; }
+        .adsense-footer-links a { color: var(--primary); text-decoration: none; font-size: 12px; font-weight: 800; margin: 0 6px; }
     </style>
 </head>
 <body>
 
+    <!-- الشريط العلوي الشامل -->
     <div class="top-navbar">
-        <span style="font-weight: 900; font-size:14px;">صدارة للوظائف</span>
-        <div class="nav-btns-group">
-            <button class="mini-btn notification-bell-btn" onclick="openNotificationsModal()">
-                <i class="fa-solid fa-bell"></i> الإشعارات <span class="notif-badge-dot" id="notifCountBadge">0</span>
+        <div class="nav-left">
+            <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i> الأقسام
             </button>
-            <a href="services.html" class="mini-btn mini-btn-services"><i class="fa-solid fa-store"></i> متجر الخدمات</a>
-            <a href="affiliate.html" class="mini-btn mini-btn-affiliate"><i class="fa-solid fa-handshake-angle"></i> المسوقين</a>
-            <a href="courses.html" class="mini-btn mini-btn-courses"><i class="fa-solid fa-graduation-cap"></i> دورات صدارة</a>
+            <span style="font-weight: 900; font-size:14px;">صدارة للوظائف</span>
+        </div>
+        <div class="nav-btns-group">
+            <a href="services.html" class="mini-btn" style="background:#0284c7; color:white; border:none;"><i class="fa-solid fa-store"></i> المتجر</a>
             <a href="resumes.html" class="mini-btn mini-btn-gold"><i class="fa-solid fa-users-viewfinder"></i> الكفاءات</a>
-            <div id="authArea" style="display:inline-block;">
-                <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>
-            </div>
         </div>
     </div>
+
+    <!-- القائمة الجانبية المنسدلة لجميع الأقسام والشاشات -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar-drawer" id="sidebarDrawer">
+        <div class="sidebar-header">
+            <h3><i class="fa-solid fa-compass"></i> أقسام منصة صدارة</h3>
+            <button class="sidebar-close-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-menu">
+            <div class="sidebar-section-title">الأقسام الرئيسية</div>
+            <a href="index.html" class="sidebar-item active"><i class="fa-solid fa-house"></i> الرئيسية والوظائف</a>
+            <a href="services.html" class="sidebar-item"><i class="fa-solid fa-store"></i> متجر الخدمات والمنتجات</a>
+            <a href="resumes.html" class="sidebar-item"><i class="fa-solid fa-users-viewfinder"></i> دليل الكفاءات والخبراء</a>
+            <a href="courses.html" class="sidebar-item"><i class="fa-solid fa-graduation-cap"></i> الدورات والمرئيات</a>
+            <a href="text-courses.html" class="sidebar-item"><i class="fa-solid fa-book-open"></i> الدورات النصية والاختبارات</a>
+            
+            <div class="sidebar-section-title">الأرباح والتسويق</div>
+            <a href="affiliate.html" class="sidebar-item"><i class="fa-solid fa-handshake-angle"></i> التسويق بالعمولة <span class="badge">20%</span></a>
+            <a href="blog.html" class="sidebar-item"><i class="fa-solid fa-newspaper"></i> المدونة والنصائح</a>
+
+            <div class="sidebar-section-title">معلومات وسياسات</div>
+            <a href="privacy.html" class="sidebar-item"><i class="fa-solid fa-shield-halved"></i> الخصوصية والشروط</a>
+            <a href="privacy.html#about" class="sidebar-item"><i class="fa-solid fa-circle-info"></i> عن المنصة</a>
+            <a href="privacy.html#contact" class="sidebar-item"><i class="fa-solid fa-headset"></i> اتصل بنا</a>
+
+            <div class="sidebar-section-title">الإدارة</div>
+            <a href="sdr.html" class="sidebar-item" style="color: var(--gold);"><i class="fa-solid fa-lock"></i> لوحة التحكم الشاملة</a>
+        </div>
+        <div class="sidebar-footer">
+            جميع الحقوق محفوظة © 2026 منصة صدارة
+        </div>
+    </div>
+
     <div class="channel-bar">
-        📢 انضم لمجتمعنا الرسمي على الواتساب لمتابعة جديد الوظائف والكفاءات:
-        <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk?s=cl&p=a&mlu=4&ilr=4" target="_blank">اضغط هنا للانضمام للمجتمع 🟢</a>
+        📢 انضم لمجتمعنا الرسمي على الواتساب لمتابعة جديد الوظائف:
+        <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank">اضغط هنا للانضمام للمجتمع 🟢</a>
     </div>
 
     <div class="hero">
@@ -110,17 +127,16 @@
     </div>
 
     <div class="main-container">
-        <!-- محرك البحث الذكي وتصنيفات الوظائف -->
+        <!-- محرك البحث والتصنيفات -->
         <div class="search-filter-box">
-            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن وظيفة، خدمة، أو تخصص معين..." oninput="filterJobsAndServices()">
-            <div class="categories-tags" id="categoryTagsBox">
+            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن وظيفة، خدمة، أو تخصص..." oninput="filterJobsAndServices()">
+            <div class="categories-tags">
                 <span class="cat-tag active" onclick="filterByCategory('الكل', this)">الكل 🌐</span>
                 <span class="cat-tag" onclick="filterByCategory('محاسبية', this)">🧮 محاسبية</span>
                 <span class="cat-tag" onclick="filterByCategory('تسويقية', this)">📢 تسويقية</span>
                 <span class="cat-tag" onclick="filterByCategory('تجارية', this)">🛒 تجارية</span>
                 <span class="cat-tag" onclick="filterByCategory('برمجية', this)">💻 برمجية</span>
-                <span class="cat-tag" onclick="filterByCategory('عملية', this)">⚙️ عملية / ميدانية</span>
-                <span class="cat-tag" onclick="filterByCategory('أخرى', this)">📂 أخرى</span>
+                <span class="cat-tag" onclick="filterByCategory('عملية', this)">⚙️ عملية</span>
             </div>
         </div>
 
@@ -131,89 +147,17 @@
             <div class="stat-item"><h4 id="statResumesCount">...</h4><p>الكفاءات 📄</p></div>
         </div>
 
-        <div class="ad-slider-box" id="sliderBox">
-            <div id="sliderImages"></div>
-            <div class="slider-dots" id="sliderDots"></div>
-        </div>
-
-        <div class="ad-space-banner">
-            <div>
-                <h3 style="font-size: 13px; font-weight: 900;">📢 هل تريد الإعلان عن نشاطك أو متجرك؟</h3>
-                <p style="font-size: 10px; opacity: 0.95; margin-top: 2px;">تتوفر مساحات إعلانية مدفوعة في بنرات السلايدر لعرض إعلانك باستمرار!</p>
-            </div>
-            <a href="https://wa.me/967780568507?text=مرحبا،%20اريد%20حجز%20مساحة%20إعلانية%20مدفوعة%20في%20بنرات%20المنصة" target="_blank" class="ad-space-btn">احجز إعلانك الآن 🌟</a>
-        </div>
-        
-        <div class="action-banner">
-            <div>
-                <h3 style="font-size: 13px; font-weight: 800;">تريد نشر وظيفة أو إضافة ملفك؟</h3>
-                <p style="font-size: 10px; opacity: 0.9;">تواصل مع إدارة المنصة مباشرة عبر الواتساب</p>
-            </div>
-            <a href="https://wa.me/967780568507?text=مرحبا،%20اريد%20نشر%20وظيفة/إضافة%20سي%20في%20في%20منصة%20صدارة" target="_blank" class="action-btn">تواصل معنا 🟢</a>
-        </div>
-
         <h2 style="font-size: 16px; font-weight: 900; margin-bottom: 10px; color: var(--text-dark);">الوظائف والخدمات المتاحة</h2>
         <div id="jobsBox"></div>
 
         <div class="adsense-footer-links">
             <p>© 2026 منصة صدارة للتسويق والخدمات الرقمية - جميع الحقوق محفوظة</p>
             <div>
-                <a href="services.html">متجر الخدمات الرقمية</a> |
+                <a href="services.html">متجر الخدمات</a> |
                 <a href="affiliate.html">برنامج المسوقين</a> |
-                <a href="blog.html">المدونة والنصائح</a> |
-                <a href="text-courses.html">الدورات والاختبارات</a> |
                 <a href="privacy.html">سياسة الخصوصية</a> |
-                <a href="privacy.html#terms">شروط الاستخدام</a> |
-                <a href="privacy.html#about">من نحن</a> |
-                <a href="privacy.html#contact">اتصل بنا</a>
+                <a href="privacy.html#terms">شروط الاستخدام</a>
             </div>
-        </div>
-    </div>
-
-    <div class="partners-ticker">
-        <div class="ticker-label">شركاء النجاح 🤝</div>
-        <div style="display:flex; overflow:hidden; width:100%;">
-            <div class="ticker-content" id="tickerBox"></div>
-        </div>
-    </div>
-
-    <!-- نافذة خزنة الإشعارات (Notification Vault) -->
-    <div class="modal-overlay" id="notificationsModal">
-        <div class="modal-card" style="max-width: 420px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="color:var(--primary); font-size:15px;">🔔 خزنة الإشعارات والتنبيهات</h3>
-                <button onclick="closeNotificationsModal()" style="background:transparent; border:none; color:#ef4444; font-size:14px; font-weight:bold; cursor:pointer; width:auto; padding:0; margin:0;">✕ إغلاق</button>
-            </div>
-            <p style="font-size:10px; color:#64748b; margin-bottom:10px;">سجل أحدث التنبيهات والوظائف والخدمات المضافة للمنصة:</p>
-            <div id="notificationsVaultList" style="max-height:260px; overflow-y:auto; border-top:1px solid #e2e8f0; padding-top:8px;">
-                <p style="font-size:11px; color:#64748b; text-align:center;">جاري تحميل التنبيهات...</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- نافذة تسجيل الحساب -->
-    <div class="modal-overlay" id="authModal">
-        <div class="modal-card">
-            <h3 style="color:var(--primary); font-size:15px; margin-bottom:5px;" id="modalTitle">تسجيل حساب جديد 🚀</h3>
-            <p style="font-size:11px; color:#64748b; margin-bottom:10px;" id="modalSubtitle">يرجى تسجيل حسابك الجديد للمتابعة.</p>
-            
-            <label>رقم الواتساب</label>
-            <input type="tel" id="authPhone" placeholder="770000000">
-
-            <div id="nameFieldBox">
-                <label>الاسم الكامل / اسم الشركة</label>
-                <input type="text" id="authName" placeholder="مثال: شركة صدارة / أحمد">
-            </div>
-
-            <label>كلمة المرور (4 أرقام فقط)</label>
-            <input type="password" id="authPass" maxlength="4" placeholder="1234">
-
-            <div style="display:flex; gap:6px; margin-top:14px;">
-                <button id="mainAuthBtn" onclick="processAuth()" style="flex:1; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px;">إنشاء وحفظ الحساب 📱</button>
-            </div>
-            <button onclick="switchMode()" id="switchBtnText" style="width:100%; background:#f1f5f9; color:#0f2347; border:none; padding:7px; border-radius:8px; margin-top:6px; cursor:pointer; font-size:11px; font-weight:bold;">لديك حساب مسجل؟ تسجيل الدخول</button>
-            <button onclick="closeAuthModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:10px;">إلغاء</button>
-            <div id="authMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
         </div>
     </div>
 
@@ -222,31 +166,17 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let isLoginMode = false;
-        let selectedStarsMap = {};
         let allGlobalJobs = [];
-        let currentSelectedCategory = 'الكل';
 
-        function getBlueBadgeHTML() {
-            return `<span title="جهة موثوقة" style="display:inline-flex; align-items:center; vertical-align:middle; margin-right:3px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#1877F2"/>
-                </svg>
-            </span>`;
+        function toggleSidebar() {
+            document.getElementById('sidebarDrawer').classList.toggle('active');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
         }
 
         async function init() {
-            checkActiveSession();
-            loadNotificationsVault();
-            
-            if (!localStorage.getItem('sadara_logged_phone')) {
-                setTimeout(() => { openAuthModal(); }, 800);
-            }
-
             try {
                 let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
                 let views = st ? (st.total_views + 1) : 1;
-                await db.from('stats').update({ total_views: views }).eq('id', 1);
                 document.getElementById('statTotalViews').textContent = views;
                 document.getElementById('statOnline').textContent = Math.floor(Math.random() * 8) + 3;
 
@@ -256,307 +186,33 @@
                 document.getElementById('statResumesCount').textContent = resCnt || 0;
             } catch(e) {}
 
-            let { data: banners } = await db.from('banners').select('*').order('id', {ascending: false});
-            let imgBox = document.getElementById('sliderImages'), dotsBox = document.getElementById('sliderDots');
-            if(banners && banners.length > 0) {
-                banners.forEach((b, i) => {
-                    imgBox.innerHTML += `<img src="${b.url}" class="ad-slider-img ${i===0?'active':''}">`;
-                    if(banners.length > 1) dotsBox.innerHTML += `<div class="dot ${i===0?'active':''}"></div>`;
-                });
-                if(banners.length > 1) {
-                    let idx = 0;
-                    setInterval(() => {
-                        let imgs = imgBox.querySelectorAll('img'), dots = dotsBox.querySelectorAll('.dot');
-                        imgs[idx].classList.remove('active'); if(dots[idx]) dots[idx].classList.remove('active');
-                        idx = (idx + 1) % imgs.length;
-                        imgs[idx].classList.add('active'); if(dots[idx]) dots[idx].classList.add('active');
-                    }, 3500);
-                }
-            }
-
-            let { data: partners } = await db.from('partners').select('*').order('id', {ascending: false});
-            let tBox = document.getElementById('tickerBox');
-            (partners || []).forEach(p => { tBox.innerHTML += `<img src="${p.logo}">`; });
-
             let { data: jobs } = await db.from('jobs').select('*').eq('approved', true).order('id', {ascending: false});
             allGlobalJobs = jobs || [];
-            renderFilteredJobs(allGlobalJobs);
+            renderJobs(allGlobalJobs);
         }
 
-        // فلترة الوظائف حسب التصنيف والبحث الذكي
-        function filterByCategory(categoryName, el) {
-            currentSelectedCategory = categoryName;
-            document.querySelectorAll('.cat-tag').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            executeFiltering();
-        }
-
-        function filterJobsAndServices() {
-            executeFiltering();
-        }
-
-        function executeFiltering() {
-            let query = document.getElementById('searchInput').value.toLowerCase().trim();
-            let filtered = allGlobalJobs.filter(j => {
-                let matchCat = (currentSelectedCategory === 'الكل' || j.category === currentSelectedCategory);
-                let matchQuery = (!query || j.title.toLowerCase().includes(query) || (j.company && j.company.toLowerCase().includes(query)));
-                return matchCat && matchQuery;
-            });
-            renderFilteredJobs(filtered);
-        }
-
-        function renderFilteredJobs(jobsList) {
+        function renderJobs(list) {
             let jBox = document.getElementById('jobsBox');
             jBox.innerHTML = '';
-
-            if (jobsList && jobsList.length > 0) {
-                for (let j of jobsList) {
-                    let imgTag = (j.image && j.image.trim() !== '') ? `<img src="${j.image}">` : '';
-                    let verifiedBadge = j.is_verified ? getBlueBadgeHTML() : '';
-                    let catBadge = j.category ? `<span style="background:#eff6ff; color:#0284c7; padding:2px 6px; border-radius:6px; font-size:10px; font-weight:bold; margin-right:5px;">📁 ${j.category}</span>` : '';
-                    selectedStarsMap[j.id] = 5;
-
+            if (list && list.length > 0) {
+                list.forEach(j => {
                     jBox.innerHTML += `
-                    <div class="job-card">
-                        ${imgTag}
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div>
-                                <h3 style="font-size: 15px; color:#0f2347; display:inline-block;">${j.title}</h3>
-                                ${catBadge}
+                        <div class="job-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <h3 style="font-size: 15px; color:#0f2347;">${j.title}</h3>
+                                <span style="background:#dcfce7; color:#166534; padding:2px 6px; border-radius:10px; font-size:10px; font-weight:bold;">${j.status || 'متاحة'}</span>
                             </div>
-                            <span style="background:#dcfce7; color:#166534; padding:2px 6px; border-radius:10px; font-size:10px; font-weight:bold;">${j.status}</span>
-                        </div>
-                        <p style="font-size: 12px; color:#64748b; margin-top:3px;">${j.company || 'جهة عمل'} ${verifiedBadge}</p>
-                        <a href="https://wa.me/${j.phone.replace(/[^0-9]/g, '')}" target="_blank" class="apply-btn">تقديم عبر الواتساب 🟢</a>
-
-                        <div class="reviews-box">
-                            <h4 style="font-size:12px; color:#0f2347;">⭐ تقييمات وتعليقات المتقدمين:</h4>
-                            
-                            <div style="margin: 6px 0;" id="starBox_${j.id}">
-                                <span class="star-select active" onclick="setJobStar(${j.id}, 1)">★</span>
-                                <span class="star-select active" onclick="setJobStar(${j.id}, 2)">★</span>
-                                <span class="star-select active" onclick="setJobStar(${j.id}, 3)">★</span>
-                                <span class="star-select active" onclick="setJobStar(${j.id}, 4)">★</span>
-                                <span class="star-select active" onclick="setJobStar(${j.id}, 5)">★</span>
-                            </div>
-
-                            <div style="display:flex; gap:5px;">
-                                <input type="text" id="reviewText_${j.id}" placeholder="اكتب رأيك أو تجربتك مع هذه الوظيفة/الجهة..." style="flex:1; padding:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11px;">
-                                <button onclick="submitJobReview(${j.id})" style="background:#0f2347; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">إرسال</button>
-                            </div>
-
-                            <div id="jobReviewsList_${j.id}" style="margin-top:8px;">جاري تحميل التقييمات...</div>
-                        </div>
-                    </div>`;
-
-                    loadJobReviews(j.id);
-                }
-            } else {
-                jBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px;">لا توجد وظائف مطابقة لبحثك حالياً.</p>';
-            }
-        }
-
-        // إدارة خزنة الإشعارات
-        async function loadNotificationsVault() {
-            try {
-                let { data: jobs } = await db.from('jobs').select('title, company, created_at').order('id', {ascending: false}).limit(10);
-                let vaultBox = document.getElementById('notificationsVaultList');
-                let countBadge = document.getElementById('notifCountBadge');
-                
-                if (!jobs || jobs.length === 0) {
-                    vaultBox.innerHTML = '<p style="font-size:11px; color:#64748b; text-align:center;">لا توجد إشعارات سابقة.</p>';
-                    countBadge.textContent = '0';
-                    return;
-                }
-
-                countBadge.textContent = jobs.length;
-                vaultBox.innerHTML = '';
-                jobs.forEach(item => {
-                    vaultBox.innerHTML += `
-                        <div style="background:#f8fafc; border-right:3px solid var(--gold); padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px;">
-                            <div style="font-weight:bold; color:var(--primary);">💼 وظيفة جديدة: ${item.title}</div>
-                            <div style="color:#475569; margin-top:2px;">الجهة: ${item.company || 'صدارة'}</div>
+                            <p style="font-size: 12px; color:#64748b; margin-top:3px;">الجهة: ${j.company || 'صدارة'}</p>
+                            <a href="https://wa.me/${j.phone ? j.phone.replace(/[^0-9]/g, '') : '967780568507'}" target="_blank" class="apply-btn">تقديم عبر الواتساب 🟢</a>
                         </div>
                     `;
                 });
-            } catch(e) {}
-        }
-
-        function openNotificationsModal() { document.getElementById('notificationsModal').style.display = 'flex'; }
-        function closeNotificationsModal() { document.getElementById('notificationsModal').style.display = 'none'; }
-
-        function setJobStar(jobId, stars) {
-            selectedStarsMap[jobId] = stars;
-            const starEls = document.querySelectorAll(`#starBox_${jobId} .star-select`);
-            starEls.forEach((el, idx) => {
-                if (idx < stars) el.classList.add('active');
-                else el.classList.remove('active');
-            });
-        }
-
-        async function submitJobReview(jobId) {
-            const commentInput = document.getElementById(`reviewText_${jobId}`);
-            const comment = commentInput.value.trim();
-
-            if (!comment) { alert('يرجى كتابة تعليقك قبل الإرسال'); return; }
-
-            const userPhone = localStorage.getItem('sadara_logged_phone') || 'غير مسجل';
-            const userName = localStorage.getItem('sadara_logged_name') || 'زائر';
-            const fullIdentity = `${userName} (${userPhone})`;
-
-            let { error } = await db.from('reviews').insert([{
-                item_type: 'job',
-                item_id: jobId,
-                user_name: fullIdentity,
-                rating: selectedStarsMap[jobId] || 5,
-                comment: comment
-            }]);
-
-            if (error) {
-                alert('خطأ أثناء إضافة التقييم: ' + error.message);
             } else {
-                alert('شكراً لك! تم إضافة تقييمك بنجاح ✅');
-                commentInput.value = '';
-                loadJobReviews(jobId);
+                jBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px;">لا توجد وظائف متاحة حالياً.</p>';
             }
-        }
-
-        async function loadJobReviews(jobId) {
-            let { data: reviews } = await db.from('reviews')
-                .select('*')
-                .eq('item_type', 'job')
-                .eq('item_id', jobId)
-                .order('created_at', { ascending: false });
-
-            let listBox = document.getElementById(`jobReviewsList_${jobId}`);
-            if (!listBox) return;
-            listBox.innerHTML = '';
-
-            if (!reviews || !reviews.length) {
-                listBox.innerHTML = '<p style="font-size:10px; color:#94a3b8;">لا توجد تعليقات حتى الآن. كن أول من يضيف تقييماً!</p>';
-                return;
-            }
-
-            reviews.forEach(r => {
-                let starsHTML = '★'.repeat(r.rating || 5);
-                listBox.innerHTML += `
-                    <div class="review-single">
-                        <div style="display:flex; justify-content:space-between; font-weight:bold; color:#0f2347;">
-                            <span>👤 ${r.user_name}</span>
-                            <span style="color:var(--gold);">${starsHTML}</span>
-                        </div>
-                        <p style="color:#475569; margin-top:2px;">${r.comment}</p>
-                    </div>
-                `;
-            });
-        }
-
-        function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
-        function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
-
-        function switchMode() {
-            isLoginMode = !isLoginMode;
-            const nameBox = document.getElementById('nameFieldBox');
-            const title = document.getElementById('modalTitle');
-            const subtitle = document.getElementById('modalSubtitle');
-            const btn = document.getElementById('mainAuthBtn');
-            const switchBtn = document.getElementById('switchBtnText');
-
-            if (isLoginMode) {
-                nameBox.style.display = 'none';
-                title.textContent = 'تسجيل الدخول 🔐';
-                subtitle.textContent = 'أدخل رقم الواتساب وكلمة المرور (4 أرقام).';
-                btn.textContent = 'تسجيل الدخول 🚀';
-                btn.style.background = 'var(--primary)';
-                switchBtn.textContent = 'ليس لديك حساب؟ سجل حساب جديد';
-            } else {
-                nameBox.style.display = 'block';
-                title.textContent = 'تسجيل حساب جديد 🚀';
-                subtitle.textContent = 'يرجى تسجيل حسابك الجديد للمتابعة.';
-                btn.textContent = 'إنشاء وحفظ الحساب 📱';
-                btn.style.background = 'var(--green)';
-                switchBtn.textContent = 'لديك حساب مسجل؟ تسجيل الدخول';
-            }
-        }
-
-        async function processAuth() {
-            const phone = document.getElementById('authPhone').value.trim();
-            const pass = document.getElementById('authPass').value.trim();
-            const msg = document.getElementById('authMsg');
-
-            if (!phone || !pass) { alert('يرجى إدخال رقم الواتساب وكلمة المرور'); return; }
-            if (pass.length !== 4) { alert('كلمة المرور يجب أن تكون من 4 أرقام فقط'); return; }
-
-            msg.style.color = 'blue'; msg.textContent = 'جاري المعالجة السريعة...';
-
-            if (!isLoginMode) {
-                const name = document.getElementById('authName').value.trim() || phone;
-                
-                try {
-                    let { error } = await db.from('users').insert([{
-                        full_name: name,
-                        phone: phone,
-                        password: pass
-                    }]);
-
-                    if (error) {
-                        localStorage.setItem('sadara_logged_phone', phone);
-                        localStorage.setItem('sadara_logged_name', name);
-                    }
-                } catch(e) {}
-
-                localStorage.setItem('sadara_logged_phone', phone);
-                localStorage.setItem('sadara_logged_name', name);
-                msg.style.color = 'green';
-                msg.textContent = 'تم تسجيل الدخول بنجاح! 🎉';
-                setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 800);
-
-            } else {
-                localStorage.setItem('sadara_logged_phone', phone);
-                localStorage.setItem('sadara_logged_name', 'مستخدم صدارة (' + phone.slice(-4) + ')');
-                
-                msg.style.color = 'green';
-                msg.textContent = 'مرحباً بك! تم تسجيل دخولك بنجاح 👋';
-                setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 800);
-            }
-        }
-
-        function checkActiveSession() {
-            const loggedName = localStorage.getItem('sadara_logged_name');
-            const authArea = document.getElementById('authArea');
-            if (loggedName) {
-                authArea.innerHTML = `<span style="font-size:10px; color:var(--gold); font-weight:bold; margin-left:4px;">👤 ${loggedName}</span><button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border:none; color:white;">خروج</button>`;
-            } else {
-                authArea.innerHTML = `<button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>`;
-            }
-        }
-
-        function logoutUser() {
-            localStorage.removeItem('sadara_logged_phone');
-            localStorage.removeItem('sadara_logged_name');
-            checkActiveSession();
-            openAuthModal();
         }
 
         document.addEventListener('DOMContentLoaded', init);
-    </script>
-
-    <!-- سكربت تفعيل الإشعارات الفورية (Push Notifications) -->
-    <script>
-      if ('serviceWorker' in navigator && 'PushManager' in window) {
-        navigator.serviceWorker.register('/sw.js')
-          .then(function(swReg) {
-            console.log('Service Worker مسجل بنجاح', swReg);
-            Notification.requestPermission().then(function(permission) {
-              if (permission === 'granted') {
-                console.log('تم منح صلاحية الإشعارات بنجاح.');
-              }
-            });
-          })
-          .catch(function(error) {
-            console.error('خطأ في تسجيل الـ Service Worker', error);
-          });
-      }
     </script>
 </body>
 </html>
