@@ -35,11 +35,14 @@
         .buy-btn { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; text-align: center; text-decoration: none; display: block; width: 100%; transition: 0.2s; }
         .buy-btn:hover { opacity: 0.9; }
 
-        /* نافذة إتمام الطلب */
+        /* نافذة إتمام الطلب وطرق الدفع */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; }
-        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 90%; max-width: 380px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 90%; max-width: 380px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
         .modal-card input { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        
+        .payment-box { background: #f8fafc; border: 1px dashed var(--gold); padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 11px; line-height: 1.6; color: #334155; }
+        .payment-box b { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -60,12 +63,19 @@
         </div>
     </div>
 
-    <!-- نافذة إتمام الطلب ورفع سند التحويل -->
+    <!-- نافذة إتمام الطلب وطرق الدفع -->
     <div class="modal-overlay" id="orderModal">
         <div class="modal-card">
             <h3 style="color:var(--primary); font-size:15px; margin-bottom:5px;">إتمام طلب الخدمة 💳</h3>
-            <p style="font-size:11px; color:#64748b; margin-bottom:10px;" id="selectedProductTitle">الخدمة المطلوبة</p>
+            <p style="font-size:11px; color:#64748b; margin-bottom:6px;" id="selectedProductTitle">الخدمة المطلوبة</p>
             
+            <!-- صندوق طرق الدفع بأسماء الحسابات والأرقام بدقة -->
+            <div class="payment-box">
+                <div style="font-weight:900; color:var(--primary); margin-bottom:4px;">💳 طرق الدفع المتاحة للتحويل:</div>
+                <div>🔹 <b>محفظة جيب:</b> <code>780568507</code><br><span style="color:#64748b; font-size:10px;">باسم: عبدالرحمن الذماري</span></div>
+                <div style="margin-top:6px;">🔹 <b>محفظة / نقطة حاسب الكريمي:</b> <code>2628009</code><br><span style="color:#64748b; font-size:10px;">باسم: شركة صدارة للتسويق والخدمات الرقمية</span></div>
+            </div>
+
             <label>اسمك الكريم</label>
             <input type="text" id="clientName" placeholder="أدخل اسمك الكامل">
 
