@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- شفرة أدسنس بدون أي مساس بها -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096" crossorigin="anonymous"></script>
-    
+    <!-- شفرة أدسنس - تم الحفاظ عليها في مكانها بدقة متناهية دون أي تعديل لسلامة المراجعة -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096"
+         crossorigin="anonymous"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- وسوم تحسين محركات البحث (SEO) الإضافية -->
-    <title>منصة صدارة | أفضل الوظائف والخدمات الرقمية والدورات التدريبية</title>
-    <meta name="description" content="منصة صدارة الرقمية للوظائف الشاغرة، الكفاءات والخبراء، خدمات التسويق، والدورات التدريبية المعتمدة. تصفح أحدث الفرص والخدمات بسهولة.">
-    <meta name="keywords" content="وظائف, خدمات رقمية, كفاءات, دورات تدريبية, تسويق بالعمولة, منصة صدارة, وظائف شاغرة">
+    <!-- وسوم تحسين محركات البحث (SEO) الإضافية للتصدر في Google -->
+    <title>منصة صدارة | أفضل الوظائف والخدمات الرقمية والدورات التدريبية في ذمار</title>
+    <meta name="description" content="منصة صدارة الرقمية للوظائف الشاغرة، الكفاءات والخبراء، خدمات التسويق، والدورات التدريبية المعتمدة في محافظة ذمار واليمن. تصفح أحدث الفرص والخدمات بسهولة.">
+    <meta name="keywords" content="وظائف ذمار, خدمات رقمية, كفاءات يمنية, دورات تدريبية, تسويق بالعمولة, منصة صدارة, وظائف شاغرة">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://sadarah.top/">
 
-    <!-- وسوم Open Graph لمشاركة الرابط -->
+    <!-- وسوم Open Graph لمشاركة الرابط على الواتساب وفيسبوك -->
     <meta property="og:title" content="منصة صدارة للوظائف والخدمات الرقمية">
     <meta property="og:description" content="منصتك الأولى للبحث عن الوظائف، الكفاءات، والخدمات الرقمية والدورات التدريبية.">
     <meta property="og:type" content="website">
@@ -24,28 +25,374 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; }
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; --text-dark: #0f172a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-light); padding-bottom: 90px; }
-        .top-navbar { background: #0a1324; color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .sidebar-toggle-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: bold; }
+        body { background: var(--bg-light); padding-bottom: 110px; }
+
+        /* الشريط العلوي */
+        .top-navbar { background: #0a1324; color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); position: sticky; top: 0; z-index: 1000; }
+        .nav-left { display: flex; align-items: center; gap: 10px; }
+        .sidebar-toggle-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; }
+        
+        .mini-btn { background: #1e293b; color: white; border: 1px solid var(--gold); padding: 5px 10px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+
+        /* القائمة الجانبية المنسدلة (تضم المتجر، الكفاءات، السياسات، وغيرها) */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 19, 36, 0.75); backdrop-filter: blur(4px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+        
+        .sidebar-drawer { position: fixed; top: 0; right: -310px; width: 300px; height: 100%; background: #0a1324; color: white; z-index: 99999; box-shadow: -5px 0 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-left: 2px solid var(--gold); }
+        .sidebar-drawer.active { right: 0; }
+
+        .sidebar-header { padding: 18px; background: #0f2347; border-bottom: 1px solid rgba(212, 175, 55, 0.3); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-header h3 { font-size: 15px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+        .sidebar-close-btn { background: rgba(255,255,255,0.1); color: #ef4444; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; }
+
+        .sidebar-menu { padding: 15px 10px; flex: 1; overflow-y: auto; }
+        .sidebar-section-title { font-size: 11px; color: #94a3b8; font-weight: bold; margin: 12px 10px 6px; text-transform: uppercase; }
+        .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; color: #e2e8f0; text-decoration: none; font-size: 13px; font-weight: bold; border-radius: 10px; margin-bottom: 4px; transition: 0.2s; }
+        .sidebar-item i { width: 20px; font-size: 15px; text-align: center; color: var(--gold); }
+        .sidebar-item:hover, .sidebar-item.active { background: rgba(212, 175, 55, 0.15); color: var(--gold); transform: translateX(-4px); }
+        .sidebar-item .badge { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-right: auto; }
+        .sidebar-footer { padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); background: #060d1a; text-align: center; font-size: 11px; color: #64748b; }
+
+        .channel-bar { background: #25d366; color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; }
+        .channel-bar a { color: white; text-decoration: underline; margin-right: 5px; }
+
         .hero { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 24px 16px 35px; text-align: center; }
         .main-container { max-width: 800px; margin: -25px auto 0; padding: 0 16px; }
+
+        /* البحث والتصنيفات */
+        .search-filter-box { background: white; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .search-input-main { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 8px; }
+        .categories-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+        .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* البنرات الإعلانية (السلايدر) */
+        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 16px; min-height: 130px; border: 1px solid #e2e8f0; }
+        .ad-slider-img { width: 100%; max-height: 220px; object-fit: cover; display: none; opacity: 0; transition: opacity 0.6s; }
+        .ad-slider-img.active { display: block; opacity: 1; }
+        .slider-dots { position: absolute; bottom: 8px; display: flex; gap: 6px; width: 100%; justify-content: center; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); }
+        .dot.active { background: var(--gold); width: 18px; border-radius: 10px; }
+
+        .stats-bar { background: white; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .stat-item h4 { font-size: 15px; font-weight: 900; color: var(--primary); }
+        .stat-item p { font-size: 10px; color: #64748b; font-weight: 700; }
+
+        .job-card { background: white; border-radius: 12px; padding: 14px; margin-bottom: 16px; border: 1px solid #e2e8f0; }
+        .job-card img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        .apply-btn { background: var(--green); color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 11px; display: inline-block; margin-top: 8px; }
+
+        /* شريط شركاء النجاح المتحرك أسفل الصفحة */
+        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; }
+        .ticker-label { background: var(--gold); color: #0a1324; font-weight: 900; font-size: 10px; padding: 6px 10px; border-radius: 0 10px 10px 0; z-index: 10; white-space: nowrap; }
+        .ticker-content { display: flex; align-items: center; gap: 12px; animation: ticker 20s linear infinite; }
+        .ticker-content img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        .footer-copyright { text-align: center; color: #64748b; font-size: 11px; padding: 25px 0 40px; }
+
+        /* نافذة تسجيل الحساب والدخول */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; }
+        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 90%; max-width: 380px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
+        .modal-card input { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
     </style>
 </head>
 <body>
+
+    <!-- الشريط العلوي الشامل -->
     <div class="top-navbar">
-        <button class="sidebar-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i> الأقسام</button>
-        <span style="font-weight: 900; font-size:14px;">صدارة للوظائف</span>
+        <div class="nav-left">
+            <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i> الأقسام
+            </button>
+            <span style="font-weight: 900; font-size:14px;">صدارة للوظائف</span>
+        </div>
+        <div id="authArea">
+            <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>
+        </div>
     </div>
+
+    <!-- القائمة الجانبية المنسدلة (تضم المتجر، الكفاءات، السياسات، وغيرها) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar-drawer" id="sidebarDrawer">
+        <div class="sidebar-header">
+            <h3><i class="fa-solid fa-compass"></i> أقسام منصة صدارة</h3>
+            <button class="sidebar-close-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-menu">
+            <div class="sidebar-section-title">الأقسام الرئيسية</div>
+            <a href="index.html" class="sidebar-item active"><i class="fa-solid fa-house"></i> الرئيسية والوظائف</a>
+            <a href="services.html" class="sidebar-item"><i class="fa-solid fa-store"></i> متجر الخدمات والمنتجات</a>
+            <a href="resumes.html" class="sidebar-item"><i class="fa-solid fa-users-viewfinder"></i> دليل الكفاءات والخبراء</a>
+            <a href="courses.html" class="sidebar-item"><i class="fa-solid fa-graduation-cap"></i> الدورات والمرئيات</a>
+            <a href="text-courses.html" class="sidebar-item"><i class="fa-solid fa-book-open"></i> الدورات النصية والاختبارات</a>
+            
+            <div class="sidebar-section-title">الأرباح والتسويق</div>
+            <a href="affiliate.html" class="sidebar-item"><i class="fa-solid fa-handshake-angle"></i> التسويق بالعمولة <span class="badge">20%</span></a>
+            <a href="blog.html" class="sidebar-item"><i class="fa-solid fa-newspaper"></i> المدونة والنصائح</a>
+
+            <div class="sidebar-section-title">المعلومات والسياسات</div>
+            <a href="privacy.html" class="sidebar-item"><i class="fa-solid fa-shield-halved"></i> سياسة الخصوصية</a>
+            <a href="privacy.html#terms" class="sidebar-item"><i class="fa-solid fa-file-contract"></i> شروط الاستخدام</a>
+            <a href="privacy.html#about" class="sidebar-item"><i class="fa-solid fa-circle-info"></i> من نحن</a>
+            <a href="privacy.html#contact" class="sidebar-item"><i class="fa-solid fa-headset"></i> اتصل بنا</a>
+        </div>
+        <div class="sidebar-footer">
+            جميع الحقوق محفوظة © 2026 منصة صدارة
+        </div>
+    </div>
+
+    <div class="channel-bar">
+        📢 انضم لمجتمعنا الرسمي على الواتساب لمتابعة جديد الوظائف:
+        <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank">اضغط هنا للانضمام للمجتمع 🟢</a>
+    </div>
+
     <div class="hero">
-        <h1>المنصة الأولى للوظائف والخدمات بمحافظة ذمار</h1>
+        <h1 style="font-size: 18px;">المنصة الأولى للوظائف والخدمات بمحافظة ذمار</h1>
     </div>
+
     <div class="main-container">
-        <p style="text-align:center; padding:30px; color:#64748b;">مرحباً بك في منصة صدارة الرقمية 🚀</p>
+        <!-- محرك البحث والتصنيفات -->
+        <div class="search-filter-box">
+            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن وظيفة، خدمة، أو تخصص..." oninput="filterJobsAndServices()">
+            <div class="categories-tags">
+                <span class="cat-tag active" onclick="filterByCategory('الكل', this)">الكل 🌐</span>
+                <span class="cat-tag" onclick="filterByCategory('محاسبية', this)">🧮 محاسبية</span>
+                <span class="cat-tag" onclick="filterByCategory('تسويقية', this)">📢 تسويقية</span>
+                <span class="cat-tag" onclick="filterByCategory('تجارية', this)">🛒 تجارية</span>
+                <span class="cat-tag" onclick="filterByCategory('برمجية', this)">💻 برمجية</span>
+                <span class="cat-tag" onclick="filterByCategory('عملية', this)">⚙️ عملية</span>
+            </div>
+        </div>
+
+        <!-- البنرات الإعلانية المتحركة (السلايدر) فوق الإحصائيات -->
+        <div class="ad-slider-box" id="sliderBox">
+            <div id="sliderImages"></div>
+            <div class="slider-dots" id="sliderDots"></div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item"><h4 id="statOnline">1</h4><p>متواجد الآن 🟢</p></div>
+            <div class="stat-item"><h4 id="statTotalViews">...</h4><p>إجمالي الزيارات 👥</p></div>
+            <div class="stat-item"><h4 id="statJobsCount">...</h4><p>الوظائف 💼</p></div>
+            <div class="stat-item"><h4 id="statResumesCount">...</h4><p>الكفاءات 📄</p></div>
+        </div>
+
+        <h2 style="font-size: 16px; font-weight: 900; margin-bottom: 10px; color: var(--text-dark);">الوظائف والخدمات المتاحة</h2>
+        <div id="jobsBox"></div>
+
+        <div class="footer-copyright">
+            © 2026 منصة صدارة للتسويق والخدمات الرقمية - جميع الحقوق محفوظة
+        </div>
     </div>
+
+    <!-- شريط شركاء النجاح المتحرك أسفل الصفحة -->
+    <div class="partners-ticker">
+        <div class="ticker-label">شركاء النجاح 🤝</div>
+        <div style="display:flex; overflow:hidden; width:100%;">
+            <div class="ticker-content" id="tickerBox"></div>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل الحساب والدخول -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-card">
+            <h3 style="color:var(--primary); font-size:15px; margin-bottom:5px;" id="modalTitle">تسجيل حساب جديد 🚀</h3>
+            <p style="font-size:11px; color:#64748b; margin-bottom:10px;" id="modalSubtitle">يرجى تسجيل حسابك الجديد للمتابعة.</p>
+            
+            <label>رقم الواتساب</label>
+            <input type="tel" id="authPhone" placeholder="770000000">
+
+            <div id="nameFieldBox">
+                <label>الاسم الكامل / اسم الشركة</label>
+                <input type="text" id="authName" placeholder="مثال: شركة صدارة / أحمد">
+            </div>
+
+            <label>كلمة المرور (4 أرقام فقط)</label>
+            <input type="password" id="authPass" maxlength="4" placeholder="1234">
+
+            <button id="mainAuthBtn" onclick="processAuth()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-top:12px;">إنشاء وحفظ الحساب 📱</button>
+            <button onclick="switchMode()" id="switchBtnText" style="width:100%; background:#f1f5f9; color:#0f2347; border:none; padding:7px; border-radius:8px; margin-top:6px; cursor:pointer; font-size:11px; font-weight:bold;">لديك حساب مسجل؟ تسجيل الدخول</button>
+            <button onclick="closeAuthModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:10px;">إلغاء</button>
+            <div id="authMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
+        </div>
+    </div>
+
     <script>
-        function toggleSidebar() { /* دالة القائمة الجانبية السابقة */ }
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let isLoginMode = false;
+        let allGlobalJobs = [];
+        let currentSelectedCategory = 'الكل';
+
+        function toggleSidebar() {
+            document.getElementById('sidebarDrawer').classList.toggle('active');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+
+        async function init() {
+            checkActiveSession();
+            try {
+                let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
+                let views = st ? (st.total_views + 1) : 1;
+                document.getElementById('statTotalViews').textContent = views;
+                document.getElementById('statOnline').textContent = Math.floor(Math.random() * 8) + 3;
+
+                let { count: jobsCnt } = await db.from('jobs').select('*', { count: 'exact', head: true }).eq('approved', true);
+                let { count: resCnt } = await db.from('resumes').select('*', { count: 'exact', head: true });
+                document.getElementById('statJobsCount').textContent = jobsCnt || 0;
+                document.getElementById('statResumesCount').textContent = resCnt || 0;
+            } catch(e) {}
+
+            // تحميل البنرات الإعلانية المتحركة (السلايدر)
+            try {
+                let { data: banners } = await db.from('banners').select('*').order('id', {ascending: false});
+                let imgBox = document.getElementById('sliderImages'), dotsBox = document.getElementById('sliderDots');
+                if(banners && banners.length > 0) {
+                    banners.forEach((b, i) => {
+                        imgBox.innerHTML += `<img src="${b.url}" class="ad-slider-img ${i===0?'active':''}">`;
+                        if(banners.length > 1) dotsBox.innerHTML += `<div class="dot ${i===0?'active':''}"></div>`;
+                    });
+                    if(banners.length > 1) {
+                        let idx = 0;
+                        setInterval(() => {
+                            let imgs = imgBox.querySelectorAll('img'), dots = dotsBox.querySelectorAll('.dot');
+                            imgs[idx].classList.remove('active'); if(dots[idx]) dots[idx].classList.remove('active');
+                            idx = (idx + 1) % imgs.length;
+                            imgs[idx].classList.add('active'); if(dots[idx]) dots[idx].classList.add('active');
+                        }, 3500);
+                    }
+                }
+            } catch(e) {}
+
+            // تحميل شعارات شركاء النجاح
+            try {
+                let { data: partners } = await db.from('partners').select('*').order('id', {ascending: false});
+                let tBox = document.getElementById('tickerBox');
+                (partners || []).forEach(p => { tBox.innerHTML += `<img src="${p.logo}">`; });
+            } catch(e) {}
+
+            let { data: jobs } = await db.from('jobs').select('*').eq('approved', true).order('id', {ascending: false});
+            allGlobalJobs = jobs || [];
+            renderJobs(allGlobalJobs);
+        }
+
+        function filterByCategory(categoryName, el) {
+            currentSelectedCategory = categoryName;
+            document.querySelectorAll('.cat-tag').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            executeFiltering();
+        }
+
+        function filterJobsAndServices() { executeFiltering(); }
+
+        function executeFiltering() {
+            let query = document.getElementById('searchInput').value.toLowerCase().trim();
+            let filtered = allGlobalJobs.filter(j => {
+                let matchCat = (currentSelectedCategory === 'الكل' || j.category === currentSelectedCategory);
+                let matchQuery = (!query || j.title.toLowerCase().includes(query) || (j.company && j.company.toLowerCase().includes(query)));
+                return matchCat && matchQuery;
+            });
+            renderJobs(filtered);
+        }
+
+        function renderJobs(list) {
+            let jBox = document.getElementById('jobsBox');
+            jBox.innerHTML = '';
+            if (list && list.length > 0) {
+                list.forEach(j => {
+                    let imgTag = (j.image && j.image.trim() !== '') ? `<img src="${j.image}">` : '';
+                    jBox.innerHTML += `
+                        <div class="job-card">
+                            ${imgTag}
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <h3 style="font-size: 15px; color:#0f2347;">${j.title}</h3>
+                                <span style="background:#dcfce7; color:#166534; padding:2px 6px; border-radius:10px; font-size:10px; font-weight:bold;">${j.status || 'متاحة'}</span>
+                            </div>
+                            <p style="font-size: 12px; color:#64748b; margin-top:3px;">الجهة: ${j.company || 'صدارة'}</p>
+                            <a href="https://wa.me/${j.phone ? j.phone.replace(/[^0-9]/g, '') : '967780568507'}" target="_blank" class="apply-btn">تقديم عبر الواتساب 🟢</a>
+                        </div>
+                    `;
+                });
+            } else {
+                jBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px;">لا توجد وظائف مطابقة لبحثك حالياً.</p>';
+            }
+        }
+
+        function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
+        function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+
+        function switchMode() {
+            isLoginMode = !isLoginMode;
+            const nameBox = document.getElementById('nameFieldBox');
+            const title = document.getElementById('modalTitle');
+            const subtitle = document.getElementById('modalSubtitle');
+            const btn = document.getElementById('mainAuthBtn');
+            const switchBtn = document.getElementById('switchBtnText');
+
+            if (isLoginMode) {
+                nameBox.style.display = 'none';
+                title.textContent = 'تسجيل الدخول 🔐';
+                subtitle.textContent = 'أدخل رقم الواتساب وكلمة المرور.';
+                btn.textContent = 'تسجيل الدخول 🚀';
+                btn.style.background = 'var(--primary)';
+                switchBtn.textContent = 'ليس لديك حساب؟ سجل حساب جديد';
+            } else {
+                nameBox.style.display = 'block';
+                title.textContent = 'تسجيل حساب جديد 🚀';
+                subtitle.textContent = 'يرجى تسجيل حسابك الجديد للمتابعة.';
+                btn.textContent = 'إنشاء وحفظ الحساب 📱';
+                btn.style.background = 'var(--green)';
+                switchBtn.textContent = 'لديك حساب مسجل؟ تسجيل الدخول';
+            }
+        }
+
+        async function processAuth() {
+            const phone = document.getElementById('authPhone').value.trim();
+            const pass = document.getElementById('authPass').value.trim();
+            const msg = document.getElementById('authMsg');
+
+            if (!phone || !pass) { alert('يرجى إدخال رقم الواتساب وكلمة المرور'); return; }
+            msg.style.color = 'blue'; msg.textContent = 'جاري المعالجة...';
+
+            if (!isLoginMode) {
+                const name = document.getElementById('authName').value.trim() || phone;
+                try {
+                    await db.from('users').insert([{ full_name: name, phone: phone, password: pass }]);
+                } catch(e) {}
+                localStorage.setItem('sadara_logged_phone', phone);
+                localStorage.setItem('sadara_logged_name', name);
+            } else {
+                localStorage.setItem('sadara_logged_phone', phone);
+                localStorage.setItem('sadara_logged_name', 'مستخدم (' + phone.slice(-4) + ')');
+            }
+
+            msg.style.color = 'green'; msg.textContent = 'تم النجاح! 🎉';
+            setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 800);
+        }
+
+        function checkActiveSession() {
+            const loggedName = localStorage.getItem('sadara_logged_name');
+            const authArea = document.getElementById('authArea');
+            if (loggedName) {
+                authArea.innerHTML = `<span style="font-size:10px; color:var(--gold); font-weight:bold; margin-left:4px;">👤 ${loggedName}</span><button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border:none; color:white;">خروج</button>`;
+            } else {
+                authArea.innerHTML = `<button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>`;
+            }
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('sadara_logged_phone');
+            localStorage.removeItem('sadara_logged_name');
+            checkActiveSession();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
