@@ -6,7 +6,7 @@
     <title>لوحة التحكم الشاملة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+
     <!-- مكتبات تصدير Excel و PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -34,24 +34,26 @@
         button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
         button:hover { opacity: 0.9; }
         .status-msg { margin-top: 8px; font-size: 11px; font-weight: bold; text-align: center; }
-        .list-box { margin-top: 12px; max-height: 280px; overflow-y: auto; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
+        .list-box { margin-top: 12px; max-height: 320px; overflow-y: auto; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
         .item-row { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-bottom: 1px solid #f1f5f9; font-size: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; border-right: 4px solid var(--primary); }
         .row-header { display: flex; justify-content: space-between; align-items: center; }
         .action-btns { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-        .btn-sm { padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-sm { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 4px; }
         .btn-del { background: var(--red); }
         .btn-edit { background: #3b82f6; }
         .btn-pay { background: #10b981; }
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
+        .badge-verified { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; font-weight: bold; }
         .preview-img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; border: 1px solid #cbd5e1; }
         .lesson-group { background: #f1f5f9; padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid #cbd5e1; }
+        .stats-mini-box { display: flex; gap: 10px; font-size: 10px; color: #475569; background: #fff; padding: 4px 8px; border-radius: 6px; border: 1px solid #e2e8f0; margin-top: 4px; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة كاملة (إضافة، تعديل، حذف، معالجة الصور، وإدارة المسوقين والدورات والطلبات)</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">السيطرة التامة (إضافة، تعديل، حذف، الشارة الزرقاء، إحصائيات المسوقين، وحالة التوفر)</p>
     </div>
 
     <!-- الإحصائيات الحية -->
@@ -64,12 +66,25 @@
 
     <div class="grid-container">
 
-        <!-- 1. إدارة المسوقين بالعمولة والتسويات -->
+        <!-- 1. إدارة وتتبع المسوقين بالعمولة والإحصائيات -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>
-                <span>🤝 المسوقون بالعمولة والدفعات المستحقة</span>
+                <span>🤝 إدارة المسوقين بالعمولة والإحصائيات</span>
                 <span class="badge" id="affiliatesCount">0</span>
             </h2>
+            <input type="hidden" id="editAffiliateId">
+            <div id="affiliateEditForm" style="display:none; background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid #cbd5e1;">
+                <label>اسم المسوق</label>
+                <input type="text" id="affName">
+                <label>رقم الهاتف</label>
+                <input type="text" id="affPhone">
+                <label>كود الإحالة الخاصة</label>
+                <input type="text" id="affCode">
+                <div style="display:flex; gap:6px; margin-top:8px;">
+                    <button onclick="saveAffiliateEdit()" style="background:#10b981;">حفظ تعديل المسوق ✅</button>
+                    <button onclick="cancelAffiliateEdit()" style="background:#64748b;">إلغاء</button>
+                </div>
+            </div>
             <div class="list-box" id="affiliatesList">جاري جلب المسوقين...</div>
         </div>
 
@@ -90,7 +105,7 @@
             </h2>
             <input type="hidden" id="editServiceId">
             <label>اسم الخدمة أو المنتج</label>
-            <input type="text" id="serviceTitle" placeholder="مثال: اشتراك رقمي / منتج">
+            <input type="text" id="serviceTitle" placeholder="مثال: اشتراك رقمي / كورس">
             <label>تصنيف القسم 📁</label>
             <select id="serviceCategory">
                 <option value="اشتراكات">🔑 اشتراكات رقمية</option>
@@ -106,10 +121,10 @@
             <input type="text" id="servicePrice" placeholder="1500 YER">
             <label>صورة المنتج أو الخدمة (ضغط تلقائي 📷)</label>
             <input type="file" id="serviceImgFile" accept="image/*">
-            <label>حالة العرض بالمتجر</label>
+            <label>حالة التوفر بالمتجر</label>
             <select id="serviceStatus">
-                <option value="true">معروض للعملاء 🟢</option>
-                <option value="false">مخفي 🔴</option>
+                <option value="true">متوفر للعملاء 🟢</option>
+                <option value="false">غير متوفر / مخفي 🔴</option>
             </select>
             <button id="btnSaveService" onclick="saveServiceWithImage()">نشر / حفظ الخدمة بالمتجر 🚀</button>
             <button id="btnCancelService" onclick="resetServiceForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
@@ -136,10 +151,10 @@
             </select>
             <label>رقم الواتساب</label>
             <input type="text" id="jobPhone" value="967780568507">
-            <label>الحالة</label>
+            <label>حالة التوفر والقبول</label>
             <select id="jobStatus">
-                <option value="متاحة">متاحة 🟢</option>
-                <option value="مغلقة">مغلقة 🔴</option>
+                <option value="متاحة">متوفرة ومتاحة 🟢</option>
+                <option value="مغلقة">مكتفية / غير متوفرة 🔴</option>
             </select>
             <label>الشارة الزرقاء الموثقة 🔵</label>
             <select id="jobVerified">
@@ -153,7 +168,6 @@
             <div id="jobMsg" class="status-msg"></div>
             <div class="list-box" id="jobsList">جاري التحميل...</div>
         </div>
-
         <!-- 5. إدارة الكفاءات والخبراء -->
         <div class="card">
             <h2><span>📄 إدارة الكفاءات</span><span class="badge" id="resCount">0</span></h2>
@@ -219,6 +233,11 @@
             <input type="text" id="tCourseTitle" placeholder="دورة التسويق الرقمي">
             <label>محتوى الدورة</label>
             <textarea id="tCourseContent" rows="3" placeholder="محتوى الدروس النصية..."></textarea>
+            <label>حالة التوفر للطلاب</label>
+            <select id="tCourseStatus">
+                <option value="true">متوفر للطلاب 🟢</option>
+                <option value="false">غير متوفر / مخفي 🔴</option>
+            </select>
             <button id="btnSaveTCourse" onclick="saveTextCourse()" style="background:#0284c7; color:white;">حفظ / نشر الدورة النصية 🚀</button>
             <button id="btnCancelTCourse" onclick="resetTCourseForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
             <div id="tCourseMsg" class="status-msg"></div>
@@ -283,9 +302,7 @@
         </div>
 
     </div>
-
 <script>
-    // الحماية بكلمة مرور إدارية خاصة
     function checkAdminAuth() {
         let adminPass = localStorage.getItem('sadara_admin_auth');
         if (adminPass !== 'Sdr@2026Admin') {
@@ -304,9 +321,8 @@
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let cachedJobs = [], cachedResumes = [], cachedServices = [], cachedUsers = [], cachedArticles = [], cachedTextCourses = [], cachedCourses = [];
+    let cachedJobs = [], cachedResumes = [], cachedServices = [], cachedUsers = [], cachedArticles = [], cachedTextCourses = [], cachedCourses = [], cachedAffiliates = [];
 
-    // ضغط الصور تلقائياً قبل الرفع
     async function compressImage(file, maxWidth = 800, quality = 0.7) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -353,7 +369,7 @@
         } catch(e) {}
     }
 
-    // 1. الوظائف (إضافة، تعديل، حذف)
+    // 1. الوظائف
     async function saveJob() {
         const editId = document.getElementById('editJobId').value;
         const title = document.getElementById('jobTitle').value.trim();
@@ -394,10 +410,19 @@
         box.innerHTML = cachedJobs.length ? '' : '<p style="color:#64748b; font-size:11px;">لا توجد وظائف.</p>';
         cachedJobs.forEach(j => {
             let imgTag = j.image ? `<img src="${j.image}" class="preview-img">` : '<span style="color:#94a3b8;">بدون صورة</span>';
+            let verifiedTag = j.is_verified ? '<span class="badge badge-verified">🔵 موثق</span>' : '';
+            let statusBadge = j.status === 'متاحة' ? '<span style="color:green; font-weight:bold;">متوفر 🟢</span>' : '<span style="color:red; font-weight:bold;">غير متوفر 🔴</span>';
+
             box.innerHTML += `<div class="item-row">
                 <div class="row-header" style="align-items:center;">
-                    <div style="display:flex; align-items:center; gap:8px;">${imgTag}<div><strong>${j.title}</strong><div style="color:#64748b; font-size:10px;">${j.company || ''}</div></div></div>
-                    <span>${j.status}</span>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        ${imgTag}
+                        <div>
+                            <strong>${j.title} ${verifiedTag}</strong>
+                            <div style="color:#64748b; font-size:10px;">${j.company || ''}</div>
+                        </div>
+                    </div>
+                    <span>${statusBadge}</span>
                 </div>
                 <div class="action-btns">
                     <button class="btn-sm btn-edit" onclick="editJob(${j.id})">تعديل ✏️</button>
@@ -421,7 +446,7 @@
         window.scrollTo({ top: 400, behavior: 'smooth' });
     }
 
-    // 2. متجر الخدمات (إضافة، تعديل، حذف)
+    // 2. متجر الخدمات
     async function saveServiceWithImage() {
         const editId = document.getElementById('editServiceId').value;
         const title = document.getElementById('serviceTitle').value.trim();
@@ -461,10 +486,11 @@
         box.innerHTML = cachedServices.length ? '' : '<p style="color:#64748b; font-size:11px;">لا توجد خدمات.</p>';
         cachedServices.forEach(s => {
             let imgTag = s.image ? `<img src="${s.image}" class="preview-img">` : '<span style="color:#94a3b8;">بدون صورة</span>';
+            let statusBadge = s.is_active ? '<span style="color:green; font-weight:bold;">متوفر 🟢</span>' : '<span style="color:red; font-weight:bold;">غير متوفر 🔴</span>';
             box.innerHTML += `<div class="item-row">
                 <div class="row-header" style="align-items:center;">
                     <div style="display:flex; align-items:center; gap:8px;">${imgTag}<div><strong>${s.title}</strong><div style="color:#10b981;">${s.price}</div></div></div>
-                    <span>${s.is_active ? 'معروض 🟢' : 'مخفي 🔴'}</span>
+                    <span>${statusBadge}</span>
                 </div>
                 <div class="action-btns">
                     <button class="btn-sm btn-edit" onclick="editService(${s.id})">تعديل ✏️</button>
@@ -487,7 +513,7 @@
         window.scrollTo({ top: 300, behavior: 'smooth' });
     }
 
-    // 3. الكفاءات (إضافة، تعديل، حذف)
+    // 3. الكفاءات
     async function saveResume() {
         const editId = document.getElementById('editResId').value;
         const name = document.getElementById('resName').value.trim();
@@ -528,9 +554,16 @@
         box.innerHTML = cachedResumes.length ? '' : '<p style="color:#64748b; font-size:11px;">لا توجد كفاءات.</p>';
         cachedResumes.forEach(r => {
             let imgTag = r.image ? `<img src="${r.image}" class="preview-img">` : '<span style="color:#94a3b8;">بدون صورة</span>';
+            let verifiedTag = r.is_verified ? '<span class="badge badge-verified">🔵 موثق</span>' : '';
             box.innerHTML += `<div class="item-row">
                 <div class="row-header" style="align-items:center;">
-                    <div style="display:flex; align-items:center; gap:8px;">${imgTag}<div><strong>${r.full_name || r.name}</strong><div style="color:#64748b; font-size:10px;">${r.job_title || ''}</div></div></div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        ${imgTag}
+                        <div>
+                            <strong>${r.full_name || r.name} ${verifiedTag}</strong>
+                            <div style="color:#64748b; font-size:10px;">${r.job_title || ''}</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="action-btns">
                     <button class="btn-sm btn-edit" onclick="editResume(${r.id})">تعديل ✏️</button>
@@ -553,7 +586,167 @@
         window.scrollTo({ top: 600, behavior: 'smooth' });
     }
 
-    // 4. البنرات والسلايدر
+    // 4. المسوقون
+    async function loadAdminAffiliates() {
+        let { data: affs } = await db.from('affiliates').select('*').order('id', { ascending: false });
+        cachedAffiliates = affs || [];
+        let box = document.getElementById('affiliatesList');
+        document.getElementById('affiliatesCount').textContent = cachedAffiliates.length;
+        box.innerHTML = cachedAffiliates.length ? '' : '<p style="color:#64748b; font-size:11px;">لا يوجد مسوقون.</p>';
+        cachedAffiliates.forEach(a => {
+            let dueEarned = Number(a.total_earnings || 0) - Number(a.paid_earnings || 0);
+            box.innerHTML += `<div class="item-row">
+                <div class="row-header">
+                    <strong>👤 ${a.full_name || a.name || 'مسوق'} (${a.phone || ''}) - كود: ${a.code || a.ref_code || 'بدون'}</strong>
+                    <b style="color:green;">مستحق: ${dueEarned} YER</b>
+                </div>
+                <div class="stats-mini-box">
+                    <span>👥 عدد النقرات/الزيارات: <b>${a.clicks_count || a.visits || 0}</b></span>
+                    <span>🛒 عدد المبيعات: <b>${a.sales_count || a.orders_count || 0}</b></span>
+                    <span>💰 إجمالي الأرباح: <b>${a.total_earnings || 0} YER</b></span>
+                </div>
+                <div class="action-btns">
+                    <button class="btn-sm btn-edit" onclick="editAffiliate(${a.id})">تعديل ✏️</button>
+                    <button class="btn-sm btn-pay" onclick="payOutAffiliate(${a.id}, ${a.paid_earnings || 0}, ${dueEarned})">تسوية المستحقات 💳</button>
+                    <button class="btn-sm btn-del" onclick="deleteItem('affiliates', ${a.id})">حذف 🗑️</button>
+                </div>
+            </div>`;
+        });
+    }
+
+    function editAffiliate(id) {
+        let a = cachedAffiliates.find(item => item.id === id);
+        if (!a) return;
+        document.getElementById('editAffiliateId').value = a.id;
+        document.getElementById('affName').value = a.full_name || a.name || '';
+        document.getElementById('affPhone').value = a.phone || '';
+        document.getElementById('affCode').value = a.code || a.ref_code || '';
+        document.getElementById('affiliateEditForm').style.display = 'block';
+    }
+
+    async function saveAffiliateEdit() {
+        const id = document.getElementById('editAffiliateId').value;
+        const name = document.getElementById('affName').value.trim();
+        const phone = document.getElementById('affPhone').value.trim();
+        const code = document.getElementById('affCode').value.trim();
+
+        await db.from('affiliates').update({ full_name: name, name, phone, code, ref_code: code }).eq('id', id);
+        cancelAffiliateEdit();
+        loadAdminAffiliates();
+    }
+
+    function cancelAffiliateEdit() {
+        document.getElementById('affiliateEditForm').style.display = 'none';
+        document.getElementById('editAffiliateId').value = '';
+    }
+
+    async function payOutAffiliate(affId, currentPaid, dueAmount) {
+        if (dueAmount <= 0) { alert('لا توجد مستحقات للتسوية'); return; }
+        if (confirm(`تسوية مبلغ (${dueAmount} YER) للمسوق؟`)) {
+            await db.from('affiliates').update({ paid_earnings: currentPaid + dueAmount }).eq('id', affId);
+            loadAdminAffiliates();
+        }
+    }
+
+    // 5. الدورات النصية
+    async function saveTextCourse() {
+        const editId = document.getElementById('editTextCourseId').value;
+        const title = document.getElementById('tCourseTitle').value.trim();
+        const content = document.getElementById('tCourseContent').value.trim();
+        const is_active = document.getElementById('tCourseStatus').value === 'true';
+
+        if (!title || !content) return;
+        let payload = { title, content, is_active };
+        let res = editId ? await db.from('text_courses').update(payload).eq('id', editId) : await db.from('text_courses').insert([payload]);
+        if (!res.error) { resetTCourseForm(); loadTextCourses(); }
+    }
+
+    function resetTCourseForm() {
+        document.getElementById('editTextCourseId').value = '';
+        document.getElementById('tCourseTitle').value = '';
+        document.getElementById('tCourseContent').value = '';
+        document.getElementById('btnCancelTCourse').style.display = 'none';
+    }
+
+    async function loadTextCourses() {
+        let { data } = await db.from('text_courses').select('*').order('id', { ascending: false });
+        cachedTextCourses = data || [];
+        let box = document.getElementById('textCoursesList');
+        document.getElementById('textCoursesCount').textContent = cachedTextCourses.length;
+        box.innerHTML = cachedTextCourses.length ? '' : '<p style="color:#64748b; font-size:11px;">لا توجد دورات نصية.</p>';
+        cachedTextCourses.forEach(tc => {
+            let statusBadge = tc.is_active !== false ? '<span style="color:green; font-weight:bold;">متوفر 🟢</span>' : '<span style="color:red; font-weight:bold;">غير متوفر 🔴</span>';
+            box.innerHTML += `<div class="item-row">
+                <div class="row-header">
+                    <strong>📚 ${tc.title}</strong>
+                    <span>${statusBadge}</span>
+                </div>
+                <div class="action-btns">
+                    <button class="btn-sm btn-edit" onclick="editTextCourse(${tc.id})">تعديل ✏️</button>
+                    <button class="btn-sm btn-del" onclick="deleteItem('text_courses', ${tc.id})">حذف 🗑️</button>
+                </div>
+            </div>`;
+        });
+    }
+
+    function editTextCourse(id) {
+        let tc = cachedTextCourses.find(item => item.id === id);
+        if (!tc) return;
+        document.getElementById('editTextCourseId').value = tc.id;
+        document.getElementById('tCourseTitle').value = tc.title || '';
+        document.getElementById('tCourseContent').value = tc.content || '';
+        document.getElementById('tCourseStatus').value = tc.is_active !== false ? 'true' : 'false';
+        document.getElementById('btnCancelTCourse').style.display = 'block';
+    }
+
+    // 6. المقالات
+    async function saveArticle() {
+        const editId = document.getElementById('editArticleId').value;
+        const title = document.getElementById('artTitle').value.trim();
+        const summary = document.getElementById('artSummary').value.trim();
+        const content = document.getElementById('artContent').value.trim();
+        if (!title || !content) return;
+        let payload = { title, summary, content };
+        let res = editId ? await db.from('articles').update(payload).eq('id', editId) : await db.from('articles').insert([payload]);
+        if (!res.error) { resetArtForm(); loadArticles(); }
+    }
+
+    function resetArtForm() {
+        document.getElementById('editArticleId').value = '';
+        document.getElementById('artTitle').value = '';
+        document.getElementById('artSummary').value = '';
+        document.getElementById('artContent').value = '';
+        document.getElementById('btnCancelArt').style.display = 'none';
+    }
+
+    async function loadArticles() {
+        let { data } = await db.from('articles').select('*').order('id', { ascending: false });
+        cachedArticles = data || [];
+        let box = document.getElementById('articlesList');
+        document.getElementById('articlesCount').textContent = cachedArticles.length;
+        box.innerHTML = cachedArticles.length ? '' : '<p style="color:#64748b; font-size:11px;">لا توجد مقالات.</p>';
+        cachedArticles.forEach(a => {
+            box.innerHTML += `<div class="item-row">
+                <div class="row-header"><strong>📰 ${a.title}</strong></div>
+                <div class="action-btns">
+                    <button class="btn-sm btn-edit" onclick="editArticle(${a.id})">تعديل ✏️</button>
+                    <button class="btn-sm btn-del" onclick="deleteItem('articles', ${a.id})">حذف 🗑️</button>
+                </div>
+            </div>`;
+        });
+    }
+
+    function editArticle(id) {
+        let a = cachedArticles.find(item => item.id === id);
+        if (!a) return;
+        document.getElementById('editArticleId').value = a.id;
+        document.getElementById('artTitle').value = a.title || '';
+        document.getElementById('artSummary').value = a.summary || '';
+        document.getElementById('artContent').value = a.content || '';
+        document.getElementById('btnCancelArt').style.display = 'block';
+    }
+
+    // 7. البنرات والشركاء والطلبات والمستخدمين والشهادات
     async function addBanner() {
         const file = document.getElementById('bannerFile').files[0];
         if (!file) { alert('اختر صورة البنر'); return; }
@@ -571,7 +764,6 @@
         });
     }
 
-    // 5. شركاء النجاح
     async function addPartner() {
         const file = document.getElementById('partnerFile').files[0];
         if (!file) { alert('اختر شعار الشريك'); return; }
@@ -589,36 +781,6 @@
         });
     }
 
-    // 6. المسوقون والتسويات
-    async function loadAdminAffiliates() {
-        let { data: affs } = await db.from('affiliates').select('*').order('id', { ascending: false });
-        let box = document.getElementById('affiliatesList');
-        document.getElementById('affiliatesCount').textContent = affs ? affs.length : 0;
-        box.innerHTML = (affs && affs.length) ? '' : '<p style="color:#64748b; font-size:11px;">لا يوجد مسوقون.</p>';
-        (affs || []).forEach(a => {
-            let dueEarned = Number(a.total_earnings || 0) - Number(a.paid_earnings || 0);
-            box.innerHTML += `<div class="item-row">
-                <div class="row-header">
-                    <strong>👤 ${a.full_name || a.name} (${a.phone})</strong>
-                    <b style="color:green;">مستحق: ${dueEarned} YER</b>
-                </div>
-                <div class="action-btns">
-                    <button class="btn-sm btn-pay" onclick="payOutAffiliate(${a.id}, ${a.paid_earnings || 0}, ${dueEarned})">تسوية المستحقات 💳</button>
-                    <button class="btn-sm btn-del" onclick="deleteItem('affiliates', ${a.id})">حذف 🗑️</button>
-                </div>
-            </div>`;
-        });
-    }
-
-    async function payOutAffiliate(affId, currentPaid, dueAmount) {
-        if (dueAmount <= 0) { alert('لا توجد مستحقات للتسوية'); return; }
-        if (confirm(`تسوية مبلغ (${dueAmount} YER) للمسوق؟`)) {
-            await db.from('affiliates').update({ paid_earnings: currentPaid + dueAmount }).eq('id', affId);
-            loadAdminAffiliates();
-        }
-    }
-
-    // 7. طلبات المتجر
     async function loadServiceOrders() {
         let { data: orders } = await db.from('service_orders').select('*').order('id', { ascending: false });
         let box = document.getElementById('serviceOrdersList');
@@ -633,7 +795,6 @@
         });
     }
 
-    // 8. المستخدمون
     async function loadUsers() {
         let { data } = await db.from('users').select('*').order('id', { ascending: false });
         cachedUsers = data || [];
@@ -645,29 +806,6 @@
         });
     }
 
-    // 9. الدورات النصية
-    async function saveTextCourse() {
-        const editId = document.getElementById('editTextCourseId').value;
-        const title = document.getElementById('tCourseTitle').value.trim();
-        const content = document.getElementById('tCourseContent').value.trim();
-        if (!title || !content) return;
-        let payload = { title, content };
-        let res = editId ? await db.from('text_courses').update(payload).eq('id', editId) : await db.from('text_courses').insert([payload]);
-        if (!res.error) { document.getElementById('tCourseTitle').value = ''; document.getElementById('tCourseContent').value = ''; loadTextCourses(); }
-    }
-
-    async function loadTextCourses() {
-        let { data } = await db.from('text_courses').select('*').order('id', { ascending: false });
-        cachedTextCourses = data || [];
-        let box = document.getElementById('textCoursesList');
-        document.getElementById('textCoursesCount').textContent = cachedTextCourses.length;
-        box.innerHTML = cachedTextCourses.length ? '' : '<p style="color:#64748b; font-size:11px;">لا توجد دورات نصية.</p>';
-        cachedTextCourses.forEach(tc => {
-            box.innerHTML += `<div class="item-row"><div class="row-header"><strong>📚 ${tc.title}</strong></div><div class="action-btns"><button class="btn-sm btn-del" onclick="deleteItem('text_courses', ${tc.id})">حذف 🗑️</button></div></div>`;
-        });
-    }
-
-    // 10. الشهادات المعتمدة
     async function loadCertResults() {
         let { data } = await db.from('cert_results').select('*').order('id', { ascending: false });
         let box = document.getElementById('certResultsList');
@@ -678,36 +816,14 @@
         });
     }
 
-    // 11. مقالات المدونة
-    async function saveArticle() {
-        const editId = document.getElementById('editArticleId').value;
-        const title = document.getElementById('artTitle').value.trim();
-        const summary = document.getElementById('artSummary').value.trim();
-        const content = document.getElementById('artContent').value.trim();
-        if (!title || !content) return;
-        let payload = { title, summary, content };
-        let res = editId ? await db.from('articles').update(payload).eq('id', editId) : await db.from('articles').insert([payload]);
-        if (!res.error) { document.getElementById('artTitle').value = ''; document.getElementById('artSummary').value = ''; document.getElementById('artContent').value = ''; loadArticles(); }
-    }
-
-    async function loadArticles() {
-        let { data } = await db.from('articles').select('*').order('id', { ascending: false });
-        cachedArticles = data || [];
-        let box = document.getElementById('articlesList');
-        document.getElementById('articlesCount').textContent = cachedArticles.length;
-        box.innerHTML = cachedArticles.length ? '' : '<p style="color:#64748b; font-size:11px;">لا توجد مقالات.</p>';
-        cachedArticles.forEach(a => {
-            box.innerHTML += `<div class="item-row"><div class="row-header"><strong>📰 ${a.title}</strong></div><div class="action-btns"><button class="btn-sm btn-del" onclick="deleteItem('articles', ${a.id})">حذف 🗑️</button></div></div>`;
-        });
-    }
-
-    // 12. الدورات المرئية والدروس
+    // 8. الدورات المرئية
     function addLessonField(titleVal = '', urlVal = '') {
         let container = document.getElementById('lessonsContainer');
         container.innerHTML += `<div class="lesson-group"><label>عنوان الدرس</label><input type="text" class="lesson-title" value="${titleVal}"><label>رابط الفيديو</label><input type="text" class="lesson-url" value="${urlVal}"></div>`;
     }
 
     async function saveStructuredCourse() {
+        const editId = document.getElementById('editCourseId').value;
         const title = document.getElementById('courseMainTitle').value.trim();
         const description = document.getElementById('courseMainDesc').value.trim();
         const is_active = document.getElementById('courseStatus').value === 'true';
@@ -719,27 +835,54 @@
             if (titles[i].value.trim()) lessonsArray.push({ lesson_title: titles[i].value.trim(), video_url: urls[i].value.trim() });
         }
 
-        let res = await db.from('platform_courses').insert([{ title, description, is_active, lessons: lessonsArray }]);
-        if (!res.error) { alert('تم الحفظ بنجاح'); loadAdminCourses(); }
+        let payload = { title, description, is_active, lessons: lessonsArray };
+        let res = editId ? await db.from('platform_courses').update(payload).eq('id', editId) : await db.from('platform_courses').insert([payload]);
+        if (!res.error) { resetCourseForm(); loadAdminCourses(); }
+    }
+
+    function resetCourseForm() {
+        document.getElementById('editCourseId').value = '';
+        document.getElementById('courseMainTitle').value = '';
+        document.getElementById('courseMainDesc').value = '';
+        document.getElementById('btnCancelCourse').style.display = 'none';
     }
 
     async function loadAdminCourses() {
         let { data } = await db.from('platform_courses').select('*').order('id', { ascending: false });
+        cachedCourses = data || [];
         let box = document.getElementById('adminCoursesList');
-        document.getElementById('coursesCount').textContent = data ? data.length : 0;
-        box.innerHTML = (data && data.length) ? '' : '<p style="color:#64748b; font-size:11px;">لا توجد دورات مرئية.</p>';
-        (data || []).forEach(c => {
-            box.innerHTML += `<div class="item-row"><div class="row-header"><strong>🎓 ${c.title}</strong><span>${c.is_active ? 'متوفر 🟢' : 'مخفي 🔴'}</span></div><div class="action-btns"><button class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button></div></div>`;
+        document.getElementById('coursesCount').textContent = cachedCourses.length;
+        box.innerHTML = cachedCourses.length ? '' : '<p style="color:#64748b; font-size:11px;">لا توجد دورات مرئية.</p>';
+        cachedCourses.forEach(c => {
+            let statusBadge = c.is_active !== false ? '<span style="color:green; font-weight:bold;">متوفر 🟢</span>' : '<span style="color:red; font-weight:bold;">غير متوفر 🔴</span>';
+            box.innerHTML += `<div class="item-row">
+                <div class="row-header">
+                    <strong>🎓 ${c.title}</strong>
+                    <span>${statusBadge}</span>
+                </div>
+                <div class="action-btns">
+                    <button class="btn-sm btn-edit" onclick="editCourse(${c.id})">تعديل ✏️</button>
+                    <button class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
+                </div>
+            </div>`;
         });
     }
 
-    // الدالة الموحدة للحذف الفوري
+    function editCourse(id) {
+        let c = cachedCourses.find(item => item.id === id);
+        if (!c) return;
+        document.getElementById('editCourseId').value = c.id;
+        document.getElementById('courseMainTitle').value = c.title || '';
+        document.getElementById('courseMainDesc').value = c.description || '';
+        document.getElementById('courseStatus').value = c.is_active !== false ? 'true' : 'false';
+        document.getElementById('btnCancelCourse').style.display = 'block';
+    }
+
+    // دوال عامة
     async function deleteItem(table, id) {
-        if (confirm('تأكيد الحذف النهائي من السحابة؟')) {
+        if (confirm('تأكيد الحذف النهائي؟')) {
             let { error } = await db.from(table).delete().eq('id', id);
-            if (error) { alert('خطأ الحذف: ' + error.message); return; }
-            alert('تم الحذف بنجاح! ✅');
-            location.reload();
+            if (!error) location.reload();
         }
     }
 
@@ -751,21 +894,10 @@
         XLSX.writeFile(wb, "Users_Sadara.xlsx");
     }
 
-    // الاستدعاء الشامل التلقائي الفوري لجميع الأقسام عند فتح الصفحة
     document.addEventListener('DOMContentLoaded', () => {
-        loadAdminRealStats();
-        loadJobs();
-        loadAdminServices();
-        loadResumes();
-        loadBanners();
-        loadPartners();
-        loadAdminAffiliates();
-        loadServiceOrders();
-        loadUsers();
-        loadTextCourses();
-        loadCertResults();
-        loadArticles();
-        loadAdminCourses();
+        loadAdminRealStats(); loadJobs(); loadAdminServices(); loadResumes();
+        loadBanners(); loadPartners(); loadAdminAffiliates(); loadServiceOrders();
+        loadUsers(); loadTextCourses(); loadCertResults(); loadArticles(); loadAdminCourses();
     });
 </script>
 </body>
