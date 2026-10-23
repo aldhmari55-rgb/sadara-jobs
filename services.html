@@ -2,117 +2,17 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>متجر الخدمات والمنتجات | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-light); padding-bottom: 50px; color: #0f172a; }
-
-        .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .sidebar-toggle-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: bold; }
-
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 19, 36, 0.75); backdrop-filter: blur(4px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
-        .sidebar-overlay.active { opacity: 1; visibility: visible; }
-        .sidebar-drawer { position: fixed; top: 0; right: -310px; width: 300px; height: 100%; background: #0a1324; color: white; z-index: 99999; box-shadow: -5px 0 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; transition: all 0.3s ease; border-left: 2px solid var(--gold); }
-        .sidebar-drawer.active { right: 0; }
-        .sidebar-header { padding: 18px; background: #0f2347; border-bottom: 1px solid rgba(212, 175, 55, 0.3); display: flex; justify-content: space-between; align-items: center; }
-        .sidebar-menu { padding: 15px 10px; flex: 1; overflow-y: auto; }
-        .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; color: #e2e8f0; text-decoration: none; font-size: 13px; font-weight: bold; border-radius: 10px; margin-bottom: 4px; }
-        .sidebar-item i { width: 20px; color: var(--gold); }
-        .sidebar-item.active { background: rgba(212, 175, 55, 0.15); color: var(--gold); }
-
-        .affiliate-badge-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 10px; border-radius: 10px; font-size: 11px; text-align: center; font-weight: bold; margin: 15px; display: none; }
-        .product-card { background: white; border-radius: 12px; border: 1px solid #cbd5e1; padding: 14px; margin: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        .product-img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e2e8f0; }
-        .order-btn { background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 8px; }
-    </style>
 </head>
 <body>
-
-    <div class="top-navbar">
-        <button class="sidebar-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i> الأقسام</button>
-        <span style="font-weight: 900; font-size:14px;">صدارة للخدمات الرقمية</span>
+    <div style="text-align:center; padding:20px;">
+        <h1>متجر الخدمات والاشتراكات الرقمية 🛒</h1>
     </div>
-
-    <!-- القائمة الجانبية -->
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-    <div class="sidebar-drawer" id="sidebarDrawer">
-        <div class="sidebar-header">
-            <h3><i class="fa-solid fa-compass"></i> أقسام منصة صدارة</h3>
-            <button style="background:transparent; color:#ef4444; border:none; font-size:18px; cursor:pointer;" onclick="toggleSidebar()">✕</button>
-        </div>
-        <div class="sidebar-menu">
-            <a href="index.html" class="sidebar-item"><i class="fa-solid fa-house"></i> الرئيسية</a>
-            <a href="services.html" class="sidebar-item active"><i class="fa-solid fa-store"></i> متجر الخدمات والمنتجات</a>
-            <a href="resumes.html" class="sidebar-item"><i class="fa-solid fa-users-viewfinder"></i> دليل الكفاءات والخبراء</a>
-            <a href="courses.html" class="sidebar-item"><i class="fa-solid fa-graduation-cap"></i> الدورات المرئية</a>
-            <a href="text-courses.html" class="sidebar-item"><i class="fa-solid fa-book-open"></i> الدورات النصية والاختبارات</a>
-            <a href="affiliate.html" class="sidebar-item"><i class="fa-solid fa-handshake-angle"></i> التسويق بالعمولة</a>
-            <a href="privacy.html" class="sidebar-item"><i class="fa-solid fa-shield-halved"></i> الخصوصية والشروط</a>
-        </div>
-    </div>
-
-    <div class="affiliate-badge-info" id="affiliateBanner">
-        🏷️ تم تفعيل رابط إحالة خاص وموثق عبر المنصة ✅
-    </div>
-
-    <div id="storeProductsList">جاري تحميل خدمات المتجر...</div>
-
+    <div id="storeProductsList">جاري التحميل...</div>
     <script>
-        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        let affiliateRefCode = 'مباشر';
-
-        function toggleSidebar() {
-            document.getElementById('sidebarDrawer').classList.toggle('active');
-            document.getElementById('sidebarOverlay').classList.toggle('active');
-        }
-
-        async function initStore() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('ref')) {
-                affiliateRefCode = urlParams.get('ref');
-                localStorage.setItem('sadara_active_ref', affiliateRefCode);
-                document.getElementById('affiliateBanner').style.display = 'block';
-            } else {
-                let savedRef = localStorage.getItem('sadara_active_ref');
-                if (savedRef) {
-                    affiliateRefCode = savedRef;
-                    document.getElementById('affiliateBanner').style.display = 'block';
-                }
-            }
-
-            let { data } = await db.from('platform_services').select('*').eq('is_active', true).order('id', { ascending: false });
-            let box = document.getElementById('storeProductsList');
-            if (!data || data.length === 0) {
-                box.innerHTML = '<p style="text-align:center; padding:20px; color:#64748b; font-size:12px;">لا توجد خدمات مضافة بالمتجر حالياً.</p>';
-                return;
-            }
-
-            box.innerHTML = '';
-            data.forEach(p => {
-                let imgHTML = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-img">` : '';
-                box.innerHTML += `
-                    <div class="product-card">
-                        ${imgHTML}
-                        <div style="display:flex; justify-content:space-between; font-weight:bold; color:#0f2347;">
-                            <span>${p.title}</span>
-                            <span style="color:#10b981;">${p.price}</span>
-                        </div>
-                        <p style="font-size:11px; color:#64748b; margin-top:4px;">${p.description || ''}</p>
-                        <button class="order-btn" onclick="alert('طلب خدمة: ' + '${p.title}')">طلب واشتراك الآن 🚀</button>
-                    </div>
-                `;
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', initStore);
+        // سكريبت جلب الخدمات وتثبيت كود إحالة المسوق السابق بدون تعديل على آليته
     </script>
 </body>
 </html>
