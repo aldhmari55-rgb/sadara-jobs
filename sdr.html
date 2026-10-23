@@ -22,19 +22,30 @@
 <body>
 
     <div class="header">
-        <h1>لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">لوحة محمية بالكامل مع تقنية ضغط الصور التلقائية</p>
+        <h1>لوحة تحكم منصة صدارة الخارجية المحمية 🛠️</h1>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">صفحة خاصة ومحمية لإدارة الوظائف والمتجر والكفاءات</p>
     </div>
 
     <div class="grid-container">
-        <!-- إدارة المتجر والخدمات -->
         <div class="card">
-            <h2>🛒 إضافة أو تعديل خدمة بالمتجر</h2>
+            <h2>💼 نشر وظيفة جديدة مع صورة</h2>
+            <label>عنوان الوظيفة</label>
+            <input type="text" id="jobTitle" placeholder="محاسب عام">
+            <label>اسم الشركة</label>
+            <input type="text" id="jobCompany" placeholder="شركة صدارة">
+            <label>صورة الوظيفة (ضغط تلقائي)</label>
+            <input type="file" id="jobImgFile" accept="image/*">
+            <button onclick="saveJob()">نشر الوظيفة الآن 🚀</button>
+            <div id="jobMsg" style="margin-top:8px; font-size:11px; text-align:center; font-weight:bold;"></div>
+        </div>
+
+        <div class="card">
+            <h2>🛒 إضافة منتج / خدمة بالمتجر</h2>
             <label>اسم الخدمة</label>
-            <input type="text" id="serviceTitle" placeholder="مثال: اشتراك رقمي">
+            <input type="text" id="serviceTitle" placeholder="اشتراك رقمي">
             <label>السعر</label>
             <input type="text" id="servicePrice" placeholder="1500 YER">
-            <label>صورة الخدمة (سيتم ضغطها تلقائياً)</label>
+            <label>صورة المنتج (ضغط تلقائي)</label>
             <input type="file" id="serviceImgFile" accept="image/*">
             <button onclick="saveService()">نشر الخدمة بالمتجر 🚀</button>
             <div id="serviceMsg" style="margin-top:8px; font-size:11px; text-align:center; font-weight:bold;"></div>
@@ -42,7 +53,7 @@
     </div>
 
     <script>
-        // نظام الحماية البرمجية المدمج
+        // نظام الحماية الإدارية بكلمة مرور خاصة
         function checkAdminAuth() {
             let adminPass = localStorage.getItem('sadara_admin_auth');
             if (adminPass !== 'Sdr@2026Admin') {
@@ -61,7 +72,6 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // دالة ضغط الصور تلقائياً قبل الرفع
         async function compressImage(file, maxWidth = 800, quality = 0.7) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -90,6 +100,34 @@
             });
         }
 
+        async function saveJob() {
+            const title = document.getElementById('jobTitle').value.trim();
+            const company = document.getElementById('jobCompany').value.trim();
+            const imgFile = document.getElementById('jobImgFile').files[0];
+            const msg = document.getElementById('jobMsg');
+
+            if (!title || !company) { alert('ادخل اسم الوظيفة والشركة'); return; }
+            msg.style.color = 'blue'; msg.textContent = 'جاري المعالجة والرفع... ⏳';
+
+            let imgUrl = '';
+            if (imgFile) {
+                const compressed = await compressImage(imgFile);
+                const fileName = `job_${Date.now()}.jpg`;
+                const { error: uploadErr } = await db.storage.from('platform-files').upload(fileName, compressed);
+                if (!uploadErr) {
+                    const { data } = db.storage.from('platform-files').getPublicUrl(fileName);
+                    imgUrl = data.publicUrl;
+                }
+            }
+
+            let { error } = await db.from('jobs').insert([{ title, company, image: imgUrl, approved: true, status: 'متاحة' }]);
+            if (error) {
+                msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + error.message;
+            } else {
+                msg.style.color = 'green'; msg.textContent = 'تم نشر الوظيفة بنجاح! ✅';
+            }
+        }
+
         async function saveService() {
             const title = document.getElementById('serviceTitle').value.trim();
             const price = document.getElementById('servicePrice').value.trim();
@@ -97,7 +135,7 @@
             const msg = document.getElementById('serviceMsg');
 
             if (!title || !price) { alert('ادخل اسم الخدمة والسعر'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري ضغط الصورة ورفعها... ⏳';
+            msg.style.color = 'blue'; msg.textContent = 'جاري المعالجة والرفع... ⏳';
 
             let imgUrl = '';
             if (imgFile) {
@@ -114,7 +152,7 @@
             if (error) {
                 msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + error.message;
             } else {
-                msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الخدمة بنجاح! ✅';
+                msg.style.color = 'green'; msg.textContent = 'تم نشر الخدمة بالمتجر بنجاح! ✅';
             }
         }
     </script>
