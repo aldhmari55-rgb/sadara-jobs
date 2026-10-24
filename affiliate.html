@@ -11,21 +11,18 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); padding: 15px; color: #0f172a; padding-bottom: 50px; }
         .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid var(--gold); }
-        .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 600px; margin: 0 auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 600px; margin: 0 auto; }
         label { font-size: 12px; font-weight: bold; display: block; margin-top: 10px; color: #475569; }
         input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
-        button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
-        button:hover { opacity: 0.9; }
+        button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; }
         .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 10px; background: #e2e8f0; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #475569; }
+        .tab-btn { flex: 1; padding: 10px; background: #e2e8f0; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .tab-btn.active { background: var(--primary); color: white; }
-        .status-msg { margin-top: 10px; font-size: 12px; font-weight: bold; text-align: center; }
         .dashboard-box { display: none; }
         .dashboard-box.active { display: block; }
         .aff-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
         .stat-card { background: #f8fafc; padding: 12px; border-radius: 10px; text-align: center; border: 1px solid #cbd5e1; }
         .stat-card h3 { color: var(--primary); font-size: 16px; font-weight: 900; }
-        .stat-card p { font-size: 11px; color: #64748b; font-weight: bold; margin-top: 4px; }
         .link-box { background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px dashed #cbd5e1; margin-top: 15px; text-align: center; word-break: break-all; font-size: 12px; color: #1e40af; font-weight: bold; }
     </style>
 </head>
@@ -37,55 +34,44 @@
     </div>
 
     <div class="card">
-        <!-- أزرار التبديل بين تسجيل الدخول وتسجيل حساب جديد -->
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('register')">تسجيل مسوق جديد 📝</button>
             <button class="tab-btn" onclick="switchTab('login')">تسجيل الدخول برقم الجوال 📱</button>
         </div>
 
-        <!-- 1. نموذج تسجيل مسوق جديد -->
         <div id="registerBox" class="dashboard-box active">
-            <h3 style="font-size: 15px; color: var(--primary); margin-bottom: 10px;">إنشاء حساب مسوق جديد</h3>
-            
             <label>الاسم الكامل</label>
             <input type="text" id="regName" placeholder="الاسم الكامل...">
             
-            <label>رقم الواتساب (للتواصل وصرف الأرباح)</label>
+            <label>رقم الواتساب</label>
             <input type="text" id="regPhone" placeholder="9677xxxxxxxx">
             
-            <label>وسيلة استلام العمولات والأرباح</label>
+            <label>وسيلة استلام العمولات</label>
             <select id="regMethod">
-                <option value="محفظة جيب jeeb">محفظة جيب jeeb</option>
+                <option value="محفظة جيب">محفظة جيب</option>
                 <option value="بنك الكريمي">بنك الكريمي</option>
-                <option value="محفظة جوالي">محفظة جوالي</option>
             </select>
             
-            <label>رقم الحساب / المحفظة لاستلام الأرباح</label>
-            <input type="text" id="regNumber" placeholder="رقم الحساب أو المحفظة...">
+            <label>رقم الحساب / المحفظة</label>
+            <input type="text" id="regNumber" placeholder="رقم الحساب...">
             
-            <button onclick="registerAffiliate()" style="background: var(--gold); color: #0a1324;">إنشاء الحساب البدء التسويق 🚀</button>
-            <div id="regMsg" class="status-msg"></div>
+            <button onclick="registerAffiliate()" style="background: var(--gold); color: #0a1324;">إنشاء الحساب والبدء 🚀</button>
+            <div id="regMsg" style="text-align:center; font-size:12px; margin-top:10px; font-weight:bold;"></div>
         </div>
 
-        <!-- 2. نموذج تسجيل الدخول برقم الجوال -->
         <div id="loginBox" class="dashboard-box">
-            <h3 style="font-size: 15px; color: var(--primary); margin-bottom: 10px;">تسجيل الدخول للوحة التحكم</h3>
-            
             <label>رقم الجوال المسجل به</label>
             <input type="text" id="logPhone" placeholder="9677xxxxxxxx">
-            
             <button onclick="loginAffiliate()">دخول لوحة التحكم 🔐</button>
-            <div id="logMsg" class="status-msg"></div>
+            <div id="logMsg" style="text-align:center; font-size:12px; margin-top:10px; font-weight:bold;"></div>
         </div>
 
-        <!-- 3. لوحة تحكم المسوق الخاصة (تظهر بعد الدخول) -->
         <div id="affDashboard" class="dashboard-box">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <h3 id="welcomeMsg" style="font-size: 14px; color: var(--primary);">مرحباً، ...</h3>
                 <button onclick="logoutAffiliate()" style="width: auto; padding: 6px 12px; background: var(--red); margin: 0; font-size: 11px;">خروج 🚪</button>
             </div>
 
-            <!-- إحصائيات الأرباح والمبيعات -->
             <div class="aff-stats-grid">
                 <div class="stat-card">
                     <h3 id="affTotalEarnings">0 YER</h3>
@@ -97,7 +83,7 @@
                 </div>
             </div>
 
-            <div class="aff-stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 15px;">
+            <div class="aff-stats-grid">
                 <div class="stat-card">
                     <h3 id="affClicks">0</h3>
                     <p>الزيارات عبر رابطك 👁️</p>
@@ -131,7 +117,6 @@
             }
         }
 
-        // تسجيل مسوق جديد
         async function registerAffiliate() {
             const full_name = document.getElementById('regName').value.trim();
             const phone = document.getElementById('regPhone').value.trim();
@@ -139,67 +124,47 @@
             const payout_number = document.getElementById('regNumber').value.trim();
             const msg = document.getElementById('regMsg');
 
-            if (!full_name || !phone || !payout_number) {
-                msg.style.color = 'red'; msg.textContent = 'يرجى ملء جميع الحقول المطلوبة!'; return;
-            }
+            if (!full_name || !phone || !payout_number) { alert('يرجى ملء الحقول'); return; }
 
-            // التحقق إن كان الرقم مسجلاً مسبقاً
             let { data: existing } = await db.from('affiliates').select('*').eq('phone', phone).single();
-            if (existing) {
-                msg.style.color = 'red'; msg.textContent = 'هذا الرقم مسجل مسبقاً، يرجى تسجيل الدخول مباشرة.'; return;
-            }
+            if (existing) { msg.style.color = 'red'; msg.textContent = 'هذا الرقم مسجل مسبقاً.'; return; }
 
-            // توليد كود وعريف فريد للمسوق
             let ref_code = 'sdr_' + Math.random().toString(36).substring(7);
-
-            msg.style.color = 'blue'; msg.textContent = 'جاري إنشاء الحساب... ⏳';
-
             let { data, error } = await db.from('affiliates').insert([{
                 full_name, name: full_name, phone, payout_method, payout_number, ref_code, total_sales: 0, total_earnings: 0, paid_earnings: 0, clicks: 0
             }]).select().single();
 
             if (error) {
-                msg.style.color = 'red'; msg.textContent = 'خطأ في التسجيل: ' + error.message;
+                msg.style.color = 'red'; msg.textContent = 'خطأ: ' + error.message;
             } else {
-                msg.style.color = 'green'; msg.textContent = 'تم إنشاء الحساب بنجاح! جاري تحويلك لوحتك... ✅';
-                setTimeout(() => { openAffDashboard(data); }, 1000);
+                openAffDashboard(data);
             }
         }
 
-        // تسجيل الدخول برقم الجوال
         async function loginAffiliate() {
             const phone = document.getElementById('logPhone').value.trim();
             const msg = document.getElementById('logMsg');
-
-            if (!phone) { msg.style.color = 'red'; msg.textContent = 'يرجى إدخال رقم الجوال!'; return; }
-
-            msg.style.color = 'blue'; msg.textContent = 'جاري التحقق من الحساب... ⏳';
+            if (!phone) return;
 
             let { data, error } = await db.from('affiliates').select('*').eq('phone', phone).single();
-
             if (error || !data) {
-                msg.style.color = 'red'; msg.textContent = 'رقم الجوال غير مسجل معنا كمسوق!';
+                msg.style.color = 'red'; msg.textContent = 'الرقم غير مسجل كمسوق.';
             } else {
-                msg.style.color = 'green'; msg.textContent = 'تم تسجيل الدخول بنجاح! 🎉';
-                setTimeout(() => { openAffDashboard(data); }, 800);
+                openAffDashboard(data);
             }
         }
 
-        // فتح لوحة تحكم المسوق وعرض بياناته وأرباحه
         function openAffDashboard(aff) {
             document.getElementById('registerBox').classList.remove('active');
             document.getElementById('loginBox').classList.remove('active');
             document.querySelector('.tabs').style.display = 'none';
-            
-            let dash = document.getElementById('affDashboard');
-            dash.classList.add('active');
+            document.getElementById('affDashboard').classList.add('active');
 
             document.getElementById('welcomeMsg').textContent = `مرحباً، ${aff.full_name || aff.name || 'مسوق صدارة'}`;
 
-            // الأرباح والتراكمات التاريخية
-            let totalEarned = Number(aff.total_earnings || 0); // إجمالي الأرباح الكلية المتراكمة
-            let paidEarned = Number(aff.paid_earnings || 0);   // ما تم تسويته ودفع مسبقاً
-            let dueEarned = totalEarned - paidEarned;          // الصافي المستحق تحت التسوية
+            let totalEarned = Number(aff.total_earnings || 0);
+            let paidEarned = Number(aff.paid_earnings || 0);
+            let dueEarned = totalEarned - paidEarned;
 
             document.getElementById('affTotalEarnings').textContent = totalEarned + ' YER';
             document.getElementById('affDueEarnings').textContent = dueEarned + ' YER';
@@ -210,15 +175,13 @@
             let fullLink = `https://www.sadarah.top/services.html?ref=${refCode}`;
             document.getElementById('affLinkDisplay').textContent = fullLink;
             window.currentAffLink = fullLink;
-
-            // حفظ الجلسة محلياً
             localStorage.setItem('sadara_affiliate_phone', aff.phone);
         }
 
         function copyAffLink() {
             if(window.currentAffLink) {
                 navigator.clipboard.writeText(window.currentAffLink);
-                alert('تم نسخ رابط التسويق الخاص بك بنجاح! 📋 أرسله الآن للعملاء واحصل على 20% أرباح.');
+                alert('تم نسخ رابط التسويق بنجاح! 📋');
             }
         }
 
@@ -227,14 +190,11 @@
             location.reload();
         }
 
-        // التحقق التلقائي من الجلسة المحفوظة عند فتح الصفحة
         window.addEventListener('DOMContentLoaded', async () => {
             let savedPhone = localStorage.getItem('sadara_affiliate_phone');
             if (savedPhone) {
                 let { data } = await db.from('affiliates').select('*').eq('phone', savedPhone).single();
-                if (data) {
-                    openAffDashboard(data);
-                }
+                if (data) openAffDashboard(data);
             }
         });
     </script>
