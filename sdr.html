@@ -52,7 +52,6 @@
         <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">السيطرة التامة (إضافة، تعديل، حذف، الشارة الزرقاء، إحصائيات المسوقين، وحالة التوفر)</p>
     </div>
 
-    <!-- الإحصائيات الحية -->
     <div class="admin-stats-grid">
         <div class="stat-card-admin"><h3 id="adminOnline">1</h3><p>متواجد الآن 🟢</p></div>
         <div class="stat-card-admin"><h3 id="adminTotalViews">...</h3><p>إجمالي الزيارات 👥</p></div>
@@ -367,7 +366,6 @@
         } catch(e) {}
     }
 
-    // 1. الوظائف
     async function saveJob() {
         const editId = document.getElementById('editJobId').value;
         const title = document.getElementById('jobTitle').value.trim();
@@ -444,7 +442,6 @@
         window.scrollTo({ top: 400, behavior: 'smooth' });
     }
 
-    // 2. متجر الخدمات والطلبات
     async function saveServiceWithImage() {
         const editId = document.getElementById('editServiceId').value;
         const title = document.getElementById('serviceTitle').value.trim();
@@ -503,19 +500,20 @@
         try {
             let { data: orders, error } = await db.from('service_orders').select('*').order('id', { ascending: false });
             if (error) {
-                box.innerHTML = '<p style="color:red; font-size:11px;">خطأ في جلب الطلبات.</p>';
+                box.innerHTML = `<p style="color:red; font-size:11px;">خطأ في جلب الطلبات: ${error.message}</p>`;
                 return;
             }
             document.getElementById('ordersCount').textContent = orders ? orders.length : 0;
             box.innerHTML = (orders && orders.length) ? '' : '<p style="color:#64748b; font-size:11px;">لا توجد طلبات جديدة.</p>';
+            
             (orders || []).forEach(o => {
                 let receiptLink = o.transaction_ref ? `<a href="${o.transaction_ref}" target="_blank" style="color:#0284c7; font-weight:bold;">معاينة سند التحويل 🔍</a>` : 'بدون سند';
                 box.innerHTML += `<div class="item-row">
                     <div class="row-header">
                         <strong>💎 ${o.service_name || 'خدمة'}</strong>
-                        <span style="color:#0284c7; font-weight:bold;">العميل: ${o.client_name || ''} (${o.client_phone || ''})</span>
+                        <span style="color:#0284c7; font-weight:bold;">العميل: ${o.client_name || 'غير محدد'} (${o.client_phone || ''})</span>
                     </div>
-                    <div style="margin-top:4px;">سند الدفع: ${receiptLink}</div>
+                    <div style="margin-top:4px;">سند الدفع: ${receiptLink} | كود المسوق: ${o.affiliate_code || 'بدون'}</div>
                     <div class="action-btns">
                         <button class="btn-sm btn-del" onclick="deleteItem('service_orders', ${o.id})">حذف الطلب 🗑️</button>
                     </div>
@@ -539,7 +537,6 @@
         window.scrollTo({ top: 300, behavior: 'smooth' });
     }
 
-    // 3. الكفاءات
     async function saveResume() {
         const editId = document.getElementById('editResId').value;
         const name = document.getElementById('resName').value.trim();
@@ -612,7 +609,6 @@
         window.scrollTo({ top: 600, behavior: 'smooth' });
     }
 
-    // 4. المسوقون
     async function loadAdminAffiliates() {
         let { data: affs } = await db.from('affiliates').select('*').order('id', { ascending: false });
         cachedAffiliates = affs || [];
@@ -674,7 +670,6 @@
         }
     }
 
-    // 5. الدورات النصية
     async function saveTextCourse() {
         const editId = document.getElementById('editTextCourseId').value;
         const title = document.getElementById('tCourseTitle').value.trim();
@@ -725,7 +720,6 @@
         document.getElementById('btnCancelTCourse').style.display = 'block';
     }
 
-    // 6. المقالات
     async function saveArticle() {
         const editId = document.getElementById('editArticleId').value;
         const title = document.getElementById('artTitle').value.trim();
@@ -772,7 +766,6 @@
         document.getElementById('btnCancelArt').style.display = 'block';
     }
 
-    // 7. البنرات والشركاء والمستخدمين والشهادات
     async function addBanner() {
         const file = document.getElementById('bannerFile').files[0];
         if (!file) { alert('اختر صورة البنر'); return; }
@@ -828,7 +821,6 @@
         });
     }
 
-    // 8. الدورات المرئية
     function addLessonField(titleVal = '', urlVal = '') {
         let container = document.getElementById('lessonsContainer');
         container.innerHTML += `<div class="lesson-group"><label>عنوان الدرس</label><input type="text" class="lesson-title" value="${titleVal}"><label>رابط الفيديو</label><input type="text" class="lesson-url" value="${urlVal}"></div>`;
@@ -890,7 +882,6 @@
         document.getElementById('btnCancelCourse').style.display = 'block';
     }
 
-    // دوال عامة
     async function deleteItem(table, id) {
         if (confirm('تأكيد الحذف النهائي؟')) {
             let { error } = await db.from(table).delete().eq('id', id);
