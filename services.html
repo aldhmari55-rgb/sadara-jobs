@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر الخدمات والاشتراكات | منصة صدارة</title>
+    <title>متجر الخدمات والمنتجات | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -11,24 +11,32 @@
         :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-light); padding-bottom: 50px; color: #0f172a; }
+
         .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); }
         .back-btn { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 11px; }
+
         .hero-store { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 25px 16px; text-align: center; }
         .main-container { max-width: 800px; margin: 15px auto; padding: 0 16px; }
-        .search-cat-box { background: white; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 15px; }
+
+        .search-cat-box { background: white; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
         .store-search { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 10px; }
         .cat-tags-container { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
-        .store-cat-tag { background: #f1f5f9; color: #334155; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; border: 1px solid #cbd5e1; }
-        .store-cat-tag.active { background: var(--primary); color: white; }
+        .store-cat-tag { background: #f1f5f9; color: #334155; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; border: 1px solid #cbd5e1; transition: 0.2s; }
+        .store-cat-tag.active, .store-cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
         .affiliate-badge-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 10px; border-radius: 10px; font-size: 11px; text-align: center; font-weight: bold; margin-bottom: 15px; display: none; }
-        .product-card { background: white; border-radius: 12px; border: 1px solid #cbd5e1; padding: 14px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
-        .product-img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; }
+
+        .product-card { background: white; border-radius: 12px; border: 1px solid #cbd5e1; padding: 14px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 8px; }
+        .product-img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; }
         .product-title-row { display: flex; justify-content: space-between; align-items: center; }
         .product-title { font-size: 15px; font-weight: 900; color: var(--primary); }
         .product-price { color: #10b981; font-weight: 900; font-size: 14px; }
-        .order-btn { background: var(--primary); color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; font-size: 12px; }
+        .product-desc { font-size: 11px; color: #64748b; line-height: 1.5; }
+        .product-cat-label { background: #eff6ff; color: #0284c7; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; width: fit-content; }
+        .order-btn { background: var(--primary); color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 12px; margin-top: 5px; cursor: pointer; border: none; }
+
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-card { background: white; padding: 20px; border-radius: 14px; width: 90%; max-width: 400px; }
+        .modal-card { background: white; padding: 20px; border-radius: 14px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
         .modal-card input, .modal-card select { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
     </style>
@@ -46,6 +54,7 @@
     </div>
 
     <div class="main-container">
+
         <div class="affiliate-badge-info" id="affiliateBanner">
             🏷️ تم تفعيل رابط إحالة خاص وموثق عبر المنصة ✅
         </div>
@@ -56,6 +65,10 @@
                 <span class="store-cat-tag active" onclick="filterStoreCategory('الكل', this)">الكل 🌐</span>
                 <span class="store-cat-tag" onclick="filterStoreCategory('اشتراكات', this)">🔑 اشتراكات رقمية</span>
                 <span class="store-cat-tag" onclick="filterStoreCategory('خدمات', this)">🛠️ خدمات</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('ملابس', this)">👗 ملابس وأزياء</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('تجميل', this)">💄 تجميل وعناية</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('منزل', this)">🏡 مستلزمات منزلية</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('أخرى', this)">📦 أخرى</span>
             </div>
         </div>
 
@@ -100,23 +113,25 @@
         let allProducts = [];
         let currentSelectedCategory = 'الكل';
         let currentProductToOrder = null;
-        let affiliateRefCode = 'مباشر';
 
         async function initStore() {
             const urlParams = new URLSearchParams(window.location.search);
             let refParam = urlParams.get('ref');
 
             if (refParam) {
-                affiliateRefCode = refParam;
                 localStorage.setItem('sadara_affiliate_ref', refParam);
                 document.getElementById('affiliateBanner').style.display = 'block';
                 trackAffiliateClick(refParam);
             } else if (localStorage.getItem('sadara_affiliate_ref')) {
-                affiliateRefCode = localStorage.getItem('sadara_affiliate_ref');
                 document.getElementById('affiliateBanner').style.display = 'block';
             }
 
-            let { data } = await db.from('platform_services').select('*').eq('is_active', true).order('id', { ascending: false });
+            let { data, error } = await db.from('platform_services').select('*').eq('is_active', true).order('id', { ascending: false });
+            if (error) {
+                document.getElementById('storeProductsList').innerHTML = '<p style="text-align:center; color:red; font-size:12px;">حدث خطأ في تحميل المتجر.</p>';
+                return;
+            }
+
             allProducts = data || [];
             renderStoreProducts(allProducts);
         }
@@ -144,7 +159,7 @@
             let query = document.getElementById('storeSearchInput').value.toLowerCase().trim();
             let filtered = allProducts.filter(p => {
                 let matchCat = (currentSelectedCategory === 'الكل' || p.category === currentSelectedCategory);
-                let matchQuery = (!query || p.title.toLowerCase().includes(query));
+                let matchQuery = (!query || p.title.toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query)));
                 return matchCat && matchQuery;
             });
             renderStoreProducts(filtered);
@@ -153,13 +168,16 @@
         function renderStoreProducts(productsList) {
             let box = document.getElementById('storeProductsList');
             box.innerHTML = '';
+
             if (!productsList || productsList.length === 0) {
-                box.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:20px;">لا توجد منتجات مطابقة.</p>';
+                box.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:20px;">لا توجد منتجات مطابقة لبحثك حالياً.</p>';
                 return;
             }
 
             productsList.forEach(p => {
-                let imgHTML = p.image ? `<img src="${p.image}" class="product-img">` : '';
+                let imgHTML = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-img">` : '';
+                let catTag = p.category ? `<span class="product-cat-label">📁 ${p.category}</span>` : '';
+
                 box.innerHTML += `
                     <div class="product-card">
                         ${imgHTML}
@@ -167,7 +185,8 @@
                             <span class="product-title">${p.title}</span>
                             <span class="product-price">${p.price}</span>
                         </div>
-                        <p style="font-size:11px; color:#64748b;">${p.description || ''}</p>
+                        ${catTag}
+                        <p class="product-desc">${p.description || 'بدون وصف إضافي'}</p>
                         <button class="order-btn" onclick="openOrderModal(${p.id}, '${p.title}')">طلب واشتراك الآن 🚀</button>
                     </div>
                 `;
@@ -180,7 +199,9 @@
             document.getElementById('orderModal').style.display = 'flex';
         }
 
-        function closeOrderModal() { document.getElementById('orderModal').style.display = 'none'; }
+        function closeOrderModal() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
 
         async function submitOrder() {
             const clientName = document.getElementById('clientName').value.trim();
@@ -190,39 +211,41 @@
             const notes = document.getElementById('orderNotes').value.trim();
             const msg = document.getElementById('orderStatusMsg');
 
-            if (!clientName || !clientPhone || !payReceiptFile) {
-                alert('يرجى إكمال الحقول واختيار صورة السند'); return;
-            }
+            if (!clientName || !clientPhone) { alert('يرجى إدخال اسمك ورقم الواتساب'); return; }
+            if (!payReceiptFile) { alert('يرجى إرفاق صورة سند الدفع أو التحويل'); return; }
 
             msg.style.color = 'blue'; msg.textContent = 'جاري إرسال ورفع الطلب... ⏳';
 
+            let receiptUrl = '';
             try {
                 const fileExt = payReceiptFile.name.split('.').pop();
                 const fileName = `receipt_${Date.now()}.${fileExt}`;
                 const { error: uploadErr } = await db.storage.from('platform-files').upload(fileName, payReceiptFile);
                 if (uploadErr) { msg.style.color = 'red'; msg.textContent = 'فشل رفع صورة السند.'; return; }
-                
                 const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
-                let receiptUrl = publicUrlData.publicUrl;
-
-                let { error } = await db.from('service_orders').insert([{
-                    service_name: currentProductToOrder,
-                    client_name: clientName,
-                    client_phone: clientPhone,
-                    payment_method: paymentMethod,
-                    transaction_ref: receiptUrl,
-                    notes: notes,
-                    affiliate_id: affiliateRefCode
-                }]);
-
-                if (error) {
-                    msg.style.color = 'red'; msg.textContent = 'خطأ في إرسال الطلب: ' + error.message;
-                } else {
-                    msg.style.color = 'green'; msg.textContent = 'تم إرسال طلبك بنجاح وسند التحويل محفوظة بنجاح! ✅';
-                    setTimeout(() => { closeOrderModal(); }, 1800);
-                }
+                receiptUrl = publicUrlData.publicUrl;
             } catch(e) {
-                msg.style.color = 'red'; msg.textContent = 'حدث خطأ غير متوقع.';
+                msg.style.color = 'red'; msg.textContent = 'خطأ في عملية رفع صورة السند.'; return;
+            }
+
+            // التقاط كود المسوق المخزن في المتصفح أو الرابط بدقة لحظة الإرسال
+            let activeRefCode = localStorage.getItem('sadara_affiliate_ref') || new URLSearchParams(window.location.search).get('ref') || 'مباشر';
+
+            let { error } = await db.from('service_orders').insert([{
+                service_name: currentProductToOrder,
+                client_name: clientName,
+                client_phone: clientPhone,
+                payment_method: paymentMethod,
+                transaction_ref: receiptUrl,
+                notes: notes,
+                affiliate_id: activeRefCode
+            }]);
+
+            if (error) {
+                msg.style.color = 'red'; msg.textContent = 'خطأ في إرسال الطلب: ' + error.message;
+            } else {
+                msg.style.color = 'green'; msg.textContent = 'تم إرسال طلبك بنجاح! سيتم التواصل معك عبر الواتساب لتأكيد الخدمة. ✅';
+                setTimeout(() => { closeOrderModal(); }, 1800);
             }
         }
 
