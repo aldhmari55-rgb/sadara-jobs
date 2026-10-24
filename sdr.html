@@ -83,7 +83,7 @@
             <div class="list-box" id="affiliatesList">جاري جلب المسوقين...</div>
         </div>
 
-        <!-- 2. طلبات المتجر وسندات التحويل -->
+        <!-- 2. طلبات المتجر وسندات التحويل المرفقة -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>
                 <span>🛒 طلبات الخدمات وسندات التحويل المرفقة</span>
@@ -507,13 +507,19 @@
             box.innerHTML = (orders && orders.length) ? '' : '<p style="color:#64748b; font-size:11px;">لا توجد طلبات جديدة.</p>';
             
             (orders || []).forEach(o => {
-                let receiptLink = o.transaction_ref ? `<a href="${o.transaction_ref}" target="_blank" style="color:#0284c7; font-weight:bold;">معاينة سند التحويل 🔍</a>` : 'بدون سند';
+                let sName = o.service_name || o.title || o.item_name || 'خدمة رقمية';
+                let cName = o.client_name || o.name || 'عميل';
+                let cPhone = o.client_phone || o.phone || '';
+                let refUrl = o.transaction_ref || o.receipt || o.image || '';
+                let receiptLink = refUrl ? `<a href="${refUrl}" target="_blank" style="color:#0284c7; font-weight:bold;">معاينة سند التحويل 🔍</a>` : 'بدون سند';
+                let affCode = o.affiliate_code || o.ref_code || 'بدون';
+
                 box.innerHTML += `<div class="item-row">
                     <div class="row-header">
-                        <strong>💎 ${o.service_name || 'خدمة'}</strong>
-                        <span style="color:#0284c7; font-weight:bold;">العميل: ${o.client_name || 'غير محدد'} (${o.client_phone || ''})</span>
+                        <strong>💎 ${sName}</strong>
+                        <span style="color:#0284c7; font-weight:bold;">العميل: ${cName} (${cPhone})</span>
                     </div>
-                    <div style="margin-top:4px;">سند الدفع: ${receiptLink} | كود المسوق: ${o.affiliate_code || 'بدون'}</div>
+                    <div style="margin-top:4px;">سند الدفع: ${receiptLink} | كود المسوق: ${affCode}</div>
                     <div class="action-btns">
                         <button class="btn-sm btn-del" onclick="deleteItem('service_orders', ${o.id})">حذف الطلب 🗑️</button>
                     </div>
