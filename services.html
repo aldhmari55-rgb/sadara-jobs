@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- وسوم تحسين محركات البحث (SEO) لصفحة المتجر -->
     <title>متجر الخدمات والاشتراكات الرقمية | منصة صدارة</title>
     <meta name="description" content="تصفح واطلب أفضل الاشتراكات الرقمية، الخدمات التسويقية، والمنتجات الحصرية من متجر منصة صدارة في محافظة ذمار.">
     <meta name="keywords" content="متجر صدارة, اشتراكات رقمية, خدمات تسويقية, منتجات, منصة صدارة, ذمار">
@@ -20,19 +22,25 @@
         .home-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
         .hero-store { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 20px 16px; text-align: center; }
         .main-container { max-width: 800px; margin: -20px auto 0; padding: 0 16px; }
+        
         .store-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
         @media(min-width: 600px) { .store-grid { grid-template-columns: repeat(2, 1fr); } }
+        
         .product-card { background: white; border-radius: 12px; padding: 14px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; }
         .product-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; background: #f1f5f9; }
         .product-title { font-size: 15px; font-weight: bold; color: var(--primary); margin-bottom: 4px; }
         .product-price { font-size: 14px; font-weight: 900; color: #10b981; margin: 6px 0; }
         .product-desc { font-size: 12px; color: #64748b; margin-bottom: 10px; line-height: 1.4; }
+        
         .buy-btn { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; text-align: center; text-decoration: none; display: block; width: 100%; transition: 0.2s; }
         .buy-btn:hover { opacity: 0.9; }
+
+        /* نافذة إتمام الطلب وطرق الدفع */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; }
         .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 90%; max-width: 380px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
         .modal-card input { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        
         .payment-box { background: #f8fafc; border: 1px dashed var(--gold); padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 11px; line-height: 1.6; color: #334155; }
         .payment-box b { color: var(--primary); }
     </style>
@@ -89,6 +97,7 @@
 
         let selectedServiceObj = null;
 
+        // التقاط وتثبيت كود إحالة المسوق من الرابط (ref) وحفظه بالمتصفح
         const urlParams = new URLSearchParams(window.location.search);
         const refCode = urlParams.get('ref');
         if (refCode) {
@@ -165,17 +174,18 @@
             msg.style.color = 'blue'; msg.textContent = 'جاري رفع السند وإرسال الطلب... ⏳';
 
             try {
+                // رفع سند التحويل إلى التخزين السحابي في Supabase
                 const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`;
                 const { error: uploadErr } = await db.storage.from('platform-files').upload(fileName, fileInput);
-                if (uploadErr) { msg.style.color = 'red'; msg.textContent = 'خطأ في رفع السند.'; return; }
+                if (uploadErr) { msg.style.color = 'red'; msg.textContent = 'خطأ في رفع السند للتخزين السحابي.'; return; }
                 
                 const { data: pubData } = db.storage.from('platform-files').getPublicUrl(fileName);
                 let receiptUrl = pubData.publicUrl;
-                let activeRef = localStorage.getItem('sadara_affiliate_ref') || '';
+                let activeRef = localStorage.getItem('sadara_affiliate_ref') || new URLSearchParams(window.location.search).get('ref') || '';
 
-                // إرسال الطلب متوافقاً مع الهيكل الشامل لجدول service_orders
-                await db.from('service_orders').insert([{
-                    service_name: selectedServiceObj.title,
+                // تسجيل الطلب في قاعدة البيانات متوافقاً مع كافة الاحتمالات لأسماء الأعمدة
+                let { error: orderErr } = await db.from('service_orders').insert([{
+                    service_name: selectedServiceObj ? selectedServiceObj.title : 'خدمة رقمية',
                     client_name: name,
                     name: name,
                     client_phone: phone,
@@ -186,6 +196,12 @@
                     ref_code: activeRef
                 }]);
 
+                if (orderErr) {
+                    msg.style.color = 'red'; msg.textContent = 'خطأ في حفظ الطلب بالقاعدة: ' + orderErr.message;
+                    return;
+                }
+
+                // تحديث عدد المبيعات وإجمالي الأرباح للمسوق بالعمولة في جدول affiliates
                 if (activeRef) {
                     let { data: aff } = await db.from('affiliates').select('*').or(`code.eq.${activeRef},ref_code.eq.${activeRef}`).single();
                     if (aff) {
@@ -200,9 +216,9 @@
                 }
 
                 msg.style.color = 'green'; msg.textContent = 'تم إرسال طلبك بنجاح! سيتم التواصل معك قريباً ✅';
-                setTimeout(() => { closeOrderModal(); }, 2000);
+                setTimeout(() => { closeOrderModal(); location.reload(); }, 2000);
             } catch(e) {
-                msg.style.color = 'red'; msg.textContent = 'حدث خطأ غير متوقع.';
+                msg.style.color = 'red'; msg.textContent = 'حدث خطأ غير متوقع أثناء الاتصال.';
             }
         }
 
