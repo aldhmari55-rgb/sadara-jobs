@@ -100,9 +100,10 @@
             try {
                 let { data: aff } = await db.from('affiliates').select('*').or(`code.eq.${code},ref_code.eq.${code}`).single();
                 if (aff) {
+                    let newClicks = Number(aff.clicks_count || aff.visits || 0) + 1;
                     await db.from('affiliates').update({ 
-                        clicks_count: Number(aff.clicks_count || aff.visits || 0) + 1, 
-                        visits: Number(aff.visits || aff.clicks_count || 0) + 1 
+                        clicks_count: newClicks, 
+                        visits: newClicks 
                     }).eq('id', aff.id);
                 }
             } catch(e) {}
@@ -172,7 +173,7 @@
                 let receiptUrl = pubData.publicUrl;
                 let activeRef = localStorage.getItem('sadara_affiliate_ref') || '';
 
-                // إرسال الطلب متضمناً كافة الاحتمالات لأسماء الأعمدة في قاعدة البيانات
+                // إرسال الطلب متوافقاً مع الهيكل الشامل لجدول service_orders
                 await db.from('service_orders').insert([{
                     service_name: selectedServiceObj.title,
                     client_name: name,
@@ -188,12 +189,12 @@
                 if (activeRef) {
                     let { data: aff } = await db.from('affiliates').select('*').or(`code.eq.${activeRef},ref_code.eq.${activeRef}`).single();
                     if (aff) {
-                        let currentSales = Number(aff.sales_count || aff.orders_count || 0);
-                        let currentEarnings = Number(aff.total_earnings || 0);
+                        let currentSales = Number(aff.sales_count || aff.orders_count || 0) + 1;
+                        let currentEarnings = Number(aff.total_earnings || 0) + 500;
                         await db.from('affiliates').update({ 
-                            sales_count: currentSales + 1,
-                            orders_count: currentSales + 1,
-                            total_earnings: currentEarnings + 500
+                            sales_count: currentSales,
+                            orders_count: currentSales,
+                            total_earnings: currentEarnings
                         }).eq('id', aff.id);
                     }
                 }
