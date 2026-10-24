@@ -100,7 +100,10 @@
             try {
                 let { data: aff } = await db.from('affiliates').select('*').or(`code.eq.${code},ref_code.eq.${code}`).single();
                 if (aff) {
-                    await db.from('affiliates').update({ clicks_count: (aff.clicks_count || 0) + 1, visits: (aff.visits || 0) + 1 }).eq('id', aff.id);
+                    await db.from('affiliates').update({ 
+                        clicks_count: Number(aff.clicks_count || aff.visits || 0) + 1, 
+                        visits: Number(aff.visits || aff.clicks_count || 0) + 1 
+                    }).eq('id', aff.id);
                 }
             } catch(e) {}
         }
@@ -169,12 +172,17 @@
                 let receiptUrl = pubData.publicUrl;
                 let activeRef = localStorage.getItem('sadara_affiliate_ref') || '';
 
+                // إرسال الطلب متضمناً كافة الاحتمالات لأسماء الأعمدة في قاعدة البيانات
                 await db.from('service_orders').insert([{
                     service_name: selectedServiceObj.title,
                     client_name: name,
+                    name: name,
                     client_phone: phone,
+                    phone: phone,
                     transaction_ref: receiptUrl,
-                    affiliate_code: activeRef
+                    receipt: receiptUrl,
+                    affiliate_code: activeRef,
+                    ref_code: activeRef
                 }]);
 
                 if (activeRef) {
