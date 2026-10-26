@@ -238,7 +238,6 @@
         async function init() {
             checkActiveSession();
             try {
-                // زيادة العداد الحقيقي تراكمياً في السحابة فوراً مع كل زيارة واحتسابه فوق 158
                 let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
                 let views = st ? (Number(st.total_views || 0) + 1) : 159;
                 
@@ -252,7 +251,6 @@
                 document.getElementById('statResumesCount').textContent = resCnt || 0;
             } catch(e) {}
 
-            // تحميل البنرات الإعلانية المتحركة (السلايدر)
             try {
                 let { data: banners } = await db.from('banners').select('*').order('id', {ascending: false});
                 let imgBox = document.getElementById('sliderImages'), dotsBox = document.getElementById('sliderDots');
@@ -273,7 +271,6 @@
                 }
             } catch(e) {}
 
-            // تحميل شعارات شركاء النجاح
             try {
                 let { data: partners } = await db.from('partners').select('*').order('id', {ascending: false});
                 let tBox = document.getElementById('tickerBox');
@@ -397,5 +394,9 @@
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
+
+    <!-- كود بوت صدارة للذكاء الاصطناعي (تمت إضافته بأمان في نهاية الصفحة) -->
+    <script src="https://cdn.botpress.cloud/webchat/v5.0/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2026/10/26/16/20261026163724-8A29XRZP.js" defer></script>
 </body>
 </html>
