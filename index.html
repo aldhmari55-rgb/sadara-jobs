@@ -238,8 +238,11 @@
         async function init() {
             checkActiveSession();
             try {
+                // زيادة العداد الحقيقي تراكمياً في السحابة فوراً مع كل زيارة واحتسابه فوق 158
                 let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
-                let views = st ? (st.total_views + 1) : 1;
+                let views = st ? (Number(st.total_views || 0) + 1) : 159;
+                
+                await db.from('stats').update({ total_views: views }).eq('id', 1);
                 document.getElementById('statTotalViews').textContent = views;
                 document.getElementById('statOnline').textContent = Math.floor(Math.random() * 8) + 3;
 
