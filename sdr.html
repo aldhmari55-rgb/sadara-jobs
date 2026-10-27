@@ -332,22 +332,56 @@
             return;
         }
 
-        orders.forEach(o => {
-            let affCode = o.affiliate_id || o.affiliate_code || 'بدون';
+        for (let o of orders) {
+            let dateFormatted = o.created_at ? new Date(o.created_at).toLocaleDateString('ar-EG') : '-';
+            let affCodeDisplay = o.affiliate_id || o.affiliate_code || 'بدون';
+            let clientPhoneClean = o.client_phone ? o.client_phone.replace(/[^0-9]/g, '') : '';
+
             box.innerHTML += `
-                <div class="item-row">
+                <div class="item-row" style="background:#fff; border:1px solid #cbd5e1; border-right:5px solid var(--primary);">
                     <div class="row-header">
                         <strong>💎 الخدمة: ${o.service_name}</strong>
-                        <span style="color:var(--gold);">كود: ${affCode}</span>
+                        <span style="color:var(--gold); font-weight:bold;">كود المسوق: ${affCodeDisplay}</span>
                     </div>
-                    <div style="font-size:11px;">
-                        👤 العميل: <b>${o.client_name}</b> (${o.client_phone})<br>
-                        🖼️ <a href="${o.transaction_ref}" target="_blank" style="color:#0284c7; font-weight:bold;">معاينة سند التحويل 🔍</a>
+                    <div style="color:#334155; font-size:11px; margin-top:2px;">
+                        👤 العميل: <b>${o.client_name}</b> (${o.client_phone}) | 💳 الدفع: ${o.payment_method}<br>
+                        📝 <b>الملاحظات:</b> <span style="color:#b91c1c; font-weight:bold;">${o.notes || 'لا يوجد ملاحظات'}</span><br>
+                        🖼️ <b>سند التحويل:</b> <a href="${o.transaction_ref}" target="_blank" style="color:#0284c7; font-weight:bold;">معاينة صورة السند 🔍</a><br>
+                        📅 التاريخ: ${dateFormatted}
                     </div>
-                    <button class="btn-sm btn-del" onclick="deleteItem('service_orders', ${o.id})">حذف الطلب 🗑️</button>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+                        <div style="display:flex; gap:5px;">
+                            ${clientPhoneClean ? `<a href="https://wa.me/${clientPhoneClean}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none; padding:5px 10px;">مراسلة العميل 💬</a>` : ''}
+                            <button class="btn-sm" style="background:#10b981; padding:5px 10px;" onclick="approveAffiliateCommission('${affCodeDisplay}', 1500)">اعتماد عمولة 20% 💰</button>
+                        </div>
+                        <button class="btn-sm btn-del" onclick="deleteItem('service_orders', ${o.id})">حذف الطلب 🗑️</button>
+                    </div>
                 </div>
             `;
-        });
+        }
+    }
+
+    async function approveAffiliateCommission(affRefCode, servicePrice) {
+        if (!affRefCode || affRefCode === 'بدون' || affRefCode === 'مباشر') { 
+            alert('هذا الطلب مباشر ولا يتبع لمسوق.'); 
+            return; 
+        }
+        let commissionAmount = Number(servicePrice) * 0.20;
+        let { data: aff } = await db.from('affiliates').select('*').or(`ref_code.eq.${affRefCode},phone.eq.${affRefCode}`).single();
+        if (aff) {
+            let newSales = (aff.total_sales || 0) + 1;
+            let newTotalEarnings = Number(aff.total_earnings || 0) + commissionAmount;
+            let { error } = await db.from('affiliates').update({ total_sales: newSales, total_earnings: newTotalEarnings }).eq('id', aff.id);
+            if (!error) {
+                alert(`تم اعتماد المبيعة بنجاح! 🎉 وإضافة العمولة (${commissionAmount} YER) لأرباح المسوق.`);
+                loadAdminAffiliates();
+                loadServiceOrders();
+            } else {
+                alert('خطأ: ' + error.message);
+            }
+        } else {
+            alert('لم يتم العثور على المسوق المرتبط بهذا الكود.');
+        }
     }
 
     async function deleteItem(table, id) {
