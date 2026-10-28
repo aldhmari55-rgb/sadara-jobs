@@ -34,7 +34,7 @@
         .buy-btn:hover { background: #0f172a; }
         .empty-box { text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; }
 
-        /* نافذة الدفع المنبثقة (Checkout Modal) */
+        /* نافذة إتمام الطلب والدفع (Checkout Modal) */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; }
         .modal-card { background: white; color: #0f172a; padding: 22px; border-radius: 14px; width: 90%; max-width: 400px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 10px; }
@@ -172,7 +172,6 @@
             document.getElementById('modalCourseTitle').textContent = course.title;
             document.getElementById('modalCoursePrice').textContent = course.price ? `${course.price} ريال` : '1500 ريال رمزي';
             
-            // تعبئة البيانات تلقائياً إن كانت مسجلة مسبقاً في المتصفح
             document.getElementById('buyerName').value = localStorage.getItem('sadara_logged_name') || '';
             document.getElementById('buyerPhone').value = localStorage.getItem('sadara_logged_phone') || '';
             
@@ -195,7 +194,6 @@
             msg.style.color = 'blue'; msg.textContent = 'جاري إرسال طلب الاشتراك... ⏳';
 
             try {
-                // حفظ الطلب في جدول orders أو cert_results حسب رغبتك لكي يظهر للإدارة
                 let { error } = await db.from('orders').insert([{
                     item_title: currentCheckoutCourse.title,
                     item_type: 'course',
@@ -211,7 +209,6 @@
                 
                 setTimeout(() => {
                     closeCheckoutModal();
-                    // توجيه الطالب لصفحة مشاهدة الدورة الخاصة به
                     window.location.href = `watch.html?id=${currentCheckoutCourse.id}`;
                 }, 1200);
 
