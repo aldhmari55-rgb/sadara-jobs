@@ -83,7 +83,7 @@
         </div>
 
         <div class="grid-container">
-            <!-- إدارة المسوقين بالعمولة (البيانات والإحصائيات والتسوية فقط) -->
+            <!-- إدارة المسوقين بالعمولة -->
             <div class="card" style="grid-column: 1 / -1;">
                 <h2>
                     <span>🤝 قائمة المسوقين بالعمولة والأرباح</span>
@@ -92,7 +92,20 @@
                 <div class="list-box" id="affiliatesList">جاري تحميل المسوقين...</div>
             </div>
 
-            <!-- سجل العمولات المُسلمة للمسوقين -->
+            <!-- سجل العمولات المستحقة للمسوقين خلال الشهر -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>
+                    <span>⏳ سجل العمولات المستحقة للمسوقين خلال الشهر</span>
+                    <div style="display:flex; gap:5px; align-items:center;">
+                        <button onclick="exportDueToExcel()" class="btn-sm" style="background:#10b981; padding:6px 12px; font-size:11px;">Excel 📊</button>
+                        <button onclick="exportDueToPDF()" class="btn-sm" style="background:#ef4444; padding:6px 12px; font-size:11px;">PDF 📄</button>
+                        <span class="badge" id="dueCount">0</span>
+                    </div>
+                </h2>
+                <div class="list-box" id="dueList" style="max-height: 300px;">جاري التحميل...</div>
+            </div>
+
+            <!-- سجل العمولات والأرباح المُسلمة للمسوقين -->
             <div class="card" style="grid-column: 1 / -1;">
                 <h2>
                     <span>💰 سجل العمولات والأرباح المُسلمة للمسوقين</span>
@@ -113,9 +126,12 @@
                 </h2>
                 <input type="hidden" id="editServiceId">
                 <label>اسم الخدمة أو المنتج</label>
-                <input type="text" id="serviceTitle" placeholder="مثال: اشتراك نتفلكس">
+                <input type="text" id="serviceTitle" placeholder="مثال: آيفون 15 برو / اشتراك نتفلكس">
                 <label>تصنيف القسم 📁</label>
                 <select id="serviceCategory">
+                    <option value="جوالات">📱 جوالات</option>
+                    <option value="إكسسوارات">🎧 إكسسوارات جوالات</option>
+                    <option value="إلكترونيات">⚡ إلكترونيات</option>
                     <option value="اشتراكات">🔑 اشتراكات رقمية</option>
                     <option value="خدمات">🛠️ خدمات عامة</option>
                     <option value="ملابس">👗 ملابس وأزياء</option>
@@ -174,6 +190,7 @@
     let cachedServices = [];
     let cachedCompletedOrders = [];
     let cachedPayouts = [];
+    let cachedDueAffiliates = [];
 
     function verifyAdminPass() {
         const secret = document.getElementById('adminSecretInput').value.trim();
@@ -307,7 +324,7 @@
         if (!s) return;
         document.getElementById('editServiceId').value = s.id;
         document.getElementById('serviceTitle').value = s.title || '';
-        document.getElementById('serviceCategory').value = s.category || 'اشتراكات';
+        document.getElementById('serviceCategory').value = s.category || 'جوالات';
         document.getElementById('serviceDesc').value = s.description || '';
         document.getElementById('servicePrice').value = s.price || '';
         document.getElementById('serviceCommission').value = s.commission || '';
@@ -325,8 +342,11 @@
 
         if (!affs || affs.length === 0) {
             box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا يوجد مسوقين مسجلين.</p>';
+            loadDueAffiliates([]);
             return;
         }
+
+        let dueList = [];
 
         affs.forEach(a => {
             let totalEarned = Number(a.total_earnings || 0);
@@ -336,7 +356,17 @@
             let refCode = a.ref_code || 'CODE';
             let cleanPhone = a.phone ? a.phone.replace(/[^0-9]/g, '') : '';
 
-            // تم إزالة روابط الصور والمنتجات من هنا تماماً لتكون اللوحة مرتبة وخاصة بالبيانات والإحصائيات والتحويلات التسوية فقط
+            if (dueEarnings > 0) {
+                dueList.push({
+                    name: affName,
+                    phone: a.phone,
+                    code: refCode,
+                    payout_method: a.payout_method || '-',
+                    payout_number: a.payout_number || '-',
+                    due_amount: dueEarnings
+                });
+            }
+
             box.innerHTML += `
                 <div class="item-row">
                     <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
@@ -365,6 +395,50 @@
                 </div>
             `;
         });
+
+        loadDueAffiliates(dueList);
+    }
+
+    function loadDueAffiliates(list) {
+        cachedDueAffiliates = list;
+        let box = document.getElementById('dueList');
+        if (!box) return;
+        document.getElementById('dueCount').textContent = list.length;
+        box.innerHTML = '';
+
+        if (!list.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد عمولات مستحقة حالياً.</p>';
+            return;
+        }
+
+        list.forEach(d => {
+            box.innerHTML += `
+                <div class="item-row" style="background:#fdf8f6; border:1px solid #fed7aa;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>👤 المسوق: ${d.name} (${d.phone})</strong>
+                        <span style="color:#c2410c; font-weight:bold;">المستحق: ${d.due_amount} YER</span>
+                    </div>
+                    <div style="color:#334155; font-size:11px; margin-top:2px;">
+                        🔑 الكود: ${d.code} | 💳 الوسيلة: ${d.payout_method} (${d.payout_number})
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function exportDueToExcel() {
+        if (!cachedDueAffiliates.length) { alert('لا توجد مستحقات للتصدير.'); return; }
+        let ws = XLSX.utils.json_to_sheet(cachedDueAffiliates); let wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "العمولات المستحقة"); XLSX.writeFile(wb, "Sadara_Monthly_Due_Commissions.xlsx");
+    }
+
+    function exportDueToPDF() {
+        if (!cachedDueAffiliates.length) { alert('لا توجد مستحقات للتصدير.'); return; }
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        doc.text("Monthly Due Commissions", 105, 15, { align: "center" });
+        let body = cachedDueAffiliates.map((d, i) => [i + 1, d.name, d.phone, d.payout_method, `${d.due_amount} YER`]);
+        doc.autoTable({ head: [['#', 'Name', 'Phone', 'Method', 'Due Amount']], body: body, startY: 25 });
+        doc.save("Sadara_Monthly_Due_Commissions.pdf");
     }
 
     async function payOutAffiliate(affId, affName, affPhone, affCode, currentPaid, dueAmount) {
