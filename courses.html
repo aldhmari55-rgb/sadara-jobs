@@ -30,9 +30,15 @@
         .cert-badge { background: #fef3c7; color: #d97706; font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; }
         
         .course-footer { padding: 15px; background: #f1f5f9; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; }
-        .buy-btn { background: var(--green); color: #fff; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
-        .buy-btn:hover { opacity: 0.9; }
+        .buy-btn { background: var(--primary); color: #fff; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
+        .buy-btn:hover { background: #0f172a; }
         .empty-box { text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; }
+
+        /* نافذة الدفع المنبثقة (Checkout Modal) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; }
+        .modal-card { background: white; color: #0f172a; padding: 22px; border-radius: 14px; width: 90%; max-width: 400px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); }
+        .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 10px; }
+        .modal-card input, .modal-card select { width: 100%; padding: 9px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
 
         .course-reviews-box { background: #f8fafc; padding: 12px 15px; border-top: 1px solid #e2e8f0; font-size: 12px; }
         .stars-selector { font-size: 16px; color: #cbd5e1; cursor: pointer; display: inline-block; margin: 4px 0; }
@@ -50,13 +56,42 @@
     <div class="container">
         <div class="notice-banner">
             <i class="fa-solid fa-circle-info" style="color:var(--gold);"></i> 
-            <b>ملاحظة تدريبية:</b> جميع الدورات المرئية تمنحك <b>شهادة إتمام معتمدة برقم تحقق فريد (QR Code)</b> صادرة من منصة صدارة لتعزيز سيرتك الذاتية ومهاراتك العملية!
+            <b>ملاحظة تدريبية:</b> جميع الدورات المرئية تمنحك <b>شهادة إتمام معتمدة برقم تحقق فريد (QR Code)</b> صادرة من منصة صدارة فور إكمال الدورة[span_1](start_span)[span_1](end_span)!
         </div>
 
-        <h2 class="section-title">الدورات التدريبية المتاحة</h2>
+        <h2 class="section-title">الدورات التدريبية المتاحة[span_2](start_span)[span_2](end_span)</h2>
         
         <div class="courses-grid" id="coursesGrid">
             <div class="empty-box">جاري تحميل الدورات من لوحة التحكم... ⏳</div>
+        </div>
+    </div>
+
+    <!-- نافذة إتمام الطلب والدفع (Checkout Modal) -->
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-card">
+            <h3 style="color:var(--primary); font-size:16px; margin-bottom:5px;"><i class="fa-solid fa-cart-shopping" style="color:var(--gold);"></i> إتمام الاشتراك في الدورة</h3>
+            <p style="font-size:11px; color:#64748b; margin-bottom:12px;" id="modalCourseTitle">اسم الدورة التدريبية</p>
+            
+            <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid #e2e8f0;">
+                <span style="font-size:11px; color:#64748b;">إجمالي السعر المطلوب:</span>
+                <div style="font-size:16px; font-weight:900; color:var(--primary);" id="modalCoursePrice">1500 ريال</div>
+            </div>
+
+            <label>الاسم الكامل</label>
+            <input type="text" id="buyerName" placeholder="أدخل اسمك الكريم">
+
+            <label>رقم الواتساب / الهاتف</label>
+            <input type="tel" id="buyerPhone" placeholder="770000000">
+
+            <label>طريقة الدفع المتاحة</label>
+            <select id="paymentMethod">
+                <option value="Jawali / Cash">تحويل جوالي / كاش (محلي)</option>
+                <option value="Kuraimi">بنك الكريمي للتمويل الأصغر</option>
+            </select>
+
+            <button onclick="submitCourseOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:11px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-top:14px;"><i class="fa-solid fa-check-circle"></i> تأكيد الطلب والبدء فوراً 🚀</button>
+            <button onclick="closeCheckoutModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:6px; cursor:pointer; font-size:10px;">إلغاء</button>
+            <div id="checkoutMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
         </div>
     </div>
 
@@ -66,6 +101,7 @@
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let selectedCourseStarsMap = {};
+        let currentCheckoutCourse = null;
 
         async function loadCoursesPage() {
             let grid = document.getElementById('coursesGrid');
@@ -91,20 +127,20 @@
                     grid.innerHTML += `
                         <div class="course-card">
                             <div class="course-header">
-                                <h3>${c.title}</h3>
+                                <h3>${c.title}[span_3](start_span)[span_3](end_span)</h3>
                                 <span class="price-badge">🏷️ ${coursePrice}</span>
                             </div>
                             <div class="course-body">
                                 <p>${c.description || 'دورة تدريبية احترافية شاملة مع دروس مرئية وتطبيق عملي.'}</p>
-                                <div class="cert-badge"><i class="fa-solid fa-certificate"></i> يشمل شهادة إتمام برقم تحقق رقمي</div>
+                                <div class="cert-badge"><i class="fa-solid fa-certificate"></i> يشمل شهادة إتمام برقم تحقق رقمي[span_4](start_span)[span_4](end_span)</div>
                             </div>
                             <div class="course-footer">
-                                <span style="font-size:12px; font-weight:bold; color:#0f2347;"><i class="fa-solid fa-book"></i> ${lessonsCount} دروس</span>
-                                <a href="https://wa.me/967780568507?text=أرغب في الاشتراك وشراء دورة: ${encodeURIComponent(c.title)}" target="_blank" class="buy-btn"><i class="fa-brands fa-whatsapp"></i> اشترك الآن عبر الواتساب</a>
+                                <span style="font-size:12px; font-weight:bold; color:#0f2347;"><i class="fa-solid fa-book"></i> ${lessonsCount} دروس[span_5](start_span)[span_5](end_span)</span>
+                                <button onclick='openCheckoutModal(${JSON.stringify(c)})' class="buy-btn"><i class="fa-solid fa-cart-plus"></i> اشتري الدورة 🛒</button>
                             </div>
 
                             <div class="course-reviews-box">
-                                <h4 style="font-size:12px; color:var(--primary); font-weight:bold;">⭐ تقييمات الطلاب وانطباع الشهادة:</h4>
+                                <h4 style="font-size:12px; color:var(--primary); font-weight:bold;">⭐ تقييمات الطلاب وانطباع الشهادة[span_6](start_span)[span_6](end_span):</h4>
                                 
                                 <div style="margin: 4px 0;" id="courseStarBox_${c.id}">
                                     <span class="stars-selector active" onclick="setCourseStar(${c.id}, 1)">★</span>
@@ -128,6 +164,60 @@
                 });
             } catch(e) {
                 grid.innerHTML = `<div class="empty-box">عذراً، حدث خطأ في الاتصال بقاعدة البيانات.</div>`;
+            }
+        }
+
+        function openCheckoutModal(course) {
+            currentCheckoutCourse = course;
+            document.getElementById('modalCourseTitle').textContent = course.title;
+            document.getElementById('modalCoursePrice').textContent = course.price ? `${course.price} ريال` : '1500 ريال رمزي';
+            
+            // تعبئة البيانات تلقائياً إن كانت مسجلة مسبقاً في المتصفح
+            document.getElementById('buyerName').value = localStorage.getItem('sadara_logged_name') || '';
+            document.getElementById('buyerPhone').value = localStorage.getItem('sadara_logged_phone') || '';
+            
+            document.getElementById('checkoutModal').style.display = 'flex';
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').style.display = 'none';
+        }
+
+        async function submitCourseOrder() {
+            const name = document.getElementById('buyerName').value.trim();
+            const phone = document.getElementById('buyerPhone').value.trim();
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const msg = document.getElementById('checkoutMsg');
+
+            if (!name || !phone) { alert('يرجى إدخال الاسم ورقم الواتساب'); return; }
+            if (!currentCheckoutCourse) return;
+
+            msg.style.color = 'blue'; msg.textContent = 'جاري إرسال طلب الاشتراك... ⏳';
+
+            try {
+                // حفظ الطلب في جدول orders أو cert_results حسب رغبتك لكي يظهر للإدارة
+                let { error } = await db.from('orders').insert([{
+                    item_title: currentCheckoutCourse.title,
+                    item_type: 'course',
+                    buyer_name: name,
+                    buyer_phone: phone,
+                    payment_method: paymentMethod,
+                    price: currentCheckoutCourse.price || '1500',
+                    status: 'قيد المراجعة والدفع'
+                }]);
+
+                msg.style.color = 'green';
+                msg.textContent = 'تم إرسال طلبك بنجاح! 🎉 جاري توجيهك لصفحة مشاهدة الدورة...';
+                
+                setTimeout(() => {
+                    closeCheckoutModal();
+                    // توجيه الطالب لصفحة مشاهدة الدورة الخاصة به
+                    window.location.href = `watch.html?id=${currentCheckoutCourse.id}`;
+                }, 1200);
+
+            } catch(e) {
+                msg.style.color = 'red';
+                msg.textContent = 'حدث خطأ، يرجى المحاولة مرة أخرى.';
             }
         }
 
