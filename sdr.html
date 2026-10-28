@@ -89,6 +89,19 @@
                 <div class="list-box" id="affiliatesList">جاري تحميل المسوقين...</div>
             </div>
 
+            <!-- سجل العمولات المُسلمة للمسوقين -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>
+                    <span>💰 سجل العمولات والأرباح المُسلمة للمسوقين</span>
+                    <div style="display:flex; gap:5px; align-items:center;">
+                        <button onclick="exportPayoutsToExcel()" class="btn-sm" style="background:#10b981; padding:6px 12px; font-size:11px;">Excel 📊</button>
+                        <button onclick="exportPayoutsToPDF()" class="btn-sm" style="background:#ef4444; padding:6px 12px; font-size:11px;">PDF 📄</button>
+                        <span class="badge" id="payoutsCount">0</span>
+                    </div>
+                </h2>
+                <div class="list-box" id="payoutsList" style="max-height: 300px;">جاري التحميل...</div>
+            </div>
+
             <!-- إدارة متجر الخدمات -->
             <div class="card">
                 <h2>
@@ -155,6 +168,7 @@
 
     let cachedServices = [];
     let cachedCompletedOrders = [];
+    let cachedPayouts = [];
 
     function verifyAdminPass() {
         const secret = document.getElementById('adminSecretInput').value.trim();
@@ -307,10 +321,11 @@
             let totalEarned = Number(a.total_earnings || 0);
             let paidEarned = Number(a.paid_earnings || 0);
             let dueEarnings = totalEarned - paidEarned;
+            let affName = a.full_name || a.name || 'مسوق';
             box.innerHTML += `
                 <div class="item-row" style="background:#fff; border:1px solid #cbd5e1; border-right:5px solid var(--gold);">
                     <div class="row-header">
-                        <b>👤 المسوق: ${a.full_name || a.name || 'مسوق'} (${a.phone}) - كود: ${a.ref_code || '-'}</b>
+                        <b>👤 المسوق: ${affName} (${a.phone}) - كود: ${a.ref_code || '-'}</b>
                         <span style="color:#0284c7;">${a.payout_method || 'وسيلة'}: ${a.payout_number || '-'}</span>
                     </div>
                     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin:4px 0; background:#f8fafc; padding:6px; text-align:center; font-size:11px;">
@@ -319,9 +334,9 @@
                         <div>💰 مستحقات: <b style="color:green;">${dueEarnings} YER</b></div>
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:10px; color:#64748b;">إجمالي: ${totalEarned} YER | صرف: ${paidEarned} YER</span>
+                        <span style="font-size:10px; color:#64748b;">إجمالي: ${totalEarned} YER | صرف سابق: ${paidEarned} YER</span>
                         <div style="display:flex; gap:5px;">
-                            <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, ${paidEarned}, ${dueEarnings})">تسوية 💳</button>
+                            <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, '${affName}', '${a.phone}', '${a.ref_code || '-'}', ${paidEarned}, ${dueEarnings})">تسوية وصرف 💳</button>
                             <button class="btn-sm btn-del" onclick="deleteItem('affiliates', ${a.id})">حذف 🗑️</button>
                         </div>
                     </div>
@@ -330,12 +345,78 @@
         });
     }
 
-    async function payOutAffiliate(affId, currentPaid, dueAmount) {
-        if (dueAmount <= 0) { alert('لا توجد مستحقات للتسوية.'); return; }
-        if (confirm(`تسوية مبلغ (${dueAmount} YER) للمسوق؟`)) {
+    async function payOutAffiliate(affId, affName, affPhone, affCode, currentPaid, dueAmount) {
+        if (dueAmount <= 0) { alert('لا توجد مستحقات للتسوية حالياً.'); return; }
+        if (confirm(`هل تؤكد تسوية وصرف مبلغ (${dueAmount} YER) للمسوق ${affName}؟`)) {
+            // تحديث رصيد المسوق المسلم
             await db.from('affiliates').update({ paid_earnings: currentPaid + dueAmount }).eq('id', affId);
+
+            // حفظ عملية الصرف في سجل العمولات المُسلمة
+            await db.from('affiliate_payouts').insert([{
+                affiliate_name: affName,
+                affiliate_phone: affPhone,
+                affiliate_code: affCode,
+                payout_amount: dueAmount,
+                payout_date: new Date().toISOString()
+            }]);
+
+            alert('تمت تسوية وصرف المبلغ بنجاح وتسجيله في الأرشيف! ✅');
             loadAdminAffiliates();
+            loadPayoutsLogs();
         }
+    }
+
+    async function loadPayoutsLogs() {
+        let { data } = await db.from('affiliate_payouts').select('*').order('id', { ascending: false });
+        cachedPayouts = data || [];
+        let box = document.getElementById('payoutsList');
+        if(!box) return;
+        document.getElementById('payoutsCount').textContent = cachedPayouts.length;
+        box.innerHTML = '';
+
+        if (!cachedPayouts.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد سجلات لعمولات مسلمة حتى الآن.</p>';
+            return;
+        }
+
+        cachedPayouts.forEach(p => {
+            let dateFormatted = p.payout_date ? new Date(p.payout_date).toLocaleDateString('ar-EG') : '-';
+            box.innerHTML += `
+                <div class="item-row" style="background:#f0fdf4; border:1px solid #bbf7d0;">
+                    <div class="row-header">
+                        <strong>👤 المسوق: ${p.affiliate_name} (${p.affiliate_phone})</strong>
+                        <span style="color:#15803d; font-weight:bold; font-size:13px;">المبلغ: ${p.payout_amount} YER</span>
+                    </div>
+                    <div style="color:#334155; font-size:11px; margin-top:2px;">
+                        🔑 كود المسوق: ${p.affiliate_code} | 📅 تاريخ الصرف والتسوية: ${dateFormatted}
+                    </div>
+                    <button class="btn-sm btn-del" onclick="deleteItem('affiliate_payouts', ${p.id})" style="width:auto; margin-top:4px;">حذف من السجل 🗑️</button>
+                </div>
+            `;
+        });
+    }
+
+    function exportPayoutsToExcel() {
+        if (!cachedPayouts.length) { alert('لا توجد سجلات عُمولات للتصدير.'); return; }
+        let dataToExport = cachedPayouts.map((p, i) => ({
+            "م": i + 1,
+            "اسم المسوق": p.affiliate_name,
+            "رقم الهاتف": p.affiliate_phone,
+            "كود المسوق": p.affiliate_code,
+            "المبلغ المُسلم (YER)": p.payout_amount,
+            "تاريخ الصرف": p.payout_date ? new Date(p.payout_date).toLocaleDateString('ar-EG') : '-'
+        }));
+        let ws = XLSX.utils.json_to_sheet(dataToExport); let wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "العمولات المُسلمة"); XLSX.writeFile(wb, "Sadara_Affiliate_Payouts.xlsx");
+    }
+
+    function exportPayoutsToPDF() {
+        if (!cachedPayouts.length) { alert('لا توجد سجلات عُمولات للتصدير.'); return; }
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        doc.text("Sadara Affiliate Payouts Logs", 105, 15, { align: "center" });
+        let body = cachedPayouts.map((p, i) => [i + 1, p.affiliate_name, p.affiliate_phone, `${p.payout_amount} YER`, p.payout_date ? new Date(p.payout_date).toLocaleDateString('ar-EG') : '-']);
+        doc.autoTable({ head: [['#', 'Name', 'Phone', 'Amount', 'Date']], body: body, startY: 25 });
+        doc.save("Sadara_Affiliate_Payouts.pdf");
     }
 
     async function loadServiceOrders() {
@@ -382,12 +463,9 @@
 
     async function markOrderAsCompleted(orderId) {
         if (!confirm('هل أنت متأكد من تسليم الطلب ونقله إلى قائمة الطلبات المنجزة؟')) return;
-        
-        // جلب تفاصيل الطلب الحالي
         let { data: orderData, error: fetchErr } = await db.from('service_orders').select('*').eq('id', orderId).single();
         if (fetchErr || !orderData) { alert('خطأ في جلب بيانات الطلب.'); return; }
 
-        // إدراج الطلب في جدول الطلبات المنجزة
         let { error: insertErr } = await db.from('completed_orders').insert([{
             service_name: orderData.service_name,
             client_name: orderData.client_name,
@@ -400,10 +478,7 @@
         }]);
 
         if (insertErr) { alert('خطأ في حفظ الطلب بالمنجزة: ' + insertErr.message); return; }
-
-        // حذف الطلب من الطلبات الحالية
         await db.from('service_orders').delete().eq('id', orderId);
-
         alert('تم نقل الطلب إلى قائمة الطلبات المنجزة بنجاح! ✅');
         initData();
     }
@@ -459,7 +534,7 @@
         if (!cachedCompletedOrders.length) { alert('لا توجد طلبات منجزة للتصدير.'); return; }
         const { jsPDF } = window.jspdf; const doc = new jsPDF();
         doc.text("Sadara Completed Orders", 105, 15, { align: "center" });
-        let body = cachedCompletedOrders.map((o, i) => [i + 1, o.service_name, o.client_name, o.client_phone, o.payment_method, o.completed_at ? new Date(o.completed_at).toLocaleDateString('ar-EG') : '-']);
+        let body = cachedCompletedOrders.map((o, i) => [i + 1, o.service_name, o.client_name, o.client_phone, o.payment_method, o.completed_at ? new Date(o.completed_at).toLocaleDateString('ar-EG') : '-' ]);
         doc.autoTable({ head: [['#', 'Service', 'Client', 'Phone', 'Payment', 'Date']], body: body, startY: 25 });
         doc.save("Sadara_Completed_Orders.pdf");
     }
@@ -498,6 +573,7 @@
         loadStats();
         loadAdminServices();
         loadAdminAffiliates();
+        loadPayoutsLogs();
         loadServiceOrders();
         loadCompletedOrders();
     }
