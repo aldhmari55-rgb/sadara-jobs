@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - القسم الإضافي (الوظائف والكفاءات والدورات) | منصة صدارة</title>
+    <title>لوحة التحكم - القسم الإضافي (الوظائف والكفاءات والبنرات) | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -42,7 +42,6 @@
         .btn-edit { background: #3b82f6; }
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         .preview-img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
-        .lesson-group { background: #f1f5f9; padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid #cbd5e1; }
         .nav-link-btn { display: inline-block; background: var(--gold); color: #0f2347; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; text-decoration: none; margin-top: 15px; }
     </style>
 </head>
@@ -60,8 +59,8 @@
 
     <div id="adminMainContent" style="display:none;">
         <div class="header">
-            <h1>لوحة التحكم - القسم الإضافي (الوظائف والكفاءات) 🛠️</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المقالات، المستخدمين، والدورات</p>
+            <h1>لوحة التحكم - القسم الإضافي (الوظائف والكفاءات والبنرات) 🛠️</h1>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الوظائف، الكفاءات، المقالات، المستخدمين، البنرات وشركاء النجاح</p>
             <div style="display:flex; justify-content:center; gap:10px; margin-top:10px;">
                 <a href="sdr_admin_main.html" class="nav-link-btn" style="margin:0; background:var(--gold);">العودة للقسم الأول (المتجر والمسوقين) ⬅️</a>
                 <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin:0; background:#ef4444; border:none; font-size:11px;">قفل 🔒</button>
@@ -157,6 +156,24 @@
                     </div>
                 </h2>
                 <div class="list-box" id="usersList">جاري التحميل...</div>
+            </div>
+
+            <!-- 5. البنرات الإعلانية (السلايدر) -->
+            <div class="card">
+                <h2>🖼️ البنرات الإعلانية (السلايدر) <span class="badge" id="bannersCount">0</span></h2>
+                <label>رفع صورة البنر</label>
+                <input type="file" id="bannerFile" accept="image/*">
+                <button onclick="addBanner()" style="background:#0f2347;">رفع البنر للسلايدر 📤</button>
+                <div class="list-box" id="bannersList">جاري التحميل...</div>
+            </div>
+
+            <!-- 6. شركاء النجاح -->
+            <div class="card">
+                <h2>🤝 شركاء النجاح (الشريط) <span class="badge" id="partnersCount">0</span></h2>
+                <label>رفع شعار الشريك</label>
+                <input type="file" id="partnerFile" accept="image/*">
+                <button onclick="addPartner()" style="background:#0f2347;">إضافة الشريك للشريط 🔄</button>
+                <div class="list-box" id="partnersList">جاري التحميل...</div>
             </div>
         </div>
     </div>
@@ -403,6 +420,36 @@
         });
     }
 
+    async function addBanner() {
+        const file = document.getElementById('bannerFile').files[0];
+        if (!file) { alert('اختر صورة البنر'); return; }
+        let url = await uploadFileStrict(file);
+        if (url) { await db.from('banners').insert([{ url }]); document.getElementById('bannerFile').value = ''; loadBanners(); }
+    }
+
+    async function loadBanners() {
+        let { data } = await db.from('banners').select('*').order('id', {ascending: false});
+        let box = document.getElementById('bannersList'); if(!box) return; box.innerHTML = '';
+        document.getElementById('bannersCount').textContent = data ? data.length : 0;
+        if (!data || !data.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد بنرات.</p>'; return; }
+        data.forEach(b => { box.innerHTML += `<div class="item-row" style="flex-direction:row; justify-content:space-between; align-items:center;"><img src="${b.url}" style="height:35px; border-radius:4px;"><button class="btn-sm btn-del" onclick="deleteItem('banners', ${b.id})">حذف 🗑️</button></div>`; });
+    }
+
+    async function addPartner() {
+        const file = document.getElementById('partnerFile').files[0];
+        if (!file) { alert('اختر شعار الشريك'); return; }
+        let url = await uploadFileStrict(file);
+        if (url) { await db.from('partners').insert([{ logo: url, name: file.name }]); document.getElementById('partnerFile').value = ''; loadPartners(); }
+    }
+
+    async function loadPartners() {
+        let { data } = await db.from('partners').select('*').order('id', {ascending: false});
+        let box = document.getElementById('partnersList'); if(!box) return; box.innerHTML = '';
+        document.getElementById('partnersCount').textContent = data ? data.length : 0;
+        if (!data || !data.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد شركاء.</p>'; return; }
+        data.forEach(p => { box.innerHTML += `<div class="item-row" style="flex-direction:row; justify-content:space-between; align-items:center;"><img src="${p.logo}" style="height:30px; width:30px; border-radius:50%; object-fit:cover;"><button class="btn-sm btn-del" onclick="deleteItem('partners', ${p.id})">حذف 🗑️</button></div>`; });
+    }
+
     function exportToExcel() {
         if (!cachedUsers.length) { alert('لا توجد بيانات.'); return; }
         let ws = XLSX.utils.json_to_sheet(cachedUsers); let wb = XLSX.utils.book_new();
@@ -430,6 +477,8 @@
         loadResumes();
         loadArticles();
         loadRegisteredUsers();
+        loadBanners();
+        loadPartners();
     }
 
     document.addEventListener('DOMContentLoaded', checkSession);
