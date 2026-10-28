@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج والخدمة | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg-light); padding-bottom: 50px; color: #0f172a; }
+
+        .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); }
+        .back-btn { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 11px; }
+
+        .main-container { max-width: 650px; margin: 20px auto; padding: 0 16px; }
+        .product-detail-card { background: white; border-radius: 14px; border: 1px solid #cbd5e1; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        .product-main-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
+        .product-title { font-size: 20px; font-weight: 900; color: var(--primary); margin-bottom: 6px; }
+        .product-price { color: #10b981; font-weight: 900; font-size: 18px; margin-bottom: 12px; }
+        .product-cat { background: #eff6ff; color: #0284c7; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; display: inline-block; margin-bottom: 15px; }
+        .product-desc { font-size: 13px; color: #475569; line-height: 1.6; margin-bottom: 20px; border-top: 1px solid #f1f5f9; padding-top: 12px; }
+
+        .affiliate-notice { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: bold; margin-bottom: 15px; display: none; text-align: center; }
+
+        .order-form-box { background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 15px; }
+        .order-form-box h3 { font-size: 14px; color: var(--primary); margin-bottom: 10px; }
+        label { font-size: 11px; font-weight: bold; display: block; margin-top: 8px; color: #475569; }
+        input, select, textarea { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; background: white; }
+        .submit-order-btn { background: var(--green); color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 13px; margin-top: 15px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="top-navbar">
+        <span style="font-weight: 900; font-size:14px;">تفاصيل المنتج | منصة صدارة</span>
+        <a href="store.html" class="back-btn"><i class="fa-solid fa-store"></i> العودة للمتجر</a>
+    </div>
+
+    <div class="main-container">
+        <div class="affiliate-notice" id="affNotice">
+            🎉 مبروك! لقد حصلت على كود خصم وتخفيض خاص عبر ترشيح صديق أو مسوق موثق ✅
+        </div>
+
+        <div class="product-detail-card" id="productDetailsContent">
+            <p style="text-align: center; color: #64748b; padding: 30px;">جاري تحميل تفاصيل المنتج...</p>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentProductData = null;
+
+        async function initProductPage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let productId = urlParams.get('id');
+            let refParam = urlParams.get('ref');
+
+            if (refParam) {
+                localStorage.setItem('sadara_affiliate_ref', refParam);
+                document.getElementById('affNotice').style.display = 'block';
+                trackAffiliateClick(refParam);
+            } else if (localStorage.getItem('sadara_affiliate_ref')) {
+                document.getElementById('affNotice').style.display = 'block';
+            }
+
+            if (!productId) {
+                document.getElementById('productDetailsContent').innerHTML = '<p style="text-align:center; color:red;">المنتج غير موجود.</p>';
+                return;
+            }
+
+            let { data, error } = await db.from('platform_services').select('*').eq('id', productId).single();
+            if (error || !data) {
+                document.getElementById('productDetailsContent').innerHTML = '<p style="text-align:center; color:red;">عذراً، لم يتم العثور على هذا المنتج.</p>';
+                return;
+            }
+
+            currentProductData = data;
+            renderProductPage(data);
+        }
+
+        async function trackAffiliateClick(code) {
+            try {
+                let { data: aff } = await db.from('affiliates').select('*').or(`ref_code.eq.${code},phone.eq.${code}`).single();
+                if (aff) {
+                    let currentClicks = Number(aff.clicks || 0) + 1;
+                    await db.from('affiliates').update({ clicks: currentClicks }).eq('id', aff.id);
+                }
+            } catch(e) {}
+        }
+
+        function renderProductPage(p) {
+            let imgHTML = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-main-img">` : '';
+            
+            document.getElementById('productDetailsContent').innerHTML = `
+                ${imgHTML}
+                <span class="product-cat">📁 ${p.category || 'عام'}</span>
+                <h1 class="product-title">${p.title}</h1>
+                <div class="product-price">السعر: ${p.price}</div>
+                <div class="product-desc"><strong>وصف المنتج والخدمة:</strong><br>${p.description || 'لا يوجد وصف إضافي متاح لهذا المنتج.'}</div>
+
+                <div class="order-form-box">
+                    <h3>🛒 نموذج طلب الشراء المباشر</h3>
+                    
+                    <label>اسمك الكريم</label>
+                    <input type="text" id="clientName" placeholder="أدخل اسمك الكامل">
+
+                    <label>رقم الواتساب (للتواصل وتفعيل الخدمة)</label>
+                    <input type="tel" id="clientPhone" placeholder="770000000">
+
+                    <label>محافظتك الحالية (مثال: ذمار، صنعاء، إب...)</label>
+                    <input type="text" id="clientCity" placeholder="ذمار">
+
+                    <label>كيف وصلت إلينا أو من دلك؟ (اختياري)</label>
+                    <input type="text" id="clientReferralSource" placeholder="اسم المسوق أو صديق أو وسائل التواصل...">
+
+                    <label>وسيلة الدفع والتحويل</label>
+                    <select id="payMethod">
+                        <option value="محفظة جيب">محفظة جيب (780568507)</option>
+                        <option value="بنك الكريمي">بنك الكريمي (2628009)</option>
+                    </select>
+
+                    <label>صورة سند التحويل أو الدفع 📄</label>
+                    <input type="file" id="payReceiptFile" accept="image/*">
+
+                    <label>ملاحظات إضافية (اختياري)</label>
+                    <input type="text" id="orderNotes" placeholder="أية تفاصيل تخص طلبك...">
+
+                    <button class="submit-order-btn" onclick="submitProductOrder()">تأكيد وإرسال الطلب فوراً 🚀</button>
+                    <div id="orderMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
+                </div>
+            `;
+        }
+
+        async function submitProductOrder() {
+            const name = document.getElementById('clientName').value.trim();
+            const phone = document.getElementById('clientPhone').value.trim();
+            const city = document.getElementById('clientCity').value.trim();
+            const refSource = document.getElementById('clientReferralSource').value.trim();
+            const payMethod = document.getElementById('payMethod').value;
+            const file = document.getElementById('payReceiptFile').files[0];
+            const notes = document.getElementById('orderNotes').value.trim();
+            const msg = document.getElementById('orderMsg');
+
+            if (!name || !phone) { alert('يرجى إدخال الاسم ورقم الواتساب!'); return; }
+            if (!file) { alert('يرجى إرفاق صورة سند الدفع أو التحويل!'); return; }
+
+            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الطلب ومعالجته... ⏳';
+
+            let receiptUrl = '';
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `order_${Date.now()}.${fileExt}`;
+                const { error: uploadErr } = await db.storage.from('platform-files').upload(fileName, file);
+                if (uploadErr) { msg.style.color = 'red'; msg.textContent = 'فشل رفع صورة السند.'; return; }
+                const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
+                receiptUrl = publicUrlData.publicUrl;
+            } catch(e) {
+                msg.style.color = 'red'; msg.textContent = 'خطأ أثناء رفع السند.'; return;
+            }
+
+            let activeRefCode = localStorage.getItem('sadara_affiliate_ref') || new URLSearchParams(window.location.search).get('ref') || 'مباشر';
+            let fullNotes = `المحافظة: ${city || 'غير محدد'} | مصدر الدلالة: ${refSource || 'غير محدد'} | ملاحظات: ${notes || 'لا يوجد'}`;
+
+            let { error } = await db.from('service_orders').insert([{
+                service_name: currentProductData.title,
+                client_name: name,
+                client_phone: phone,
+                payment_method: payMethod,
+                transaction_ref: receiptUrl,
+                notes: fullNotes,
+                affiliate_id: activeRefCode
+            }]);
+
+            if (error) {
+                msg.style.color = 'red'; msg.textContent = 'خطأ في حفظ الطلب: ' + error.message;
+            } else {
+                msg.style.color = 'green'; msg.textContent = 'تم إرسال طلبك بنجاح وسنتواصل معك عبر الواتساب قريباً! ✅';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initProductPage);
+    </script>
+</body>
+</html>
