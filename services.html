@@ -27,7 +27,11 @@
         .affiliate-badge-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 10px; border-radius: 10px; font-size: 11px; text-align: center; font-weight: bold; margin-bottom: 15px; display: none; }
 
         .product-card { background: white; border-radius: 12px; border: 1px solid #cbd5e1; padding: 14px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 8px; }
-        .product-img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; }
+        
+        /* جعل حاوية الصورة مرنة تماماً لمختلف المقاسات دون قص */
+        .product-img-container { width: 100%; background: #0f172a10; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 5px; }
+        .product-img { width: 100%; height: auto; max-height: 450px; object-fit: contain; border-radius: 6px; display: block; }
+
         .product-title-row { display: flex; justify-content: space-between; align-items: center; }
         .product-title { font-size: 15px; font-weight: 900; color: var(--primary); }
         .product-price { color: #10b981; font-weight: 900; font-size: 14px; }
@@ -35,7 +39,6 @@
         .product-cat-label { background: #eff6ff; color: #0284c7; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; width: fit-content; }
         .order-btn { background: var(--primary); color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 12px; margin-top: 5px; cursor: pointer; border: none; }
 
-        /* نافذة تفاصيل المنتج المستقلة والطلب */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
         .modal-card { background: white; padding: 20px; border-radius: 14px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
@@ -76,11 +79,8 @@
         <div id="storeProductsList">جاري تحميل المتجر والمنتجات...</div>
     </div>
 
-    <!-- نافذة تفاصيل المنتج ونموذج الطلب الشامل -->
     <div class="modal-overlay" id="productModal">
-        <div class="modal-card" id="modalProductContent">
-            <!-- محتوى المنتج والتفاصيل يتم حقنه ديناميكياً هنا -->
-        </div>
+        <div class="modal-card" id="modalProductContent"></div>
     </div>
 
     <script>
@@ -114,12 +114,9 @@
             allProducts = data || [];
             renderStoreProducts(allProducts);
 
-            // إذا كان الرابط يحتوي على معرف منتج مباشر، افتح نافذة تفاصيله تلقائياً
             if (productIdParam) {
                 let targetProd = allProducts.find(p => p.id == productIdParam);
-                if (targetProd) {
-                    openProductDetails(targetProd);
-                }
+                if (targetProd) openProductDetails(targetProd);
             }
         }
 
@@ -162,7 +159,7 @@
             }
 
             productsList.forEach(p => {
-                let imgHTML = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-img">` : '';
+                let imgHTML = (p.image && p.image.trim() !== '') ? `<div class="product-img-container"><img src="${p.image}" class="product-img"></div>` : '';
                 let catTag = p.category ? `<span class="product-cat-label">📁 ${p.category}</span>` : '';
 
                 box.innerHTML += `
@@ -187,7 +184,7 @@
 
         function openProductDetails(p) {
             currentSelectedProduct = p;
-            let imgHTML = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" style="width:100%; max-height:220px; object-fit:cover; border-radius:8px; margin-bottom:12px;">` : '';
+            let imgHTML = (p.image && p.image.trim() !== '') ? `<div style="width:100%; background:#0f172a10; border-radius:8px; display:flex; justify-content:center; align-items:center; overflow:hidden; padding:5px; margin-bottom:12px;"><img src="${p.image}" style="width:100%; height:auto; max-height:400px; object-fit:contain; border-radius:6px; display:block;"></div>` : '';
 
             document.getElementById('modalProductContent').innerHTML = `
                 ${imgHTML}
