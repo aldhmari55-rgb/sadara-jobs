@@ -47,8 +47,6 @@
         .btn-edit { background: #3b82f6; }
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         
-        .admin-product-thumb { width: 45px; height: 45px; background: #0f172a10; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; padding: 2px; }
-        .admin-product-thumb img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; display: block; }
         .preview-img-container { width: 45px; height: 45px; background: #0f172a10; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; padding: 2px; }
         .preview-img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; display: block; }
 
@@ -70,7 +68,7 @@
     <div id="adminMainContent" style="display:none;">
         <div class="header">
             <h1>لوحة التحكم - القسم الأساسي (المتجر والمسوقين) 🛠️</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة متجر الخدمات، روابط المنتجات، وربط عمولات المسوقين لكل منتج</p>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة متجر الخدمات، طلبات العملاء، ومستحقات المسوقين بالعمولة</p>
             <div style="display:flex; justify-content:center; gap:10px; margin-top:10px;">
                 <a href="sdr_admin_extra.html" class="nav-link-btn" style="margin:0; background:var(--gold);">الانتقال إلى القسم الثاني (الوظائف والكفاءات) ➡️</a>
                 <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin:0; background:#ef4444; border:none; font-size:11px;">قفل 🔒</button>
@@ -85,10 +83,10 @@
         </div>
 
         <div class="grid-container">
-            <!-- إدارة المسوقين بالعمولة -->
+            <!-- إدارة المسوقين بالعمولة (البيانات والإحصائيات والتسوية فقط) -->
             <div class="card" style="grid-column: 1 / -1;">
                 <h2>
-                    <span>🤝 قائمة المسوقين بالعمولة (روابط المنتجات المخصصة)</span>
+                    <span>🤝 قائمة المسوقين بالعمولة والأرباح</span>
                     <span class="badge" id="affiliatesCount">0</span>
                 </h2>
                 <div class="list-box" id="affiliatesList">جاري تحميل المسوقين...</div>
@@ -338,32 +336,7 @@
             let refCode = a.ref_code || 'CODE';
             let cleanPhone = a.phone ? a.phone.replace(/[^0-9]/g, '') : '';
 
-            // توليد روابط المنتجات بتصميم مرن ومنسق تماماً مثل الصورة المطلوبة
-            let productLinksHTML = '';
-            if (cachedServices.length > 0) {
-                productLinksHTML = `<div style="margin-top:10px; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #cbd5e1;"><strong style="color:var(--primary); font-size:12px;">🔗 روابط المنتجات الخاصة بهذا المسوق:</strong><div style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">`;
-                cachedServices.forEach(s => {
-                    let productUrl = `https://sadarah.top/services.html?product_id=${s.id}&ref=${refCode}`;
-                    let imgThumb = (s.image && s.image.trim() !== '') ? `<div class="admin-product-thumb"><img src="${s.image}"></div>` : `<div class="admin-product-thumb" style="font-size:9px; color:#64748b; text-align:center;">بدون صورة</div>`;
-                    
-                    productLinksHTML += `
-                        <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; padding:8px 12px; border-radius:8px; border:1px solid #e2e8f0; gap:10px;">
-                            <div style="display:flex; align-items:center; gap:10px; flex-grow:1;">
-                                ${imgThumb}
-                                <div>
-                                    <div style="font-weight:900; color:var(--primary); font-size:12px;">${s.title}</div>
-                                    <div style="color:#10b981; font-weight:bold; font-size:11px;">${s.price}</div>
-                                </div>
-                            </div>
-                            <button class="btn-sm" style="background:#0284c7;" onclick="navigator.clipboard.writeText('${productUrl}'); alert('تم نسخ رابط المنتج بنجاح! ✅');">نسخ رابط المنتج 📋</button>
-                        </div>
-                    `;
-                });
-                productLinksHTML += `</div></div>`;
-            } else {
-                productLinksHTML = `<div style="font-size:11px; color:#64748b; margin-top:6px;">لا توجد منتجات مضافة بعد.</div>`;
-            }
-
+            // تم إزالة روابط الصور والمنتجات من هنا تماماً لتكون اللوحة مرتبة وخاصة بالبيانات والإحصائيات والتحويلات التسوية فقط
             box.innerHTML += `
                 <div class="item-row">
                     <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
@@ -376,15 +349,13 @@
                         </div>
                     </div>
 
-                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin:4px 0; background:#f1f5f9; padding:8px; text-align:center; font-size:11px; border-radius:6px;">
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin:6px 0; background:#f1f5f9; padding:8px; text-align:center; font-size:11px; border-radius:6px;">
                         <div>👀 الزوار: <b>${a.clicks || 0}</b></div>
                         <div>🛒 مبيعات: <b>${a.total_sales || 0}</b></div>
                         <div>💰 المستحقات: <b style="color:green;">${dueEarnings} YER</b></div>
                     </div>
 
-                    ${productLinksHTML}
-
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; border-top:1px solid #f1f5f9; pt-2;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; border-top:1px solid #f1f5f9; padding-top:6px;">
                         <span style="font-size:10px; color:#64748b;">إجمالي الأرباح: ${totalEarned} YER | تم صرفه سابقاً: ${paidEarned} YER</span>
                         <div style="display:flex; gap:6px;">
                             <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, '${affName}', '${a.phone}', '${refCode}', ${paidEarned}, ${dueEarnings})">تسوية وصرف 💳</button>
