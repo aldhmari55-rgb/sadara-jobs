@@ -11,7 +11,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); padding: 15px; color: #0f172a; padding-bottom: 50px; }
         .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid var(--gold); }
-        .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 700px; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 750px; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
         label { font-size: 12px; font-weight: bold; display: block; margin-top: 10px; color: #475569; }
         input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
         button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; }
@@ -23,15 +23,20 @@
         .aff-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
         .stat-card { background: #f8fafc; padding: 12px; border-radius: 10px; text-align: center; border: 1px solid #cbd5e1; }
         .stat-card h3 { color: var(--primary); font-size: 16px; font-weight: 900; }
-        .product-link-row { background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: bold; color: white; background: #0284c7; width: fit-content; }
+        
+        .product-link-card { background: #f8fafc; border: 1px solid #cbd5e1; padding: 14px; border-radius: 10px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .product-top-row { display: flex; gap: 12px; align-items: flex-start; }
+        .product-thumb { width: 85px; height: 85px; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1; flex-shrink: 0; }
+        .product-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; }
+        .product-desc-box { background: white; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 11px; color: #475569; line-height: 1.5; margin-top: 4px; }
+        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: bold; color: white; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>برنامج التسويق بالعمولة للمنتجات 🤝</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">اختر المنتج الذي تفضله، انسخ رابطه الخاص، واكسب عمولتك فور إتمام المبيعة</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">استعرض المنتجات، تفاصيلها، وصفها، صورها، ونسخ روابطك الخاصة لمضاعفة مبيعاتك</p>
     </div>
 
     <div class="card">
@@ -97,11 +102,11 @@
 
             <hr style="border:0; border-top:1px solid #e2e8f0; margin:15px 0;">
 
-            <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;">🔗 روابط منتجات المتجر الخاصة بك:</h3>
-            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">انسخ رابط أي منتج وشاركه مع عملائك. إذا اشترى العميل من أي منتج عبر رابطك، ستُحسب لك عمولته فوراً!</p>
+            <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 4px;">📦 منتجات المتجر وتفاصيلها للتسويق:</h3>
+            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">كل منتج يظهر معه صورته، وصفه التسويقي، وسعره، ورابط الإحالة المخصص لك.</p>
             
-            <div id="affProductsListContainer" style="max-height: 350px; overflow-y: auto;">
-                جاري تحميل روابط المنتجات...
+            <div id="affProductsListContainer" style="max-height: 450px; overflow-y: auto;">
+                جاري تحميل المنتجات والتفاصيل...
             </div>
         </div>
     </div>
@@ -180,7 +185,7 @@
             let refCode = aff.ref_code || aff.phone;
             localStorage.setItem('sadara_affiliate_phone', aff.phone);
 
-            // جلب المنتجات لتوليد روابط الإحالة الخاصة بكل منتج لهذا المسوق
+            // جلب المنتجات وعرض الصورة، الوصف الكامل، السعر، العمولة والروابط
             let { data: products } = await db.from('platform_services').select('*').eq('is_active', true).order('id', { ascending: false });
             let container = document.getElementById('affProductsListContainer');
             container.innerHTML = '';
@@ -192,12 +197,29 @@
 
             products.forEach(p => {
                 let productLink = `https://sadarah.top/store.html?product_id=${p.id}&ref=${refCode}`;
-                let commInfo = p.commission ? ` | 💰 العمولة: ${p.commission}` : '';
+                let imgTag = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-thumb">` : `<div class="product-thumb" style="display:flex; align-items:center; justify-content:center; background:#e2e8f0; font-size:10px; color:#64748b; text-align:center;">بدون صورة</div>`;
+                let commInfo = p.commission ? ` | 💰 عمولتك: ${p.commission}` : '';
+                let descText = p.description ? p.description : 'لا يوجد وصف تسويقي إضافي لهذا المنتج.';
+
                 container.innerHTML += `
-                    <div class="product-link-row">
-                        <div style="font-weight:900; color:var(--primary); font-size:12px;">🔹 ${p.title} (${p.price})${commInfo}</div>
-                        <div style="font-size:10px; color:#64748b; word-break:break-all; background:#fff; padding:6px; border-radius:4px; border:1px solid #e2e8f0;">${productLink}</div>
-                        <button class="btn-sm" onclick="navigator.clipboard.writeText('${productLink}'); alert('تم نسخ رابط المنتج بنجاح! 📋');">نسخ رابط المنتج 📋</button>
+                    <div class="product-link-card">
+                        <div class="product-top-row">
+                            ${imgTag}
+                            <div class="product-info">
+                                <div style="font-weight:900; color:var(--primary); font-size:13px;">🔹 ${p.title}</div>
+                                <div style="font-size:12px; color:#10b981; font-weight:900;">السعر: ${p.price}${commInfo}</div>
+                                <div style="font-size:10px; color:#0284c7; word-break:break-all;"><b>رابط الإحالة:</b> ${productLink}</div>
+                            </div>
+                        </div>
+
+                        <div class="product-desc-box">
+                            <b>📝 الوصف التسويقي للمنتج:</b><br>${descText}
+                        </div>
+
+                        <div style="display:flex; gap:8px; margin-top:2px;">
+                            <button class="btn-sm" style="background:#0284c7; flex:1;" onclick="navigator.clipboard.writeText('${productLink}'); alert('تم نسخ رابط المنتج بنجاح! 📋');">نسخ الرابط الخاص 📋</button>
+                            ${p.image ? `<a href="${p.image}" target="_blank" download class="btn-sm" style="background:#10b981; text-decoration:none; display:inline-block; text-align:center; flex:1;">تحميل صورة المنتج 🖼️</a>` : ''}
+                        </div>
                     </div>
                 `;
             });
