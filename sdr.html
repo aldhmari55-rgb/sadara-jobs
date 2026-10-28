@@ -32,7 +32,7 @@
 
         .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1000px; margin: 0 auto; }
         .card { background: white; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .card h2 { font-size: 15px; margin-bottom: 12px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .card h2 { font-size: 15px; margin-bottom: 12px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
         label { font-size: 12px; font-weight: bold; display: block; margin-top: 8px; color: #475569; }
         input, select, textarea { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
         input[type="file"] { background: #f1f5f9; cursor: pointer; }
@@ -49,7 +49,6 @@
         
         .preview-img-container { width: 45px; height: 45px; background: #0f172a10; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; padding: 2px; }
         .preview-img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; display: block; }
-
         .nav-link-btn { display: inline-block; background: var(--gold); color: #0f2347; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; text-decoration: none; margin-top: 15px; }
     </style>
 </head>
@@ -68,7 +67,7 @@
     <div id="adminMainContent" style="display:none;">
         <div class="header">
             <h1>لوحة التحكم - القسم الأساسي (المتجر والمسوقين) 🛠️</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة متجر الخدمات، طلبات العملاء، ومستحقات المسوقين بالعمولة</p>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة متجر الخدمات، طلبات العملاء، والأرشيف المالي الشهري والسنوي للمسوقين</p>
             <div style="display:flex; justify-content:center; gap:10px; margin-top:10px;">
                 <a href="sdr_admin_extra.html" class="nav-link-btn" style="margin:0; background:var(--gold);">الانتقال إلى القسم الثاني (الوظائف والكفاءات) ➡️</a>
                 <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin:0; background:#ef4444; border:none; font-size:11px;">قفل 🔒</button>
@@ -86,16 +85,16 @@
             <!-- إدارة المسوقين بالعمولة -->
             <div class="card" style="grid-column: 1 / -1;">
                 <h2>
-                    <span>🤝 قائمة المسوقين بالعمولة والأرباح</span>
+                    <span>🤝 قائمة المسوقين بالعمولة والأرباح العامة</span>
                     <span class="badge" id="affiliatesCount">0</span>
                 </h2>
                 <div class="list-box" id="affiliatesList">جاري تحميل المسوقين...</div>
             </div>
 
-            <!-- سجل العمولات المستحقة للمسوقين خلال الشهر -->
+            <!-- سجل العمولات المستحقة للمسوقين خلال الشهر (تتصفر نهاية الشهر/عند التسوية) -->
             <div class="card" style="grid-column: 1 / -1;">
                 <h2>
-                    <span>⏳ سجل العمولات المستحقة للمسوقين خلال الشهر</span>
+                    <span>⏳ سجل العمولات المستحقة للمسوقين خلال الشهر الحالي</span>
                     <div style="display:flex; gap:5px; align-items:center;">
                         <button onclick="exportDueToExcel()" class="btn-sm" style="background:#10b981; padding:6px 12px; font-size:11px;">Excel 📊</button>
                         <button onclick="exportDueToPDF()" class="btn-sm" style="background:#ef4444; padding:6px 12px; font-size:11px;">PDF 📄</button>
@@ -105,10 +104,10 @@
                 <div class="list-box" id="dueList" style="max-height: 300px;">جاري التحميل...</div>
             </div>
 
-            <!-- سجل العمولات والأرباح المُسلمة للمسوقين -->
+            <!-- سجل العمولات والأرباح المُسلمة والأرشيف الشهري/السنوي -->
             <div class="card" style="grid-column: 1 / -1;">
                 <h2>
-                    <span>💰 سجل العمولات والأرباح المُسلمة للمسوقين</span>
+                    <span>💰 أرشيف العمولات المُسلمة (سجلات الشهور والأرباح السنوية)</span>
                     <div style="display:flex; gap:5px; align-items:center;">
                         <button onclick="exportPayoutsToExcel()" class="btn-sm" style="background:#10b981; padding:6px 12px; font-size:11px;">Excel 📊</button>
                         <button onclick="exportPayoutsToPDF()" class="btn-sm" style="background:#ef4444; padding:6px 12px; font-size:11px;">PDF 📄</button>
@@ -347,6 +346,8 @@
         }
 
         let dueList = [];
+        const now = new Date();
+        const currentMonthName = now.toLocaleString('ar-EG', { month: 'long', year: 'numeric' });
 
         affs.forEach(a => {
             let totalEarned = Number(a.total_earnings || 0);
@@ -363,7 +364,8 @@
                     code: refCode,
                     payout_method: a.payout_method || '-',
                     payout_number: a.payout_number || '-',
-                    due_amount: dueEarnings
+                    due_amount: dueEarnings,
+                    month: currentMonthName
                 });
             }
 
@@ -382,13 +384,13 @@
                     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin:6px 0; background:#f1f5f9; padding:8px; text-align:center; font-size:11px; border-radius:6px;">
                         <div>👀 الزوار: <b>${a.clicks || 0}</b></div>
                         <div>🛒 مبيعات: <b>${a.total_sales || 0}</b></div>
-                        <div>💰 المستحقات: <b style="color:green;">${dueEarnings} YER</b></div>
+                        <div>💰 المستحقات (الشهر): <b style="color:green;">${dueEarnings} YER</b></div>
                     </div>
 
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; border-top:1px solid #f1f5f9; padding-top:6px;">
-                        <span style="font-size:10px; color:#64748b;">إجمالي الأرباح: ${totalEarned} YER | تم صرفه سابقاً: ${paidEarned} YER</span>
+                        <span style="font-size:10px; color:#64748b;">إجمالي الأرباح الكلية: ${totalEarned} YER | تم صرفه سابقاً: ${paidEarned} YER</span>
                         <div style="display:flex; gap:6px;">
-                            <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, '${affName}', '${a.phone}', '${refCode}', ${paidEarned}, ${dueEarnings})">تسوية وصرف 💳</button>
+                            <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, '${affName}', '${a.phone}', '${refCode}', ${totalEarned}, ${dueEarnings})">تسوية وصرف الشهر 💳</button>
                             <button class="btn-sm btn-del" onclick="deleteItem('affiliates', ${a.id})">حذف 🗑️</button>
                         </div>
                     </div>
@@ -407,7 +409,7 @@
         box.innerHTML = '';
 
         if (!list.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد عمولات مستحقة حالياً.</p>';
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد عمولات مستحقة خلال الشهر الحالي.</p>';
             return;
         }
 
@@ -415,8 +417,8 @@
             box.innerHTML += `
                 <div class="item-row" style="background:#fdf8f6; border:1px solid #fed7aa;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <strong>👤 المسوق: ${d.name} (${d.phone})</strong>
-                        <span style="color:#c2410c; font-weight:bold;">المستحق: ${d.due_amount} YER</span>
+                        <strong>👤 المسوق: ${d.name} (${d.phone}) - الشهر: (${d.month})</strong>
+                        <span style="color:#c2410c; font-weight:bold;">المستحق الشهري: ${d.due_amount} YER</span>
                     </div>
                     <div style="color:#334155; font-size:11px; margin-top:2px;">
                         🔑 الكود: ${d.code} | 💳 الوسيلة: ${d.payout_method} (${d.payout_number})
@@ -429,30 +431,34 @@
     function exportDueToExcel() {
         if (!cachedDueAffiliates.length) { alert('لا توجد مستحقات للتصدير.'); return; }
         let ws = XLSX.utils.json_to_sheet(cachedDueAffiliates); let wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "العمولات المستحقة"); XLSX.writeFile(wb, "Sadara_Monthly_Due_Commissions.xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, "العمولات المستحقة شهرياً"); XLSX.writeFile(wb, "Sadara_Monthly_Due_Commissions.xlsx");
     }
 
     function exportDueToPDF() {
         if (!cachedDueAffiliates.length) { alert('لا توجد مستحقات للتصدير.'); return; }
         const { jsPDF } = window.jspdf; const doc = new jsPDF();
         doc.text("Monthly Due Commissions", 105, 15, { align: "center" });
-        let body = cachedDueAffiliates.map((d, i) => [i + 1, d.name, d.phone, d.payout_method, `${d.due_amount} YER`]);
-        doc.autoTable({ head: [['#', 'Name', 'Phone', 'Method', 'Due Amount']], body: body, startY: 25 });
+        let body = cachedDueAffiliates.map((d, i) => [i + 1, d.name, d.phone, d.month, `${d.due_amount} YER`]);
+        doc.autoTable({ head: [['#', 'Name', 'Phone', 'Month', 'Due Amount']], body: body, startY: 25 });
         doc.save("Sadara_Monthly_Due_Commissions.pdf");
     }
 
-    async function payOutAffiliate(affId, affName, affPhone, affCode, currentPaid, dueAmount) {
-        if (dueAmount <= 0) { alert('لا توجد مستحقات للتسوية حالياً.'); return; }
-        if (confirm(`تسوية وصرف مبلغ (${dueAmount} YER) للمسوق ${affName}؟`)) {
-            await db.from('affiliates').update({ paid_earnings: currentPaid + dueAmount }).eq('id', affId);
+    async function payOutAffiliate(affId, affName, affPhone, affCode, totalEarned, dueAmount) {
+        if (dueAmount <= 0) { alert('لا توجد مستحقات للتسوية أو التصفير حالياً.'); return; }
+        const currentMonthName = new Date().toLocaleString('ar-EG', { month: 'long', year: 'numeric' });
+        
+        if (confirm(`تسوية وصرف مستحقات شهر (${currentMonthName}) بمبلغ (${dueAmount} YER) للمسوق ${affName}؟\n(سيتم تصفير المستحقات المعلقة وإضافتها للأرشيف المالي السنوي/الشهري)`)) {
+            // عند التسوية يتم جعل الـ paid_earnings مساوياً لـ total_earnings ليتم تصغير المستحقات المعلقة إلى 0 للشهر الجديد
+            await db.from('affiliates').update({ paid_earnings: totalEarned }).eq('id', affId);
             await db.from('affiliate_payouts').insert([{
                 affiliate_name: affName,
                 affiliate_phone: affPhone,
                 affiliate_code: affCode,
                 payout_amount: dueAmount,
+                payout_month: currentMonthName,
                 payout_date: new Date().toISOString()
             }]);
-            alert('تمت تسوية وصرف المبلغ بنجاح! ✅');
+            alert('تمت تسوية الشهر وتصفير المستحقات بنجاح! ✅ وت رحيلها إلى الأرشيف.');
             loadAdminAffiliates();
             loadPayoutsLogs();
         }
@@ -467,12 +473,13 @@
         box.innerHTML = '';
 
         if (!cachedPayouts.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد سجلات لعمولات مسلمة.</p>';
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد سجلات أرشيف للعمولات المسلمة.</p>';
             return;
         }
 
         cachedPayouts.forEach(p => {
             let dateFormatted = p.payout_date ? new Date(p.payout_date).toLocaleDateString('ar-EG') : '-';
+            let monthLabel = p.payout_month ? `📅 الشهر: ${p.payout_month}` : '';
             box.innerHTML += `
                 <div class="item-row" style="background:#f0fdf4; border:1px solid #bbf7d0;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -480,27 +487,27 @@
                         <span style="color:#15803d; font-weight:bold;">المبلغ: ${p.payout_amount} YER</span>
                     </div>
                     <div style="color:#334155; font-size:11px; margin-top:2px;">
-                        🔑 كود المسوق: ${p.affiliate_code} | 📅 تاريخ الصرف: ${dateFormatted}
+                        🔑 الكود: ${p.affiliate_code} | ${monthLabel} | التاريخ: ${dateFormatted}
                     </div>
-                    <button class="btn-sm btn-del" onclick="deleteItem('affiliate_payouts', ${p.id})" style="width:auto; margin-top:4px;">حذف من السجل 🗑️</button>
+                    <button class="btn-sm btn-del" onclick="deleteItem('affiliate_payouts', ${p.id})" style="width:auto; margin-top:4px;">حذف من الأرشيف 🗑️</button>
                 </div>
             `;
         });
     }
 
     function exportPayoutsToExcel() {
-        if (!cachedPayouts.length) { alert('لا توجد بيانات.'); return; }
+        if (!cachedPayouts.length) { alert('لا توجد بيانات للأرشيف.'); return; }
         let ws = XLSX.utils.json_to_sheet(cachedPayouts); let wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "العمولات المُسلمة"); XLSX.writeFile(wb, "Sadara_Payouts.xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, "أرشيف العمولات"); XLSX.writeFile(wb, "Sadara_Payouts_Archive.xlsx");
     }
 
     function exportPayoutsToPDF() {
-        if (!cachedPayouts.length) { alert('لا توجد بيانات.'); return; }
+        if (!cachedPayouts.length) { alert('لا توجد بيانات للأرشيف.'); return; }
         const { jsPDF } = window.jspdf; const doc = new jsPDF();
-        doc.text("Sadara Payouts", 105, 15, { align: "center" });
-        let body = cachedPayouts.map((p, i) => [i + 1, p.affiliate_name, p.affiliate_phone, `${p.payout_amount} YER`]);
-        doc.autoTable({ head: [['#', 'Name', 'Phone', 'Amount']], body: body, startY: 25 });
-        doc.save("Sadara_Payouts.pdf");
+        doc.text("Payouts Archive (Monthly & Yearly)", 105, 15, { align: "center" });
+        let body = cachedPayouts.map((p, i) => [i + 1, p.affiliate_name, p.affiliate_phone, p.payout_month || '-', `${p.payout_amount} YER`]);
+        doc.autoTable({ head: [['#', 'Name', 'Phone', 'Month', 'Amount']], body: body, startY: 25 });
+        doc.save("Sadara_Payouts_Archive.pdf");
     }
 
     async function loadServiceOrders() {
