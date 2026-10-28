@@ -30,7 +30,7 @@
         button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
         button:hover { opacity: 0.9; }
         .status-msg { margin-top: 8px; font-size: 11px; font-weight: bold; text-align: center; }
-        .list-box { margin-top: 12px; max-height: 320px; overflow-y: auto; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
+        .list-box { margin-top: 12px; max-height: 350px; overflow-y: auto; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
         .item-row { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-bottom: 1px solid #f1f5f9; font-size: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
         .action-btns { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
         .btn-sm { padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 10px; font-weight: bold; color: white; }
@@ -39,6 +39,7 @@
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         .lesson-group { background: #f1f5f9; padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid #cbd5e1; }
         .guide-box { background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 11px; color: #1e40af; line-height: 1.6; }
+        .receipt-img { max-width: 80px; max-height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -58,13 +59,13 @@
     <div id="adminMainContent" style="display:none;">
         <div class="header">
             <h1>لوحة تحكم الدورات والمبيعات الشاملة 🎓</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية بالسعر، مبيعات الدورات، والمشتركين في الدورات المدفوعة</p>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية، مبيعات الحوالات والإيصالات، والمشتركين</p>
             <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin-top:10px; background:#ef4444; border:none; font-size:11px;">قفل لوحة التحكم 🔒</button>
         </div>
 
         <div class="grid-container">
 
-            <!-- 1. مربع إدارة الدورات المرئية (مع خانة السعر) -->
+            <!-- 1. مربع إدارة الدورات المرئية وتحديد الأسعار -->
             <div class="card">
                 <h2>
                     <span id="formTitleText">🎓 إدارة الدورات المرئية وتحديد الأسعار</span>
@@ -73,7 +74,7 @@
 
                 <div class="guide-box">
                     <strong>📖 تعليمات لوحة الدورات:</strong><br>
-                    • أدخل اسم الدورة، **سعر الدورة** (مثال: 1500 ريال)، ووصفها.<br>
+                    • أدخل اسم الدورة، **سعر الدورة** (مثال: 1500)، ووصفها.<br>
                     • أضف روابط دروس اليوتيوب المرتبة واضغط نشر.
                 </div>
                 
@@ -82,8 +83,8 @@
                 <label>اسم الدورة التدريبية الرئيسية</label>
                 <input type="text" id="courseMainTitle" placeholder="مثال: دبلوم إدارة الموارد البشرية HR">
                 
-                <label>سعر الدورة (ريال)</label>
-                <input type="text" id="coursePrice" placeholder="1500 ريال">
+                <label>سعر الدورة (رقم فقط بدون كلمة ريال)</label>
+                <input type="text" id="coursePrice" placeholder="1500">
 
                 <label>وصف الدورة</label>
                 <textarea id="courseMainDesc" rows="2" placeholder="وصف موجز لما تحتويه هذه الدورة..."></textarea>
@@ -117,10 +118,10 @@
                 <div class="list-box" id="adminCoursesList" style="margin-top: 15px;">جاري التحميل...</div>
             </div>
 
-            <!-- 2. مربع الدورات المباعة والطلبات -->
+            <!-- 2. مربع الدورات المباعة والطلبات مع سندات التحويل -->
             <div class="card">
                 <h2>
-                    <span>🛒 الدورات المباعة والطلبات الواردة</span>
+                    <span>🛒 الدورات المباعة والطلبات (مع إيصالات التحويل)</span>
                     <span class="badge" id="ordersCount">0</span>
                 </h2>
                 <div class="list-box" id="ordersList">جاري التحميل...</div>
@@ -197,7 +198,7 @@
     async function saveStructuredCourse() {
         const editId = document.getElementById('editCourseId').value;
         const title = document.getElementById('courseMainTitle').value.trim();
-        const price = document.getElementById('coursePrice').value.trim() || '1500 ريال';
+        const price = document.getElementById('coursePrice').value.trim() || '1500';
         const description = document.getElementById('courseMainDesc').value.trim();
         const is_active = document.getElementById('courseStatus').value === 'true';
         const msg = document.getElementById('courseMsg');
@@ -269,7 +270,7 @@
 
             box.innerHTML += `<div class="item-row">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong>🎓 ${c.title} (${statusBadge}) - <span style="color:var(--gold);">🏷️ ${c.price || '1500 ريال'}</span></strong>
+                    <strong>🎓 ${c.title} (${statusBadge}) - <span style="color:var(--gold);">🏷️ ${c.price || '1500'} ريال</span></strong>
                     <div style="display:flex; gap:5px;">
                         <button type="button" class="btn-sm btn-edit" onclick="editCourse(${c.id})">تعديل ✏️</button>
                         <button type="button" class="btn-sm" style="background:#d97706;" onclick="toggleStatus(${c.id}, ${isActive})">${toggleText}</button>
@@ -311,7 +312,7 @@
         loadAdminCourses();
     }
 
-    // تحميل الدورات المباعة والطلبات
+    // تحميل الدورات المباعة والطلبات مع عرض صورة الإيصال
     async function loadOrders() {
         let { data } = await db.from('orders').select('*').eq('item_type', 'course').order('id', { ascending: false });
         cachedOrders = data || [];
@@ -326,14 +327,19 @@
         }
 
         cachedOrders.forEach(o => {
+            let imgHtml = o.image_url ? `<a href="${o.image_url}" target="_blank"><img src="${o.image_url}" class="receipt-img" title="اضغط لعرض السند كاملاً"></a>` : '<span style="color:#94a3b8; font-size:10px;">بدون صورة سند</span>';
             box.innerHTML += `
                 <div class="item-row">
                     <div style="display:flex; justify-content:space-between; font-weight:bold;">
                         <span>🛒 الدورة: ${o.item_title}</span>
                         <span style="color:var(--gold);">🏷️ ${o.price || '1500'} ريال</span>
                     </div>
-                    <div style="color:#475569; font-size:11px;">المشتري: ${o.buyer_name} | هاتف: ${o.buyer_phone} | الدفع: ${o.payment_method || 'كاش'}</div>
-                    <button class="btn-sm btn-del" onclick="deleteItem('orders', ${o.id})" style="width:auto; margin-top:4px;">حذف السجل 🗑️</button>
+                    <div style="color:#475569; font-size:11px;">المشتري: ${o.buyer_name} | هاتف: ${o.buyer_phone}</div>
+                    <div style="color:#334155; font-size:11px; font-weight:bold;">طريقة الدفع: ${o.payment_method || '-'}</div>
+                    <div style="margin-top:4px; display:flex; align-items:center; gap:10px;">
+                        <span>صورة الإيصال:</span> ${imgHtml}
+                    </div>
+                    <button class="btn-sm btn-del" onclick="deleteItem('orders', ${o.id})" style="width:auto; margin-top:6px;">حذف الطلب 🗑️</button>
                 </div>
             `;
         });
