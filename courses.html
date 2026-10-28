@@ -22,9 +22,9 @@
         .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
         .course-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between; }
         
-        /* مرونة الصورة لتتناسب مع جميع الأحجام */
-        .course-img-wrap { width: 100%; height: 180px; overflow: hidden; background: #0f2347; display: flex; align-items: center; justify-content: center; }
-        .course-img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
+        /* جعل الصورة مرنة وتظهر بالكامل دون أي قص باستخدام contain وخلفية متناسقة */
+        .course-img-wrap { width: 100%; height: 190px; background: #0a1324; display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 1px solid #e2e8f0; }
+        .course-img { width: 100%; height: 100%; object-fit: contain; background: #0a1324; }
         
         .course-header { background: linear-gradient(135deg, #0a1324, var(--primary)); color: #fff; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         .course-header h3 { font-size: 1.1rem; margin-bottom: 4px; }
@@ -230,9 +230,9 @@
                 try {
                     const fileExt = imageFile.name.split('.').pop();
                     const fileName = `order_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-                    let { data: uploadData, error: uploadErr } = await db.storage.from('orders').upload(fileName, imageFile);
+                    let { data: uploadData, error: uploadErr } = await db.storage.from('platform-files').upload(fileName, imageFile);
                     if (!uploadErr && uploadData) {
-                        let { data: publicURL } = db.storage.from('orders').getPublicUrl(fileName);
+                        let { data: publicURL } = db.storage.from('platform-files').getPublicUrl(fileName);
                         imageUrl = publicURL.publicUrl;
                     }
                 } catch(err) {
@@ -262,7 +262,7 @@
 
             } catch(e) {
                 msg.style.color = 'red';
-                msg.textContent = 'حدث خطأ أثناء حفظ الطلب. تأكد من تفعيل Storage في سحابة Supabase.';
+                msg.textContent = 'حدث خطأ أثناء حفظ الطلب.';
             }
         }
 
