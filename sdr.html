@@ -65,7 +65,7 @@
     <div id="adminMainContent" style="display:none;">
         <div class="header">
             <h1>لوحة التحكم - القسم الأساسي (المتجر والمسوقين) 🛠️</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة متجر الخدمات، طلبات السداد، والمسوقين بالعمولة</p>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة متجر الخدمات، روابط المنتجات، وربط عمولات المسوقين لكل منتج</p>
             <div style="display:flex; justify-content:center; gap:10px; margin-top:10px;">
                 <a href="sdr_admin_extra.html" class="nav-link-btn" style="margin:0; background:var(--gold);">الانتقال إلى القسم الثاني (الوظائف والكفاءات) ➡️</a>
                 <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin:0; background:#ef4444; border:none; font-size:11px;">قفل 🔒</button>
@@ -83,7 +83,7 @@
             <!-- إدارة المسوقين بالعمولة -->
             <div class="card" style="grid-column: 1 / -1;">
                 <h2>
-                    <span>🤝 قائمة المسوقين بالعمولة والإحصائيات الشاملة</span>
+                    <span>🤝 قائمة المسوقين بالعمولة (روابط المنتجات المخصصة)</span>
                     <span class="badge" id="affiliatesCount">0</span>
                 </h2>
                 <div class="list-box" id="affiliatesList">جاري تحميل المسوقين...</div>
@@ -102,10 +102,10 @@
                 <div class="list-box" id="payoutsList" style="max-height: 300px;">جاري التحميل...</div>
             </div>
 
-            <!-- إدارة متجر الخدمات -->
+            <!-- إدارة متجر الخدمات مع تحديد عمولة خاصة لكل منتج -->
             <div class="card">
                 <h2>
-                    <span>🛒 إدارة متجر الخدمات والمنتجات</span>
+                    <span>🛒 إدارة متجر الخدمات والعمولة الخاصة بكل منتج</span>
                     <span class="badge" id="adminServicesCount">0</span>
                 </h2>
                 <input type="hidden" id="editServiceId">
@@ -124,6 +124,8 @@
                 <textarea id="serviceDesc" rows="2" placeholder="تفاصيل..."></textarea>
                 <label>السعر / السعر التقديري</label>
                 <input type="text" id="servicePrice" placeholder="مثال: 1500 YER">
+                <label>💰 عمولة المسوق لهذا المنتج (مبلغ أو نسبة، مثال: 300 YER أو 20%)</label>
+                <input type="text" id="serviceCommission" placeholder="مثال: 300 YER">
                 <label>صورة المنتج أو الخدمة (من الجوال 📷)</label>
                 <input type="file" id="serviceImgFile" accept="image/*">
                 <label>حالة العرض بالمتجر</label>
@@ -131,7 +133,7 @@
                     <option value="true">معروض للعملاء 🟢</option>
                     <option value="false">مخفي 🔴</option>
                 </select>
-                <button id="btnSaveService" onclick="saveServiceWithImage()" style="background:var(--primary); color:white;">نشر الخدمة أو المنتج بالمتجر 🚀</button>
+                <button id="btnSaveService" onclick="saveServiceWithImage()" style="background:var(--primary); color:white;">نشر الخدمة بالمتجر 🚀</button>
                 <button id="btnCancelService" onclick="resetServiceForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
                 <div id="serviceMsg" class="status-msg"></div>
                 <div class="list-box" id="adminServicesList">جاري التحميل...</div>
@@ -222,6 +224,7 @@
         const category = document.getElementById('serviceCategory').value;
         const description = document.getElementById('serviceDesc').value.trim();
         const price = document.getElementById('servicePrice').value.trim();
+        const commission = document.getElementById('serviceCommission').value.trim();
         const is_active = document.getElementById('serviceStatus').value === 'true';
         const imgFile = document.getElementById('serviceImgFile').files[0];
         const msg = document.getElementById('serviceMsg');
@@ -235,7 +238,7 @@
             if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة.'; return; }
         }
 
-        let payload = { title, category, description, price, is_active };
+        let payload = { title, category, description, price, commission, is_active };
         if (imgUrl) payload.image = imgUrl;
 
         let res = editId ? await db.from('platform_services').update(payload).eq('id', editId) : await db.from('platform_services').insert([payload]);
@@ -246,6 +249,7 @@
             msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الخدمة بنجاح! ✅';
             resetServiceForm();
             loadAdminServices();
+            loadAdminAffiliates();
         }
     }
 
@@ -254,6 +258,7 @@
         document.getElementById('serviceTitle').value = '';
         document.getElementById('serviceDesc').value = '';
         document.getElementById('servicePrice').value = '';
+        document.getElementById('serviceCommission').value = '';
         document.getElementById('serviceImgFile').value = '';
         document.getElementById('serviceStatus').value = 'true';
         document.getElementById('btnSaveService').textContent = 'نشر الخدمة بالمتجر 🚀';
@@ -277,12 +282,14 @@
             let isActive = s.is_active !== false;
             let statusBadge = isActive ? '<span style="color:green; font-weight:bold;">معروض 🟢</span>' : '<span style="color:red; font-weight:bold;">مخفي 🔴</span>';
             let imgTag = s.image ? `<img src="${s.image}" class="preview-img">` : '';
+            let commText = s.commission ? ` | 💰 عمولة المنتج: ${s.commission}` : '';
             box.innerHTML += `
                 <div class="item-row">
                     <div class="row-header" style="align-items:center;">
                         <div style="display:flex; align-items:center; gap:8px;">${imgTag}<strong>[${s.category}] ${s.title} (${statusBadge})</strong></div>
                         <span style="color:#10b981; font-weight:bold;">${s.price}</span>
                     </div>
+                    <div style="font-size:11px; color:#64748b;">${s.description || 'بدون وصف'}${commText}</div>
                     <div class="action-btns">
                         <button class="btn-sm btn-edit" onclick="editService(${s.id})">تعديل ✏️</button>
                         <button class="btn-sm btn-del" onclick="deleteItem('platform_services', ${s.id})">حذف 🗑️</button>
@@ -300,6 +307,7 @@
         document.getElementById('serviceCategory').value = s.category || 'اشتراكات';
         document.getElementById('serviceDesc').value = s.description || '';
         document.getElementById('servicePrice').value = s.price || '';
+        document.getElementById('serviceCommission').value = s.commission || '';
         document.getElementById('serviceStatus').value = (s.is_active !== false) ? 'true' : 'false';
         document.getElementById('btnSaveService').textContent = 'تعديل وحفظ الخدمة 💾';
         document.getElementById('btnCancelService').style.display = 'block';
@@ -322,10 +330,28 @@
             let paidEarned = Number(a.paid_earnings || 0);
             let dueEarnings = totalEarned - paidEarned;
             let affName = a.full_name || a.name || 'مسوق';
+            let refCode = a.ref_code || 'CODE';
+
+            // توليد روابط المنتجات الخاصة بهذا المسوق
+            let productLinksHTML = '';
+            if (cachedServices.length > 0) {
+                productLinksHTML = `<div style="margin-top:6px; background:#f1f5f9; padding:8px; border-radius:6px; font-size:11px;"><strong>🔗 روابط المنتجات الخاصة بهذا المسوق:</strong><br>`;
+                cachedServices.forEach(s => {
+                    let productUrl = `https://sadarah.top/store.html?product_id=${s.id}&ref=${refCode}`;
+                    productLinksHTML += `<div style="margin-top:4px; display:flex; justify-content:space-between; align-items:center; background:#fff; padding:4px 6px; border-radius:4px;">
+                        <span>🔹 ${s.title}</span>
+                        <button class="btn-sm" style="background:#0284c7;" onclick="navigator.clipboard.writeText('${productUrl}'); alert('تم نسخ رابط المنتج للمسوق بنجاح! ✅');">نسخ رابط المنتج 📋</button>
+                    </div>`;
+                });
+                productLinksHTML += `</div>`;
+            } else {
+                productLinksHTML = `<div style="font-size:11px; color:#64748b; margin-top:4px;">لا توجد منتجات مضافة بعد لتوليد روابطها.</div>`;
+            }
+
             box.innerHTML += `
                 <div class="item-row" style="background:#fff; border:1px solid #cbd5e1; border-right:5px solid var(--gold);">
                     <div class="row-header">
-                        <b>👤 المسوق: ${affName} (${a.phone}) - كود: ${a.ref_code || '-'}</b>
+                        <b>👤 المسوق: ${affName} (${a.phone}) - الكود: ${refCode}</b>
                         <span style="color:#0284c7;">${a.payout_method || 'وسيلة'}: ${a.payout_number || '-'}</span>
                     </div>
                     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin:4px 0; background:#f8fafc; padding:6px; text-align:center; font-size:11px;">
@@ -333,10 +359,11 @@
                         <div>🛒 مبيعات: <b>${a.total_sales || 0}</b></div>
                         <div>💰 مستحقات: <b style="color:green;">${dueEarnings} YER</b></div>
                     </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                    ${productLinksHTML}
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
                         <span style="font-size:10px; color:#64748b;">إجمالي: ${totalEarned} YER | صرف سابق: ${paidEarned} YER</span>
                         <div style="display:flex; gap:5px;">
-                            <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, '${affName}', '${a.phone}', '${a.ref_code || '-'}', ${paidEarned}, ${dueEarnings})">تسوية وصرف 💳</button>
+                            <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, '${affName}', '${a.phone}', '${refCode}', ${paidEarned}, ${dueEarnings})">تسوية 💳</button>
                             <button class="btn-sm btn-del" onclick="deleteItem('affiliates', ${a.id})">حذف 🗑️</button>
                         </div>
                     </div>
@@ -347,11 +374,8 @@
 
     async function payOutAffiliate(affId, affName, affPhone, affCode, currentPaid, dueAmount) {
         if (dueAmount <= 0) { alert('لا توجد مستحقات للتسوية حالياً.'); return; }
-        if (confirm(`هل تؤكد تسوية وصرف مبلغ (${dueAmount} YER) للمسوق ${affName}؟`)) {
-            // تحديث رصيد المسوق المسلم
+        if (confirm(`تسوية وصرف مبلغ (${dueAmount} YER) للمسوق ${affName}؟`)) {
             await db.from('affiliates').update({ paid_earnings: currentPaid + dueAmount }).eq('id', affId);
-
-            // حفظ عملية الصرف في سجل العمولات المُسلمة
             await db.from('affiliate_payouts').insert([{
                 affiliate_name: affName,
                 affiliate_phone: affPhone,
@@ -359,8 +383,7 @@
                 payout_amount: dueAmount,
                 payout_date: new Date().toISOString()
             }]);
-
-            alert('تمت تسوية وصرف المبلغ بنجاح وتسجيله في الأرشيف! ✅');
+            alert('تمت تسوية وصرف المبلغ بنجاح! ✅');
             loadAdminAffiliates();
             loadPayoutsLogs();
         }
@@ -375,7 +398,7 @@
         box.innerHTML = '';
 
         if (!cachedPayouts.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد سجلات لعمولات مسلمة حتى الآن.</p>';
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد سجلات لعمولات مسلمة.</p>';
             return;
         }
 
@@ -385,10 +408,10 @@
                 <div class="item-row" style="background:#f0fdf4; border:1px solid #bbf7d0;">
                     <div class="row-header">
                         <strong>👤 المسوق: ${p.affiliate_name} (${p.affiliate_phone})</strong>
-                        <span style="color:#15803d; font-weight:bold; font-size:13px;">المبلغ: ${p.payout_amount} YER</span>
+                        <span style="color:#15803d; font-weight:bold;">المبلغ: ${p.payout_amount} YER</span>
                     </div>
                     <div style="color:#334155; font-size:11px; margin-top:2px;">
-                        🔑 كود المسوق: ${p.affiliate_code} | 📅 تاريخ الصرف والتسوية: ${dateFormatted}
+                        🔑 كود المسوق: ${p.affiliate_code} | 📅 تاريخ الصرف: ${dateFormatted}
                     </div>
                     <button class="btn-sm btn-del" onclick="deleteItem('affiliate_payouts', ${p.id})" style="width:auto; margin-top:4px;">حذف من السجل 🗑️</button>
                 </div>
@@ -397,26 +420,18 @@
     }
 
     function exportPayoutsToExcel() {
-        if (!cachedPayouts.length) { alert('لا توجد سجلات عُمولات للتصدير.'); return; }
-        let dataToExport = cachedPayouts.map((p, i) => ({
-            "م": i + 1,
-            "اسم المسوق": p.affiliate_name,
-            "رقم الهاتف": p.affiliate_phone,
-            "كود المسوق": p.affiliate_code,
-            "المبلغ المُسلم (YER)": p.payout_amount,
-            "تاريخ الصرف": p.payout_date ? new Date(p.payout_date).toLocaleDateString('ar-EG') : '-'
-        }));
-        let ws = XLSX.utils.json_to_sheet(dataToExport); let wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "العمولات المُسلمة"); XLSX.writeFile(wb, "Sadara_Affiliate_Payouts.xlsx");
+        if (!cachedPayouts.length) { alert('لا توجد بيانات.'); return; }
+        let ws = XLSX.utils.json_to_sheet(cachedPayouts); let wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "العمولات المُسلمة"); XLSX.writeFile(wb, "Sadara_Payouts.xlsx");
     }
 
     function exportPayoutsToPDF() {
-        if (!cachedPayouts.length) { alert('لا توجد سجلات عُمولات للتصدير.'); return; }
+        if (!cachedPayouts.length) { alert('لا توجد بيانات.'); return; }
         const { jsPDF } = window.jspdf; const doc = new jsPDF();
-        doc.text("Sadara Affiliate Payouts Logs", 105, 15, { align: "center" });
-        let body = cachedPayouts.map((p, i) => [i + 1, p.affiliate_name, p.affiliate_phone, `${p.payout_amount} YER`, p.payout_date ? new Date(p.payout_date).toLocaleDateString('ar-EG') : '-']);
-        doc.autoTable({ head: [['#', 'Name', 'Phone', 'Amount', 'Date']], body: body, startY: 25 });
-        doc.save("Sadara_Affiliate_Payouts.pdf");
+        doc.text("Sadara Payouts", 105, 15, { align: "center" });
+        let body = cachedPayouts.map((p, i) => [i + 1, p.affiliate_name, p.affiliate_phone, `${p.payout_amount} YER`]);
+        doc.autoTable({ head: [['#', 'Name', 'Phone', 'Amount']], body: body, startY: 25 });
+        doc.save("Sadara_Payouts.pdf");
     }
 
     async function loadServiceOrders() {
@@ -451,7 +466,7 @@
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
                         <div style="display:flex; gap:5px; flex-wrap:wrap;">
                             ${clientPhoneClean ? `<a href="https://wa.me/${clientPhoneClean}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none; padding:5px 8px;">مراسلة 💬</a>` : ''}
-                            <button class="btn-sm" style="background:#10b981; padding:5px 8px;" onclick="approveAffiliateCommission('${affCodeDisplay}', 1500)">اعتماد عمولة 💰</button>
+                            <button class="btn-sm" style="background:#10b981; padding:5px 8px;" onclick="approveServiceCommission('${affCodeDisplay}', '${o.service_name}')">اعتماد عمولة المنتج 💰</button>
                             <button class="btn-sm" style="background:#0284c7; padding:5px 8px;" onclick="markOrderAsCompleted(${o.id})">تم التسليم ✅</button>
                         </div>
                         <button class="btn-sm btn-del" onclick="deleteItem('service_orders', ${o.id})">حذف 🗑️</button>
@@ -461,12 +476,44 @@
         });
     }
 
-    async function markOrderAsCompleted(orderId) {
-        if (!confirm('هل أنت متأكد من تسليم الطلب ونقله إلى قائمة الطلبات المنجزة؟')) return;
-        let { data: orderData, error: fetchErr } = await db.from('service_orders').select('*').eq('id', orderId).single();
-        if (fetchErr || !orderData) { alert('خطأ في جلب بيانات الطلب.'); return; }
+    async function approveServiceCommission(affRefCode, serviceName) {
+        if (!affRefCode || affRefCode === 'بدون' || affRefCode === 'مباشر') { 
+            alert('هذا الطلب مباشر ولا يتبع لمسوق.'); 
+            return; 
+        }
+        
+        // البحث عن الخدمة لمعرفة عمولتها المخصصة
+        let srv = cachedServices.find(s => s.title === serviceName);
+        let commVal = srv && srv.commission ? srv.commission : '0';
+        
+        let numericCommission = Number(commVal.replace(/[^0-9.]/g, '')) || 0;
+        if (numericCommission <= 0) {
+            alert('هذا المنتج ليس له عمولة محددة أو أن قيمتها صفر.');
+            return;
+        }
 
-        let { error: insertErr } = await db.from('completed_orders').insert([{
+        let { data: aff } = await db.from('affiliates').select('*').or(`ref_code.eq.${affRefCode},phone.eq.${affRefCode}`).single();
+        if (aff) {
+            let newSales = (aff.total_sales || 0) + 1;
+            let newTotalEarnings = Number(aff.total_earnings || 0) + numericCommission;
+            let { error } = await db.from('affiliates').update({ total_sales: newSales, total_earnings: newTotalEarnings }).eq('id', aff.id);
+            if (!error) {
+                alert(`تم اعتماد عمولة المنتج للمسوق بنجاح! 🎉 وإضافة (${numericCommission} YER) لرصيده.`);
+                loadAdminAffiliates();
+            } else {
+                alert('خطأ: ' + error.message);
+            }
+        } else {
+            alert('لم يتم العثور على المسوق المرتبط بهذا الكود.');
+        }
+    }
+
+    async function markOrderAsCompleted(orderId) {
+        if (!confirm('نقله إلى قائمة الطلبات المنجزة؟')) return;
+        let { data: orderData } = await db.from('service_orders').select('*').eq('id', orderId).single();
+        if (!orderData) return;
+
+        await db.from('completed_orders').insert([{
             service_name: orderData.service_name,
             client_name: orderData.client_name,
             client_phone: orderData.client_phone,
@@ -477,9 +524,8 @@
             completed_at: new Date().toISOString()
         }]);
 
-        if (insertErr) { alert('خطأ في حفظ الطلب بالمنجزة: ' + insertErr.message); return; }
         await db.from('service_orders').delete().eq('id', orderId);
-        alert('تم نقل الطلب إلى قائمة الطلبات المنجزة بنجاح! ✅');
+        alert('تم نقل الطلب إلى الطلبات المنجزة بنجاح! ✅');
         initData();
     }
 
@@ -490,88 +536,37 @@
         if(!box) return;
         document.getElementById('completedOrdersCount').textContent = cachedCompletedOrders.length;
         box.innerHTML = '';
-
-        if (!cachedCompletedOrders.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات منجزة حتى الآن.</p>';
-            return;
-        }
-
+        if (!cachedCompletedOrders.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات منجزة.</p>'; return; }
         cachedCompletedOrders.forEach(o => {
-            let dateFormatted = o.completed_at ? new Date(o.completed_at).toLocaleDateString('ar-EG') : '-';
-            box.innerHTML += `
-                <div class="item-row" style="background:#f0fdf4; border:1px solid #bbf7d0;">
-                    <div class="row-header">
-                        <strong>✅ الخدمة: ${o.service_name}</strong>
-                        <span style="color:#15803d; font-weight:bold;">التسليم: ${dateFormatted}</span>
-                    </div>
-                    <div style="color:#334155; font-size:11px; margin-top:2px;">
-                        👤 العميل: <b>${o.client_name}</b> (${o.client_phone}) | 💳 الدفع: ${o.payment_method} | كود المسوق: ${o.affiliate_code || 'بدون'}<br>
-                        📝 ملاحظات: ${o.notes || 'لا يوجد'} | 🖼️ <a href="${o.transaction_ref}" target="_blank" style="color:#0284c7;">معاينة السند 🔍</a>
-                    </div>
-                    <button class="btn-sm btn-del" onclick="deleteItem('completed_orders', ${o.id})" style="width:auto; margin-top:4px;">حذف من الأرشيف 🗑️</button>
-                </div>
-            `;
+            box.innerHTML += `<div class="item-row" style="background:#f0fdf4;"><div class="row-header"><strong>✅ ${o.service_name}</strong><span>${o.client_name}</span></div></div>`;
         });
     }
 
     function exportCompletedToExcel() {
-        if (!cachedCompletedOrders.length) { alert('لا توجد طلبات منجزة للتصدير.'); return; }
-        let dataToExport = cachedCompletedOrders.map((o, i) => ({
-            "م": i + 1,
-            "اسم الخدمة": o.service_name,
-            "اسم العميل": o.client_name,
-            "رقم العميل": o.client_phone,
-            "طريقة الدفع": o.payment_method,
-            "كود المسوق": o.affiliate_code || 'بدون',
-            "الملاحظات": o.notes || 'لا يوجد',
-            "تاريخ التسليم": o.completed_at ? new Date(o.completed_at).toLocaleDateString('ar-EG') : '-'
-        }));
-        let ws = XLSX.utils.json_to_sheet(dataToExport); let wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "الطلبات المنجزة"); XLSX.writeFile(wb, "Sadara_Completed_Orders.xlsx");
+        if (!cachedCompletedOrders.length) { alert('لا توجد بيانات.'); return; }
+        let ws = XLSX.utils.json_to_sheet(cachedCompletedOrders); let wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "الطلبات المنجزة"); XLSX.writeFile(wb, "Sadara_Completed.xlsx");
     }
 
     function exportCompletedToPDF() {
-        if (!cachedCompletedOrders.length) { alert('لا توجد طلبات منجزة للتصدير.'); return; }
+        if (!cachedCompletedOrders.length) { alert('لا توجد بيانات.'); return; }
         const { jsPDF } = window.jspdf; const doc = new jsPDF();
-        doc.text("Sadara Completed Orders", 105, 15, { align: "center" });
-        let body = cachedCompletedOrders.map((o, i) => [i + 1, o.service_name, o.client_name, o.client_phone, o.payment_method, o.completed_at ? new Date(o.completed_at).toLocaleDateString('ar-EG') : '-' ]);
-        doc.autoTable({ head: [['#', 'Service', 'Client', 'Phone', 'Payment', 'Date']], body: body, startY: 25 });
-        doc.save("Sadara_Completed_Orders.pdf");
-    }
-
-    async function approveAffiliateCommission(affRefCode, servicePrice) {
-        if (!affRefCode || affRefCode === 'بدون' || affRefCode === 'مباشر') { 
-            alert('هذا الطلب مباشر ولا يتبع لمسوق.'); 
-            return; 
-        }
-        let commissionAmount = Number(servicePrice) * 0.20;
-        let { data: aff } = await db.from('affiliates').select('*').or(`ref_code.eq.${affRefCode},phone.eq.${affRefCode}`).single();
-        if (aff) {
-            let newSales = (aff.total_sales || 0) + 1;
-            let newTotalEarnings = Number(aff.total_earnings || 0) + commissionAmount;
-            let { error } = await db.from('affiliates').update({ total_sales: newSales, total_earnings: newTotalEarnings }).eq('id', aff.id);
-            if (!error) {
-                alert(`تم اعتماد المبيعة بنجاح! 🎉 وإضافة العمولة (${commissionAmount} YER) لأرباح المسوق.`);
-                loadAdminAffiliates();
-                loadServiceOrders();
-            } else {
-                alert('خطأ: ' + error.message);
-            }
-        } else {
-            alert('لم يتم العثور على المسوق المرتبط بهذا الكود.');
-        }
+        doc.text("Completed Orders", 105, 15, { align: "center" });
+        let body = cachedCompletedOrders.map((o, i) => [i + 1, o.service_name, o.client_name, o.client_phone]);
+        doc.autoTable({ head: [['#', 'Service', 'Client', 'Phone']], body: body, startY: 25 });
+        doc.save("Sadara_Completed.pdf");
     }
 
     async function deleteItem(table, id) {
-        if (confirm('تأكيد الحذف النهائي؟')) {
+        if (confirm('تأكيد الحذف؟')) {
             await db.from(table).delete().eq('id', id);
             initData();
         }
     }
 
-    function initData() {
+    async function initData() {
         loadStats();
-        loadAdminServices();
+        await loadAdminServices();
         loadAdminAffiliates();
         loadPayoutsLogs();
         loadServiceOrders();
