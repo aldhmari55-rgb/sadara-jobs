@@ -22,7 +22,6 @@
 
         .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 15px; border-bottom: 3px solid var(--gold); }
         .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1000px; margin: 0 auto; }
-        @media(min-width: 768px) { .grid-container { grid-template-columns: 1fr; } }
         
         .card { background: white; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .card h2 { font-size: 15px; margin-bottom: 12px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
@@ -55,46 +54,45 @@
         </div>
     </div>
 
-    <!-- محتوى اللوحة الثالثة -->
+    <!-- محتوى اللوحة -->
     <div id="adminMainContent" style="display:none;">
         <div class="header">
             <h1>لوحة تحكم إدارة الدورات التدريبية (فيديو ونصوص) 🎓</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية، الدروس المرتبة، والدورات النصية واختبارات الطلاب</p>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية برمز رمزي، الشهادات، والدورات النصية المجانية</p>
             <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin-top:10px; background:#ef4444; border:none; font-size:11px;">قفل لوحة التحكم 🔒</button>
         </div>
 
         <div class="grid-container">
 
-            <!-- 1. إدارة الدورات النصية واختباراتها -->
+            <!-- 1. إدارة الدورات النصية المجانية -->
             <div class="card">
-                <h2><span>📚 إدارة الدورات النصية</span><span class="badge" id="textCoursesCount">0</span></h2>
+                <h2><span>📚 إدارة الدورات النصية المجانية (Lead Magnet)</span><span class="badge" id="textCoursesCount">0</span></h2>
                 <input type="hidden" id="editTextCourseId">
                 
                 <label>عنوان الدورة النصية</label>
-                <input type="text" id="tCourseTitle" placeholder="مثال: دورة احتراف التسويق الرقمي">
+                <input type="text" id="tCourseTitle" placeholder="مثال: دليل المقابلات الشخصية">
                 
-                <label>محتوى الدورة (الفقرات والدروس النصية)</label>
-                <textarea id="tCourseContent" rows="5" placeholder="اكتب أو الصق محتوى الدورة النصية هنا..."></textarea>
+                <label>محتوى الدورة أو رابط القراءة</label>
+                <textarea id="tCourseContent" rows="4" placeholder="اكتب محتوى الدورة أو تفاصيلها..."></textarea>
                 
-                <button id="btnSaveTCourse" onclick="saveTextCourse()" style="background:#0284c7; color:white;">نشر الدورة النصية 🚀</button>
+                <button id="btnSaveTCourse" onclick="saveTextCourse()" style="background:#0284c7; color:white;">نشر الدورة النصية المجانية 🚀</button>
                 <button id="btnCancelTCourse" onclick="resetTCourseForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء</button>
                 
                 <div id="tCourseMsg" class="status-msg"></div>
                 <div class="list-box" id="textCoursesList">جاري التحميل...</div>
             </div>
 
-            <!-- 2. إدارة الدورات المرئية والدروس المرتبة (فيديو) -->
+            <!-- 2. إدارة الدورات المرئية المدفوعة برمز رمزي + شهادات -->
             <div class="card">
                 <h2>
-                    <span id="formTitleText">🎓 إدارة دورات الفيديو والدروس المرتبة</span>
+                    <span id="formTitleText">🎓 إدارة دورات الفيديو (برمز رمزي + شهادة)</span>
                     <span class="badge" id="coursesCount">0</span>
                 </h2>
 
                 <div class="guide-box">
-                    <strong>📖 دليل إدارة دورات الفيديو:</strong><br>
-                    • أضف عنوان الدورة والوصف.<br>
-                    • أدخل عناوين الدروس وروابط فيديوهات اليوتيوب الخاصة بكل درس.<br>
-                    • اضغط نشر أو تعديل للحفظ الفوري في السحابة.
+                    <strong>📖 دليل سياسة التسعير والشهادات:</strong><br>
+                    • حدد سعراً رمزياً للدورة (مثال: 1500 ريال) لرفع قيمة المنتج المدركة.<br>
+                    • جميع الدورات تمنح تلقائياً شهادة إتمام برقم تحقق رقمي صادر من المنصة.
                 </div>
                 
                 <input type="hidden" id="editCourseId">
@@ -102,6 +100,9 @@
                 <label>اسم الدورة التدريبية الرئيسية</label>
                 <input type="text" id="courseMainTitle" placeholder="مثال: دبلوم التسويق الرقمي الشامل">
                 
+                <label>سعر الدورة الرمزي (ريال)</label>
+                <input type="text" id="coursePrice" placeholder="1500 ريال">
+
                 <label>وصف الدورة</label>
                 <textarea id="courseMainDesc" rows="2" placeholder="وصف موجز لما تحتويه هذه الدورة..."></textarea>
                 
@@ -197,7 +198,7 @@
         if (res.error) {
             msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
         } else {
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الدورة بنجاح! ✅';
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الدورة النصية بنجاح! ✅';
             resetTCourseForm(); loadTextCourses();
         }
     }
@@ -206,7 +207,7 @@
         document.getElementById('editTextCourseId').value = '';
         document.getElementById('tCourseTitle').value = '';
         document.getElementById('tCourseContent').value = '';
-        document.getElementById('btnSaveTCourse').textContent = 'نشر الدورة النصية 🚀';
+        document.getElementById('btnSaveTCourse').textContent = 'نشر الدورة النصية المجانية 🚀';
         document.getElementById('btnCancelTCourse').style.display = 'none';
     }
 
@@ -228,7 +229,7 @@
             box.innerHTML += `
                 <div class="item-row">
                     <div class="row-header">
-                        <strong>📚 ${tc.title}</strong>
+                        <strong>📚 ${tc.title}</strong> <span class="badge" style="background:#dcfce7; color:#166534;">مجاني 100%</span>
                     </div>
                     <div style="color:#64748b; font-size:11px; max-height:40px; overflow:hidden;">${tc.content}</div>
                     <div class="action-btns">
@@ -265,6 +266,7 @@
     async function saveStructuredCourse() {
         const editId = document.getElementById('editCourseId').value;
         const title = document.getElementById('courseMainTitle').value.trim();
+        const price = document.getElementById('coursePrice').value.trim() || '1500 ريال';
         const description = document.getElementById('courseMainDesc').value.trim();
         const is_active = document.getElementById('courseStatus').value === 'true';
         const msg = document.getElementById('courseMsg');
@@ -282,7 +284,7 @@
         }
 
         msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ في السحابة... ⏳';
-        let payload = { title, description, is_active, lessons: lessonsArray };
+        let payload = { title, price, description, is_active, lessons: lessonsArray };
         let res;
 
         if (editId) {
@@ -305,6 +307,7 @@
     function resetCourseForm() {
         document.getElementById('editCourseId').value = '';
         document.getElementById('courseMainTitle').value = '';
+        document.getElementById('coursePrice').value = '';
         document.getElementById('courseMainDesc').value = '';
         document.getElementById('courseStatus').value = 'true';
         document.getElementById('lessonsContainer').innerHTML = `
@@ -316,7 +319,7 @@
             </div>`;
         document.getElementById('btnSaveCourse').textContent = 'نشر الدورة بكافة دروسها المرتبة 🚀';
         document.getElementById('btnCancelCourse').style.display = 'none';
-        document.getElementById('formTitleText').textContent = '🎓 إدارة دورات الفيديو والدروس المرتبة';
+        document.getElementById('formTitleText').textContent = '🎓 إدارة دورات الفيديو (برمز رمزي + شهادة)';
     }
 
     async function loadAdminCourses() {
@@ -340,14 +343,14 @@
 
             box.innerHTML += `<div class="item-row">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong>🎓 ${c.title} (${statusBadge})</strong>
+                    <strong>🎓 ${c.title} (${statusBadge}) - <span style="color:var(--gold);">🏷️ ${c.price || '1500 ريال'}</span></strong>
                     <div style="display:flex; gap:5px;">
                         <button type="button" class="btn-sm btn-edit" onclick="editCourse(${c.id})">تعديل ✏️</button>
                         <button type="button" class="btn-sm" style="background:#d97706;" onclick="toggleStatus(${c.id}, ${isActive})">${toggleText}</button>
                         <button type="button" class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
                     </div>
                 </div>
-                <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'}</div>
+                <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'} | 📜 تشمل شهادة برقم تحقق</div>
                 <div style="background:#f1f5f9; padding:6px; border-radius:6px; margin-top:4px;">${lessonsListHTML || 'بدون دروس'}</div>
             </div>`;
         });
@@ -358,6 +361,7 @@
         if (!c) return;
         document.getElementById('editCourseId').value = c.id;
         document.getElementById('courseMainTitle').value = c.title || '';
+        document.getElementById('coursePrice').value = c.price || '';
         document.getElementById('courseMainDesc').value = c.description || '';
         document.getElementById('courseStatus').value = (c.is_active !== false) ? 'true' : 'false';
         
@@ -396,7 +400,6 @@
         }
 
         cachedCertResults.forEach(c => {
-            let dateFormatted = c.created_at ? new Date(c.created_at).toLocaleDateString('ar-EG') : '-';
             box.innerHTML += `
                 <div class="item-row">
                     <div class="row-header" style="display:flex; justify-content:space-between;">
