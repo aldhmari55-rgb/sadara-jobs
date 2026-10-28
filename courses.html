@@ -34,11 +34,13 @@
         .buy-btn:hover { background: #0f172a; }
         .empty-box { text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; }
 
-        /* نافذة إتمام الطلب والدفع (Checkout Modal) */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; }
-        .modal-card { background: white; color: #0f172a; padding: 22px; border-radius: 14px; width: 90%; max-width: 400px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); }
-        .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 10px; }
-        .modal-card input, .modal-card select { width: 100%; padding: 9px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        /* نافذة الدفع المحدثة */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 440px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); max-height: 90vh; overflow-y: auto; }
+        .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
+        .modal-card input, .modal-card select { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        
+        .payment-info-box { background: #f8fafc; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid #e2e8f0; font-size: 11px; color: #334155; line-height: 1.6; }
 
         .course-reviews-box { background: #f8fafc; padding: 12px 15px; border-top: 1px solid #e2e8f0; font-size: 12px; }
         .stars-selector { font-size: 16px; color: #cbd5e1; cursor: pointer; display: inline-block; margin: 4px 0; }
@@ -66,31 +68,43 @@
         </div>
     </div>
 
-    <!-- نافذة إتمام الطلب والدفع (Checkout Modal) -->
+    <!-- نافذة إتمام الدفع اليمنية -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-card">
-            <h3 style="color:var(--primary); font-size:16px; margin-bottom:5px;"><i class="fa-solid fa-cart-shopping" style="color:var(--gold);"></i> إتمام الاشتراك في الدورة</h3>
-            <p style="font-size:11px; color:#64748b; margin-bottom:12px;" id="modalCourseTitle">اسم الدورة التدريبية</p>
+            <h3 style="color:var(--primary); font-size:15px; margin-bottom:4px;"><i class="fa-solid fa-cart-shopping" style="color:var(--gold);"></i> إتمام الاشتراك في الدورة</h3>
+            <p style="font-size:11px; color:#64748b; margin-bottom:8px;" id="modalCourseTitle">اسم الدورة التدريبية</p>
             
-            <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid #e2e8f0;">
-                <span style="font-size:11px; color:#64748b;">إجمالي السعر المطلوب:</span>
-                <div style="font-size:16px; font-weight:900; color:var(--primary);" id="modalCoursePrice">1500 ريال</div>
+            <div style="background:#f8fafc; padding:8px 12px; border-radius:8px; margin-bottom:10px; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:11px; color:#64748b;">المبلغ المطلوب:</span>
+                <span style="font-size:14px; font-weight:900; color:var(--primary);" id="modalCoursePrice">1500 ريال</span>
             </div>
 
-            <label>الاسم الكامل</label>
-            <input type="text" id="buyerName" placeholder="أدخل اسمك الكريم">
+            <div class="payment-info-box">
+                <strong>💳 تفاصيل حسابات الدفع الرسمية:</strong><br>
+                • <b>بنك الكريمي (نقطة حاسب):</b> حساب رقم <code>2628009</code><br>
+                • <b>الحوالات المحلية (أي شركة حوالات):</b> رقم الجوال <code>780568507</code><br>
+                • <b>محفظة جيب (إيداع):</b> رقم الجوال <code>780568507</code><br>
+                <div style="margin-top:4px; color:var(--primary); font-weight:bold;">الاسم الكامل المستفيد: عبدالرحمن عبدالله صالح الذماري</div>
+            </div>
 
-            <label>رقم الواتساب / الهاتف</label>
+            <label>اسمك الكريم (الثلاثي)</label>
+            <input type="text" id="buyerName" placeholder="أدخل اسمك كما سيسجل بالشهادة">
+
+            <label>رقمك / رقم الواتساب</label>
             <input type="tel" id="buyerPhone" placeholder="770000000">
 
-            <label>طريقة الدفع المتاحة</label>
+            <label>اختر طريقة الدفع التي قمت بالتحويل عبرها</label>
             <select id="paymentMethod">
-                <option value="Jawali / Cash">تحويل جوالي / كاش (محلي)</option>
-                <option value="Kuraimi">بنك الكريمي للتمويل الأصغر</option>
+                <option value="بنك الكريمي نقطة حاسب (حساب 2628009)">بنك الكريمي (نقطة حاسب - حساب 2628009)</option>
+                <option value="الحوالات المحلية (أي شركة)">الحوالات المحلية (أي شركة حوالات)</option>
+                <option value="محفظة جيب">محفظة جيب (إيداع)</option>
             </select>
 
-            <button onclick="submitCourseOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:11px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-top:14px;"><i class="fa-solid fa-check-circle"></i> تأكيد الطلب والبدء فوراً 🚀</button>
-            <button onclick="closeCheckoutModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:6px; cursor:pointer; font-size:10px;">إلغاء</button>
+            <label>رقم سند التحويل / الحوالة (إن وجد)</label>
+            <input type="text" id="transferRef" placeholder="أدخل رقم الإيصال أو السند">
+
+            <button onclick="submitCourseOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-top:12px;"><i class="fa-solid fa-check-circle"></i> تأكيد الطلب والبدء بمشاهدة الدروس 🚀</button>
+            <button onclick="closeCheckoutModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:10px;">إلغاء</button>
             <div id="checkoutMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
         </div>
     </div>
@@ -186,12 +200,13 @@
             const name = document.getElementById('buyerName').value.trim();
             const phone = document.getElementById('buyerPhone').value.trim();
             const paymentMethod = document.getElementById('paymentMethod').value;
+            const transferRef = document.getElementById('transferRef').value.trim() || 'بدون رقم سند';
             const msg = document.getElementById('checkoutMsg');
 
-            if (!name || !phone) { alert('يرجى إدخال الاسم ورقم الواتساب'); return; }
+            if (!name || !phone) { alert('يرجى إدخال اسمك ورقم هاتفك'); return; }
             if (!currentCheckoutCourse) return;
 
-            msg.style.color = 'blue'; msg.textContent = 'جاري إرسال طلب الاشتراك... ⏳';
+            msg.style.color = 'blue'; msg.textContent = 'جاري إرسال طلب الاشتراك وحفظه... ⏳';
 
             try {
                 let { error } = await db.from('orders').insert([{
@@ -199,9 +214,9 @@
                     item_type: 'course',
                     buyer_name: name,
                     buyer_phone: phone,
-                    payment_method: paymentMethod,
+                    payment_method: `${paymentMethod} (سند: ${transferRef})`,
                     price: currentCheckoutCourse.price || '1500',
-                    status: 'قيد المراجعة والدفع'
+                    status: 'مؤكد'
                 }]);
 
                 msg.style.color = 'green';
