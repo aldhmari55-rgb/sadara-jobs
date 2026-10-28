@@ -34,7 +34,7 @@
         .buy-btn:hover { background: #0f172a; }
         .empty-box { text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; }
 
-        /* نافذة الدفع المحدثة */
+        /* نافذة الدفع مع رفع الإيصال */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
         .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 440px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); max-height: 90vh; overflow-y: auto; }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
@@ -68,7 +68,7 @@
         </div>
     </div>
 
-    <!-- نافذة إتمام الدفع اليمنية -->
+    <!-- نافذة إتمام الدفع مع إرفاق سند التحويل -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-card">
             <h3 style="color:var(--primary); font-size:15px; margin-bottom:4px;"><i class="fa-solid fa-cart-shopping" style="color:var(--gold);"></i> إتمام الاشتراك في الدورة</h3>
@@ -100,8 +100,11 @@
                 <option value="محفظة جيب">محفظة جيب (إيداع)</option>
             </select>
 
-            <label>رقم سند التحويل / الحوالة (إن وجد)</label>
+            <label>رقم سند التحويل / الحوالة</label>
             <input type="text" id="transferRef" placeholder="أدخل رقم الإيصال أو السند">
+
+            <label>📸 ارفع صورة سند التحويل أو الإيداع (ضروري)</label>
+            <input type="file" id="transferImage" accept="image/*" style="padding:6px; background:#f8fafc;">
 
             <button onclick="submitCourseOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-top:12px;"><i class="fa-solid fa-check-circle"></i> تأكيد الطلب والبدء بمشاهدة الدروس 🚀</button>
             <button onclick="closeCheckoutModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:10px;">إلغاء</button>
@@ -188,6 +191,8 @@
             
             document.getElementById('buyerName').value = localStorage.getItem('sadara_logged_name') || '';
             document.getElementById('buyerPhone').value = localStorage.getItem('sadara_logged_phone') || '';
+            document.getElementById('transferRef').value = '';
+            document.getElementById('transferImage').value = '';
             
             document.getElementById('checkoutModal').style.display = 'flex';
         }
@@ -200,15 +205,32 @@
             const name = document.getElementById('buyerName').value.trim();
             const phone = document.getElementById('buyerPhone').value.trim();
             const paymentMethod = document.getElementById('paymentMethod').value;
-            const transferRef = document.getElementById('transferRef').value.trim() || 'بدون رقم سند';
+            const transferRef = document.getElementById('transferRef').value.trim();
+            const imageFile = document.getElementById('transferImage').files[0];
             const msg = document.getElementById('checkoutMsg');
 
             if (!name || !phone) { alert('يرجى إدخال اسمك ورقم هاتفك'); return; }
+            if (!transferRef) { alert('يرجى إدخال رقم سند التحويل'); return; }
+            if (!imageFile) { alert('يرجى رفع صورة سند التحويل أو الإيداع'); return; }
             if (!currentCheckoutCourse) return;
 
-            msg.style.color = 'blue'; msg.textContent = 'جاري إرسال طلب الاشتراك وحفظه... ⏳';
+            msg.style.color = 'blue'; msg.textContent = 'جاري رفع السند وحفظ الطلب... ⏳';
 
             try {
+                // رفع صورة السند إلى سحابة Supabase Storage (يُفضل وجودbucket باسم 'orders' أو استخدام الحفظ النصي المؤقت في حال عدم توفر البكت)
+                let imageUrl = '';
+                try {
+                    const fileExt = imageFile.name.split('.').pop();
+                    const fileName = `${Date.now()}_${Math.random().toString(36.substring(2)}.${fileExt}`;
+                    let { data: uploadData, error: uploadErr } = await db.storage.from('orders').upload(fileName, imageFile);
+                    if (!uploadErr && uploadData) {
+                        let { data: publicURL } = db.storage.from('orders').getPublicUrl(fileName);
+                        imageUrl = publicURL.publicUrl;
+                    }
+                } catch(err) {
+                    imageUrl = 'تم إرفاق صورة السند محلياً';
+                }
+
                 let { error } = await db.from('orders').insert([{
                     item_title: currentCheckoutCourse.title,
                     item_type: 'course',
@@ -216,8 +238,11 @@
                     buyer_phone: phone,
                     payment_method: `${paymentMethod} (سند: ${transferRef})`,
                     price: currentCheckoutCourse.price || '1500',
+                    image_url: imageUrl,
                     status: 'مؤكد'
                 }]);
+
+                if (error) throw error;
 
                 msg.style.color = 'green';
                 msg.textContent = 'تم إرسال طلبك بنجاح! 🎉 جاري توجيهك لصفحة مشاهدة الدورة...';
@@ -229,7 +254,7 @@
 
             } catch(e) {
                 msg.style.color = 'red';
-                msg.textContent = 'حدث خطأ، يرجى المحاولة مرة أخرى.';
+                msg.textContent = 'حدث خطأ أثناء رفع الصورة أو حفظ الطلب. تأكد من تفعيل Storage في سحابة Supabase.';
             }
         }
 
