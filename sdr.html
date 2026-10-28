@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم - القسم الأساسي (المتجر والمسوقين) | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -38,15 +39,19 @@
         button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
         button:hover { opacity: 0.9; }
         .status-msg { margin-top: 8px; font-size: 11px; font-weight: bold; text-align: center; }
-        .list-box { margin-top: 12px; max-height: 280px; overflow-y: auto; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
-        .item-row { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-bottom: 1px solid #f1f5f9; font-size: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
-        .row-header { display: flex; justify-content: space-between; align-items: center; }
-        .action-btns { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
-        .btn-sm { padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 10px; font-weight: bold; color: white; }
+        .list-box { margin-top: 12px; max-height: 400px; overflow-y: auto; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
+        .item-row { display: flex; flex-direction: column; gap: 8px; padding: 14px; border-bottom: 1px solid #f1f5f9; font-size: 12px; background: #fff; border: 1px solid #cbd5e1; border-radius: 10px; margin-bottom: 12px; border-right: 6px solid var(--gold); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        
+        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: bold; color: white; }
         .btn-del { background: var(--red); }
         .btn-edit { background: #3b82f6; }
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
-        .preview-img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
+        
+        .admin-product-thumb { width: 45px; height: 45px; background: #0f172a10; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; padding: 2px; }
+        .admin-product-thumb img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; display: block; }
+        .preview-img-container { width: 45px; height: 45px; background: #0f172a10; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; padding: 2px; }
+        .preview-img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; display: block; }
+
         .nav-link-btn { display: inline-block; background: var(--gold); color: #0f2347; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; text-decoration: none; margin-top: 15px; }
     </style>
 </head>
@@ -102,7 +107,7 @@
                 <div class="list-box" id="payoutsList" style="max-height: 300px;">جاري التحميل...</div>
             </div>
 
-            <!-- إدارة متجر الخدمات مع تحديد عمولة خاصة لكل منتج -->
+            <!-- إدارة متجر الخدمات -->
             <div class="card">
                 <h2>
                     <span>🛒 إدارة متجر الخدمات والعمولة الخاصة بكل منتج</span>
@@ -281,16 +286,16 @@
         cachedServices.forEach(s => {
             let isActive = s.is_active !== false;
             let statusBadge = isActive ? '<span style="color:green; font-weight:bold;">معروض 🟢</span>' : '<span style="color:red; font-weight:bold;">مخفي 🔴</span>';
-            let imgTag = s.image ? `<img src="${s.image}" class="preview-img">` : '';
+            let imgTag = s.image ? `<div class="preview-img-container"><img src="${s.image}" class="preview-img"></div>` : '';
             let commText = s.commission ? ` | 💰 عمولة المنتج: ${s.commission}` : '';
             box.innerHTML += `
-                <div class="item-row">
-                    <div class="row-header" style="align-items:center;">
+                <div class="item-row" style="background:#fafafa;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div style="display:flex; align-items:center; gap:8px;">${imgTag}<strong>[${s.category}] ${s.title} (${statusBadge})</strong></div>
                         <span style="color:#10b981; font-weight:bold;">${s.price}</span>
                     </div>
                     <div style="font-size:11px; color:#64748b;">${s.description || 'بدون وصف'}${commText}</div>
-                    <div class="action-btns">
+                    <div style="display:flex; gap:6px; margin-top:4px;">
                         <button class="btn-sm btn-edit" onclick="editService(${s.id})">تعديل ✏️</button>
                         <button class="btn-sm btn-del" onclick="deleteItem('platform_services', ${s.id})">حذف 🗑️</button>
                     </div>
@@ -331,39 +336,58 @@
             let dueEarnings = totalEarned - paidEarned;
             let affName = a.full_name || a.name || 'مسوق';
             let refCode = a.ref_code || 'CODE';
+            let cleanPhone = a.phone ? a.phone.replace(/[^0-9]/g, '') : '';
 
-            // توليد روابط المنتجات الخاصة بهذا المسوق
+            // توليد روابط المنتجات بتصميم مرن ومنسق تماماً مثل الصورة المطلوبة
             let productLinksHTML = '';
             if (cachedServices.length > 0) {
-                productLinksHTML = `<div style="margin-top:6px; background:#f1f5f9; padding:8px; border-radius:6px; font-size:11px;"><strong>🔗 روابط المنتجات الخاصة بهذا المسوق:</strong><br>`;
+                productLinksHTML = `<div style="margin-top:10px; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #cbd5e1;"><strong style="color:var(--primary); font-size:12px;">🔗 روابط المنتجات الخاصة بهذا المسوق:</strong><div style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">`;
                 cachedServices.forEach(s => {
-                    let productUrl = `https://sadarah.top/store.html?product_id=${s.id}&ref=${refCode}`;
-                    productLinksHTML += `<div style="margin-top:4px; display:flex; justify-content:space-between; align-items:center; background:#fff; padding:4px 6px; border-radius:4px;">
-                        <span>🔹 ${s.title}</span>
-                        <button class="btn-sm" style="background:#0284c7;" onclick="navigator.clipboard.writeText('${productUrl}'); alert('تم نسخ رابط المنتج للمسوق بنجاح! ✅');">نسخ رابط المنتج 📋</button>
-                    </div>`;
+                    let productUrl = `https://sadarah.top/services.html?product_id=${s.id}&ref=${refCode}`;
+                    let imgThumb = (s.image && s.image.trim() !== '') ? `<div class="admin-product-thumb"><img src="${s.image}"></div>` : `<div class="admin-product-thumb" style="font-size:9px; color:#64748b; text-align:center;">بدون صورة</div>`;
+                    
+                    productLinksHTML += `
+                        <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; padding:8px 12px; border-radius:8px; border:1px solid #e2e8f0; gap:10px;">
+                            <div style="display:flex; align-items:center; gap:10px; flex-grow:1;">
+                                ${imgThumb}
+                                <div>
+                                    <div style="font-weight:900; color:var(--primary); font-size:12px;">${s.title}</div>
+                                    <div style="color:#10b981; font-weight:bold; font-size:11px;">${s.price}</div>
+                                </div>
+                            </div>
+                            <button class="btn-sm" style="background:#0284c7;" onclick="navigator.clipboard.writeText('${productUrl}'); alert('تم نسخ رابط المنتج بنجاح! ✅');">نسخ رابط المنتج 📋</button>
+                        </div>
+                    `;
                 });
-                productLinksHTML += `</div>`;
+                productLinksHTML += `</div></div>`;
             } else {
-                productLinksHTML = `<div style="font-size:11px; color:#64748b; margin-top:4px;">لا توجد منتجات مضافة بعد لتوليد روابطها.</div>`;
+                productLinksHTML = `<div style="font-size:11px; color:#64748b; margin-top:6px;">لا توجد منتجات مضافة بعد.</div>`;
             }
 
             box.innerHTML += `
-                <div class="item-row" style="background:#fff; border:1px solid #cbd5e1; border-right:5px solid var(--gold);">
-                    <div class="row-header">
-                        <b>👤 المسوق: ${affName} (${a.phone}) - الكود: ${refCode}</b>
-                        <span style="color:#0284c7;">${a.payout_method || 'وسيلة'}: ${a.payout_number || '-'}</span>
+                <div class="item-row">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+                        <div>
+                            <strong style="font-size:13px; color:var(--primary);">👤 المسوق: ${affName} (${a.phone})</strong>
+                            <div style="font-size:11px; color:#64748b; margin-top:2px;">🔑 الكود: <b>${refCode}</b> | وسيلة الاستلام: <b style="color:var(--primary);">${a.payout_method || 'محفظة'} (${a.payout_number || '-'})</b></div>
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none;"><i class="fa-brands fa-whatsapp"></i> مراسلة واتساب 💬</a>` : ''}
+                        </div>
                     </div>
-                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin:4px 0; background:#f8fafc; padding:6px; text-align:center; font-size:11px;">
+
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin:4px 0; background:#f1f5f9; padding:8px; text-align:center; font-size:11px; border-radius:6px;">
                         <div>👀 الزوار: <b>${a.clicks || 0}</b></div>
                         <div>🛒 مبيعات: <b>${a.total_sales || 0}</b></div>
-                        <div>💰 مستحقات: <b style="color:green;">${dueEarnings} YER</b></div>
+                        <div>💰 المستحقات: <b style="color:green;">${dueEarnings} YER</b></div>
                     </div>
+
                     ${productLinksHTML}
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-                        <span style="font-size:10px; color:#64748b;">إجمالي: ${totalEarned} YER | صرف سابق: ${paidEarned} YER</span>
-                        <div style="display:flex; gap:5px;">
-                            <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, '${affName}', '${a.phone}', '${refCode}', ${paidEarned}, ${dueEarnings})">تسوية 💳</button>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; border-top:1px solid #f1f5f9; pt-2;">
+                        <span style="font-size:10px; color:#64748b;">إجمالي الأرباح: ${totalEarned} YER | تم صرفه سابقاً: ${paidEarned} YER</span>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, '${affName}', '${a.phone}', '${refCode}', ${paidEarned}, ${dueEarnings})">تسوية وصرف 💳</button>
                             <button class="btn-sm btn-del" onclick="deleteItem('affiliates', ${a.id})">حذف 🗑️</button>
                         </div>
                     </div>
@@ -406,7 +430,7 @@
             let dateFormatted = p.payout_date ? new Date(p.payout_date).toLocaleDateString('ar-EG') : '-';
             box.innerHTML += `
                 <div class="item-row" style="background:#f0fdf4; border:1px solid #bbf7d0;">
-                    <div class="row-header">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
                         <strong>👤 المسوق: ${p.affiliate_name} (${p.affiliate_phone})</strong>
                         <span style="color:#15803d; font-weight:bold;">المبلغ: ${p.payout_amount} YER</span>
                     </div>
@@ -452,8 +476,8 @@
             let clientPhoneClean = o.client_phone ? o.client_phone.replace(/[^0-9]/g, '') : '';
 
             box.innerHTML += `
-                <div class="item-row" style="background:#fff; border:1px solid #cbd5e1; border-right:5px solid var(--primary);">
-                    <div class="row-header">
+                <div class="item-row" style="background:#fff; border-right:5px solid var(--primary);">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
                         <strong>💎 الخدمة: ${o.service_name}</strong>
                         <span style="color:var(--gold); font-weight:bold;">كود المسوق: ${affCodeDisplay}</span>
                     </div>
@@ -482,10 +506,8 @@
             return; 
         }
         
-        // البحث عن الخدمة لمعرفة عمولتها المخصصة
         let srv = cachedServices.find(s => s.title === serviceName);
         let commVal = srv && srv.commission ? srv.commission : '0';
-        
         let numericCommission = Number(commVal.replace(/[^0-9.]/g, '')) || 0;
         if (numericCommission <= 0) {
             alert('هذا المنتج ليس له عمولة محددة أو أن قيمتها صفر.');
@@ -538,7 +560,7 @@
         box.innerHTML = '';
         if (!cachedCompletedOrders.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات منجزة.</p>'; return; }
         cachedCompletedOrders.forEach(o => {
-            box.innerHTML += `<div class="item-row" style="background:#f0fdf4;"><div class="row-header"><strong>✅ ${o.service_name}</strong><span>${o.client_name}</span></div></div>`;
+            box.innerHTML += `<div class="item-row" style="background:#f0fdf4;"><div style="display:flex; justify-content:space-between; align-items:center;"><strong>✅ ${o.service_name}</strong><span>${o.client_name}</span></div></div>`;
         });
     }
 
