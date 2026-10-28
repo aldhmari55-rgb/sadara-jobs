@@ -74,7 +74,7 @@
                 <div class="guide-box">
                     <strong>📖 تعليمات لوحة الدورات:</strong><br>
                     • أدخل اسم الدورة، **اختر صورة الغلاف من معرض الجوال**، وسعر الدورة.<br>
-                    • أضف دروس الدورة واضغط نشر.
+                    • تُحفظ الصور تلقائياً في الحاوية السحابية الموحدة للمنصة (`platform-files`).
                 </div>
                 
                 <input type="hidden" id="editCourseId">
@@ -214,18 +214,19 @@
 
         try {
             if (imageFile) {
-                msg.textContent = 'جاري رفع الصورة الجديدة للتخزين السحابي... ⏳';
+                msg.textContent = 'جاري رفع الصورة الجديدة إلى الحاوية المشتركة (platform-files)... ⏳';
                 const fileExt = imageFile.name.split('.').pop();
                 const fileName = `course_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
                 
-                let { data: uploadData, error: uploadErr } = await db.storage.from('orders').upload(fileName, imageFile);
+                // استخدام الحاوية المشتركة platform-files المعتمدة في المنصة
+                let { data: uploadData, error: uploadErr } = await db.storage.from('platform-files').upload(fileName, imageFile);
                 if (uploadErr) {
                     msg.style.color = 'red';
                     msg.textContent = 'خطأ في رفع الصورة: ' + uploadErr.message;
                     return;
                 }
                 if (uploadData) {
-                    let { data: publicURL } = db.storage.from('orders').getPublicUrl(fileName);
+                    let { data: publicURL } = db.storage.from('platform-files').getPublicUrl(fileName);
                     imageUrl = publicURL.publicUrl;
                 }
             }
