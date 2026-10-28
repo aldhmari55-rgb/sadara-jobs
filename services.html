@@ -35,10 +35,11 @@
         .product-cat-label { background: #eff6ff; color: #0284c7; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; width: fit-content; }
         .order-btn { background: var(--primary); color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 12px; margin-top: 5px; cursor: pointer; border: none; }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-card { background: white; padding: 20px; border-radius: 14px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        /* نافذة تفاصيل المنتج المستقلة والطلب */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+        .modal-card { background: white; padding: 20px; border-radius: 14px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
-        .modal-card input, .modal-card select { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        .modal-card input, .modal-card select, .modal-card textarea { width: 100%; padding: 9px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; background: #fff; }
     </style>
 </head>
 <body>
@@ -50,13 +51,13 @@
 
     <div class="hero-store">
         <h1 style="font-size: 18px;">متجر الخدمات والاشتراكات والمنتجات 🛒</h1>
-        <p style="font-size: 11px; opacity: 0.85; margin-top: 4px;">اختر المنتج المطلوب وقم بالطلب والسداد المباشر فوراً</p>
+        <p style="font-size: 11px; opacity: 0.85; margin-top: 4px;">اختر المنتج المطلوب لعرض تفاصيله الكاملة والطلب المباشر</p>
     </div>
 
     <div class="main-container">
 
         <div class="affiliate-badge-info" id="affiliateBanner">
-            🏷️ تم تفعيل رابط إحالة خاص وموثق عبر المنصة ✅
+            🎉 مبروك! تم تفعيل كود الخصم والترشيح عبر مسوق موثق ✅
         </div>
 
         <div class="search-cat-box">
@@ -75,33 +76,10 @@
         <div id="storeProductsList">جاري تحميل المتجر والمنتجات...</div>
     </div>
 
-    <div class="modal-overlay" id="orderModal">
-        <div class="modal-card">
-            <h3 style="color:var(--primary); font-size:15px;" id="orderModalTitle">طلب المنتج 🚀</h3>
-            <p style="font-size:11px; color:#64748b; margin-bottom:10px;">أدخل بياناتك وأرفق صورة سند التحويل لتأكيد الطلب:</p>
-
-            <label>اسمك الكامل</label>
-            <input type="text" id="clientName" placeholder="أحمد علي">
-
-            <label>رقم الواتساب للتواصل وتفعيل الخدمة</label>
-            <input type="tel" id="clientPhone" placeholder="770000000">
-
-            <label>وسيلة الدفع / التحويل</label>
-            <select id="payMethod">
-                <option value="محفظة جيب">محفظة جيب (780568507)</option>
-                <option value="بنك الكريمي">بنك الكريمي (2628009)</option>
-            </select>
-
-            <label>صورة سند التحويل (سند الدفع 📄)</label>
-            <input type="file" id="payReceiptFile" accept="image/*">
-
-            <label>ملاحظات إضافية (اختياري)</label>
-            <input type="text" id="orderNotes" placeholder="أية تفاصيل إضافية...">
-
-            <button onclick="submitOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; margin-top:14px; cursor:pointer; font-size:12px;">تأكيد وتأكيد إرسال الطلب 📱</button>
-            <button onclick="closeOrderModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:11px;">إلغاء</button>
-            
-            <div id="orderStatusMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
+    <!-- نافذة تفاصيل المنتج ونموذج الطلب الشامل -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-card" id="modalProductContent">
+            <!-- محتوى المنتج والتفاصيل يتم حقنه ديناميكياً هنا -->
         </div>
     </div>
 
@@ -112,11 +90,12 @@
 
         let allProducts = [];
         let currentSelectedCategory = 'الكل';
-        let currentProductToOrder = null;
+        let currentSelectedProduct = null;
 
         async function initStore() {
             const urlParams = new URLSearchParams(window.location.search);
             let refParam = urlParams.get('ref');
+            let productIdParam = urlParams.get('product_id');
 
             if (refParam) {
                 localStorage.setItem('sadara_affiliate_ref', refParam);
@@ -134,6 +113,14 @@
 
             allProducts = data || [];
             renderStoreProducts(allProducts);
+
+            // إذا كان الرابط يحتوي على معرف منتج مباشر، افتح نافذة تفاصيله تلقائياً
+            if (productIdParam) {
+                let targetProd = allProducts.find(p => p.id == productIdParam);
+                if (targetProd) {
+                    openProductDetails(targetProd);
+                }
+            }
         }
 
         async function trackAffiliateClick(code) {
@@ -179,73 +166,123 @@
                 let catTag = p.category ? `<span class="product-cat-label">📁 ${p.category}</span>` : '';
 
                 box.innerHTML += `
-                    <div class="product-card">
+                    <div class="product-card" style="cursor: pointer;" onclick="openProductDetailsById(${p.id})">
                         ${imgHTML}
                         <div class="product-title-row">
                             <span class="product-title">${p.title}</span>
                             <span class="product-price">${p.price}</span>
                         </div>
                         ${catTag}
-                        <p class="product-desc">${p.description || 'بدون وصف إضافي'}</p>
-                        <button class="order-btn" onclick="openOrderModal(${p.id}, '${p.title}')">طلب واشتراك الآن 🚀</button>
+                        <p class="product-desc">${p.description ? p.description.substring(0, 90) + '...' : 'بدون وصف إضافي'}</p>
+                        <button class="order-btn" onclick="event.stopPropagation(); openProductDetailsById(${p.id})">عرض التفاصيل والطلب 🚀</button>
                     </div>
                 `;
             });
         }
 
-        function openOrderModal(productId, productTitle) {
-            currentProductToOrder = productTitle;
-            document.getElementById('orderModalTitle').textContent = `طلب: ${productTitle}`;
-            document.getElementById('orderModal').style.display = 'flex';
+        function openProductDetailsById(id) {
+            let p = allProducts.find(item => item.id == id);
+            if (p) openProductDetails(p);
         }
 
-        function closeOrderModal() {
-            document.getElementById('orderModal').style.display = 'none';
+        function openProductDetails(p) {
+            currentSelectedProduct = p;
+            let imgHTML = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" style="width:100%; max-height:220px; object-fit:cover; border-radius:8px; margin-bottom:12px;">` : '';
+
+            document.getElementById('modalProductContent').innerHTML = `
+                ${imgHTML}
+                <span class="product-cat-label">📁 ${p.category || 'عام'}</span>
+                <h2 style="font-size:18px; color:var(--primary); margin:6px 0;">${p.title}</h2>
+                <div style="font-size:16px; color:#10b981; font-weight:900; margin-bottom:10px;">السعر: ${p.price}</div>
+                <div style="font-size:12px; color:#475569; line-height:1.6; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:15px;">
+                    <strong>وصف وتفاصيل المنتج:</strong><br>${p.description || 'لا يوجد وصف إضافي.'}
+                </div>
+
+                <hr style="border:0; border-top:1px solid #e2e8f0; margin:15px 0;">
+
+                <h3 style="font-size:14px; color:var(--primary); margin-bottom:8px;">🛒 نموذج الطلب والسداد المباشر</h3>
+                
+                <label>اسمك الكريم</label>
+                <input type="text" id="clientName" placeholder="أحمد محمد">
+
+                <label>رقم الواتساب للتواصل وتفعيل الخدمة</label>
+                <input type="tel" id="clientPhone" placeholder="770000000">
+
+                <label>المحافظة الحالية (مثال: ذمار، صنعاء، إب...)</label>
+                <input type="text" id="clientCity" placeholder="ذمار">
+
+                <label>من دلك أو كيف وصلت إلينا؟ (اختياري)</label>
+                <input type="text" id="clientReferralSource" placeholder="اسم المسوق، صديق، وسائل التواصل...">
+
+                <label>وسيلة الدفع والتحويل</label>
+                <select id="payMethod">
+                    <option value="محفظة جيب">محفظة جيب (780568507)</option>
+                    <option value="بنك الكريمي">بنك الكريمي (2628009)</option>
+                </select>
+
+                <label>صورة سند التحويل أو الدفع 📄</label>
+                <input type="file" id="payReceiptFile" accept="image/*">
+
+                <label>ملاحظات إضافية (اختياري)</label>
+                <input type="text" id="orderNotes" placeholder="أي تفاصيل تود إضافتها...">
+
+                <button onclick="submitProductOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; margin-top:14px; cursor:pointer; font-size:13px;">تأكيد وإرسال الطلب 📱</button>
+                <button onclick="closeProductModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:6px; cursor:pointer; font-size:11px;">إغلاق</button>
+                
+                <div id="orderStatusMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
+            `;
+            document.getElementById('productModal').style.display = 'flex';
         }
 
-        async function submitOrder() {
-            const clientName = document.getElementById('clientName').value.trim();
-            const clientPhone = document.getElementById('clientPhone').value.trim();
-            const paymentMethod = document.getElementById('payMethod').value;
-            const payReceiptFile = document.getElementById('payReceiptFile').files[0];
+        function closeProductModal() {
+            document.getElementById('productModal').style.display = 'none';
+        }
+
+        async function submitProductOrder() {
+            const name = document.getElementById('clientName').value.trim();
+            const phone = document.getElementById('clientPhone').value.trim();
+            const city = document.getElementById('clientCity').value.trim();
+            const refSource = document.getElementById('clientReferralSource').value.trim();
+            const payMethod = document.getElementById('payMethod').value;
+            const file = document.getElementById('payReceiptFile').files[0];
             const notes = document.getElementById('orderNotes').value.trim();
             const msg = document.getElementById('orderStatusMsg');
 
-            if (!clientName || !clientPhone) { alert('يرجى إدخال اسمك ورقم الواتساب'); return; }
-            if (!payReceiptFile) { alert('يرجى إرفاق صورة سند الدفع أو التحويل'); return; }
+            if (!name || !phone) { alert('يرجى إدخال اسمك ورقم الواتساب!'); return; }
+            if (!file) { alert('يرجى إرفاق صورة سند الدفع أو التحويل!'); return; }
 
-            msg.style.color = 'blue'; msg.textContent = 'جاري إرسال ورفع الطلب... ⏳';
+            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الطلب ومعالجته... ⏳';
 
             let receiptUrl = '';
             try {
-                const fileExt = payReceiptFile.name.split('.').pop();
-                const fileName = `receipt_${Date.now()}.${fileExt}`;
-                const { error: uploadErr } = await db.storage.from('platform-files').upload(fileName, payReceiptFile);
+                const fileExt = file.name.split('.').pop();
+                const fileName = `order_${Date.now()}.${fileExt}`;
+                const { error: uploadErr } = await db.storage.from('platform-files').upload(fileName, file);
                 if (uploadErr) { msg.style.color = 'red'; msg.textContent = 'فشل رفع صورة السند.'; return; }
                 const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
                 receiptUrl = publicUrlData.publicUrl;
             } catch(e) {
-                msg.style.color = 'red'; msg.textContent = 'خطأ في عملية رفع صورة السند.'; return;
+                msg.style.color = 'red'; msg.textContent = 'خطأ أثناء رفع السند.'; return;
             }
 
-            // التقاط كود المسوق المخزن في المتصفح أو الرابط بدقة لحظة الإرسال
             let activeRefCode = localStorage.getItem('sadara_affiliate_ref') || new URLSearchParams(window.location.search).get('ref') || 'مباشر';
+            let fullNotes = `المحافظة: ${city || 'غير محدد'} | مصدر الدلالة: ${refSource || 'غير محدد'} | ملاحظات: ${notes || 'لا يوجد'}`;
 
             let { error } = await db.from('service_orders').insert([{
-                service_name: currentProductToOrder,
-                client_name: clientName,
-                client_phone: clientPhone,
-                payment_method: paymentMethod,
+                service_name: currentSelectedProduct.title,
+                client_name: name,
+                client_phone: phone,
+                payment_method: payMethod,
                 transaction_ref: receiptUrl,
-                notes: notes,
+                notes: fullNotes,
                 affiliate_id: activeRefCode
             }]);
 
             if (error) {
-                msg.style.color = 'red'; msg.textContent = 'خطأ في إرسال الطلب: ' + error.message;
+                msg.style.color = 'red'; msg.textContent = 'خطأ في حفظ الطلب: ' + error.message;
             } else {
                 msg.style.color = 'green'; msg.textContent = 'تم إرسال طلبك بنجاح! سيتم التواصل معك عبر الواتساب لتأكيد الخدمة. ✅';
-                setTimeout(() => { closeOrderModal(); }, 1800);
+                setTimeout(() => { closeProductModal(); }, 2000);
             }
         }
 
