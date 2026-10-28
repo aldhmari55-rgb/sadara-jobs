@@ -28,7 +28,7 @@
 
         .product-card { background: white; border-radius: 12px; border: 1px solid #cbd5e1; padding: 14px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 8px; }
         
-        /* جعل حاوية الصورة مرنة تماماً لمختلف المقاسات دون قص */
+        /* حاوية الصور المرنة لمختلف المقاسات دون قص */
         .product-img-container { width: 100%; background: #0f172a10; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 5px; }
         .product-img { width: 100%; height: auto; max-height: 450px; object-fit: contain; border-radius: 6px; display: block; }
 
@@ -67,11 +67,14 @@
             <input type="text" id="storeSearchInput" class="store-search" placeholder="🔍 ابحث عن منتج أو خدمة بالاسم..." oninput="filterStore()">
             <div class="cat-tags-container">
                 <span class="store-cat-tag active" onclick="filterStoreCategory('الكل', this)">الكل 🌐</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('جوالات', this)">📱 جوالات</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('إكسسوارات', this)">🎧 إكسسوارات جوالات</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('إلكترونيات', this)">⚡ إلكترونيات</span>
                 <span class="store-cat-tag" onclick="filterStoreCategory('اشتراكات', this)">🔑 اشتراكات رقمية</span>
                 <span class="store-cat-tag" onclick="filterStoreCategory('خدمات', this)">🛠️ خدمات</span>
                 <span class="store-cat-tag" onclick="filterStoreCategory('ملابس', this)">👗 ملابس وأزياء</span>
                 <span class="store-cat-tag" onclick="filterStoreCategory('تجميل', this)">💄 تجميل وعناية</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('منزل', this)">🏡 مستلزمات منزلية</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('منزل', this)">🏡 منزلية</span>
                 <span class="store-cat-tag" onclick="filterStoreCategory('أخرى', this)">📦 أخرى</span>
             </div>
         </div>
