@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الدورات الشاملة | منصة صدارة</title>
+    <title>لوحة تحكم الدورات والمبيعات الشاملة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -46,7 +46,7 @@
     <!-- شاشة إدخال الرمز السري الآمنة -->
     <div class="admin-auth-overlay" id="adminAuthOverlay">
         <div class="admin-auth-card">
-            <h2>لوحة إدارة الدورات 🔐</h2>
+            <h2>لوحة إدارة الدورات والمبيعات 🔐</h2>
             <p>يرجى إدخال الرمز السري للمتابعة</p>
             <input type="password" id="adminSecretInput" placeholder="••••••••">
             <button onclick="verifyAdminPass()">دخول 🚀</button>
@@ -57,50 +57,32 @@
     <!-- محتوى اللوحة -->
     <div id="adminMainContent" style="display:none;">
         <div class="header">
-            <h1>لوحة تحكم إدارة الدورات التدريبية (فيديو ونصوص) 🎓</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية برمز رمزي، الشهادات، والدورات النصية المجانية</p>
+            <h1>لوحة تحكم الدورات والمبيعات الشاملة 🎓</h1>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية بالسعر، مبيعات الدورات، والمشتركين في الدورات المدفوعة</p>
             <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin-top:10px; background:#ef4444; border:none; font-size:11px;">قفل لوحة التحكم 🔒</button>
         </div>
 
         <div class="grid-container">
 
-            <!-- 1. إدارة الدورات النصية المجانية -->
-            <div class="card">
-                <h2><span>📚 إدارة الدورات النصية المجانية (Lead Magnet)</span><span class="badge" id="textCoursesCount">0</span></h2>
-                <input type="hidden" id="editTextCourseId">
-                
-                <label>عنوان الدورة النصية</label>
-                <input type="text" id="tCourseTitle" placeholder="مثال: دليل المقابلات الشخصية">
-                
-                <label>محتوى الدورة أو رابط القراءة</label>
-                <textarea id="tCourseContent" rows="4" placeholder="اكتب محتوى الدورة أو تفاصيلها..."></textarea>
-                
-                <button id="btnSaveTCourse" onclick="saveTextCourse()" style="background:#0284c7; color:white;">نشر الدورة النصية المجانية 🚀</button>
-                <button id="btnCancelTCourse" onclick="resetTCourseForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء</button>
-                
-                <div id="tCourseMsg" class="status-msg"></div>
-                <div class="list-box" id="textCoursesList">جاري التحميل...</div>
-            </div>
-
-            <!-- 2. إدارة الدورات المرئية المدفوعة برمز رمزي + شهادات -->
+            <!-- 1. مربع إدارة الدورات المرئية (مع خانة السعر) -->
             <div class="card">
                 <h2>
-                    <span id="formTitleText">🎓 إدارة دورات الفيديو (برمز رمزي + شهادة)</span>
+                    <span id="formTitleText">🎓 إدارة الدورات المرئية وتحديد الأسعار</span>
                     <span class="badge" id="coursesCount">0</span>
                 </h2>
 
                 <div class="guide-box">
-                    <strong>📖 دليل سياسة التسعير والشهادات:</strong><br>
-                    • حدد سعراً رمزياً للدورة (مثال: 1500 ريال) لرفع قيمة المنتج المدركة.<br>
-                    • جميع الدورات تمنح تلقائياً شهادة إتمام برقم تحقق رقمي صادر من المنصة.
+                    <strong>📖 تعليمات لوحة الدورات:</strong><br>
+                    • أدخل اسم الدورة، **سعر الدورة** (مثال: 1500 ريال)، ووصفها.<br>
+                    • أضف روابط دروس اليوتيوب المرتبة واضغط نشر.
                 </div>
                 
                 <input type="hidden" id="editCourseId">
                 
                 <label>اسم الدورة التدريبية الرئيسية</label>
-                <input type="text" id="courseMainTitle" placeholder="مثال: دبلوم التسويق الرقمي الشامل">
+                <input type="text" id="courseMainTitle" placeholder="مثال: دبلوم إدارة الموارد البشرية HR">
                 
-                <label>سعر الدورة الرمزي (ريال)</label>
+                <label>سعر الدورة (ريال)</label>
                 <input type="text" id="coursePrice" placeholder="1500 ريال">
 
                 <label>وصف الدورة</label>
@@ -127,7 +109,7 @@
 
                 <button type="button" onclick="addLessonField('', '')" style="background: #64748b; margin-top: 8px;">➕ إضافة درس آخر للدورة</button>
                 
-                <button id="btnSaveCourse" onclick="saveStructuredCourse()" style="background:#0284c7; color:white; margin-top: 15px;">نشر الدورة بكافة دروسها المرتبة 🚀</button>
+                <button id="btnSaveCourse" onclick="saveStructuredCourse()" style="background:#0284c7; color:white; margin-top: 15px;">نشر الدورة بكافة دروسها 🚀</button>
                 <button id="btnCancelCourse" onclick="resetCourseForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
                 
                 <div id="courseMsg" class="status-msg"></div>
@@ -135,10 +117,28 @@
                 <div class="list-box" id="adminCoursesList" style="margin-top: 15px;">جاري التحميل...</div>
             </div>
 
-            <!-- 3. سجل الشهادات النصية واختبارات الطلاب -->
+            <!-- 2. مربع الدورات المباعة والطلبات -->
             <div class="card">
                 <h2>
-                    <span>📜 سجل الشهادات والنتائج الصادرة للطلاب</span>
+                    <span>🛒 الدورات المباعة والطلبات الواردة</span>
+                    <span class="badge" id="ordersCount">0</span>
+                </h2>
+                <div class="list-box" id="ordersList">جاري التحميل...</div>
+            </div>
+
+            <!-- 3. مربع المشتركين في الدورات المدفوعة -->
+            <div class="card">
+                <h2>
+                    <span>👥 المشتركين في الدورات المدفوعة</span>
+                    <span class="badge" id="subscribersCount">0</span>
+                </h2>
+                <div class="list-box" id="subscribersList">جاري التحميل...</div>
+            </div>
+
+            <!-- 4. سجل الشهادات ونتائج الطلاب -->
+            <div class="card">
+                <h2>
+                    <span>📜 سجل الشهادات الصادرة للطلاب</span>
                     <button onclick="exportCertToExcel()" class="btn-sm" style="background:#10b981; padding:5px 10px; font-size:11px; margin:0;">تصدير Excel 📊</button>
                 </h2>
                 <div class="badge" id="certCount" style="margin-bottom: 8px; display:inline-block;">0</div>
@@ -153,8 +153,8 @@
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let cachedTextCourses = [];
     let cachedCourses = [];
+    let cachedOrders = [];
     let cachedCertResults = [];
 
     function verifyAdminPass() {
@@ -181,75 +181,6 @@
     function logoutAdmin() {
         sessionStorage.removeItem('sadara_admin_courses_auth');
         window.location.reload();
-    }
-
-    async function saveTextCourse() {
-        const editId = document.getElementById('editTextCourseId').value;
-        const title = document.getElementById('tCourseTitle').value.trim();
-        const content = document.getElementById('tCourseContent').value.trim();
-        const msg = document.getElementById('tCourseMsg');
-
-        if (!title || !content) { alert('يرجى إدخال عنوان الدورة النصية ومحتواها'); return; }
-        msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ بالسحابة... ⏳';
-
-        let payload = { title, content };
-        let res = editId ? await db.from('text_courses').update(payload).eq('id', editId) : await db.from('text_courses').insert([payload]);
-
-        if (res.error) {
-            msg.style.color = 'red'; msg.textContent = 'خطأ الحفظ: ' + res.error.message;
-        } else {
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الدورة النصية بنجاح! ✅';
-            resetTCourseForm(); loadTextCourses();
-        }
-    }
-
-    function resetTCourseForm() {
-        document.getElementById('editTextCourseId').value = '';
-        document.getElementById('tCourseTitle').value = '';
-        document.getElementById('tCourseContent').value = '';
-        document.getElementById('btnSaveTCourse').textContent = 'نشر الدورة النصية المجانية 🚀';
-        document.getElementById('btnCancelTCourse').style.display = 'none';
-    }
-
-    async function loadTextCourses() {
-        let { data, error } = await db.from('text_courses').select('*').order('id', {ascending: false});
-        if (error) return;
-        cachedTextCourses = data || [];
-        let box = document.getElementById('textCoursesList');
-        if(!box) return;
-        document.getElementById('textCoursesCount').textContent = cachedTextCourses.length;
-        box.innerHTML = '';
-
-        if (!cachedTextCourses.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات نصية مضافة.</p>';
-            return;
-        }
-
-        cachedTextCourses.forEach(tc => {
-            box.innerHTML += `
-                <div class="item-row">
-                    <div class="row-header">
-                        <strong>📚 ${tc.title}</strong> <span class="badge" style="background:#dcfce7; color:#166534;">مجاني 100%</span>
-                    </div>
-                    <div style="color:#64748b; font-size:11px; max-height:40px; overflow:hidden;">${tc.content}</div>
-                    <div class="action-btns">
-                        <button class="btn-sm btn-edit" onclick="editTextCourse(${tc.id})">تعديل ✏️</button>
-                        <button class="btn-sm btn-del" onclick="deleteItem('text_courses', ${tc.id})">حذف 🗑️</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    function editTextCourse(id) {
-        let tc = cachedTextCourses.find(item => item.id == id);
-        if (!tc) return;
-        document.getElementById('editTextCourseId').value = tc.id;
-        document.getElementById('tCourseTitle').value = tc.title || '';
-        document.getElementById('tCourseContent').value = tc.content || '';
-        document.getElementById('btnSaveTCourse').textContent = 'تعديل وحفظ 💾';
-        document.getElementById('btnCancelTCourse').style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function addLessonField(titleVal = '', urlVal = '') {
@@ -317,9 +248,9 @@
                 <label>رابط الفيديو</label>
                 <input type="text" class="lesson-url" placeholder="https://www.youtube.com/embed/...">
             </div>`;
-        document.getElementById('btnSaveCourse').textContent = 'نشر الدورة بكافة دروسها المرتبة 🚀';
+        document.getElementById('btnSaveCourse').textContent = 'نشر الدورة بكافة دروسها 🚀';
         document.getElementById('btnCancelCourse').style.display = 'none';
-        document.getElementById('formTitleText').textContent = '🎓 إدارة دورات الفيديو (برمز رمزي + شهادة)';
+        document.getElementById('formTitleText').textContent = '🎓 إدارة الدورات المرئية وتحديد الأسعار';
     }
 
     async function loadAdminCourses() {
@@ -336,11 +267,6 @@
             let statusBadge = isActive ? '<span style="color:green; font-weight:bold;">متوفر 🟢</span>' : '<span style="color:red; font-weight:bold;">غير متوفر 🔴</span>';
             let toggleText = isActive ? 'إخفاء 🔴' : 'إظهار 🟢';
 
-            let lessonsListHTML = '';
-            if (c.lessons && Array.isArray(c.lessons)) {
-                c.lessons.forEach((l, idx) => { lessonsListHTML += `<div style="font-size:11px; color:#334155; margin-right:10px;">🔹 ${idx + 1}. ${l.lesson_title}</div>`; });
-            }
-
             box.innerHTML += `<div class="item-row">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <strong>🎓 ${c.title} (${statusBadge}) - <span style="color:var(--gold);">🏷️ ${c.price || '1500 ريال'}</span></strong>
@@ -350,8 +276,7 @@
                         <button type="button" class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
                     </div>
                 </div>
-                <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'} | 📜 تشمل شهادة برقم تحقق</div>
-                <div style="background:#f1f5f9; padding:6px; border-radius:6px; margin-top:4px;">${lessonsListHTML || 'بدون دروس'}</div>
+                <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'}</div>
             </div>`;
         });
     }
@@ -386,6 +311,62 @@
         loadAdminCourses();
     }
 
+    // تحميل الدورات المباعة والطلبات
+    async function loadOrders() {
+        let { data } = await db.from('orders').select('*').eq('item_type', 'course').order('id', { ascending: false });
+        cachedOrders = data || [];
+        let box = document.getElementById('ordersList');
+        if(!box) return;
+        document.getElementById('ordersCount').textContent = cachedOrders.length;
+        box.innerHTML = '';
+
+        if (!cachedOrders.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات مباعة أو طلبات حتى الآن.</p>';
+            return;
+        }
+
+        cachedOrders.forEach(o => {
+            box.innerHTML += `
+                <div class="item-row">
+                    <div style="display:flex; justify-content:space-between; font-weight:bold;">
+                        <span>🛒 الدورة: ${o.item_title}</span>
+                        <span style="color:var(--gold);">🏷️ ${o.price || '1500'} ريال</span>
+                    </div>
+                    <div style="color:#475569; font-size:11px;">المشتري: ${o.buyer_name} | هاتف: ${o.buyer_phone} | الدفع: ${o.payment_method || 'كاش'}</div>
+                    <button class="btn-sm btn-del" onclick="deleteItem('orders', ${o.id})" style="width:auto; margin-top:4px;">حذف السجل 🗑️</button>
+                </div>
+            `;
+        });
+    }
+
+    // تحميل المشتركين في الدورات المدفوعة
+    async function loadSubscribers() {
+        let { data } = await db.from('orders').select('*').eq('item_type', 'course').order('id', { ascending: false });
+        let box = document.getElementById('subscribersList');
+        if(!box) return;
+        
+        let subs = data || [];
+        document.getElementById('subscribersCount').textContent = subs.length;
+        box.innerHTML = '';
+
+        if (!subs.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا يوجد مشتركون مسجلون حالياً.</p>';
+            return;
+        }
+
+        subs.forEach(s => {
+            box.innerHTML += `
+                <div class="item-row">
+                    <div style="display:flex; justify-content:space-between; font-weight:bold;">
+                        <span>👤 المشترك: ${s.buyer_name}</span>
+                        <span style="color:green;">نشط 🟢</span>
+                    </div>
+                    <div style="color:#475569; font-size:11px;">الهاتف: ${s.buyer_phone} | الدورة المشترك بها: ${s.item_title}</div>
+                </div>
+            `;
+        });
+    }
+
     async function loadCertResults() {
         let { data } = await db.from('cert_results').select('*').order('id', { ascending: false });
         cachedCertResults = data || [];
@@ -402,9 +383,9 @@
         cachedCertResults.forEach(c => {
             box.innerHTML += `
                 <div class="item-row">
-                    <div class="row-header" style="display:flex; justify-content:space-between;">
-                        <strong>🎓 الطالب: ${c.student_name}</strong>
-                        <span style="color:green; font-weight:bold;">الدرجة: ${c.score} / 10</span>
+                    <div style="display:flex; justify-content:space-between; font-weight:bold;">
+                        <span>🎓 الطالب: ${c.student_name}</span>
+                        <span style="color:green;">الدرجة: ${c.score} / 10</span>
                     </div>
                     <div style="color:#64748b; font-size:11px;">الدورة: ${c.course_name} | رقم الشهادة: #SDR-${c.id}</div>
                     <button class="btn-sm btn-del" onclick="deleteItem('cert_results', ${c.id})" style="width:auto; margin-top:4px;">حذف السجل 🗑️</button>
@@ -437,8 +418,9 @@
     }
 
     function initData() {
-        loadTextCourses();
         loadAdminCourses();
+        loadOrders();
+        loadSubscribers();
         loadCertResults();
     }
 
