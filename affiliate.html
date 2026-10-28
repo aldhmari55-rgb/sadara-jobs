@@ -11,7 +11,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); padding: 15px; color: #0f172a; padding-bottom: 50px; }
         .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid var(--gold); }
-        .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 600px; margin: 0 auto; }
+        .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 700px; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
         label { font-size: 12px; font-weight: bold; display: block; margin-top: 10px; color: #475569; }
         input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
         button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; }
@@ -23,14 +23,15 @@
         .aff-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
         .stat-card { background: #f8fafc; padding: 12px; border-radius: 10px; text-align: center; border: 1px solid #cbd5e1; }
         .stat-card h3 { color: var(--primary); font-size: 16px; font-weight: 900; }
-        .link-box { background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px dashed #cbd5e1; margin-top: 15px; text-align: center; word-break: break-all; font-size: 12px; color: #1e40af; font-weight: bold; }
+        .product-link-row { background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: bold; color: white; background: #0284c7; width: fit-content; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>برنامج التسويق بالعمولة 🤝</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">سوق لخدمات صدارة واحصل على أرباح وعمولات مجزية (20%)</p>
+        <h1>برنامج التسويق بالعمولة للمنتجات 🤝</h1>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">اختر المنتج الذي تفضله، انسخ رابطه الخاص، واكسب عمولتك فور إتمام المبيعة</p>
     </div>
 
     <div class="card">
@@ -86,7 +87,7 @@
             <div class="aff-stats-grid">
                 <div class="stat-card">
                     <h3 id="affClicks">0</h3>
-                    <p>الزيارات عبر رابطك 👁️</p>
+                    <p>إجمالي الزيارات 👁️</p>
                 </div>
                 <div class="stat-card">
                     <h3 id="affSales">0</h3>
@@ -94,9 +95,14 @@
                 </div>
             </div>
 
-            <label style="color: var(--primary);">🔗 رابط التسويق الخاص بك (فريد وآمن):</label>
-            <div class="link-box" id="affLinkDisplay">جاري إنشاء الرابط...</div>
-            <button onclick="copyAffLink()" style="background: #10b981; margin-top: 10px;">نسخ الرابط الخاص بك 📋</button>
+            <hr style="border:0; border-top:1px solid #e2e8f0; margin:15px 0;">
+
+            <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;">🔗 روابط منتجات المتجر الخاصة بك:</h3>
+            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">انسخ رابط أي منتج وشاركه مع عملائك. إذا اشترى العميل من أي منتج عبر رابطك، ستُحسب لك عمولته فوراً!</p>
+            
+            <div id="affProductsListContainer" style="max-height: 350px; overflow-y: auto;">
+                جاري تحميل روابط المنتجات...
+            </div>
         </div>
     </div>
 
@@ -154,7 +160,7 @@
             }
         }
 
-        function openAffDashboard(aff) {
+        async function openAffDashboard(aff) {
             document.getElementById('registerBox').classList.remove('active');
             document.getElementById('loginBox').classList.remove('active');
             document.querySelector('.tabs').style.display = 'none';
@@ -172,17 +178,29 @@
             document.getElementById('affClicks').textContent = aff.clicks || 0;
 
             let refCode = aff.ref_code || aff.phone;
-            let fullLink = `https://www.sadarah.top/services.html?ref=${refCode}`;
-            document.getElementById('affLinkDisplay').textContent = fullLink;
-            window.currentAffLink = fullLink;
             localStorage.setItem('sadara_affiliate_phone', aff.phone);
-        }
 
-        function copyAffLink() {
-            if(window.currentAffLink) {
-                navigator.clipboard.writeText(window.currentAffLink);
-                alert('تم نسخ رابط التسويق بنجاح! 📋');
+            // جلب المنتجات لتوليد روابط الإحالة الخاصة بكل منتج لهذا المسوق
+            let { data: products } = await db.from('platform_services').select('*').eq('is_active', true).order('id', { ascending: false });
+            let container = document.getElementById('affProductsListContainer');
+            container.innerHTML = '';
+
+            if (!products || products.length === 0) {
+                container.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد منتجات متاحة للتسويق حالياً.</p>';
+                return;
             }
+
+            products.forEach(p => {
+                let productLink = `https://sadarah.top/store.html?product_id=${p.id}&ref=${refCode}`;
+                let commInfo = p.commission ? ` | 💰 العمولة: ${p.commission}` : '';
+                container.innerHTML += `
+                    <div class="product-link-row">
+                        <div style="font-weight:900; color:var(--primary); font-size:12px;">🔹 ${p.title} (${p.price})${commInfo}</div>
+                        <div style="font-size:10px; color:#64748b; word-break:break-all; background:#fff; padding:6px; border-radius:4px; border:1px solid #e2e8f0;">${productLink}</div>
+                        <button class="btn-sm" onclick="navigator.clipboard.writeText('${productLink}'); alert('تم نسخ رابط المنتج بنجاح! 📋');">نسخ رابط المنتج 📋</button>
+                    </div>
+                `;
+            });
         }
 
         function logoutAffiliate() {
