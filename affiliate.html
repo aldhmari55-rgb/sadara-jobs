@@ -26,7 +26,11 @@
         
         .product-link-card { background: #f8fafc; border: 1px solid #cbd5e1; padding: 14px; border-radius: 10px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
         .product-top-row { display: flex; gap: 12px; align-items: flex-start; }
-        .product-thumb { width: 85px; height: 85px; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1; flex-shrink: 0; }
+        
+        /* حاوية مرنة لصورة المنتج لدى المسوق */
+        .product-thumb-container { width: 100px; height: 100px; background: #0f172a10; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; padding: 4px; }
+        .product-thumb { width: 100%; height: 100%; object-fit: contain; border-radius: 6px; display: block; }
+
         .product-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; }
         .product-desc-box { background: white; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 11px; color: #475569; line-height: 1.5; margin-top: 4px; }
         .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: bold; color: white; }
@@ -103,7 +107,7 @@
             <hr style="border:0; border-top:1px solid #e2e8f0; margin:15px 0;">
 
             <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 4px;">📦 منتجات المتجر وتفاصيلها للتسويق:</h3>
-            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">كل منتج يظهر معه صورته، وصفه التسويقي، وسعره، ورابط الإحالة المخصص لك.</p>
+            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">كل منتج يظهر معه صورته بابعادها الكاملة، وصفه التسويقي، وسعره، ورابط الإحالة.</p>
             
             <div id="affProductsListContainer" style="max-height: 450px; overflow-y: auto;">
                 جاري تحميل المنتجات والتفاصيل...
@@ -185,7 +189,6 @@
             let refCode = aff.ref_code || aff.phone;
             localStorage.setItem('sadara_affiliate_phone', aff.phone);
 
-            // جلب المنتجات وعرض الصورة، الوصف الكامل، السعر، العمولة والروابط
             let { data: products } = await db.from('platform_services').select('*').eq('is_active', true).order('id', { ascending: false });
             let container = document.getElementById('affProductsListContainer');
             container.innerHTML = '';
@@ -197,7 +200,7 @@
 
             products.forEach(p => {
                 let productLink = `https://sadarah.top/store.html?product_id=${p.id}&ref=${refCode}`;
-                let imgTag = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-thumb">` : `<div class="product-thumb" style="display:flex; align-items:center; justify-content:center; background:#e2e8f0; font-size:10px; color:#64748b; text-align:center;">بدون صورة</div>`;
+                let imgTag = (p.image && p.image.trim() !== '') ? `<div class="product-thumb-container"><img src="${p.image}" class="product-thumb"></div>` : `<div class="product-thumb-container" style="font-size:10px; color:#64748b; text-align:center;">بدون صورة</div>`;
                 let commInfo = p.commission ? ` | 💰 عمولتك: ${p.commission}` : '';
                 let descText = p.description ? p.description : 'لا يوجد وصف تسويقي إضافي لهذا المنتج.';
 
