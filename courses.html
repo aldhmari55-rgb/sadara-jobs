@@ -21,6 +21,11 @@
         
         .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
         .course-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        /* مرونة الصورة لتتناسب مع جميع الأحجام */
+        .course-img-wrap { width: 100%; height: 180px; overflow: hidden; background: #0f2347; display: flex; align-items: center; justify-content: center; }
+        .course-img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
+        
         .course-header { background: linear-gradient(135deg, #0a1324, var(--primary)); color: #fff; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         .course-header h3 { font-size: 1.1rem; margin-bottom: 4px; }
         .price-badge { background: var(--gold); color: #0a1324; font-weight: 900; font-size: 11px; padding: 4px 10px; border-radius: 20px; }
@@ -34,12 +39,11 @@
         .buy-btn:hover { background: #0f172a; }
         .empty-box { text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; }
 
-        /* نافذة الدفع مع رفع الإيصال */
+        /* نافذة الدفع */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
         .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 440px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); max-height: 90vh; overflow-y: auto; }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
         .modal-card input, .modal-card select { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
-        
         .payment-info-box { background: #f8fafc; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid #e2e8f0; font-size: 11px; color: #334155; line-height: 1.6; }
 
         .course-reviews-box { background: #f8fafc; padding: 12px 15px; border-top: 1px solid #e2e8f0; font-size: 12px; }
@@ -64,11 +68,11 @@
         <h2 class="section-title">الدورات التدريبية المتاحة</h2>
         
         <div class="courses-grid" id="coursesGrid">
-            <div class="empty-box">جاري تحميل الدورات من لوحة التحكم... ⏳</div>
+            <div class="empty-box">جاري تحميل الدورات من السحابة... ⏳</div>
         </div>
     </div>
 
-    <!-- نافذة إتمام الدفع مع إرفاق سند التحويل -->
+    <!-- نافذة الدفع -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-card">
             <h3 style="color:var(--primary); font-size:15px; margin-bottom:4px;"><i class="fa-solid fa-cart-shopping" style="color:var(--gold);"></i> إتمام الاشتراك في الدورة</h3>
@@ -82,9 +86,9 @@
             <div class="payment-info-box">
                 <strong>💳 تفاصيل حسابات الدفع الرسمية:</strong><br>
                 • <b>بنك الكريمي (نقطة حاسب):</b> حساب رقم <code>2628009</code><br>
-                • <b>الحوالات المحلية (أي شركة حوالات):</b> رقم الجوال <code>780568507</code><br>
+                • <b>الحوالات المحلية (أي شركة):</b> رقم الجوال <code>780568507</code><br>
                 • <b>محفظة جيب (إيداع):</b> رقم الجوال <code>780568507</code><br>
-                <div style="margin-top:4px; color:var(--primary); font-weight:bold;">الاسم الكامل المستفيد: عبدالرحمن عبدالله صالح الذماري</div>
+                <div style="margin-top:4px; color:var(--primary); font-weight:bold;">الاسم المستفيد: عبدالرحمن عبدالله صالح الذماري</div>
             </div>
 
             <label>اسمك الكريم (الثلاثي)</label>
@@ -93,7 +97,7 @@
             <label>رقمك / رقم الواتساب</label>
             <input type="tel" id="buyerPhone" placeholder="770000000">
 
-            <label>اختر طريقة الدفع التي قمت بالتحويل عبرها</label>
+            <label>طريقة الدفع</label>
             <select id="paymentMethod">
                 <option value="بنك الكريمي نقطة حاسب (حساب 2628009)">بنك الكريمي (نقطة حاسب - حساب 2628009)</option>
                 <option value="الحوالات المحلية (أي شركة)">الحوالات المحلية (أي شركة حوالات)</option>
@@ -103,7 +107,7 @@
             <label>رقم سند التحويل / الحوالة</label>
             <input type="text" id="transferRef" placeholder="أدخل رقم الإيصال أو السند">
 
-            <label>📸 ارفع صورة سند التحويل أو الإيداع (ضروري)</label>
+            <label>📸 ارفع صورة سند التحويل أو الإيداع</label>
             <input type="file" id="transferImage" accept="image/*" style="padding:6px; background:#f8fafc;">
 
             <button onclick="submitCourseOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-top:12px;"><i class="fa-solid fa-check-circle"></i> تأكيد الطلب والبدء بمشاهدة الدروس 🚀</button>
@@ -139,10 +143,15 @@
                 courses.forEach(c => {
                     let lessonsCount = (c.lessons && Array.isArray(c.lessons)) ? c.lessons.length : 0;
                     selectedCourseStarsMap[c.id] = 5;
-                    let coursePrice = c.price ? `${c.price} ريال` : '1500 ريال رمزي';
+                    let coursePrice = c.price ? `${c.price} ريال` : '1500 ريال';
+                    
+                    let imgHtml = c.image 
+                        ? `<div class="course-img-wrap"><img src="${c.image}" class="course-img"></div>` 
+                        : `<div class="course-img-wrap"><div style="color:#fff; font-size:12px;"><i class="fa-solid fa-graduation-cap"></i> منصة صدارة</div></div>`;
 
                     grid.innerHTML += `
                         <div class="course-card">
+                            ${imgHtml}
                             <div class="course-header">
                                 <h3>${c.title}</h3>
                                 <span class="price-badge">🏷️ ${coursePrice}</span>
@@ -168,7 +177,7 @@
                                 </div>
 
                                 <div style="display:flex; gap:5px; margin-top:4px;">
-                                    <input type="text" id="courseReviewText_${c.id}" placeholder="اكتب رأيك بالدورة واستلام الشهادة..." style="flex:1; padding:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11px; outline:none;">
+                                    <input type="text" id="courseReviewText_${c.id}" placeholder="اكتب رأيك بالدورة..." style="flex:1; padding:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11px; outline:none;">
                                     <button onclick="submitCourseReview(${c.id})" style="background:var(--primary); color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">إرسال</button>
                                 </div>
 
@@ -187,7 +196,7 @@
         function openCheckoutModal(course) {
             currentCheckoutCourse = course;
             document.getElementById('modalCourseTitle').textContent = course.title;
-            document.getElementById('modalCoursePrice').textContent = course.price ? `${course.price} ريال` : '1500 ريال رمزي';
+            document.getElementById('modalCoursePrice').textContent = course.price ? `${course.price} ريال` : '1500 ريال';
             
             document.getElementById('buyerName').value = localStorage.getItem('sadara_logged_name') || '';
             document.getElementById('buyerPhone').value = localStorage.getItem('sadara_logged_phone') || '';
@@ -214,21 +223,20 @@
             if (!imageFile) { alert('يرجى رفع صورة سند التحويل أو الإيداع'); return; }
             if (!currentCheckoutCourse) return;
 
-            msg.style.color = 'blue'; msg.textContent = 'جاري رفع السند وحفظ الطلب... ⏳';
+            msg.style.color = 'blue'; msg.textContent = 'جاري رفع السند وحفظ الطلب سحابياً... ⏳';
 
             try {
-                // رفع صورة السند إلى سحابة Supabase Storage (يُفضل وجودbucket باسم 'orders' أو استخدام الحفظ النصي المؤقت في حال عدم توفر البكت)
                 let imageUrl = '';
                 try {
                     const fileExt = imageFile.name.split('.').pop();
-                    const fileName = `${Date.now()}_${Math.random().toString(36.substring(2)}.${fileExt}`;
+                    const fileName = `order_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
                     let { data: uploadData, error: uploadErr } = await db.storage.from('orders').upload(fileName, imageFile);
                     if (!uploadErr && uploadData) {
                         let { data: publicURL } = db.storage.from('orders').getPublicUrl(fileName);
                         imageUrl = publicURL.publicUrl;
                     }
                 } catch(err) {
-                    imageUrl = 'تم إرفاق صورة السند محلياً';
+                    imageUrl = 'تم إرفاق السند';
                 }
 
                 let { error } = await db.from('orders').insert([{
@@ -254,7 +262,7 @@
 
             } catch(e) {
                 msg.style.color = 'red';
-                msg.textContent = 'حدث خطأ أثناء رفع الصورة أو حفظ الطلب. تأكد من تفعيل Storage في سحابة Supabase.';
+                msg.textContent = 'حدث خطأ أثناء حفظ الطلب. تأكد من تفعيل Storage في سحابة Supabase.';
             }
         }
 
@@ -271,7 +279,7 @@
             const commentInput = document.getElementById(`courseReviewText_${courseId}`);
             const comment = commentInput.value.trim();
 
-            if (!comment) { alert('يرجى كتابة تعليقك أولاً قبل الإرسال'); return; }
+            if (!comment) { alert('يرجى كتابة تعليقك أولاً'); return; }
 
             const userPhone = localStorage.getItem('sadara_logged_phone') || 'غير مسجل';
             const userName = localStorage.getItem('sadara_logged_name') || 'طالب';
@@ -288,7 +296,7 @@
             if (error) {
                 alert('خطأ أثناء إرسال التقييم: ' + error.message);
             } else {
-                alert('شكراً لك! تم نشر تقييمك للدورة بنجاح ✅');
+                alert('شكراً لك! تم نشر تقييمك بنجاح ✅');
                 commentInput.value = '';
                 loadCourseReviews(courseId);
             }
@@ -306,7 +314,7 @@
             listBox.innerHTML = '';
 
             if (!reviews || !reviews.length) {
-                listBox.innerHTML = '<p style="font-size:10px; color:#94a3b8;">لا توجد تقييمات حتى الآن. كن أول من يقيّم هذه الدورة!</p>';
+                listBox.innerHTML = '<p style="font-size:10px; color:#94a3b8;">لا توجد تقييمات حتى الآن.</p>';
                 return;
             }
 
