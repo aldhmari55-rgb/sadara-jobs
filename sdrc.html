@@ -58,7 +58,7 @@
     <div id="adminMainContent" style="display:none;">
         <div class="header">
             <h1>لوحة تحكم الدورات والمبيعات الشاملة 🎓</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية، اختيار صور المعرض، الأسعار، والمبيعات</p>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية، صور المعرض، الأسعار، والمبيعات</p>
             <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin-top:10px; background:#ef4444; border:none; font-size:11px;">قفل لوحة التحكم 🔒</button>
         </div>
 
@@ -85,6 +85,7 @@
                 
                 <label>🖼️ صورة الدورة (من معرض الجوال)</label>
                 <input type="file" id="courseImageFile" accept="image/*" style="padding:6px; background:#f8fafc;">
+                <div id="imagePreviewStatus" style="font-size:10px; color:#64748b; margin-top:3px;"></div>
 
                 <label>سعر الدورة (ريال)</label>
                 <input type="text" id="coursePrice" placeholder="1500">
@@ -204,19 +205,26 @@
         const description = document.getElementById('courseMainDesc').value.trim();
         const is_active = document.getElementById('courseStatus').value === 'true';
         const imageFile = document.getElementById('courseImageFile').files[0];
-        let imageUrl = document.getElementById('existingImageUrl').value;
+        let imageUrl = document.getElementById('existingImageUrl').value.trim();
         const msg = document.getElementById('courseMsg');
 
         if (!title) { alert('يرجى إدخال اسم الدورة الرئيسية!'); return; }
 
-        msg.style.color = 'blue'; msg.textContent = 'جاري معالجة الصورة والحفظ السحابي... ⏳';
+        msg.style.color = 'blue'; 
 
         try {
             if (imageFile) {
+                msg.textContent = 'جاري رفع الصورة الجديدة للتخزين السحابي... ⏳';
                 const fileExt = imageFile.name.split('.').pop();
                 const fileName = `course_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+                
                 let { data: uploadData, error: uploadErr } = await db.storage.from('orders').upload(fileName, imageFile);
-                if (!uploadErr && uploadData) {
+                if (uploadErr) {
+                    msg.style.color = 'red';
+                    msg.textContent = 'خطأ في رفع الصورة: ' + uploadErr.message;
+                    return;
+                }
+                if (uploadData) {
                     let { data: publicURL } = db.storage.from('orders').getPublicUrl(fileName);
                     imageUrl = publicURL.publicUrl;
                 }
@@ -224,6 +232,8 @@
         } catch(err) {
             console.log('ملاحظة رفع الصورة:', err);
         }
+
+        msg.textContent = 'جاري حفظ بيانات الدورة في السحابة... ⏳';
 
         let titles = document.querySelectorAll('.lesson-title');
         let urls = document.querySelectorAll('.lesson-url');
@@ -235,9 +245,16 @@
             if (t || u) { lessonsArray.push({ lesson_title: t || 'درس بدون مسمى', video_url: u || '' }); }
         }
 
-        let payload = { title, image: imageUrl, price, description, is_active, lessons: lessonsArray };
-        let res;
+        let payload = { 
+            title: title, 
+            image: imageUrl, 
+            price: price, 
+            description: description, 
+            is_active: is_active, 
+            lessons: lessonsArray 
+        };
 
+        let res;
         if (editId) {
             res = await db.from('platform_courses').update(payload).eq('id', editId);
         } else {
@@ -246,10 +263,10 @@
 
         if (res.error) { 
             msg.style.color = 'red'; 
-            msg.textContent = 'خطأ سحابي: ' + res.error.message; 
+            msg.textContent = 'خطأ سحابي في الحفظ: ' + res.error.message; 
         } else {
             msg.style.color = 'green'; 
-            msg.textContent = 'تم حفظ وتحديث الدورة بنجاح تام! ✅';
+            msg.textContent = 'تم حفظ وتحديث الدورة وصورتها بنجاح تام! ✅';
             resetCourseForm(); 
             loadAdminCourses();
         }
@@ -260,6 +277,7 @@
         document.getElementById('existingImageUrl').value = '';
         document.getElementById('courseMainTitle').value = '';
         document.getElementById('courseImageFile').value = '';
+        document.getElementById('imagePreviewStatus').textContent = '';
         document.getElementById('coursePrice').value = '';
         document.getElementById('courseMainDesc').value = '';
         document.getElementById('courseStatus').value = 'true';
@@ -317,6 +335,9 @@
         document.getElementById('courseMainDesc').value = c.description || '';
         document.getElementById('courseStatus').value = (c.is_active !== false) ? 'true' : 'false';
         document.getElementById('courseImageFile').value = '';
+        
+        let statusText = c.image ? '✅ توجد صورة محفوظة سحابياً (اترك حقل الصورة فارغاً إن لم ترد تغييرها، أو اختر صورة جديدة للاستبدال)' : '⚠️ لا توجد صورة حالياً لهذه الدورة';
+        document.getElementById('imagePreviewStatus').textContent = statusText;
         
         let container = document.getElementById('lessonsContainer'); 
         container.innerHTML = '';
