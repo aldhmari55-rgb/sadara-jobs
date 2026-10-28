@@ -32,19 +32,18 @@
         .status-msg { margin-top: 8px; font-size: 11px; font-weight: bold; text-align: center; }
         .list-box { margin-top: 12px; max-height: 350px; overflow-y: auto; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
         .item-row { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-bottom: 1px solid #f1f5f9; font-size: 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
-        .action-btns { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
         .btn-sm { padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 10px; font-weight: bold; color: white; }
         .btn-del { background: var(--red); }
         .btn-edit { background: #3b82f6; }
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         .lesson-group { background: #f1f5f9; padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid #cbd5e1; }
         .guide-box { background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 11px; color: #1e40af; line-height: 1.6; }
-        .receipt-img { max-width: 80px; max-height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer; margin-top: 4px; }
+        .receipt-img, .admin-course-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; margin-top: 4px; }
     </style>
 </head>
 <body>
 
-    <!-- شاشة إدخال الرمز السري الآمنة -->
+    <!-- شاشة الرمز السري -->
     <div class="admin-auth-overlay" id="adminAuthOverlay">
         <div class="admin-auth-card">
             <h2>لوحة إدارة الدورات والمبيعات 🔐</h2>
@@ -55,35 +54,39 @@
         </div>
     </div>
 
-    <!-- محتوى اللوحة -->
+    <!-- محتوى لوحة التحكم -->
     <div id="adminMainContent" style="display:none;">
         <div class="header">
             <h1>لوحة تحكم الدورات والمبيعات الشاملة 🎓</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية، مبيعات الحوالات والإيصالات، والمشتركين</p>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية، اختيار صور المعرض، الأسعار، والمبيعات</p>
             <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin-top:10px; background:#ef4444; border:none; font-size:11px;">قفل لوحة التحكم 🔒</button>
         </div>
 
         <div class="grid-container">
 
-            <!-- 1. مربع إدارة الدورات المرئية وتحديد الأسعار -->
+            <!-- 1. إدارة الدورات وصورها وسعرها -->
             <div class="card">
                 <h2>
-                    <span id="formTitleText">🎓 إدارة الدورات المرئية وتحديد الأسعار</span>
+                    <span id="formTitleText">🎓 إدارة الدورات المرئية وصور المعرض والأسعار</span>
                     <span class="badge" id="coursesCount">0</span>
                 </h2>
 
                 <div class="guide-box">
                     <strong>📖 تعليمات لوحة الدورات:</strong><br>
-                    • أدخل اسم الدورة، **سعر الدورة** (مثال: 1500)، ووصفها.<br>
-                    • أضف روابط دروس اليوتيوب المرتبة واضغط نشر.
+                    • أدخل اسم الدورة، **اختر صورة الغلاف من معرض الجوال**، وسعر الدورة.<br>
+                    • أضف دروس الدورة واضغط نشر.
                 </div>
                 
                 <input type="hidden" id="editCourseId">
+                <input type="hidden" id="existingImageUrl">
                 
                 <label>اسم الدورة التدريبية الرئيسية</label>
                 <input type="text" id="courseMainTitle" placeholder="مثال: دبلوم إدارة الموارد البشرية HR">
                 
-                <label>سعر الدورة (رقم فقط بدون كلمة ريال)</label>
+                <label>🖼️ صورة الدورة (من معرض الجوال)</label>
+                <input type="file" id="courseImageFile" accept="image/*" style="padding:6px; background:#f8fafc;">
+
+                <label>سعر الدورة (ريال)</label>
                 <input type="text" id="coursePrice" placeholder="1500">
 
                 <label>وصف الدورة</label>
@@ -98,10 +101,9 @@
                 <hr style="margin: 15px 0; border: 0; border-top: 1px solid #cbd5e1;">
                 
                 <label style="color: var(--primary); font-size: 13px;">📚 دروس الدورة (مسمى الدرس ورابط الفيديو):</label>
-                
                 <div id="lessonsContainer">
                     <div class="lesson-group">
-                        <label>مسمى الدرس (عنوان الفيديو)</label>
+                        <label>مسمى الدرس</label>
                         <input type="text" class="lesson-title" placeholder="مثال: الدرس الأول: مقدمة">
                         <label>رابط الفيديو</label>
                         <input type="text" class="lesson-url" placeholder="https://www.youtube.com/embed/...">
@@ -110,7 +112,7 @@
 
                 <button type="button" onclick="addLessonField('', '')" style="background: #64748b; margin-top: 8px;">➕ إضافة درس آخر للدورة</button>
                 
-                <button id="btnSaveCourse" onclick="saveStructuredCourse()" style="background:#0284c7; color:white; margin-top: 15px;">نشر الدورة بكافة دروسها 🚀</button>
+                <button id="btnSaveCourse" onclick="saveStructuredCourse()" style="background:#0284c7; color:white; margin-top: 15px;">نشر الدورة بكافة دروسها وصورتها 🚀</button>
                 <button id="btnCancelCourse" onclick="resetCourseForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
                 
                 <div id="courseMsg" class="status-msg"></div>
@@ -118,16 +120,16 @@
                 <div class="list-box" id="adminCoursesList" style="margin-top: 15px;">جاري التحميل...</div>
             </div>
 
-            <!-- 2. مربع الدورات المباعة والطلبات مع سندات التحويل -->
+            <!-- 2. الدورات المباعة -->
             <div class="card">
                 <h2>
-                    <span>🛒 الدورات المباعة والطلبات (مع إيصالات التحويل)</span>
+                    <span>🛒 الدورات المباعة والطلبات (مع الإيصالات)</span>
                     <span class="badge" id="ordersCount">0</span>
                 </h2>
                 <div class="list-box" id="ordersList">جاري التحميل...</div>
             </div>
 
-            <!-- 3. مربع المشتركين في الدورات المدفوعة -->
+            <!-- 3. المشتركين -->
             <div class="card">
                 <h2>
                     <span>👥 المشتركين في الدورات المدفوعة</span>
@@ -136,7 +138,7 @@
                 <div class="list-box" id="subscribersList">جاري التحميل...</div>
             </div>
 
-            <!-- 4. سجل الشهادات ونتائج الطلاب -->
+            <!-- 4. سجل الشهادات -->
             <div class="card">
                 <h2>
                     <span>📜 سجل الشهادات الصادرة للطلاب</span>
@@ -188,7 +190,7 @@
         let container = document.getElementById('lessonsContainer');
         container.innerHTML += `
             <div class="lesson-group">
-                <label>مسمى الدرس (عنوان الفيديو)</label>
+                <label>مسمى الدرس</label>
                 <input type="text" class="lesson-title" value="${titleVal}" placeholder="مثال: الدرس التالي...">
                 <label>رابط الفيديو</label>
                 <input type="text" class="lesson-url" value="${urlVal}" placeholder="https://www.youtube.com/embed/...">
@@ -201,9 +203,27 @@
         const price = document.getElementById('coursePrice').value.trim() || '1500';
         const description = document.getElementById('courseMainDesc').value.trim();
         const is_active = document.getElementById('courseStatus').value === 'true';
+        const imageFile = document.getElementById('courseImageFile').files[0];
+        let imageUrl = document.getElementById('existingImageUrl').value;
         const msg = document.getElementById('courseMsg');
 
         if (!title) { alert('يرجى إدخال اسم الدورة الرئيسية!'); return; }
+
+        msg.style.color = 'blue'; msg.textContent = 'جاري معالجة الصورة والحفظ السحابي... ⏳';
+
+        try {
+            if (imageFile) {
+                const fileExt = imageFile.name.split('.').pop();
+                const fileName = `course_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+                let { data: uploadData, error: uploadErr } = await db.storage.from('orders').upload(fileName, imageFile);
+                if (!uploadErr && uploadData) {
+                    let { data: publicURL } = db.storage.from('orders').getPublicUrl(fileName);
+                    imageUrl = publicURL.publicUrl;
+                }
+            }
+        } catch(err) {
+            console.log('ملاحظة رفع الصورة:', err);
+        }
 
         let titles = document.querySelectorAll('.lesson-title');
         let urls = document.querySelectorAll('.lesson-url');
@@ -215,8 +235,7 @@
             if (t || u) { lessonsArray.push({ lesson_title: t || 'درس بدون مسمى', video_url: u || '' }); }
         }
 
-        msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ في السحابة... ⏳';
-        let payload = { title, price, description, is_active, lessons: lessonsArray };
+        let payload = { title, image: imageUrl, price, description, is_active, lessons: lessonsArray };
         let res;
 
         if (editId) {
@@ -238,20 +257,22 @@
 
     function resetCourseForm() {
         document.getElementById('editCourseId').value = '';
+        document.getElementById('existingImageUrl').value = '';
         document.getElementById('courseMainTitle').value = '';
+        document.getElementById('courseImageFile').value = '';
         document.getElementById('coursePrice').value = '';
         document.getElementById('courseMainDesc').value = '';
         document.getElementById('courseStatus').value = 'true';
         document.getElementById('lessonsContainer').innerHTML = `
             <div class="lesson-group">
-                <label>مسمى الدرس (عنوان الفيديو)</label>
+                <label>مسمى الدرس</label>
                 <input type="text" class="lesson-title" placeholder="مثال: الدرس الأول: مقدمة">
                 <label>رابط الفيديو</label>
                 <input type="text" class="lesson-url" placeholder="https://www.youtube.com/embed/...">
             </div>`;
-        document.getElementById('btnSaveCourse').textContent = 'نشر الدورة بكافة دروسها 🚀';
+        document.getElementById('btnSaveCourse').textContent = 'نشر الدورة بكافة دروسها وصورتها 🚀';
         document.getElementById('btnCancelCourse').style.display = 'none';
-        document.getElementById('formTitleText').textContent = '🎓 إدارة الدورات المرئية وتحديد الأسعار';
+        document.getElementById('formTitleText').textContent = '🎓 إدارة الدورات المرئية وصور المعرض والأسعار';
     }
 
     async function loadAdminCourses() {
@@ -267,10 +288,14 @@
             let isActive = c.is_active !== false;
             let statusBadge = isActive ? '<span style="color:green; font-weight:bold;">متوفر 🟢</span>' : '<span style="color:red; font-weight:bold;">غير متوفر 🔴</span>';
             let toggleText = isActive ? 'إخفاء 🔴' : 'إظهار 🟢';
+            let thumb = c.image ? `<img src="${c.image}" class="admin-course-thumb">` : '<span style="font-size:10px; color:#94a3b8;">بدون صورة</span>';
 
             box.innerHTML += `<div class="item-row">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong>🎓 ${c.title} (${statusBadge}) - <span style="color:var(--gold);">🏷️ ${c.price || '1500'} ريال</span></strong>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        ${thumb}
+                        <strong>🎓 ${c.title} (${statusBadge}) - <span style="color:var(--gold);">🏷️ ${c.price || '1500'} ريال</span></strong>
+                    </div>
                     <div style="display:flex; gap:5px;">
                         <button type="button" class="btn-sm btn-edit" onclick="editCourse(${c.id})">تعديل ✏️</button>
                         <button type="button" class="btn-sm" style="background:#d97706;" onclick="toggleStatus(${c.id}, ${isActive})">${toggleText}</button>
@@ -286,10 +311,12 @@
         let c = cachedCourses.find(item => item.id == id);
         if (!c) return;
         document.getElementById('editCourseId').value = c.id;
+        document.getElementById('existingImageUrl').value = c.image || '';
         document.getElementById('courseMainTitle').value = c.title || '';
         document.getElementById('coursePrice').value = c.price || '';
         document.getElementById('courseMainDesc').value = c.description || '';
         document.getElementById('courseStatus').value = (c.is_active !== false) ? 'true' : 'false';
+        document.getElementById('courseImageFile').value = '';
         
         let container = document.getElementById('lessonsContainer'); 
         container.innerHTML = '';
@@ -312,7 +339,6 @@
         loadAdminCourses();
     }
 
-    // تحميل الدورات المباعة والطلبات مع عرض صورة الإيصال
     async function loadOrders() {
         let { data } = await db.from('orders').select('*').eq('item_type', 'course').order('id', { ascending: false });
         cachedOrders = data || [];
@@ -327,7 +353,7 @@
         }
 
         cachedOrders.forEach(o => {
-            let imgHtml = o.image_url ? `<a href="${o.image_url}" target="_blank"><img src="${o.image_url}" class="receipt-img" title="اضغط لعرض السند كاملاً"></a>` : '<span style="color:#94a3b8; font-size:10px;">بدون صورة سند</span>';
+            let imgHtml = o.image_url ? `<a href="${o.image_url}" target="_blank"><img src="${o.image_url}" class="receipt-img"></a>` : '<span style="color:#94a3b8; font-size:10px;">بدون صورة</span>';
             box.innerHTML += `
                 <div class="item-row">
                     <div style="display:flex; justify-content:space-between; font-weight:bold;">
@@ -335,7 +361,7 @@
                         <span style="color:var(--gold);">🏷️ ${o.price || '1500'} ريال</span>
                     </div>
                     <div style="color:#475569; font-size:11px;">المشتري: ${o.buyer_name} | هاتف: ${o.buyer_phone}</div>
-                    <div style="color:#334155; font-size:11px; font-weight:bold;">طريقة الدفع: ${o.payment_method || '-'}</div>
+                    <div style="color:#334155; font-size:11px; font-weight:bold;">الدفع: ${o.payment_method || '-'}</div>
                     <div style="margin-top:4px; display:flex; align-items:center; gap:10px;">
                         <span>صورة الإيصال:</span> ${imgHtml}
                     </div>
@@ -345,12 +371,10 @@
         });
     }
 
-    // تحميل المشتركين في الدورات المدفوعة
     async function loadSubscribers() {
         let { data } = await db.from('orders').select('*').eq('item_type', 'course').order('id', { ascending: false });
         let box = document.getElementById('subscribersList');
         if(!box) return;
-        
         let subs = data || [];
         document.getElementById('subscribersCount').textContent = subs.length;
         box.innerHTML = '';
@@ -367,7 +391,7 @@
                         <span>👤 المشترك: ${s.buyer_name}</span>
                         <span style="color:green;">نشط 🟢</span>
                     </div>
-                    <div style="color:#475569; font-size:11px;">الهاتف: ${s.buyer_phone} | الدورة المشترك بها: ${s.item_title}</div>
+                    <div style="color:#475569; font-size:11px;">الهاتف: ${s.buyer_phone} | الدورة: ${s.item_title}</div>
                 </div>
             `;
         });
