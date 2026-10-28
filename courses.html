@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة صدارة للدورات التدريبية | sadarah.top</title>
+    <title>منصة صدارة للدورات الاحترافية | sadarah.top</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -16,15 +16,22 @@
         .back-btn { background: #1e293b; color: #fff; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 12px; border: 1px solid var(--gold); }
         .container { max-width: 900px; margin: 25px auto; padding: 0 16px; }
         .section-title { font-size: 1.3rem; margin-bottom: 15px; color: var(--primary); border-right: 4px solid var(--gold); padding-right: 10px; }
+        
+        .notice-banner { background: linear-gradient(135deg, #0a1324, var(--primary)); color: white; padding: 14px 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gold); font-size: 12px; line-height: 1.6; }
+        
         .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
         .course-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between; }
-        .course-header { background: linear-gradient(135deg, #0a1324, var(--primary)); color: #fff; padding: 15px; }
+        .course-header { background: linear-gradient(135deg, #0a1324, var(--primary)); color: #fff; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         .course-header h3 { font-size: 1.1rem; margin-bottom: 4px; }
+        .price-badge { background: var(--gold); color: #0a1324; font-weight: 900; font-size: 11px; padding: 4px 10px; border-radius: 20px; }
+        
         .course-body { padding: 15px; }
         .course-body p { color: #64748b; font-size: 0.9rem; margin-bottom: 10px; line-height: 1.5; }
+        .cert-badge { background: #fef3c7; color: #d97706; font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; }
+        
         .course-footer { padding: 15px; background: #f1f5f9; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; }
-        .watch-btn { background: #2563eb; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
-        .watch-btn:hover { background: #1d4ed8; }
+        .buy-btn { background: var(--green); color: #fff; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
+        .buy-btn:hover { opacity: 0.9; }
         .empty-box { text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; }
 
         .course-reviews-box { background: #f8fafc; padding: 12px 15px; border-top: 1px solid #e2e8f0; font-size: 12px; }
@@ -36,11 +43,16 @@
 <body>
 
     <header>
-        <h1>🎓 منصة صدارة للدورات التدريبية</h1>
+        <h1>🎓 الدورات المرئية والاحترافية</h1>
         <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> العودة للرئيسية</a>
     </header>
 
     <div class="container">
+        <div class="notice-banner">
+            <i class="fa-solid fa-circle-info" style="color:var(--gold);"></i> 
+            <b>ملاحظة تدريبية:</b> جميع الدورات المرئية تمنحك <b>شهادة إتمام معتمدة برقم تحقق فريد (QR Code)</b> صادرة من منصة صدارة لتعزيز سيرتك الذاتية ومهاراتك العملية!
+        </div>
+
         <h2 class="section-title">الدورات التدريبية المتاحة</h2>
         
         <div class="courses-grid" id="coursesGrid">
@@ -74,18 +86,21 @@
                 courses.forEach(c => {
                     let lessonsCount = (c.lessons && Array.isArray(c.lessons)) ? c.lessons.length : 0;
                     selectedCourseStarsMap[c.id] = 5;
+                    let coursePrice = c.price ? `${c.price} ريال` : '1500 ريال رمزي';
 
                     grid.innerHTML += `
                         <div class="course-card">
                             <div class="course-header">
                                 <h3>${c.title}</h3>
+                                <span class="price-badge">🏷️ ${coursePrice}</span>
                             </div>
                             <div class="course-body">
-                                <p>${c.description || 'دورة تدريبية احترافية مع دروس مرئية.'}</p>
+                                <p>${c.description || 'دورة تدريبية احترافية شاملة مع دروس مرئية وتطبيق عملي.'}</p>
+                                <div class="cert-badge"><i class="fa-solid fa-certificate"></i> يشمل شهادة إتمام برقم تحقق رقمي</div>
                             </div>
                             <div class="course-footer">
                                 <span style="font-size:12px; font-weight:bold; color:#0f2347;"><i class="fa-solid fa-book"></i> ${lessonsCount} دروس</span>
-                                <a href="watch.html?id=${c.id}" class="watch-btn"><i class="fa-solid fa-play"></i> ابدأ مشاهدة الدورة</a>
+                                <a href="https://wa.me/967780568507?text=أرغب في الاشتراك وشراء دورة: ${encodeURIComponent(c.title)}" target="_blank" class="buy-btn"><i class="fa-brands fa-whatsapp"></i> اشترك الآن عبر الواتساب</a>
                             </div>
 
                             <div class="course-reviews-box">
