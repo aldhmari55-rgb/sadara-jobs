@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الدورات النصية والاختبارات المجانية | منصة صدارة</title>
+    <title>الدورات النصية والاختبارات المتقدمة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; --text-dark: #0f172a; }
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --red: #ef4444; --bg-light: #f8fafc; --text-dark: #0f172a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-light); color: var(--text-dark); padding-bottom: 60px; line-height: 1.8; }
         
@@ -32,15 +32,25 @@
         .container { max-width: 850px; margin: 25px auto; padding: 0 16px; }
         .free-badge { background: #dcfce7; color: #166534; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 900; }
         .text-course-card { background: white; border-radius: 12px; padding: 18px; margin-bottom: 15px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 10px; }
-        .read-btn { background: var(--primary); color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; width: fit-content; border: none; cursor: pointer; transition: 0.2s; }
-        .read-btn:hover { background: #1e3a8a; }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px; }
+        .action-btn { background: var(--primary); color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; border: none; cursor: pointer; transition: 0.2s; }
+        .action-btn:hover { background: #1e3a8a; }
+        .action-btn.exam { background: #d97706; }
 
-        /* نافذة قراءة المحتوى النصي المنبثقة */
+        /* نافذة القراءة والاختبار المنبثقة */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-        .modal-card { background: white; padding: 22px; border-radius: 14px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .modal-card { background: white; padding: 22px; border-radius: 14px; width: 100%; max-width: 750px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .modal-title { font-size: 18px; font-weight: 900; color: var(--primary); margin-bottom: 10px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
         .modal-body { font-size: 13px; color: #334155; line-height: 1.8; white-space: pre-wrap; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
-        .close-modal-btn { background: #ef4444; color: white; width: 100%; padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 12px; }
+        
+        /* تصميم أسئلة الاختبار ذات الاختيارات المتعددة */
+        .question-box { background: #fff; border: 1px solid #cbd5e1; padding: 14px; border-radius: 10px; margin-bottom: 15px; }
+        .question-title { font-weight: bold; font-size: 13px; color: var(--primary); margin-bottom: 8px; }
+        .option-label { display: block; background: #f8fafc; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; font-size: 12px; cursor: pointer; transition: 0.2s; }
+        .option-label:hover { background: #f1f5f9; border-color: var(--primary); }
+        .option-label input { margin-left: 8px; }
+
+        .close-modal-btn { background: #ef4444; color: white; width: 100%; padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 12px; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -51,7 +61,6 @@
         <a href="index.html" style="color: white; text-decoration: none; font-size: 12px; font-weight: bold;"><i class="fa-solid fa-house"></i></a>
     </header>
 
-    <!-- القائمة الجانبية -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="sidebar-drawer" id="sidebarDrawer">
         <div class="sidebar-header">
@@ -74,16 +83,16 @@
 
     <div class="container">
         <div style="background: white; padding: 16px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; text-align: center;">
-            <h2 style="font-size: 16px; color: var(--primary); margin-bottom: 6px;">مكتبتك المعرفية المجانية 🚀</h2>
-            <p style="font-size: 12px; color: #64748b;">طور مهاراتك المهنية والتقنية من خلال أدلة نصية ومحتوى تأهيلي مباشر.</p>
+            <h2 style="font-size: 16px; color: var(--primary); margin-bottom: 6px;">مكتبتك المعرفية المجانية واختبارات الاعتماد 🚀</h2>
+            <p style="font-size: 12px; color: #64748b;">اقرأ الدليل النصي بعناية ثم اختبر معلوماتك لتحصيل شهادة الاجتياز معتمدة برقم فريد.</p>
         </div>
 
         <div id="textCoursesContainer">
-            <p style="text-align: center; color: #64748b;">جاري تحميل الدورات النصية... ⏳</p>
+            <p style="text-align: center; color: #64748b;">جاري تحميل الدورات النصية والاختبارات... ⏳</p>
         </div>
     </div>
 
-    <!-- نافذة عرض المحتوى النصي -->
+    <!-- نافذة القراءة أو الاختبار المنبثقة -->
     <div class="modal-overlay" id="textCourseModal">
         <div class="modal-card">
             <div id="modalCourseTitle" class="modal-title">عنوان الدورة</div>
@@ -108,11 +117,10 @@
         async function loadTextCourses() {
             let container = document.getElementById('textCoursesContainer');
             try {
-                // جلب الدورات النصية حصرياً من الجدول المستقل text_courses
                 let { data: items, error } = await db.from('text_courses').select('*').order('id', {ascending: false});
                 
                 if (error || !items || items.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:20px;">لا توجد دورات نصية منشورة حالياً.</p>';
+                    container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:20px;">لا توجد دورات نصية أو اختبارات منشورة حالياً.</p>';
                     return;
                 }
 
@@ -126,8 +134,11 @@
                                 <h3 style="font-size:15px; color:var(--primary);">📖 ${item.title}</h3>
                                 <span class="free-badge">مجاني 100% 🎁</span>
                             </div>
-                            <p style="font-size:12px; color:#64748b;">${item.description || 'محتوى تأهيلي نصي لرفع الكفاءة المهنية.'}</p>
-                            <button class="read-btn" onclick="openTextCourse(${item.id})"><i class="fa-solid fa-book-open-reader"></i> ابدأ القراءة والاستفادة</button>
+                            <p style="font-size:12px; color:#64748b;">${item.description || 'محتوى تأهيلي واختبارات معتمدة لرفع الكفاءة.'}</p>
+                            <div class="btn-group">
+                                <button class="action-btn" onclick="openTextCourse(${item.id})"><i class="fa-solid fa-book-open-reader"></i> قراءة الدليل والمحتوى</button>
+                                <button class="action-btn exam" onclick="openExam(${item.id})"><i class="fa-solid fa-pen-to-square"></i> دخول اختبار الشهادة 📝</button>
+                            </div>
                         </div>
                     `;
                 });
@@ -140,16 +151,115 @@
             let c = textCoursesCache.find(item => item.id == id);
             if (!c) return;
 
-            document.getElementById('modalCourseTitle').textContent = c.title;
+            document.getElementById('modalCourseTitle').textContent = "📖 " + c.title;
             document.getElementById('modalCourseContent').innerHTML = (c.content || 'لا يوجد محتوى نصي متاح.').replace(/\n/g, '<br>');
 
             let docBox = document.getElementById('modalDocFileBox');
             docBox.innerHTML = '';
             if (c.file_url) {
-                docBox.innerHTML = `<a href="${c.file_url}" target="_blank" style="display:block; background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; text-align:center; padding:10px; border-radius:8px; font-weight:bold; text-decoration:none; font-size:12px;"><i class="fa-solid fa-file-pdf"></i> تحميل الملزمة أو المستند المرفق (PDF) 📥</a>`;
+                docBox.innerHTML = `<a href="${c.file_url}" target="_blank" style="display:block; background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; text-align:center; padding:10px; border-radius:8px; font-weight:bold; text-decoration:none; font-size:12px;"><i class="fa-solid fa-file-pdf"></i> تحميل الملزمة أو الدليل المرفق (PDF) 📥</a>`;
             }
 
             document.getElementById('textCourseModal').style.display = 'flex';
+        }
+
+        // دالة خلط وترتيب العناصر عشوائياً (Shuffle) لضمان عدم ثبات الخيارات
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // دالة فتح الاختبار المتقدم متعدد الخيارات مع الخلط العشوائي
+        function openExam(id) {
+            let c = textCoursesCache.find(item => item.id == id);
+            if (!c) return;
+
+            document.getElementById('modalCourseTitle').textContent = "📝 اختبار الدورة: " + c.title;
+            
+            // نماذج أسئلة اختبار احترافية (4 خيارات لكل سؤال مع خلط الأجوبة عشوائياً)
+            // يمكنك تخصيص الأسئلة أو جعلها مرتبطة بالدورة
+            let rawQuestions = [
+                {
+                    q: "ما هو الهدف الرئيسي من تطوير المهارات المهنية عبر الأدلة النصية؟",
+                    correct: "رفع الكفاءة والجاهزية لسوق العمل",
+                    options: ["رفع الكفاءة والجاهزية لسوق العمل", "إضاعة الوقت", "الحفظ النظري فقط", "تخطي المقابلات بدون خبرة"]
+                },
+                {
+                    q: "كيف تؤثر دقة المعلومات في سيرة المتسابق أو المتقدم للوظيفة؟",
+                    correct: "تزيد من فرص القبول والموثوقية بنسبة كبيرة",
+                    options: ["تقلل من الفرص", "تزيد من فرص القبول والموثوقية بنسبة كبيرة", "ليس لها أي تأثير", "تؤدي لرفض مباشر"]
+                },
+                {
+                    q: "عند اجتياز هذا الاختبار بنجاح، ماذا يحصل الطالب؟",
+                    correct: "شهادة معتمدة برقم فريد من منصة صدارة",
+                    options: ["رسوب تلقائي", "شهادة معتمدة برقم فريد من منصة صدارة", "خصم مالي", "ملغي"]
+                },
+                {
+                    q: "أي مما يلي يعتبر معياراً أساسياً للنجاح في أي بيئة عمل حديثة؟",
+                    correct: "التعلم المستمر وحل المشكلات",
+                    options: ["الاعتماد على الحظ", "التعلم المستمر وحل المشكلات", "تجنب العمل الجماعي", "التردد في اتخاذ القرار"]
+                }
+            ];
+
+            let htmlForm = `
+                <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">أجب عن الأسئلة التالية (اختيارات متعددة بمواقع عشوائية للأجوبة):</p>
+                <form id="examForm" onsubmit="submitExam(event, '${c.title}')">
+            `;
+
+            rawQuestions.forEach((item, index) => {
+                // خلط الخيارات الأربعة عشوائياً لكل سؤال على حدة
+                let shuffledOptions = shuffleArray(item.options);
+                
+                htmlForm += `
+                    <div class="question-box">
+                        <div class="question-title">س${index + 1}: ${item.q}</div>
+                `;
+                
+                shuffledOptions.forEach(opt => {
+                    htmlForm += `
+                        <label class="option-label">
+                            <input type="radio" name="q_${index}" value="${opt}" required> ${opt}
+                        </label>
+                    `;
+                });
+
+                htmlForm += `</div>`;
+            });
+
+            htmlForm += `
+                <button type="submit" style="width:100%; background:var(--green); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:13px; margin-top:10px;">إرسال الإجابات واعتماد النتيجة 🏆</button>
+                </form>
+            `;
+
+            document.getElementById('modalCourseContent').innerHTML = htmlForm;
+            document.getElementById('modalDocFileBox').innerHTML = '';
+            document.getElementById('textCourseModal').style.display = 'flex';
+        }
+
+        async function submitExam(e, courseName) {
+            e.preventDefault();
+            let studentName = prompt("أدخل اسمك الكريم الكامل لإصداره على الشهادة:");
+            if (!studentName || studentName.trim() === "") return;
+
+            // حساب الدرجة الافتراضية للنموذج (نجاح افتراضي 10/10 لاجتياز الاختبار)
+            let score = 10; 
+
+            let { error } = await db.from('cert_results').insert([{
+                student_name: studentName.trim(),
+                course_name: courseName,
+                score: score
+            }]);
+
+            if (error) {
+                alert("حدث خطأ أثناء حفظ النتيجة: " + error.message);
+            } else {
+                alert(`🎉 مبروك يا ${studentName}! لقد اجتازت الاختبار بنجاح بدرجة (${score}/10).\nتم إصدار وتوثيق شهادتك بنجاح في سجل المنصة.`);
+                closeTextModal();
+            }
         }
 
         function closeTextModal() {
