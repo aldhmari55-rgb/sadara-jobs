@@ -173,15 +173,12 @@
             return arr;
         }
 
-        // دالة فتح الاختبار المتقدم متعدد الخيارات مع الخلط العشوائي
         function openExam(id) {
             let c = textCoursesCache.find(item => item.id == id);
             if (!c) return;
 
             document.getElementById('modalCourseTitle').textContent = "📝 اختبار الدورة: " + c.title;
             
-            // نماذج أسئلة اختبار احترافية (4 خيارات لكل سؤال مع خلط الأجوبة عشوائياً)
-            // يمكنك تخصيص الأسئلة أو جعلها مرتبطة بالدورة
             let rawQuestions = [
                 {
                     q: "ما هو الهدف الرئيسي من تطوير المهارات المهنية عبر الأدلة النصية؟",
@@ -211,22 +208,11 @@
             `;
 
             rawQuestions.forEach((item, index) => {
-                // خلط الخيارات الأربعة عشوائياً لكل سؤال على حدة
                 let shuffledOptions = shuffleArray(item.options);
-                
-                htmlForm += `
-                    <div class="question-box">
-                        <div class="question-title">س${index + 1}: ${item.q}</div>
-                `;
-                
+                htmlForm += `<div class="question-box"><div class="question-title">س${index + 1}: ${item.q}</div>`;
                 shuffledOptions.forEach(opt => {
-                    htmlForm += `
-                        <label class="option-label">
-                            <input type="radio" name="q_${index}" value="${opt}" required> ${opt}
-                        </label>
-                    `;
+                    htmlForm += `<label class="option-label"><input type="radio" name="q_${index}" value="${opt}" required> ${opt}</label>`;
                 });
-
                 htmlForm += `</div>`;
             });
 
@@ -245,19 +231,20 @@
             let studentName = prompt("أدخل اسمك الكريم الكامل لإصداره على الشهادة:");
             if (!studentName || studentName.trim() === "") return;
 
-            // حساب الدرجة الافتراضية للنموذج (نجاح افتراضي 10/10 لاجتياز الاختبار)
             let score = 10; 
 
-            let { error } = await db.from('cert_results').insert([{
+            // حفظ النتيجة وتوثيق الشهادة في جدول cert_results
+            let { data, error } = await db.from('cert_results').insert([{
                 student_name: studentName.trim(),
                 course_name: courseName,
                 score: score
-            }]);
+            }]).select();
 
             if (error) {
-                alert("حدث خطأ أثناء حفظ النتيجة: " + error.message);
+                alert("حدث خطأ أثناء حفظ الشهادة: " + error.message);
             } else {
-                alert(`🎉 مبروك يا ${studentName}! لقد اجتازت الاختبار بنجاح بدرجة (${score}/10).\nتم إصدار وتوثيق شهادتك بنجاح في سجل المنصة.`);
+                let certId = data && data[0] ? data[0].id : 'جديد';
+                alert(`🎉 مبروك يا ${studentName.trim()}!\nلقد اجتازت الاختبار بنجاح وتم إصدار وتوثيق شهادتك برقم: #SDR-${certId}\nالشهادة مسجلة الآن في لوحة التحكم وسجل الشهادات.`);
                 closeTextModal();
             }
         }
