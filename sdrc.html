@@ -58,7 +58,7 @@
     <div id="adminMainContent" style="display:none;">
         <div class="header">
             <h1>لوحة تحكم الدورات والمبيعات الشاملة 🎓</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية، الملازم النصية، الأسعار، والمبيعات</p>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية، الدورات النصية، الملازم، الأسعار، والمبيعات</p>
             <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin-top:10px; background:#ef4444; border:none; font-size:11px;">قفل لوحة التحكم 🔒</button>
         </div>
 
@@ -88,15 +88,18 @@
                 <input type="file" id="courseImageFile" accept="image/*" style="padding:6px; background:#f8fafc;">
                 <div id="imagePreviewStatus" style="font-size:10px; color:#64748b; margin-top:3px;"></div>
 
-                <!-- مربع رفع الدورات والملفات النصية الجديد -->
-                <label>📄 رفع ملزمة الدورة النصية أو ملف الشرح (PDF / ملف نصي)</label>
+                <label>📄 رفع ملزمة الدورة النصية أو ملف الشرح (PDF / مستند)</label>
                 <input type="file" id="courseDocFile" accept=".pdf,.doc,.docx,.txt" style="padding:6px; background:#f8fafc;">
                 <div id="docPreviewStatus" style="font-size:10px; color:#64748b; margin-top:3px;"></div>
+
+                <!-- 📚 قسم الدورات النصية والشروحات المباشرة الجديد -->
+                <label style="color: var(--primary); margin-top: 12px; font-weight:900;">📝 قسم المحتوى والمقالات / الدورات النصية المباشرة:</label>
+                <textarea id="courseTextContent" rows="4" placeholder="اكتب محتوى الدورة النصية الشامل، المقالات، أو الشروحات هنا لقرائتها المباشرة من قبل الطالب..."></textarea>
 
                 <label>سعر الدورة (ريال)</label>
                 <input type="text" id="coursePrice" placeholder="1500">
 
-                <label>وصف الدورة</label>
+                <label>وصف الدورة المختصر</label>
                 <textarea id="courseMainDesc" rows="2" placeholder="وصف موجز لما تحتويه هذه الدورة..."></textarea>
                 
                 <label>حالة التوفر للطلاب</label>
@@ -119,7 +122,7 @@
 
                 <button type="button" onclick="addLessonField('', '')" style="background: #64748b; margin-top: 8px;">➕ إضافة درس آخر للدورة</button>
                 
-                <button id="btnSaveCourse" onclick="saveStructuredCourse()" style="background:#0284c7; color:white; margin-top: 15px;">نشر الدورة بكافة محتوياتها 🚀</button>
+                <button id="btnSaveCourse" onclick="saveStructuredCourse()" style="background:#0284c7; color:white; margin-top: 15px;">نشر الدورة بكافة محتوياتها النصية والمرئية 🚀</button>
                 <button id="btnCancelCourse" onclick="resetCourseForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
                 
                 <div id="courseMsg" class="status-msg"></div>
@@ -209,6 +212,7 @@
         const title = document.getElementById('courseMainTitle').value.trim();
         const price = document.getElementById('coursePrice').value.trim() || '1500';
         const description = document.getElementById('courseMainDesc').value.trim();
+        const textContent = document.getElementById('courseTextContent').value.trim(); // حقل الدورات النصية والمحتوى
         const is_active = document.getElementById('courseStatus').value === 'true';
         
         const imageFile = document.getElementById('courseImageFile').files[0];
@@ -224,7 +228,6 @@
         msg.style.color = 'blue'; 
 
         try {
-            // رفع صورة الغلاف
             if (imageFile) {
                 msg.textContent = 'جاري رفع صورة الدورة إلى السحابة... ⏳';
                 const fileExt = imageFile.name.split('.').pop();
@@ -242,9 +245,8 @@
                 }
             }
 
-            // رفع الملف النصي أو الملزمة (PDF / مستند)
             if (docFile) {
-                msg.textContent = 'جاري رفع الملف/الملزمة النصية للدورة إلى السحابة... ⏳';
+                msg.textContent = 'جاري رفع الملزمة النصية للدورة إلى السحابة... ⏳';
                 const fileExt = docFile.name.split('.').pop();
                 const fileName = `course_doc_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
                 
@@ -263,7 +265,7 @@
             console.log('ملاحظة الرفع:', err);
         }
 
-        msg.textContent = 'جاري حفظ بيانات الدورة والملفات في السحابة... ⏳';
+        msg.textContent = 'جاري حفظ بيانات الدورة والمحتوى في السحابة... ⏳';
 
         let titles = document.querySelectorAll('.lesson-title');
         let urls = document.querySelectorAll('.lesson-url');
@@ -278,7 +280,8 @@
         let payload = { 
             title: title, 
             image: imageUrl, 
-            file_url: docUrl, // حقل الملف أو الملزمة النصية
+            file_url: docUrl, 
+            text_content: textContent, // حفظ المحتوى النصي المباشر في القاعدة
             price: price, 
             description: description, 
             is_active: is_active, 
@@ -297,7 +300,7 @@
             msg.textContent = 'خطأ سحابي في الحفظ: ' + res.error.message; 
         } else {
             msg.style.color = 'green'; 
-            msg.textContent = 'تم حفظ ونشر الدورة وملازمها النصية بنجاح تام! ✅';
+            msg.textContent = 'تم حفظ ونشر الدورة ومحتواها النصي بنجاح تام! ✅';
             resetCourseForm(); 
             loadAdminCourses();
         }
@@ -310,6 +313,7 @@
         document.getElementById('courseMainTitle').value = '';
         document.getElementById('courseImageFile').value = '';
         document.getElementById('courseDocFile').value = '';
+        document.getElementById('courseTextContent').value = '';
         document.getElementById('imagePreviewStatus').textContent = '';
         document.getElementById('docPreviewStatus').textContent = '';
         document.getElementById('coursePrice').value = '';
@@ -322,7 +326,7 @@
                 <label>رابط الفيديو</label>
                 <input type="text" class="lesson-url" placeholder="https://www.youtube.com/embed/...">
             </div>`;
-        document.getElementById('btnSaveCourse').textContent = 'نشر الدورة بكافة محتوياتها 🚀';
+        document.getElementById('btnSaveCourse').textContent = 'نشر الدورة بكافة محتوياتها النصية والمرئية 🚀';
         document.getElementById('btnCancelCourse').style.display = 'none';
         document.getElementById('formTitleText').textContent = '🎓 إدارة الدورات، الدروس، والملازم النصية';
     }
@@ -341,7 +345,8 @@
             let statusBadge = isActive ? '<span style="color:green; font-weight:bold;">متوفر 🟢</span>' : '<span style="color:red; font-weight:bold;">غير متوفر 🔴</span>';
             let toggleText = isActive ? 'إخفاء 🔴' : 'إظهار 🟢';
             let thumb = c.image ? `<img src="${c.image}" class="admin-course-thumb">` : '<span style="font-size:10px; color:#94a3b8;">بدون صورة</span>';
-            let docLink = c.file_url ? `<a href="${c.file_url}" target="_blank" style="color:#0284c7; font-weight:bold; font-size:11px;">📄 معاينة الملزمة / الملف النصي</a>` : '<span style="color:#94a3b8; font-size:10px;">لا يوجد ملف نصي</span>';
+            let docLink = c.file_url ? `<a href="${c.file_url}" target="_blank" style="color:#0284c7; font-weight:bold; font-size:11px;">📄 الملزمة المرفقة</a>` : '';
+            let textSnippet = c.text_content ? `<span style="color:#10b981; font-weight:bold; font-size:11px;"> | 📝 دورة نصية متوفرة</span>` : '';
 
             box.innerHTML += `<div class="item-row">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -355,7 +360,7 @@
                         <button type="button" class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
                     </div>
                 </div>
-                <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'} | ${docLink}</div>
+                <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'} ${textSnippet} ${docLink ? '| ' + docLink : ''}</div>
             </div>`;
         });
     }
@@ -369,6 +374,7 @@
         document.getElementById('courseMainTitle').value = c.title || '';
         document.getElementById('coursePrice').value = c.price || '';
         document.getElementById('courseMainDesc').value = c.description || '';
+        document.getElementById('courseTextContent').value = c.text_content || ''; // تعبئة المحتوى النصي
         document.getElementById('courseStatus').value = (c.is_active !== false) ? 'true' : 'false';
         document.getElementById('courseImageFile').value = '';
         document.getElementById('courseDocFile').value = '';
@@ -387,7 +393,7 @@
 
         document.getElementById('btnSaveCourse').textContent = 'تعديل وحفظ الدورة 💾';
         document.getElementById('btnCancelCourse').style.display = 'block';
-        document.getElementById('formTitleText').textContent = '✏️ تعديل الدورة الحالية وملازمها';
+        document.getElementById('formTitleText').textContent = '✏️ تعديل الدورة الحالية ومحتواها';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
