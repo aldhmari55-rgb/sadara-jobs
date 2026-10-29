@@ -32,7 +32,15 @@
         .container { max-width: 850px; margin: 25px auto; padding: 0 16px; }
         .free-badge { background: #dcfce7; color: #166534; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 900; }
         .text-course-card { background: white; border-radius: 12px; padding: 18px; margin-bottom: 15px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 10px; }
-        .read-btn { background: var(--primary); color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; width: fit-content; }
+        .read-btn { background: var(--primary); color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; width: fit-content; border: none; cursor: pointer; transition: 0.2s; }
+        .read-btn:hover { background: #1e3a8a; }
+
+        /* نافذة قراءة المحتوى النصي المنبثقة */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+        .modal-card { background: white; padding: 22px; border-radius: 14px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .modal-title { font-size: 18px; font-weight: 900; color: var(--primary); margin-bottom: 10px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+        .modal-body { font-size: 13px; color: #334155; line-height: 1.8; white-space: pre-wrap; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
+        .close-modal-btn { background: #ef4444; color: white; width: 100%; padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -66,8 +74,8 @@
 
     <div class="container">
         <div style="background: white; padding: 16px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; text-align: center;">
-            <h2 style="font-size: 16px; color: var(--primary); margin-bottom: 6px;">مكتبيتك المعرفية المجانية 🚀</h2>
-            <p style="font-size: 12px; color: #64748b;">طور مهاراتك المهنية والتقنية من خلال أدلة نصية واختبارات تفاعلية مجانية 100%.</p>
+            <h2 style="font-size: 16px; color: var(--primary); margin-bottom: 6px;">مكتبتك المعرفية المجانية 🚀</h2>
+            <p style="font-size: 12px; color: #64748b;">طور مهاراتك المهنية والتقنية من خلال أدلة نصية ومحتوى تأهيلي مباشر.</p>
         </div>
 
         <div id="textCoursesContainer">
@@ -75,10 +83,22 @@
         </div>
     </div>
 
+    <!-- نافذة عرض المحتوى النصي -->
+    <div class="modal-overlay" id="textCourseModal">
+        <div class="modal-card">
+            <div id="modalCourseTitle" class="modal-title">عنوان الدورة</div>
+            <div id="modalCourseContent" class="modal-body">محتوى الدورة...</div>
+            <div id="modalDocFileBox" style="margin-bottom: 15px;"></div>
+            <button class="close-modal-btn" onclick="closeTextModal()">إغلاق النافذة ✕</button>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let textCoursesCache = [];
 
         function toggleSidebar() {
             document.getElementById('sidebarDrawer').classList.toggle('active');
@@ -88,39 +108,52 @@
         async function loadTextCourses() {
             let container = document.getElementById('textCoursesContainer');
             try {
-                // افتراض جدول خاص بالدورات النصية أو جلبها من جدول عام
+                // جلب الدورات النصية حصرياً من الجدول المستقل text_courses
                 let { data: items, error } = await db.from('text_courses').select('*').order('id', {ascending: false});
                 
                 if (error || !items || items.length === 0) {
-                    container.innerHTML = `
-                        <div class="text-course-card">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <h3 style="font-size:15px; color:var(--primary);">دليل مهارات المقابلات الشخصية وسوق العمل</h3>
-                                <span class="free-badge">مجاني 100% 🎁</span>
-                            </div>
-                            <p style="font-size:12px; color:#64748b;">دورة نصية شاملة تعلمك كيفية اجتياز المقابلات الوظيفية وكتابة سيرة ذاتية احترافية تناسب معايير السوق في اليمن.</p>
-                            <a href="#" onclick="alert('هذه الدورة النصية مجانية بالكامل ومتاحة للقراءة قريباً عبر لوحة التحكم!'); return false;" class="read-btn"><i class="fa-solid fa-book-open-reader"></i> اقرأ الدليل مجاناً</a>
-                        </div>
-                    `;
+                    container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:20px;">لا توجد دورات نصية منشورة حالياً.</p>';
                     return;
                 }
 
+                textCoursesCache = items;
                 container.innerHTML = '';
+
                 items.forEach(item => {
                     container.innerHTML += `
                         <div class="text-course-card">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <h3 style="font-size:15px; color:var(--primary);">${item.title}</h3>
+                                <h3 style="font-size:15px; color:var(--primary);">📖 ${item.title}</h3>
                                 <span class="free-badge">مجاني 100% 🎁</span>
                             </div>
-                            <p style="font-size:12px; color:#64748b;">${item.description || 'محتوى تأهيلي نصي واختبارات لرفع الكفاءة المهنية.'}</p>
-                            <a href="${item.link || '#'}" class="read-btn"><i class="fa-solid fa-book-open-reader"></i> ابدأ القراءة والاستفادة</a>
+                            <p style="font-size:12px; color:#64748b;">${item.description || 'محتوى تأهيلي نصي لرفع الكفاءة المهنية.'}</p>
+                            <button class="read-btn" onclick="openTextCourse(${item.id})"><i class="fa-solid fa-book-open-reader"></i> ابدأ القراءة والاستفادة</button>
                         </div>
                     `;
                 });
             } catch(e) {
-                container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px;">لا توجد دورات نصية منشورة حالياً.</p>';
+                container.innerHTML = '<p style="text-align:center; color:red; font-size:12px;">حدث خطأ في تحميل المحتوى.</p>';
             }
+        }
+
+        function openTextCourse(id) {
+            let c = textCoursesCache.find(item => item.id == id);
+            if (!c) return;
+
+            document.getElementById('modalCourseTitle').textContent = c.title;
+            document.getElementById('modalCourseContent').innerHTML = (c.content || 'لا يوجد محتوى نصي متاح.').replace(/\n/g, '<br>');
+
+            let docBox = document.getElementById('modalDocFileBox');
+            docBox.innerHTML = '';
+            if (c.file_url) {
+                docBox.innerHTML = `<a href="${c.file_url}" target="_blank" style="display:block; background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; text-align:center; padding:10px; border-radius:8px; font-weight:bold; text-decoration:none; font-size:12px;"><i class="fa-solid fa-file-pdf"></i> تحميل الملزمة أو المستند المرفق (PDF) 📥</a>`;
+            }
+
+            document.getElementById('textCourseModal').style.display = 'flex';
+        }
+
+        function closeTextModal() {
+            document.getElementById('textCourseModal').style.display = 'none';
         }
 
         document.addEventListener('DOMContentLoaded', loadTextCourses);
