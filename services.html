@@ -16,9 +16,9 @@
         .back-btn { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 11px; }
 
         .hero-store { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 25px 16px; text-align: center; }
-        .main-container { max-width: 800px; margin: 15px auto; padding: 0 16px; }
+        .main-container { max-width: 1100px; margin: 15px auto; padding: 0 16px; }
 
-        .search-cat-box { background: white; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .search-cat-box { background: white; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
         .store-search { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 10px; }
         .cat-tags-container { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
         .store-cat-tag { background: #f1f5f9; color: #334155; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; border: 1px solid #cbd5e1; transition: 0.2s; }
@@ -26,18 +26,25 @@
 
         .affiliate-badge-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 10px; border-radius: 10px; font-size: 11px; text-align: center; font-weight: bold; margin-bottom: 15px; display: none; }
 
-        .product-card { background: white; border-radius: 12px; border: 1px solid #cbd5e1; padding: 14px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 8px; }
-        
-        /* حاوية الصور المرنة لمختلف المقاسات دون قص */
-        .product-img-container { width: 100%; background: #0f172a10; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 5px; }
-        .product-img { width: 100%; height: auto; max-height: 450px; object-fit: contain; border-radius: 6px; display: block; }
+        /* عناوين التصنيفات عند العرض الكلي */
+        .category-section-title { font-size: 16px; font-weight: 900; color: var(--primary); margin: 20px 0 10px 0; border-bottom: 2px solid var(--gold); padding-bottom: 5px; display: flex; align-items: center; gap: 6px; }
 
-        .product-title-row { display: flex; justify-content: space-between; align-items: center; }
-        .product-title { font-size: 15px; font-weight: 900; color: var(--primary); }
-        .product-price { color: #10b981; font-weight: 900; font-size: 14px; }
-        .product-desc { font-size: 11px; color: #64748b; line-height: 1.5; }
-        .product-cat-label { background: #eff6ff; color: #0284c7; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; width: fit-content; }
-        .order-btn { background: var(--primary); color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 12px; margin-top: 5px; cursor: pointer; border: none; }
+        /* تنسيق الشبكة للمنتجات (2 إلى 3 منتجات في السطر) */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-bottom: 20px; }
+
+        .product-card { background: white; border-radius: 12px; border: 1px solid #cbd5e1; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; gap: 8px; cursor: pointer; transition: 0.2s; }
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+
+        .product-img-container { width: 100%; background: #0f172a10; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 5px; }
+        .product-img { width: 100%; height: 160px; object-fit: contain; border-radius: 6px; display: block; }
+
+        .product-title-row { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
+        .product-title { font-size: 14px; font-weight: 900; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-price { color: #10b981; font-weight: 900; font-size: 13px; white-space: nowrap; }
+        .product-desc { font-size: 11px; color: #64748b; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .product-cat-label { background: #eff6ff; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; width: fit-content; }
+        .order-btn { background: var(--primary); color: white; text-align: center; padding: 8px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; }
+        .order-btn:hover { background: #1e3a8a; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
         .modal-card { background: white; padding: 20px; border-radius: 14px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
@@ -161,23 +168,53 @@
                 return;
             }
 
-            productsList.forEach(p => {
-                let imgHTML = (p.image && p.image.trim() !== '') ? `<div class="product-img-container"><img src="${p.image}" class="product-img"></div>` : '';
-                let catTag = p.category ? `<span class="product-cat-label">📁 ${p.category}</span>` : '';
+            // إذا كان التصفية على "الكل" ولم يتم البحث بنص معين، نقوم بتقسيم المنتجات وعرضها حسب التصنيفات
+            let query = document.getElementById('storeSearchInput').value.trim();
+            if (currentSelectedCategory === 'الكل' && !query) {
+                let grouped = {};
+                productsList.forEach(p => {
+                    let cat = p.category || 'أخرى';
+                    if (!grouped[cat]) grouped[cat] = [];
+                    grouped[cat].push(p);
+                });
 
-                box.innerHTML += `
-                    <div class="product-card" style="cursor: pointer;" onclick="openProductDetailsById(${p.id})">
-                        ${imgHTML}
-                        <div class="product-title-row">
-                            <span class="product-title">${p.title}</span>
-                            <span class="product-price">${p.price}</span>
-                        </div>
-                        ${catTag}
-                        <p class="product-desc">${p.description ? p.description.substring(0, 90) + '...' : 'بدون وصف إضافي'}</p>
-                        <button class="order-btn" onclick="event.stopPropagation(); openProductDetailsById(${p.id})">عرض التفاصيل والطلب 🚀</button>
+                for (let cat in grouped) {
+                    box.innerHTML += `<div class="category-section-title">📁 ${cat}</div>`;
+                    let gridDiv = document.createElement('div');
+                    gridDiv.className = 'products-grid';
+                    
+                    grouped[cat].forEach(p => {
+                        gridDiv.innerHTML += createProductCardHTML(p);
+                    });
+                    box.appendChild(gridDiv);
+                }
+            } else {
+                // العرض العادي أو حسب تصنيف محدد بشبكة واحدة
+                let gridDiv = document.createElement('div');
+                gridDiv.className = 'products-grid';
+                productsList.forEach(p => {
+                    gridDiv.innerHTML += createProductCardHTML(p);
+                });
+                box.appendChild(gridDiv);
+            }
+        }
+
+        function createProductCardHTML(p) {
+            let imgHTML = (p.image && p.image.trim() !== '') ? `<div class="product-img-container"><img src="${p.image}" class="product-img"></div>` : '';
+            let catTag = p.category ? `<span class="product-cat-label">📁 ${p.category}</span>` : '';
+
+            return `
+                <div class="product-card" onclick="openProductDetailsById(${p.id})">
+                    ${imgHTML}
+                    <div class="product-title-row">
+                        <span class="product-title">${p.title}</span>
+                        <span class="product-price">${p.price}</span>
                     </div>
-                `;
-            });
+                    ${catTag}
+                    <p class="product-desc">${p.description ? p.description.substring(0, 70) + '...' : 'بدون وصف إضافي'}</p>
+                    <button class="order-btn" onclick="event.stopPropagation(); openProductDetailsById(${p.id})">عرض التفاصيل والطلب 🚀</button>
+                </div>
+            `;
         }
 
         function openProductDetailsById(id) {
@@ -187,7 +224,7 @@
 
         function openProductDetails(p) {
             currentSelectedProduct = p;
-            let imgHTML = (p.image && p.image.trim() !== '') ? `<div style="width:100%; background:#0f172a10; border-radius:8px; display:flex; justify-content:center; align-items:center; overflow:hidden; padding:5px; margin-bottom:12px;"><img src="${p.image}" style="width:100%; height:auto; max-height:400px; object-fit:contain; border-radius:6px; display:block;"></div>` : '';
+            let imgHTML = (p.image && p.image.trim() !== '') ? `<div style="width:100%; background:#0f172a10; border-radius:8px; display:flex; justify-content:center; align-items:center; overflow:hidden; padding:5px; margin-bottom:12px;"><img src="${p.image}" style="width:100%; height:auto; max-height:350px; object-fit:contain; border-radius:6px; display:block;"></div>` : '';
 
             document.getElementById('modalProductContent').innerHTML = `
                 ${imgHTML}
