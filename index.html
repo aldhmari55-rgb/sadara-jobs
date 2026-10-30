@@ -87,13 +87,20 @@
         .job-card img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
         .apply-btn { background: var(--green); color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 11px; display: inline-block; margin-top: 8px; }
 
+        /* قسم السوشيال ميديا وتذييل الصفحة */
+        .social-footer-box { background: #0f2347; border-radius: 12px; padding: 18px; text-align: center; margin-top: 25px; border: 1px solid rgba(212, 175, 55, 0.3); }
+        .social-footer-box h4 { color: var(--gold); font-size: 13px; margin-bottom: 10px; font-weight: bold; }
+        .social-icons-row { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; }
+        .social-icon-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 16px; transition: 0.2s; border: 1px solid rgba(212, 175, 55, 0.4); }
+        .social-icon-btn:hover { background: var(--gold); color: #0f2347; transform: scale(1.1); }
+
         .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; }
         .ticker-label { background: var(--gold); color: #0a1324; font-weight: 900; font-size: 10px; padding: 6px 10px; border-radius: 0 10px 10px 0; z-index: 10; white-space: nowrap; }
         .ticker-content { display: flex; align-items: center; gap: 12px; animation: ticker 20s linear infinite; }
         .ticker-content img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        .footer-copyright { text-align: center; color: #64748b; font-size: 11px; padding: 25px 0 40px; }
+        .footer-copyright { text-align: center; color: #64748b; font-size: 11px; padding: 15px 0 35px; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; }
         .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 90%; max-width: 380px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
@@ -149,7 +156,6 @@
         <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank">اضغط هنا للانضمام للمجتمع 🟢</a>
     </div>
 
-    <!-- الهيرو سكشن (يحتوي الآن على زر تحميل التطبيق المجاني بارزاً) -->
     <div class="hero">
         <h1>المنصة الأولى للوظائف والخدمات الرقمية بمحافظة ذمار</h1>
         <p>بوابتك للبحث عن الفرص الشاغرة، طلب الكفاءات، وتسوق أفضل الخدمات والاشتراكات الرقمية</p>
@@ -187,6 +193,17 @@
 
         <h2 style="font-size: 16px; font-weight: 900; margin-bottom: 10px; color: var(--text-dark);" id="jobsBox">الوظائف الشاغرة المتاحة 💼</h2>
         <div id="jobsBoxContainer"></div>
+
+        <!-- قسم روابط السوشيال ميديا في الأسفل -->
+        <div class="social-footer-box">
+            <h4>تابع منصة صدارة على منصات التواصل الاجتماعي 🌐</h4>
+            <div class="social-icons-row">
+                <a href="https://youtube.com/@sadarah_s_d_r?si=Y0sgm7bt12Gy8GOH" target="_blank" class="social-icon-btn" title="قناة اليوتيوب"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://tiktok.com/@sadarahsdr" target="_blank" class="social-icon-btn" title="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://www.facebook.com/Sadarah2026?mibextid=ZbWKwL" target="_blank" class="social-icon-btn" title="فيسبوك"><i class="fa-brands fa-facebook"></i></a>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1;">كن على اطلاع دائم بأحدث الفرص والبرامج التدريبية</p>
+        </div>
 
         <div class="footer-copyright">
             © 2026 منصة صدارة للتسويق والخدمات الرقمية - جميع الحقوق محفوظة
@@ -384,6 +401,8 @@
             msg.style.color = 'green'; msg.textContent = 'تم النجاح! 🎉';
             setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 800);
         }
+
+        checkActiveSession();
 
         function checkActiveSession() {
             const loggedName = localStorage.getItem('sadara_logged_name');
