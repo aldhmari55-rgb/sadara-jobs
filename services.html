@@ -8,42 +8,45 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; }
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f3f4f6; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-light); padding-bottom: 50px; color: #0f172a; }
 
-        .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); }
+        .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); position: sticky; top: 0; z-index: 1000; }
         .back-btn { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 11px; }
 
-        .hero-store { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 25px 16px; text-align: center; }
-        .main-container { max-width: 1100px; margin: 15px auto; padding: 0 16px; }
+        .hero-store { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 20px 16px; text-align: center; }
+        .main-container { max-width: 900px; margin: 12px auto; padding: 0 10px; }
 
-        .search-cat-box { background: white; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-        .store-search { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 10px; }
-        .cat-tags-container { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
-        .store-cat-tag { background: #f1f5f9; color: #334155; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; border: 1px solid #cbd5e1; transition: 0.2s; }
+        .search-cat-box { background: white; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .store-search { width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 10px; }
+        .cat-tags-container { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+        .cat-tags-container::-webkit-scrollbar { display: none; }
+        .store-cat-tag { background: #f1f5f9; color: #334155; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; border: 1px solid #cbd5e1; transition: 0.2s; }
         .store-cat-tag.active, .store-cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
         .affiliate-badge-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 10px; border-radius: 10px; font-size: 11px; text-align: center; font-weight: bold; margin-bottom: 15px; display: none; }
 
         /* عناوين التصنيفات عند العرض الكلي */
-        .category-section-title { font-size: 16px; font-weight: 900; color: var(--primary); margin: 20px 0 10px 0; border-bottom: 2px solid var(--gold); padding-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+        .category-section-title { font-size: 14px; font-weight: 900; color: var(--primary); margin: 15px 5px 8px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
-        /* تنسيق الشبكة للمنتجات (2 إلى 3 منتجات في السطر) */
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        /* تنسيق الشبكة الثنائية (منتجان في كل سطر تماماً مثل تطبيقات التسوق الكبرى) */
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
 
-        .product-card { background: white; border-radius: 12px; border: 1px solid #cbd5e1; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; gap: 8px; cursor: pointer; transition: 0.2s; }
-        .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+        .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; cursor: pointer; transition: 0.2s; }
+        .product-card:active { transform: scale(0.98); }
 
-        .product-img-container { width: 100%; background: #0f172a10; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 5px; }
-        .product-img { width: 100%; height: 160px; object-fit: contain; border-radius: 6px; display: block; }
+        .product-img-container { width: 100%; height: 170px; background: #f8fafc; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        .product-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        .product-title-row { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
-        .product-title { font-size: 14px; font-weight: 900; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .product-price { color: #10b981; font-weight: 900; font-size: 13px; white-space: nowrap; }
-        .product-desc { font-size: 11px; color: #64748b; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .product-cat-label { background: #eff6ff; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; width: fit-content; }
-        .order-btn { background: var(--primary); color: white; text-align: center; padding: 8px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; }
+        .product-title { font-size: 12px; font-weight: 700; color: var(--text-dark, #0f172a); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 34px; }
+        
+        .product-price-row { display: flex; align-items: baseline; gap: 6px; margin-top: 2px; }
+        .product-price { color: #e11d48; font-weight: 900; font-size: 14px; }
+        
+        .product-cat-label { background: #eff6ff; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; width: fit-content; }
+        
+        .order-btn { background: var(--primary); color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; }
         .order-btn:hover { background: #1e3a8a; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
@@ -55,13 +58,13 @@
 <body>
 
     <div class="top-navbar">
-        <span style="font-weight: 900; font-size:14px;">صدارة للخدمات الرقمية</span>
+        <span style="font-weight: 900; font-size:13px;">صدارة للخدمات الرقمية</span>
         <a href="index.html" class="back-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
     </div>
 
     <div class="hero-store">
-        <h1 style="font-size: 18px;">متجر الخدمات والاشتراكات والمنتجات 🛒</h1>
-        <p style="font-size: 11px; opacity: 0.85; margin-top: 4px;">اختر المنتج المطلوب لعرض تفاصيله الكاملة والطلب المباشر</p>
+        <h1 style="font-size: 16px;">متجر الخدمات والاشتراكات والمنتجات 🛒</h1>
+        <p style="font-size: 10px; opacity: 0.85; margin-top: 3px;">اختر المنتج المطلوب لعرض تفاصيله والطلب المباشر</p>
     </div>
 
     <div class="main-container">
@@ -75,18 +78,18 @@
             <div class="cat-tags-container">
                 <span class="store-cat-tag active" onclick="filterStoreCategory('الكل', this)">الكل 🌐</span>
                 <span class="store-cat-tag" onclick="filterStoreCategory('جوالات', this)">📱 جوالات</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('إكسسوارات', this)">🎧 إكسسوارات جوالات</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('إكسسوارات', this)">🎧 إكسسوارات</span>
                 <span class="store-cat-tag" onclick="filterStoreCategory('إلكترونيات', this)">⚡ إلكترونيات</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('اشتراكات', this)">🔑 اشتراكات رقمية</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('اشتراكات', this)">🔑 اشتراكات</span>
                 <span class="store-cat-tag" onclick="filterStoreCategory('خدمات', this)">🛠️ خدمات</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('ملابس', this)">👗 ملابس وأزياء</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('تجميل', this)">💄 تجميل وعناية</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('ملابس', this)">👗 ملابس</span>
+                <span class="store-cat-tag" onclick="filterStoreCategory('تجميل', this)">💄 تجميل</span>
                 <span class="store-cat-tag" onclick="filterStoreCategory('منزل', this)">🏡 منزلية</span>
                 <span class="store-cat-tag" onclick="filterStoreCategory('أخرى', this)">📦 أخرى</span>
             </div>
         </div>
 
-        <div id="storeProductsList">جاري تحميل المتجر والمنتجات...</div>
+        <div id="storeProductsList">جاري تحميل المتجر...</div>
     </div>
 
     <div class="modal-overlay" id="productModal">
@@ -168,7 +171,6 @@
                 return;
             }
 
-            // إذا كان التصفية على "الكل" ولم يتم البحث بنص معين، نقوم بتقسيم المنتجات وعرضها حسب التصنيفات
             let query = document.getElementById('storeSearchInput').value.trim();
             if (currentSelectedCategory === 'الكل' && !query) {
                 let grouped = {};
@@ -189,7 +191,6 @@
                     box.appendChild(gridDiv);
                 }
             } else {
-                // العرض العادي أو حسب تصنيف محدد بشبكة واحدة
                 let gridDiv = document.createElement('div');
                 gridDiv.className = 'products-grid';
                 productsList.forEach(p => {
@@ -200,19 +201,16 @@
         }
 
         function createProductCardHTML(p) {
-            let imgHTML = (p.image && p.image.trim() !== '') ? `<div class="product-img-container"><img src="${p.image}" class="product-img"></div>` : '';
-            let catTag = p.category ? `<span class="product-cat-label">📁 ${p.category}</span>` : '';
+            let imgHTML = (p.image && p.image.trim() !== '') ? `<div class="product-img-container"><img src="${p.image}" class="product-img"></div>` : '<div class="product-img-container"><i class="fa-solid fa-image" style="font-size:24px; color:#cbd5e1;"></i></div>';
 
             return `
                 <div class="product-card" onclick="openProductDetailsById(${p.id})">
                     ${imgHTML}
-                    <div class="product-title-row">
-                        <span class="product-title">${p.title}</span>
+                    <div class="product-title">${p.title}</div>
+                    <div class="product-price-row">
                         <span class="product-price">${p.price}</span>
                     </div>
-                    ${catTag}
-                    <p class="product-desc">${p.description ? p.description.substring(0, 70) + '...' : 'بدون وصف إضافي'}</p>
-                    <button class="order-btn" onclick="event.stopPropagation(); openProductDetailsById(${p.id})">عرض التفاصيل والطلب 🚀</button>
+                    <button class="order-btn" onclick="event.stopPropagation(); openProductDetailsById(${p.id})">اطلب الآن 🚀</button>
                 </div>
             `;
         }
@@ -224,32 +222,32 @@
 
         function openProductDetails(p) {
             currentSelectedProduct = p;
-            let imgHTML = (p.image && p.image.trim() !== '') ? `<div style="width:100%; background:#0f172a10; border-radius:8px; display:flex; justify-content:center; align-items:center; overflow:hidden; padding:5px; margin-bottom:12px;"><img src="${p.image}" style="width:100%; height:auto; max-height:350px; object-fit:contain; border-radius:6px; display:block;"></div>` : '';
+            let imgHTML = (p.image && p.image.trim() !== '') ? `<div style="width:100%; background:#f8fafc; border-radius:8px; display:flex; justify-content:center; align-items:center; overflow:hidden; padding:5px; margin-bottom:12px;"><img src="${p.image}" style="width:100%; height:auto; max-height:300px; object-fit:contain; border-radius:6px; display:block;"></div>` : '';
 
             document.getElementById('modalProductContent').innerHTML = `
                 ${imgHTML}
                 <span class="product-cat-label">📁 ${p.category || 'عام'}</span>
-                <h2 style="font-size:18px; color:var(--primary); margin:6px 0;">${p.title}</h2>
-                <div style="font-size:16px; color:#10b981; font-weight:900; margin-bottom:10px;">السعر: ${p.price}</div>
-                <div style="font-size:12px; color:#475569; line-height:1.6; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:15px;">
-                    <strong>وصف وتفاصيل المنتج:</strong><br>${p.description || 'لا يوجد وصف إضافي.'}
+                <h2 style="font-size:16px; color:var(--primary); margin:6px 0;">${p.title}</h2>
+                <div style="font-size:15px; color:#e11d48; font-weight:900; margin-bottom:10px;">السعر: ${p.price}</div>
+                <div style="font-size:12px; color:#475569; line-height:1.6; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:12px;">
+                    <strong>وصف المنتج:</strong><br>${p.description || 'لا يوجد وصف إضافي.'}
                 </div>
 
-                <hr style="border:0; border-top:1px solid #e2e8f0; margin:15px 0;">
+                <hr style="border:0; border-top:1px solid #e2e8f0; margin:12px 0;">
 
-                <h3 style="font-size:14px; color:var(--primary); margin-bottom:8px;">🛒 نموذج الطلب والسداد المباشر</h3>
+                <h3 style="font-size:13px; color:var(--primary); margin-bottom:6px;">🛒 نموذج الطلب والسداد المباشر</h3>
                 
                 <label>اسمك الكريم</label>
                 <input type="text" id="clientName" placeholder="أحمد محمد">
 
-                <label>رقم الواتساب للتواصل وتفعيل الخدمة</label>
+                <label>رقم الواتساب للتواصل</label>
                 <input type="tel" id="clientPhone" placeholder="770000000">
 
-                <label>المحافظة الحالية (مثال: ذمار، صنعاء، إب...)</label>
+                <label>المحافظة الحالية</label>
                 <input type="text" id="clientCity" placeholder="ذمار">
 
-                <label>من دلك أو كيف وصلت إلينا؟ (اختياري)</label>
-                <input type="text" id="clientReferralSource" placeholder="اسم المسوق، صديق، وسائل التواصل...">
+                <label>كيف وصلت إلينا؟ (اختياري)</label>
+                <input type="text" id="clientReferralSource" placeholder="اسم المسوق أو وسائل التواصل...">
 
                 <label>وسيلة الدفع والتحويل</label>
                 <select id="payMethod">
@@ -263,8 +261,8 @@
                 <label>ملاحظات إضافية (اختياري)</label>
                 <input type="text" id="orderNotes" placeholder="أي تفاصيل تود إضافتها...">
 
-                <button onclick="submitProductOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; margin-top:14px; cursor:pointer; font-size:13px;">تأكيد وإرسال الطلب 📱</button>
-                <button onclick="closeProductModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:6px; cursor:pointer; font-size:11px;">إغلاق</button>
+                <button onclick="submitProductOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:11px; border-radius:8px; font-weight:bold; margin-top:12px; cursor:pointer; font-size:12px;">تأكيد وإرسال الطلب 📱</button>
+                <button onclick="closeProductModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:11px;">إغلاق</button>
                 
                 <div id="orderStatusMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
             `;
