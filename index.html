@@ -36,7 +36,7 @@
         
         .mini-btn { background: #1e293b; color: white; border: 1px solid var(--gold); padding: 5px 10px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
 
-        /* القائمة الجانبية المنسدلة */
+        /* القائمة الجانبية المنسدلة (خالية تماماً من زر لوحة التحكم لأمان الزوار) */
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 19, 36, 0.75); backdrop-filter: blur(4px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .sidebar-overlay.active { opacity: 1; visibility: visible; }
         
@@ -124,7 +124,7 @@
         </div>
     </div>
 
-    <!-- القائمة الجانبية المنسدلة (تضم كافة الأقسام) -->
+    <!-- القائمة الجانبية المنسدلة (خالية من لوحة التحكم لتجنب ظهورها للزوار) -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="sidebar-drawer" id="sidebarDrawer">
         <div class="sidebar-header">
