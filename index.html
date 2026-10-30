@@ -8,14 +8,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- وسوم تحسين محركات البحث (SEO) الإضافية للتصدر في Google -->
     <title>منصة صدارة | أفضل الوظائف والخدمات الرقمية والدورات التدريبية في ذمار</title>
     <meta name="description" content="منصة صدارة الرقمية للوظائف الشاغرة، الكفاءات والخبراء، خدمات التسويق، والدورات التدريبية المعتمدة في محافظة ذمار واليمن. تصفح أحدث الفرص والخدمات بسهولة.">
     <meta name="keywords" content="وظائف ذمار, خدمات رقمية, كفاءات يمنية, دورات تدريبية, تسويق بالعمولة, منصة صدارة, وظائف شاغرة">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://sadarah.top/">
 
-    <!-- وسوم Open Graph لمشاركة الرابط على الواتساب وفيسبوك -->
     <meta property="og:title" content="منصة صدارة للوظائف والخدمات الرقمية">
     <meta property="og:description" content="منصتك الأولى للبحث عن الوظائف، الكفاءات، والخدمات الرقمية والدورات التدريبية.">
     <meta property="og:type" content="website">
@@ -29,14 +27,12 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-light); padding-bottom: 110px; }
 
-        /* الشريط العلوي */
         .top-navbar { background: #0a1324; color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); position: sticky; top: 0; z-index: 1000; }
         .nav-left { display: flex; align-items: center; gap: 10px; }
         .sidebar-toggle-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; }
         
         .mini-btn { background: #1e293b; color: white; border: 1px solid var(--gold); padding: 5px 10px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
 
-        /* القائمة الجانبية المنسدلة (خالية تماماً من زر لوحة التحكم لأمان الزوار) */
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 19, 36, 0.75); backdrop-filter: blur(4px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .sidebar-overlay.active { opacity: 1; visibility: visible; }
         
@@ -58,7 +54,6 @@
         .channel-bar { background: #25d366; color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; }
         .channel-bar a { color: white; text-decoration: underline; margin-right: 5px; }
 
-        /* الهيرو سكشن */
         .hero { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 28px 16px 40px; text-align: center; }
         .hero h1 { font-size: 18px; margin-bottom: 8px; font-weight: 900; }
         .hero p { font-size: 12px; color: #cbd5e1; margin-bottom: 16px; }
@@ -66,18 +61,17 @@
         .hero-btn { text-decoration: none; padding: 9px 16px; border-radius: 8px; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
         .hero-btn-primary { background: var(--gold); color: #0a1324; }
         .hero-btn-secondary { background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(212, 175, 55, 0.5); }
+        .hero-btn-app { background: #25d366; color: white; }
         .hero-btn:hover { transform: translateY(-2px); }
 
         .main-container { max-width: 800px; margin: -25px auto 0; padding: 0 16px; }
 
-        /* البحث والتصنيفات */
         .search-filter-box { background: white; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .search-input-main { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 8px; }
         .categories-tags { display: flex; gap: 6px; flex-wrap: wrap; }
         .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* البنرات الإعلانية المتحركة (السلايدر) */
         .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 16px; min-height: 130px; border: 1px solid #e2e8f0; }
         .ad-slider-img { width: 100%; max-height: 220px; object-fit: cover; display: none; opacity: 0; transition: opacity 0.6s; }
         .ad-slider-img.active { display: block; opacity: 1; }
@@ -93,7 +87,6 @@
         .job-card img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
         .apply-btn { background: var(--green); color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 11px; display: inline-block; margin-top: 8px; }
 
-        /* شريط شركاء النجاح المتحرك أسفل الصفحة */
         .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; }
         .ticker-label { background: var(--gold); color: #0a1324; font-weight: 900; font-size: 10px; padding: 6px 10px; border-radius: 0 10px 10px 0; z-index: 10; white-space: nowrap; }
         .ticker-content { display: flex; align-items: center; gap: 12px; animation: ticker 20s linear infinite; }
@@ -102,7 +95,6 @@
 
         .footer-copyright { text-align: center; color: #64748b; font-size: 11px; padding: 25px 0 40px; }
 
-        /* نافذة تسجيل الحساب والدخول */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; }
         .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 90%; max-width: 380px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
@@ -111,7 +103,6 @@
 </head>
 <body>
 
-    <!-- الشريط العلوي الشامل -->
     <div class="top-navbar">
         <div class="nav-left">
             <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
@@ -124,7 +115,6 @@
         </div>
     </div>
 
-    <!-- القائمة الجانبية المنسدلة (خالية من لوحة التحكم لتجنب ظهورها للزوار) -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="sidebar-drawer" id="sidebarDrawer">
         <div class="sidebar-header">
@@ -159,18 +149,18 @@
         <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank">اضغط هنا للانضمام للمجتمع 🟢</a>
     </div>
 
-    <!-- الهيرو سكشن -->
+    <!-- الهيرو سكشن (يحتوي الآن على زر تحميل التطبيق المجاني بارزاً) -->
     <div class="hero">
         <h1>المنصة الأولى للوظائف والخدمات الرقمية بمحافظة ذمار</h1>
         <p>بوابتك للبحث عن الفرص الشاغرة، طلب الكفاءات، وتسوق أفضل الخدمات والاشتراكات الرقمية</p>
         <div class="hero-action-btns">
             <a href="#jobsBox" class="hero-btn hero-btn-primary"><i class="fa-solid fa-briefcase"></i> استكشف الوظائف الشاغرة</a>
             <a href="services.html" class="hero-btn hero-btn-secondary"><i class="fa-solid fa-store"></i> متجر الخدمات الرقمية 🛒</a>
+            <a href="https://drive.google.com/file/d/17ANhJvs2xrzFqslYOadnc60RQCFLoZgU/view?usp=drivesdk" target="_blank" class="hero-btn hero-btn-app"><i class="fa-solid fa-download"></i> تحميل تطبيق المنصة مجاناً 📱</a>
         </div>
     </div>
 
     <div class="main-container">
-        <!-- محرك البحث والتصنيفات -->
         <div class="search-filter-box">
             <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن وظيفة، خدمة، أو تخصص..." oninput="filterJobsAndServices()">
             <div class="categories-tags">
@@ -183,7 +173,6 @@
             </div>
         </div>
 
-        <!-- البنرات الإعلانية المتحركة (السلايدر) -->
         <div class="ad-slider-box" id="sliderBox">
             <div id="sliderImages"></div>
             <div class="slider-dots" id="sliderDots"></div>
@@ -204,7 +193,6 @@
         </div>
     </div>
 
-    <!-- شريط شركاء النجاح المتحرك أسفل الصفحة -->
     <div class="partners-ticker">
         <div class="ticker-label">شركاء النجاح 🤝</div>
         <div style="display:flex; overflow:hidden; width:100%;">
@@ -212,7 +200,6 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الحساب والدخول -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-card">
             <h3 style="color:var(--primary); font-size:15px; margin-bottom:5px;" id="modalTitle">تسجيل حساب جديد 🚀</h3>
@@ -251,6 +238,13 @@
         }
 
         async function init() {
+            document.querySelectorAll('.sidebar-menu a').forEach(a => {
+                let href = a.getAttribute('href') || '';
+                if(href.includes('sdr') || a.textContent.includes('لوحة التحكم')) {
+                    a.remove();
+                }
+            });
+
             checkActiveSession();
             try {
                 let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
