@@ -152,11 +152,19 @@
         async function loadStoreProducts() {
             let container = document.getElementById('productsGrid');
             try {
+                // محاولة الجلب من جدول products أو جدول alternatives مثل services لضمان عدم حدوث فراغ
                 let { data: products, error } = await db.from('products').select('*').order('id', {ascending: false});
+                
                 if (error || !products || products.length === 0) {
+                    let { data: altProducts } = await db.from('services').select('*').order('id', {ascending: false});
+                    products = altProducts || [];
+                }
+
+                if (!products || products.length === 0) {
                     container.innerHTML = `<div class="empty-box">لا توجد منتجات أو خدمات مضافة حالياً في المتجر.</div>`;
                     return;
                 }
+
                 allProducts = products;
                 renderProducts(allProducts);
             } catch(e) {
