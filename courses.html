@@ -36,14 +36,12 @@
         .order-btn { background: var(--primary); color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
         .order-btn:hover { background: #1e3a8a; }
 
-        /* خانة كود الخصم داخل الكارت */
         .coupon-box-card { display: flex; gap: 4px; margin-top: 6px; }
         .coupon-input { flex: 1; padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 10px; outline: none; }
         .coupon-btn { background: var(--gold); color: #0a1324; border: none; padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; }
 
         .empty-box { text-align: center; padding: 30px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; font-size: 12px; }
 
-        /* نافذة الدفع */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
         .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 440px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); max-height: 90vh; overflow-y: auto; }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
@@ -128,9 +126,6 @@
         let selectedCourseStarsMap = {};
         let currentCheckoutCourse = null;
 
-        // أكواد الخصم المجانية الخاصة بك (يمكنك إضافة أي كود تريده هنا)
-        const FREE_COUPONS = ["SADARA2026", "FREEVIP", "AHMADFREE", "VIP99"];
-
         async function loadCoursesPage() {
             let container = document.getElementById('coursesGrid');
 
@@ -164,15 +159,14 @@
                             <div class="product-title">${c.title}</div>
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
                                 <span class="product-subtext">📚 ${lessonsCount} دروس</span>
-                                <span class="product-price">${coursePrice}</span>
+                                <span class="product-price" id="priceDisplay_${c.id}">${coursePrice}</span>
                             </div>
                             
                             <button onclick='openCheckoutModal(${JSON.stringify(c)})' class="order-btn" id="btnBuy_${c.id}"><i class="fa-solid fa-cart-plus"></i> اشتري الدورة 🛒</button>
 
-                            <!-- خانة كود الخصم المجاني -->
                             <div class="coupon-box-card">
-                                <input type="text" id="couponInput_${c.id}" class="coupon-input" placeholder="أدخل كود الخصم المجاني...">
-                                <button onclick="applyCoupon(${c.id})" class="coupon-btn">تفعيل</button>
+                                <input type="text" id="couponInput_${c.id}" class="coupon-input" placeholder="أدخل كود الخصم...">
+                                <button onclick="applyCoupon(${c.id}, ${parseFloat(c.price) || 1500})" class="coupon-btn">تفعيل</button>
                             </div>
 
                             <div class="course-reviews-box">
@@ -206,26 +200,46 @@
             }
         }
 
-        // وظيفة التحقق وتفعيل كود الخصم المجاني
-        function applyCoupon(courseId) {
-            const inputVal = document.getElementById(`couponInput_${courseId}`).value.trim();
+        async function applyCoupon(courseId, originalPrice) {
+            const inputVal = document.getElementById(`couponInput_${courseId}`).value.trim().toUpperCase();
             const btnBuy = document.getElementById(`btnBuy_${courseId}`);
+            const priceDisp = document.getElementById(`priceDisplay_${courseId}`);
 
-            if (!inputVal) {
-                alert('يرجى إدخال كود الخصم أولاً.');
-                return;
-            }
+            if (!inputVal) { alert('يرجى إدخال كود الخصم أولاً.'); return; }
 
-            // التحقق إذا كان الكود موجوداً في قائمة الأكواد المجانية
-            if (FREE_COUPONS.includes(inputVal)) {
-                alert('🎉 مبروك! تم تفعيل كود الخصم بنجاح. أصبحت الدورة مجانية لك بالكامل.');
-                
-                // تحويل زر الشراء إلى زر مشاهدة مجانية يوجهه مباشرة لصفحة الدرس
-                btnBuy.style.background = 'var(--green)';
-                btnBuy.innerHTML = '<i class="fa-solid fa-play-circle"></i> مشاهدة الدورة مجاناً 🚀';
-                btnBuy.setAttribute('onclick', `window.location.href='watch.html?id=${courseId}'`);
-            } else {
-                alert('❌ عذراً، كود الخصم غير صحيح أو منتهي الصلاحية.');
+            try {
+                let { data: coupon, error } = await db.from('coupons').select('*').eq('code', inputVal).eq('is_active', true).single();
+
+                if (error || !coupon) {
+                    alert('❌ عذراً، كود الخصم غير صحيح أو منتهي الصلاحية.');
+                    return;
+                }
+
+                if (coupon.discount_type === 'free') {
+                    alert('🎉 مبروك! تم تفعيل الخصم المجاني الكامل (100%). أصبحت الدورة مجانية لك.');
+                    btnBuy.style.background = 'var(--green)';
+                    btnBuy.innerHTML = '<i class="fa-solid fa-play-circle"></i> مشاهدة الدورة مجاناً 🚀';
+                    btnBuy.setAttribute('onclick', `window.location.href='watch.html?id=${courseId}'`);
+                    priceDisp.textContent = 'مجاني 🎁';
+                } else {
+                    let discountAmount = 0;
+                    if (coupon.discount_type === 'fixed') {
+                        discountAmount = coupon.discount_value || 0;
+                    } else if (coupon.discount_type === 'percent') {
+                        discountAmount = (originalPrice * (coupon.discount_value || 0)) / 100;
+                    }
+
+                    let newPrice = Math.max(0, originalPrice - discountAmount);
+                    alert(`🎉 تم تفعيل الخصم! تم خصم ${discountAmount} ريال. السعر الجديد: ${newPrice} ريال.`);
+                    
+                    priceDisp.innerHTML = `<del style="font-size:10px; color:#94a3b8;">${originalPrice}</del> ${newPrice} ريال`;
+                    
+                    let cObj = { id: courseId, title: document.querySelector(`#cardCourse_${courseId} .product-title`).textContent, price: newPrice };
+                    btnBuy.setAttribute('onclick', `openCheckoutModal(${JSON.stringify(cObj)})`);
+                }
+
+            } catch(e) {
+                alert('حدث خطأ أثناء التحقق من الكود.');
             }
         }
 
