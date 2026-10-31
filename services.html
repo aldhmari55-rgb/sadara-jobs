@@ -28,7 +28,7 @@
         .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* تعديل شبكة عرض المنتجات لتكون صفين متجاورة وبشكل أنيق */
+        /* شبكة عرض المنتجات (صفين متجاورة وبشكل أنيق) */
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
         @media (max-width: 600px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
 
@@ -70,15 +70,15 @@
 
     <div class="container">
         <div class="search-filter-box">
-            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن منتج، خدمة، أو اشتراك رقمي..." oninput="filterProducts()">
+            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن جوال، عطر، أداة مدرسية، أو منتج..." oninput="filterProducts()">
             <div class="categories-tags">
                 <span class="cat-tag active" onclick="filterByCategory('الكل', this)">الكل 🌐</span>
-                <span class="cat-tag" onclick="filterByCategory('اشتراكات', this)">🔑 اشتراكات</span>
-                <span class="cat-tag" onclick="filterByCategory('خدمات', this)">🛠️ خدمات</span>
-                <span class="cat-tag" onclick="filterByCategory('ملابس', this)">👗 ملابس</span>
-                <span class="cat-tag" onclick="filterByCategory('تجميل', this)">💄 تجميل</span>
-                <span class="cat-tag" onclick="filterByCategory('منزل', this)">🏡 منزل</span>
-                <span class="cat-tag" onclick="filterByCategory('أخرى', this)">📦 أخرى</span>
+                <span class="cat-tag" onclick="filterByCategory('جوالات', this)">📱 جوالات</span>
+                <span class="cat-tag" onclick="filterByCategory('اكسسوارات', this)">🎧 اكسسوارات</span>
+                <span class="cat-tag" onclick="filterByCategory('الكترونيات', this)">⚡ الكترونيات</span>
+                <span class="cat-tag" onclick="filterByCategory('ادوات مكتبيه', this)">📎 ادوات مكتبيه</span>
+                <span class="cat-tag" onclick="filterByCategory('ادوات مدرسيه', this)">🎒 ادوات مدرسيه</span>
+                <span class="cat-tag" onclick="filterByCategory('عطور وهدايا', this)">🎁 عطور وهدايا</span>
             </div>
         </div>
 
@@ -153,14 +153,12 @@
         async function loadStoreProducts() {
             let container = document.getElementById('productsGrid');
             try {
-                // جلب المنتجات والخدمات من جدول platform_services الذي تديره لوحة التحكم تماماً
                 let { data: products, error } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 
                 if (error || !products) {
                     products = [];
                 }
 
-                // عرض المنتجات المعروضة فقط (التي ليست مخفية)
                 allProducts = products.filter(p => p.is_active !== false);
                 renderProducts(allProducts);
             } catch(e) {
@@ -278,7 +276,6 @@
                     }
                 } catch(err) {}
 
-                // الحفظ المباشر في جدول service_orders المتطابق مع لوحة التحكم لتظهر الطلبات هناك فوراً مع كود المسوق
                 let { error } = await db.from('service_orders').insert([{
                     service_name: selectedProductForOrder.title,
                     client_name: name,
