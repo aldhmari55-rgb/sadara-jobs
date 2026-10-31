@@ -35,6 +35,7 @@
 
         .order-btn { background: var(--primary); color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
         .order-btn:hover { background: #1e3a8a; }
+        .order-btn.enrolled { background: #059669; }
 
         .coupon-box-card { display: flex; gap: 4px; margin-top: 6px; }
         .coupon-input { flex: 1; padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 10px; outline: none; }
@@ -74,7 +75,7 @@
         </div>
     </div>
 
-    <!-- نافذة الدفع التقليدي (تظهر فقط إن كان السعر أكبر من صفر) -->
+    <!-- نافذة الدفع التقليدي -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-card">
             <h3 style="color:var(--primary); font-size:15px; margin-bottom:4px;"><i class="fa-solid fa-cart-shopping" style="color:var(--gold);"></i> إتمام الاشتراك في الدورة</h3>
@@ -123,6 +124,13 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // ثبات جلسة المستخدم لمنع فقدان الهوية
+        let currentUserId = localStorage.getItem('sadara_user_id');
+        if (!currentUserId) {
+            currentUserId = "user_" + Math.random().toString(36).substring(2, 11);
+            localStorage.setItem('sadara_user_id', currentUserId);
+        }
+
         let selectedCourseStarsMap = {};
         let currentCheckoutCourse = null;
 
@@ -141,6 +149,21 @@
                     return;
                 }
 
+                // جلب الاشتراكات المسجلة لهذا المستخدم مسبقاً من قاعدة البيانات
+                let enrolledCourseIds = new Set();
+                try {
+                    let { data: enrollments } = await db.from('user_enrollments')
+                        .select('course_id')
+                        .eq('user_id', currentUserId)
+                        .eq('is_enrolled', true);
+                    
+                    if (enrollments) {
+                        enrollments.forEach(en => enrolledCourseIds.add(en.course_id.toString()));
+                    }
+                } catch(err) {
+                    console.log("لا توجد اشتراكات سابقة أو الجدول غير موجود بعد");
+                }
+
                 let gridDiv = document.createElement('div');
                 gridDiv.className = 'products-grid';
 
@@ -149,10 +172,29 @@
                     selectedCourseStarsMap[c.id] = 5;
                     let coursePriceNum = parseFloat(c.price) || 1500;
                     let coursePriceStr = `${coursePriceNum} ريال`;
+                    let isAlreadyEnrolled = enrolledCourseIds.has(c.id.toString());
                     
                     let imgHtml = c.image 
                         ? `<div class="product-img-container"><img src="${c.image}" class="product-img"></div>` 
                         : `<div class="product-img-container"><i class="fa-solid fa-graduation-cap" style="font-size:24px; color:var(--gold);"></i></div>`;
+
+                    let buttonHtml = '';
+                    let couponBoxHtml = '';
+
+                    if (isAlreadyEnrolled) {
+                        // إذا كان الطالب مسجلاً مسبقاً، يظهر زر المتابعة الطبيعي بدون شراء أو أكواد
+                        buttonHtml = `<button onclick="window.location.href='watch.html?id=${c.id}'" class="order-btn enrolled"><i class="fa-solid fa-play-circle"></i> أنت مسجل - متابعة المشاهدة 🚀</button>`;
+                        couponBoxHtml = ''; // إخفاء خانة الكود
+                    } else {
+                        // إذا لم يكن مسجلاً، تظهر خيارات الشراء وتفعيل الكود العادية
+                        buttonHtml = `<button onclick='openCheckoutModal(${JSON.stringify(c)})' class="order-btn" id="btnBuy_${c.id}"><i class="fa-solid fa-cart-plus"></i> اشتري الدورة 🛒</button>`;
+                        couponBoxHtml = `
+                            <div class="coupon-box-card" id="couponBox_${c.id}">
+                                <input type="text" id="couponInput_${c.id}" class="coupon-input" placeholder="أدخل كود الخصم...">
+                                <button onclick="applyCoupon(${c.id}, ${coursePriceNum})" class="coupon-btn">تفعيل</button>
+                            </div>
+                        `;
+                    }
 
                     gridDiv.innerHTML += `
                         <div class="product-card" id="cardCourse_${c.id}" data-base-price="${coursePriceNum}">
@@ -163,12 +205,8 @@
                                 <span class="product-price" id="priceDisplay_${c.id}">${coursePriceStr}</span>
                             </div>
                             
-                            <button onclick='openCheckoutModal(${JSON.stringify(c)})' class="order-btn" id="btnBuy_${c.id}"><i class="fa-solid fa-cart-plus"></i> اشتري الدورة 🛒</button>
-
-                            <div class="coupon-box-card" id="couponBox_${c.id}">
-                                <input type="text" id="couponInput_${c.id}" class="coupon-input" placeholder="أدخل كود الخصم...">
-                                <button onclick="applyCoupon(${c.id}, ${coursePriceNum})" class="coupon-btn">تفعيل</button>
-                            </div>
+                            ${buttonHtml}
+                            ${couponBoxHtml}
 
                             <div class="course-reviews-box">
                                 <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -229,31 +267,37 @@
                     newPrice = Math.max(0, originalPrice - discountAmount);
                 }
 
-                // إذا أصبح السعر صفر (أو غطى الخصم المبلغ بالكامل)
-                if (newPrice === 0) {
-                    alert('🎉 مبروك! تم تغطية قيمة الدورة بالكامل بواسطة الكود. أصبحت الدورة متاحة لك مجاناً!');
+                // حفظ اشتراك الطالب في قاعدة البيانات لكي يبقى مسجلاً للأبد ولا يطلب منه الكود مجدداً
+                await db.from('user_enrollments').upsert({
+                    user_id: currentUserId,
+                    course_id: courseId,
+                    is_enrolled: true
+                }, { onConflict: 'user_id,course_id' });
+
+                // إذا أصبح السعر صفر أو تم تفعيل الكود بنجاح
+                if (newPrice === 0 || coupon.discount_type === 'free') {
+                    alert('🎉 مبروك! تم تفعيل الكود بنجاح. أصبحت الدورة متاحة لك!');
                     
-                    // تحويل الزر مباشرة لمشاهدة الدورة وإلغاء نافذة الدفع وخانة الكود تماماً
-                    btnBuy.style.background = 'var(--green)';
-                    btnBuy.innerHTML = '<i class="fa-solid fa-play-circle"></i> مشاهدة الدورة مجاناً 🚀';
+                    btnBuy.style.background = '#059669';
+                    btnBuy.className = 'order-btn enrolled';
+                    btnBuy.innerHTML = '<i class="fa-solid fa-play-circle"></i> أنت مسجل - متابعة المشاهدة 🚀';
                     btnBuy.setAttribute('onclick', `window.location.href='watch.html?id=${courseId}'`);
                     priceDisp.textContent = 'مجاني 🎁';
-                    if (couponBox) couponBox.style.display = 'none'; // إخفاء خانة الكود بعد التفعيل الناجح
-
+                    if (couponBox) couponBox.style.display = 'none';
                 } else {
-                    // إذا بقي جزء من المبلغ مستحقاً
                     let discountApplied = originalPrice - newPrice;
-                    alert(`🎉 تم تفعيل الخصم! تم خصم ${discountApplied} ريال. السعر الجديد: ${newPrice} ريال.`);
+                    alert(`🎉 تم تفعيل الكود! السعر الجديد: ${newPrice} ريال. تم تسجيلك في الدورة بنجاح.`);
                     
+                    btnBuy.style.background = '#059669';
+                    btnBuy.className = 'order-btn enrolled';
+                    btnBuy.innerHTML = '<i class="fa-solid fa-play-circle"></i> أنت مسجل - متابعة المشاهدة 🚀';
+                    btnBuy.setAttribute('onclick', `window.location.href='watch.html?id=${courseId}'`);
                     priceDisp.innerHTML = `<del style="font-size:10px; color:#94a3b8;">${originalPrice}</del> ${newPrice} ريال`;
-                    
-                    let titleText = document.querySelector(`#cardCourse_${courseId} .product-title`).textContent;
-                    let cObj = { id: courseId, title: titleText, price: newPrice };
-                    btnBuy.setAttribute('onclick', `openCheckoutModal(${JSON.stringify(cObj)})`);
+                    if (couponBox) couponBox.style.display = 'none';
                 }
 
             } catch(e) {
-                alert('حدث خطأ أثناء التحقق من الكود.');
+                alert('حدث خطأ أثناء تفعيل الكود.');
             }
         }
 
@@ -303,6 +347,7 @@
                     imageUrl = 'تم إرفاق السند';
                 }
 
+                // تسجيل الطلب في جدول الطلبات
                 let { error } = await db.from('orders').insert([{
                     item_title: currentCheckoutCourse.title,
                     item_type: 'course',
@@ -316,8 +361,15 @@
 
                 if (error) throw error;
 
+                // حفظ اشتراك الطالب في جدول user_enrollments لكي يظهر له زر المتابعة بشكل دائم
+                await db.from('user_enrollments').upsert({
+                    user_id: currentUserId,
+                    course_id: currentCheckoutCourse.id,
+                    is_enrolled: true
+                }, { onConflict: 'user_id,course_id' });
+
                 msg.style.color = 'green';
-                msg.textContent = 'تم إرسال طلبك بنجاح! 🎉 جاري توجيهك لصفحة مشاهدة الدورة...';
+                msg.textContent = 'تم إرسال طلبك وتفعيل الدورة بنجاح! 🎉 جاري توجيهك...';
                 
                 setTimeout(() => {
                     closeCheckoutModal();
