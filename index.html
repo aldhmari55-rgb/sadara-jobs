@@ -8,14 +8,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>منصة صدارة | أفضل الوظائف والخدمات الرقمية والدورات التدريبية في اليمن</title>
-    <meta name="description" content="منصة صدارة الرقمية للوظائف الشاغرة، الكفاءات والخبراء، خدمات التسويق، والدورات التدريبية المعتمدة في اليمن. تصفح أحدث الفرص والخدمات بسهولة.">
-    <meta name="keywords" content="وظائف اليمن, خدمات رقمية, كفاءات يمنية, دورات تدريبية, تسويق بالعمولة, منصة صدارة, وظائف شاغرة">
+    <title>منصة صدارة | أفضل الوظائف والخدمات الرقمية في اليمن</title>
+    <meta name="description" content="منصة صدارة الرقمية للوظائف الشاغرة، الكفاءات والخبراء، خدمات التسويق، والمتجر الرقمي المباشر في اليمن. تصفح أحدث الفرص والخدمات بسهولة.">
+    <meta name="keywords" content="وظائف اليمن, خدمات رقمية, كفاءات يمنية, متجر خدمات, تسويق بالعمولة, منصة صدارة, وظائف شاغرة">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://sadarah.top/">
 
     <meta property="og:title" content="منصة صدارة للوظائف والخدمات الرقمية">
-    <meta property="og:description" content="منصتك الأولى للبحث عن الوظائف، الكفاءات، والخدمات الرقمية والدورات التدريبية في اليمن.">
+    <meta property="og:description" content="منصتك الأولى للبحث عن الوظائف، الكفاءات، والخدمات الرقمية في اليمن.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sadarah.top/">
 
@@ -83,8 +83,10 @@
         .stat-item h4 { font-size: 15px; font-weight: 900; color: var(--primary); }
         .stat-item p { font-size: 10px; color: #64748b; font-weight: 700; }
 
+        /* عناوين الأقسام */
         .category-section-title { font-size: 14px; font-weight: 900; color: var(--primary); margin: 18px 5px 8px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
+        /* الشبكة الثنائية للبطاقات */
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
 
         .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
@@ -130,13 +132,12 @@
             </button>
             <span style="font-weight: 900; font-size:14px;">منصة صدارة</span>
         </div>
-        <div id="authArea" style="display:flex; gap:6px; align-items:center;">
-            <a href="my-courses.html" class="mini-btn" style="background:var(--green);"><i class="fa-solid fa-graduation-cap"></i> كورساتي</a>
+        <div id="authArea">
             <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>
         </div>
     </div>
 
-    <!-- القائمة الجانبية المحدثة مع رابط كورساتي -->
+    <!-- القائمة الجانبية (محمية وخالية تماماً من أقسام الدورات) -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="sidebar-drawer" id="sidebarDrawer">
         <div class="sidebar-header">
@@ -146,12 +147,9 @@
         <div class="sidebar-menu">
             <div class="sidebar-section-title">الأقسام الرئيسية</div>
             <a href="index.html" class="sidebar-item active"><i class="fa-solid fa-house"></i> الرئيسية والوظائف والكفاءات</a>
-            <a href="my-courses.html" class="sidebar-item" style="color:var(--gold);"><i class="fa-solid fa-graduation-cap"></i> كورساتي المشترك بها <span class="badge" style="background:var(--green);">خاصة</span></a>
             <a href="services.html" class="sidebar-item"><i class="fa-solid fa-store"></i> متجر الخدمات والمنتجات <span class="badge" style="background:var(--gold); color:#000;">🛒 متجر</span></a>
-            <a href="courses.html" class="sidebar-item"><i class="fa-solid fa-video"></i> الدورات المرئية الاحترافية</a>
-            <a href="text-courses.html" class="sidebar-item"><i class="fa-solid fa-book-open"></i> الدورات النصية والاختبارات</a>
             
-            <div class="sidebar-section-title">الأرباح والتسويق</div>
+            <div class="sidebar-section-title">الأرباح والتسويق والمدونة</div>
             <a href="affiliate.html" class="sidebar-item"><i class="fa-solid fa-handshake-angle"></i> التسويق بالعمولة <span class="badge">20%</span></a>
             <a href="blog.html" class="sidebar-item"><i class="fa-solid fa-newspaper"></i> المدونة والنصائح</a>
 
@@ -167,16 +165,15 @@
     </div>
 
     <div class="channel-bar">
-        📢 انضم لمجتمعنا الرسمي على الواتساب لمتابعة جديد الوظائف:
+        📢 انضم لمجتمعنا الرسمي على الواتساب لمتابعة جديد الوظائف والخدمات:
         <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank">اضغط هنا للانضمام للمجتمع 🟢</a>
     </div>
 
     <div class="hero">
         <h1>المنصة الأولى للوظائف والخدمات الرقمية في اليمن</h1>
-        <p>بوابتك للبحث عن الفرص الشاغرة، طلب الكفاءات، وتسوق أفضل الخدمات والاشتراكات الرقمية</p>
+        <p>بوابتك للبحث عن الفرص الشاغرة، طلب الكفاءات، وتسوق أفضل الخدمات والمنتجات الرقمية</p>
         <div class="hero-action-btns">
             <a href="#mainContentArea" class="hero-btn hero-btn-primary"><i class="fa-solid fa-briefcase"></i> استكشف الوظائف والكفاءات</a>
-            <a href="my-courses.html" class="hero-btn" style="background:var(--green); color:white;"><i class="fa-solid fa-graduation-cap"></i> كورساتي والدورات المفعلة 🎓</a>
             <a href="services.html" class="hero-btn hero-btn-secondary"><i class="fa-solid fa-store"></i> متجر الخدمات الرقمية 🛒</a>
             <a href="https://drive.google.com/file/d/17ANhJvs2xrzFqslYOadnc60RQCFLoZgU/view?usp=drivesdk" target="_blank" class="hero-btn hero-btn-app"><i class="fa-solid fa-download"></i> تحميل تطبيق المنصة مجاناً 📱</a>
         </div>
@@ -207,9 +204,11 @@
             <div class="stat-item"><h4 id="statResumesCount">...</h4><p>الكفاءات 📄</p></div>
         </div>
 
+        <!-- قسم الوظائف الشاغرة -->
         <div class="category-section-title"><i class="fa-solid fa-briefcase"></i> الوظائف الشاغرة المتاحة 💼</div>
         <div id="jobsBoxContainer">جاري تحميل الوظائف...</div>
 
+        <!-- قسم دليل الكفاءات والخبراء -->
         <div class="category-section-title"><i class="fa-solid fa-users-viewfinder"></i> دليل الكفاءات والخبراء 👨‍💻</div>
         <div id="resumesBoxContainer">جاري تحميل الكفاءات...</div>
 
@@ -220,7 +219,7 @@
                 <a href="https://tiktok.com/@sadarahsdr" target="_blank" class="social-icon-btn" title="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
                 <a href="https://www.facebook.com/Sadarah2026?mibextid=ZbWKwL" target="_blank" class="social-icon-btn" title="فيسبوك"><i class="fa-brands fa-facebook"></i></a>
             </div>
-            <p style="font-size: 11px; color: #cbd5e1;">كن على اطلاع دائم بأحدث الفرص والبرامج التدريبية</p>
+            <p style="font-size: 11px; color: #cbd5e1;">كن على اطلاع دائم بأحدث الفرص والخدمات الرقمية</p>
         </div>
 
         <div class="footer-copyright">
@@ -483,16 +482,9 @@
             const loggedName = localStorage.getItem('sadara_logged_name');
             const authArea = document.getElementById('authArea');
             if (loggedName) {
-                authArea.innerHTML = `
-                    <a href="my-courses.html" class="mini-btn" style="background:var(--green);"><i class="fa-solid fa-graduation-cap"></i> كورساتي</a>
-                    <span style="font-size:10px; color:var(--gold); font-weight:bold; margin-left:4px;">👤 ${loggedName}</span>
-                    <button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border:none; color:white;">خروج</button>
-                `;
+                authArea.innerHTML = `<span style="font-size:10px; color:var(--gold); font-weight:bold; margin-left:4px;">👤 ${loggedName}</span><button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border:none; color:white;">خروج</button>`;
             } else {
-                authArea.innerHTML = `
-                    <a href="my-courses.html" class="mini-btn" style="background:var(--green);"><i class="fa-solid fa-graduation-cap"></i> كورساتي</a>
-                    <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>
-                `;
+                authArea.innerHTML = `<button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>`;
             }
         }
 
