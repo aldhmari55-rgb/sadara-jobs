@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- شفرة أدسنس -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096"
-         crossorigin="anonymous"></script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>متجر الخدمات والمنتجات الرقمية | منصة صدارة</title>
@@ -52,7 +48,6 @@
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
         .modal-card input, .modal-card select, .modal-card textarea { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
         
-        /* مربع تفاصيل الدفع المحدث */
         .payment-info-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 15px; margin: 12px 0; font-size: 11px; color: #334155; line-height: 1.8; }
         .payment-info-box .payment-title { font-weight: 900; color: var(--primary); font-size: 12px; margin-bottom: 6px; }
         .payment-info-box ul { list-style: none; padding: 0; margin: 0; }
@@ -74,6 +69,7 @@
             <div class="categories-tags">
                 <span class="cat-tag active" onclick="filterByCategory('الكل', this)">الكل 🌐</span>
                 <span class="cat-tag" onclick="filterByCategory('إلكترونيات', this)">🔌 إلكترونيات</span>
+                <span class="cat-tag" onclick="filterByCategory('جوالات وإكسسوارات', this)">📱 جوالات وإكسسوارات</span>
                 <span class="cat-tag" onclick="filterByCategory('برامج وتطبيقات', this)">💻 برامج وتطبيقات</span>
                 <span class="cat-tag" onclick="filterByCategory('بطاقات رقمية', this)">💳 بطاقات رقمية</span>
                 <span class="cat-tag" onclick="filterByCategory('خدمات تسويق', this)">📢 خدمات تسويق</span>
@@ -94,7 +90,6 @@
             <div id="modalProductPrice" style="color:#e11d48; font-weight:900; font-size:13px; margin-bottom:6px;">السعر: 0 ريال</div>
             <div id="modalProductDesc" style="background:#f8fafc; padding:8px; border-radius:8px; font-size:11px; color:#64748b; line-height: 1.5;">وصف المنتج...</div>
 
-            <!-- مربع تفاصيل حسابات الدفع الرسمية -->
             <div class="payment-info-box">
                 <div class="payment-title">💳 تفاصيل حسابات الدفع الرسمية:</div>
                 <ul>
@@ -152,11 +147,11 @@
         async function loadStoreProducts() {
             let container = document.getElementById('productsGrid');
             try {
-                // محاولة الجلب من جدول products أو جدول alternatives مثل services لضمان عدم حدوث فراغ
+                // جلب المنتجات المباشرة من جدول products المتوافق مع لوحة التحكم الجديدة
                 let { data: products, error } = await db.from('products').select('*').order('id', {ascending: false});
                 
                 if (error || !products || products.length === 0) {
-                    let { data: altProducts } = await db.from('services').select('*').order('id', {ascending: false});
+                    let { data: altProducts } = await db.from('platform_services').select('*').order('id', {ascending: false});
                     products = altProducts || [];
                 }
 
@@ -209,7 +204,7 @@
                         ${imgHtml}
                         <div class="product-title">${p.title}</div>
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span class="product-subtext">${p.category || 'خدمة عامة'}</span>
+                            <span class="product-subtext">${p.category || 'عام'}</span>
                             <span class="product-price">${p.price} ريال</span>
                         </div>
                         <button onclick='openProductModal(${JSON.stringify(p)})' class="order-btn">اطلب الآن 🛒</button>
@@ -232,8 +227,8 @@
                 imgContainer.innerHTML = '';
             }
 
-            document.getElementById('buyerName').value = localStorage.getItem('sadara_logged_name') || '';
-            document.getElementById('buyerPhone').value = localStorage.getItem('sadara_logged_phone') || '';
+            document.getElementById('buyerName').value = '';
+            document.getElementById('buyerPhone').value = '';
             document.getElementById('buyerCity').value = '';
             document.getElementById('buyerRef').value = '';
             document.getElementById('transferImage').value = '';
@@ -284,15 +279,14 @@
 
                 let fullPaymentDetails = `${method} | المدينة: ${city} | المسوق: ${ref || 'لا يوجد'} | ملاحظات: ${notes || 'لا يوجد'}`;
 
+                // الحفظ المباشر في جدول orders ليتزامن مع لوحة التحكم الجديدة
                 let { error } = await db.from('orders').insert([{
                     item_title: selectedProductForOrder.title,
-                    item_type: 'product',
                     buyer_name: name,
                     buyer_phone: phone,
                     payment_method: fullPaymentDetails,
-                    price: selectedProductForOrder.price || '0',
-                    image_url: imageUrl,
-                    status: 'قيد المراجعة'
+                    price: selectedProductForOrder.price || 0,
+                    image_url: imageUrl
                 }]);
 
                 if (error) throw error;
