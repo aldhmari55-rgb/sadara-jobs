@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- شفرة أدسنس -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096"
+         crossorigin="anonymous"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>متجر الخدمات والمنتجات الرقمية | منصة صدارة</title>
@@ -15,7 +19,7 @@
         .top-navbar { background: #0a1324; color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); position: sticky; top: 0; z-index: 1000; }
         .back-btn { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: 800; font-size: 11px; border: none; display: inline-flex; align-items: center; gap: 4px; }
         
-        .container { max-width: 900px; margin: 15px auto; padding: 0 10px; }
+        .container { max-width: 950px; margin: 15px auto; padding: 0 10px; }
         .section-title { font-size: 15px; font-weight: 900; margin-bottom: 12px; color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
         .search-filter-box { background: white; border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
@@ -24,25 +28,26 @@
         .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
-        @media (max-width: 600px) { .products-grid { grid-template-columns: 1fr; } }
+        /* تعديل شبكة عرض المنتجات لتكون صفين متجاورة وبشكل أنيق */
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
+        @media (max-width: 600px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
 
         .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
         
-        .product-img-container { width: 100%; height: 150px; background: #0a1324; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        .product-img-container { width: 100%; height: 130px; background: #0a1324; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
         .product-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; }
+        .product-title { font-size: 12px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; height: 32px; }
         
-        .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; }
-        .product-price { color: #e11d48; font-weight: 900; font-size: 13px; }
+        .product-subtext { font-size: 9px; color: #64748b; font-weight: bold; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; display: inline-block; }
+        .product-price { color: #e11d48; font-weight: 900; font-size: 12px; }
 
-        .order-btn { background: var(--primary); color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .order-btn { background: var(--primary); color: white; text-align: center; padding: 6px; border-radius: 6px; font-weight: bold; font-size: 10px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
         .order-btn:hover { background: #1e3a8a; }
 
         .empty-box { text-align: center; padding: 30px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; font-size: 12px; }
 
-        /* نافذة الطلب */
+        /* نافذة الطلب والسداد */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
         .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 440px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); max-height: 90vh; overflow-y: auto; }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
@@ -65,14 +70,15 @@
 
     <div class="container">
         <div class="search-filter-box">
-            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن منتج، خدمة، أو بطاقة رقمية..." oninput="filterProducts()">
+            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن منتج، خدمة، أو اشتراك رقمي..." oninput="filterProducts()">
             <div class="categories-tags">
                 <span class="cat-tag active" onclick="filterByCategory('الكل', this)">الكل 🌐</span>
-                <span class="cat-tag" onclick="filterByCategory('إلكترونيات', this)">🔌 إلكترونيات</span>
-                <span class="cat-tag" onclick="filterByCategory('جوالات وإكسسوارات', this)">📱 جوالات وإكسسوارات</span>
-                <span class="cat-tag" onclick="filterByCategory('برامج وتطبيقات', this)">💻 برامج وتطبيقات</span>
-                <span class="cat-tag" onclick="filterByCategory('بطاقات رقمية', this)">💳 بطاقات رقمية</span>
-                <span class="cat-tag" onclick="filterByCategory('خدمات تسويق', this)">📢 خدمات تسويق</span>
+                <span class="cat-tag" onclick="filterByCategory('اشتراكات', this)">🔑 اشتراكات</span>
+                <span class="cat-tag" onclick="filterByCategory('خدمات', this)">🛠️ خدمات</span>
+                <span class="cat-tag" onclick="filterByCategory('ملابس', this)">👗 ملابس</span>
+                <span class="cat-tag" onclick="filterByCategory('تجميل', this)">💄 تجميل</span>
+                <span class="cat-tag" onclick="filterByCategory('منزل', this)">🏡 منزل</span>
+                <span class="cat-tag" onclick="filterByCategory('أخرى', this)">📦 أخرى</span>
             </div>
         </div>
 
@@ -111,8 +117,8 @@
             <label>المحافظة الحالية</label>
             <input type="text" id="buyerCity" placeholder="ذمار">
 
-            <label>كيف وصلت إلينا؟ (اختياري)</label>
-            <input type="text" id="buyerRef" placeholder="اسم المسوق أو وسائل التواصل...">
+            <label>كيف وصلت إلينا؟ (كود المسوق)</label>
+            <input type="text" id="buyerRef" placeholder="أدخل كود المسوق أو اتركها فارغة...">
 
             <label>وسيلة الدفع والتحويل</label>
             <select id="paymentMethod">
@@ -147,20 +153,15 @@
         async function loadStoreProducts() {
             let container = document.getElementById('productsGrid');
             try {
-                // جلب المنتجات المباشرة من جدول products المتوافق مع لوحة التحكم الجديدة
-                let { data: products, error } = await db.from('products').select('*').order('id', {ascending: false});
+                // جلب المنتجات والخدمات من جدول platform_services الذي تديره لوحة التحكم تماماً
+                let { data: products, error } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 
-                if (error || !products || products.length === 0) {
-                    let { data: altProducts } = await db.from('platform_services').select('*').order('id', {ascending: false});
-                    products = altProducts || [];
+                if (error || !products) {
+                    products = [];
                 }
 
-                if (!products || products.length === 0) {
-                    container.innerHTML = `<div class="empty-box">لا توجد منتجات أو خدمات مضافة حالياً في المتجر.</div>`;
-                    return;
-                }
-
-                allProducts = products;
+                // عرض المنتجات المعروضة فقط (التي ليست مخفية)
+                allProducts = products.filter(p => p.is_active !== false);
                 renderProducts(allProducts);
             } catch(e) {
                 container.innerHTML = `<div class="empty-box">حدث خطأ في الاتصال بقاعدة البيانات.</div>`;
@@ -190,7 +191,7 @@
             let container = document.getElementById('productsGrid');
             container.innerHTML = '';
             if (list.length === 0) {
-                container.innerHTML = `<div class="empty-box">لا توجد منتجات مطابقة لبحثك.</div>`;
+                container.innerHTML = `<div class="empty-box">لا توجد منتجات أو خدمات مطابقة حالياً.</div>`;
                 return;
             }
 
@@ -205,7 +206,7 @@
                         <div class="product-title">${p.title}</div>
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <span class="product-subtext">${p.category || 'عام'}</span>
-                            <span class="product-price">${p.price} ريال</span>
+                            <span class="product-price">${p.price}</span>
                         </div>
                         <button onclick='openProductModal(${JSON.stringify(p)})' class="order-btn">اطلب الآن 🛒</button>
                     </div>
@@ -217,12 +218,12 @@
         function openProductModal(product) {
             selectedProductForOrder = product;
             document.getElementById('modalProductTitle').textContent = product.title;
-            document.getElementById('modalProductPrice').textContent = `السعر: ${product.price} ريال`;
+            document.getElementById('modalProductPrice').textContent = `السعر: ${product.price}`;
             document.getElementById('modalProductDesc').textContent = product.description || 'لا يوجد وصف تفصيلي لهذا المنتج.';
             
             let imgContainer = document.getElementById('modalProductImgContainer');
             if (product.image) {
-                imgContainer.innerHTML = `<div style="width:100%; height:140px; border-radius:8px; overflow:hidden; background:#0a1324;"><img src="${product.image}" style="width:100%; height:100%; object-fit:cover;"></div>`;
+                imgContainer.innerHTML = `<div style="width:100%; height:130px; border-radius:8px; overflow:hidden; background:#0a1324;"><img src="${product.image}" style="width:100%; height:100%; object-fit:cover;"></div>`;
             } else {
                 imgContainer.innerHTML = '';
             }
@@ -269,7 +270,7 @@
                 let imageUrl = 'تم إرفاق السند';
                 try {
                     const fileExt = imageFile.name.split('.').pop();
-                    const fileName = `store_order_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+                    const fileName = `order_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
                     let { data: uploadData } = await db.storage.from('platform-files').upload(fileName, imageFile);
                     if (uploadData) {
                         let { data: publicURL } = db.storage.from('platform-files').getPublicUrl(fileName);
@@ -277,16 +278,15 @@
                     }
                 } catch(err) {}
 
-                let fullPaymentDetails = `${method} | المدينة: ${city} | المسوق: ${ref || 'لا يوجد'} | ملاحظات: ${notes || 'لا يوجد'}`;
-
-                // الحفظ المباشر في جدول orders ليتزامن مع لوحة التحكم الجديدة
-                let { error } = await db.from('orders').insert([{
-                    item_title: selectedProductForOrder.title,
-                    buyer_name: name,
-                    buyer_phone: phone,
-                    payment_method: fullPaymentDetails,
-                    price: selectedProductForOrder.price || 0,
-                    image_url: imageUrl
+                // الحفظ المباشر في جدول service_orders المتطابق مع لوحة التحكم لتظهر الطلبات هناك فوراً مع كود المسوق
+                let { error } = await db.from('service_orders').insert([{
+                    service_name: selectedProductForOrder.title,
+                    client_name: name,
+                    client_phone: phone,
+                    payment_method: method,
+                    transaction_ref: imageUrl,
+                    notes: `المدينة: ${city} | ملاحظات: ${notes || 'لا يوجد'}`,
+                    affiliate_id: ref || 'بدون'
                 }]);
 
                 if (error) throw error;
