@@ -83,7 +83,7 @@
             <label>اسمك الكريم (الثلاثي)</label>
             <input type="text" id="buyerName" placeholder="أدخل اسمك كما سيسجل بالشهادة">
 
-            <label>رقمك / رقم الواتساب</label>
+            <label>رقمك / رقم الواتساب (مفتاح الحساب)</label>
             <input type="tel" id="buyerPhone" placeholder="770000000">
 
             <label>طريقة الدفع</label>
@@ -99,7 +99,7 @@
             <label>📸 ارفع صورة سند التحويل أو الإيداع</label>
             <input type="file" id="transferImage" accept="image/*" style="padding:6px; background:#f8fafc;">
 
-            <button onclick="submitCourseOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-top:12px;"><i class="fa-solid fa-check-circle"></i> تأكيد الطلب والبدء بمشاهدة الدروس 🚀</button>
+            <button onclick="submitCourseOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-top:12px;"><i class="fa-solid fa-check-circle"></i> تأكيد الطلب والانتقال إلى كورساتي 🚀</button>
             <button onclick="closeCheckoutModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:10px;">إلغاء</button>
             <div id="checkoutMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
         </div>
@@ -110,7 +110,7 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // توحيد هُوية المستخدم: الاعتماد على رقم الواتساب المسجل أو توليد معرف ثابت وموثوق
+        // توحيد معرف المستخدم بناءً على رقم الهاتف المسجل أو الـ ID الثابت
         let currentUserId = localStorage.getItem('sadara_logged_phone') || localStorage.getItem('sadara_user_id');
         if (!currentUserId) {
             currentUserId = "user_" + Math.random().toString(36).substring(2, 11);
@@ -134,22 +134,18 @@
                     return;
                 }
 
-                // جلب الاشتراكات المرتبطة بالمستخدم الحالي أو برقم هاتفه
                 let enrolledCourseIds = new Set();
                 try {
-                    let phoneQuery = localStorage.getItem('sadara_logged_phone') || '';
-                    
+                    let phoneQuery = localStorage.getItem('sadara_logged_phone') || currentUserId;
                     let { data: enrollments, error: enError } = await db.from('user_enrollments')
-                        .select('course_id, user_id')
-                        .or(`user_id.eq.${currentUserId},user_id.eq.${phoneQuery}`)
+                        .select('course_id')
+                        .eq('user_id', phoneQuery)
                         .eq('is_enrolled', true);
                     
                     if (!enError && enrollments) {
                         enrollments.forEach(en => enrolledCourseIds.add(en.course_id.toString()));
                     }
-                } catch(err) {
-                    console.log("خطأ في جلب الاشتراكات:", err);
-                }
+                } catch(err) {}
 
                 let gridDiv = document.createElement('div');
                 gridDiv.className = 'products-grid';
@@ -168,7 +164,7 @@
                     let couponBoxHtml = '';
 
                     if (isAlreadyEnrolled) {
-                        buttonHtml = `<button onclick="window.location.href='watch.html?id=${c.id}'" class="order-btn enrolled"><i class="fa-solid fa-play-circle"></i> أنت مسجل - متابعة المشاهدة 🚀</button>`;
+                        buttonHtml = `<button onclick="window.location.href='my-courses.html'" class="order-btn enrolled"><i class="fa-solid fa-graduation-cap"></i> الدورة موجودة في كورساتي 🎓</button>`;
                         couponBoxHtml = '';
                     } else {
                         buttonHtml = `<button onclick='openCheckoutModal(${JSON.stringify(c)})' class="order-btn" id="btnBuy_${c.id}"><i class="fa-solid fa-cart-plus"></i> اشتري الدورة 🛒</button>`;
@@ -181,16 +177,14 @@
                     }
 
                     gridDiv.innerHTML += `
-                        <div class="product-card" id="cardCourse_${c.id}" data-base-price="${coursePriceNum}">
+                        <div class="product-card" id="cardCourse_${c.id}">
                             ${imgHtml}
                             <div class="product-title">${c.title}</div>
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
                                 <span class="product-subtext">📚 ${lessonsCount} دروس</span>
-                                <span class="product-price" id="priceDisplay_${c.id}">${coursePriceStr}</span>
+                                <span class="product-price">${coursePriceStr}</span>
                             </div>
-                            <div id="actionContainer_${c.id}">
-                                ${buttonHtml}
-                            </div>
+                            <div id="actionContainer_${c.id}">${buttonHtml}</div>
                             ${couponBoxHtml}
                         </div>
                     `;
@@ -206,10 +200,6 @@
 
         async function applyCoupon(courseId, originalPrice) {
             const inputVal = document.getElementById(`couponInput_${courseId}`).value.trim().toUpperCase();
-            const btnContainer = document.getElementById(`actionContainer_${courseId}`);
-            const priceDisp = document.getElementById(`priceDisplay_${courseId}`);
-            const couponBox = document.getElementById(`couponBox_${courseId}`);
-
             if (!inputVal) { alert('يرجى إدخال كود الخصم أولاً.'); return; }
 
             try {
@@ -220,18 +210,15 @@
                     return;
                 }
 
-                // تسجيل الاشتراك سحابياً بالمعرف الثابت
+                let phoneKey = localStorage.getItem('sadara_logged_phone') || currentUserId;
                 await db.from('user_enrollments').upsert({
-                    user_id: currentUserId,
+                    user_id: phoneKey,
                     course_id: courseId,
                     is_enrolled: true
                 }, { onConflict: 'user_id,course_id' });
 
-                alert('🎉 مبروك! تم تفعيل الكود وتسجيلك في الدورة بنجاح!');
-                
-                btnContainer.innerHTML = `<button onclick="window.location.href='watch.html?id=${courseId}'" class="order-btn enrolled"><i class="fa-solid fa-play-circle"></i> أنت مسجل - متابعة المشاهدة 🚀</button>`;
-                priceDisp.textContent = 'مفعل 🎁';
-                if (couponBox) couponBox.style.display = 'none';
+                alert('🎉 مبروك! تم تفعيل الكود بنجاح وإضافة الدورة إلى كورساتي!');
+                window.location.href = 'my-courses.html';
 
             } catch(e) {
                 alert('حدث خطأ أثناء تفعيل الكود.');
@@ -242,18 +229,12 @@
             currentCheckoutCourse = course;
             document.getElementById('modalCourseTitle').textContent = course.title;
             document.getElementById('modalCoursePrice').textContent = course.price ? `${course.price} ريال` : '1500 ريال';
-            
             document.getElementById('buyerName').value = localStorage.getItem('sadara_logged_name') || '';
             document.getElementById('buyerPhone').value = localStorage.getItem('sadara_logged_phone') || '';
-            document.getElementById('transferRef').value = '';
-            document.getElementById('transferImage').value = '';
-            
             document.getElementById('checkoutModal').style.display = 'flex';
         }
 
-        function closeCheckoutModal() {
-            document.getElementById('checkoutModal').style.display = 'none';
-        }
+        function closeCheckoutModal() { document.getElementById('checkoutModal').style.display = 'none'; }
 
         async function submitCourseOrder() {
             const name = document.getElementById('buyerName').value.trim();
@@ -268,26 +249,24 @@
             if (!imageFile) { alert('يرجى رفع صورة سند التحويل أو الإيداع'); return; }
             if (!currentCheckoutCourse) return;
 
-            // تحديث وتثبيت رقم الهاتف في الذاكرة لتوحيد الحساب مع صفحة كورساتي
             localStorage.setItem('sadara_logged_name', name);
             localStorage.setItem('sadara_logged_phone', phone);
-            localStorage.setItem('sadara_user_id', phone); // ربط الهوية برقم الهاتف لضمان ظهورها في كورساتي فوراً
+            localStorage.setItem('sadara_user_id', phone);
 
-            msg.style.color = 'blue'; msg.textContent = 'جاري إرسال الطلب وتفعيل الدورة سحابياً... ⏳';
+            msg.style.color = 'blue'; msg.textContent = 'جاري تفعيل الدورة وإضافتها لحسابك... ⏳';
 
             try {
                 let imageUrl = 'تم إرفاق السند';
                 try {
                     const fileExt = imageFile.name.split('.').pop();
                     const fileName = `order_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-                    let { data: uploadData, error: uploadErr } = await db.storage.from('platform-files').upload(fileName, imageFile);
-                    if (!uploadErr && uploadData) {
+                    let { data: uploadData } = await db.storage.from('platform-files').upload(fileName, imageFile);
+                    if (uploadData) {
                         let { data: publicURL } = db.storage.from('platform-files').getPublicUrl(fileName);
                         imageUrl = publicURL.publicUrl;
                     }
                 } catch(err) {}
 
-                // إرسال الطلب
                 await db.from('orders').insert([{
                     item_title: currentCheckoutCourse.title,
                     item_type: 'course',
@@ -299,7 +278,6 @@
                     status: 'مؤكد'
                 }]);
 
-                // تسجيل الاشتراك باستخدام رقم الهاتف كمعرف أساسي لضمان ظهوره في كورساتي
                 await db.from('user_enrollments').upsert({
                     user_id: phone,
                     course_id: currentCheckoutCourse.id,
@@ -307,12 +285,11 @@
                 }, { onConflict: 'user_id,course_id' });
 
                 msg.style.color = 'green';
-                msg.textContent = 'تم تفعيل الدورة بنجاح! 🎉 جاري التوجيه للوحة كورساتي...';
+                msg.textContent = 'تم تفعيل الدورة بنجاح! 🎉 جاري توجيهك إلى كورساتي...';
                 
                 setTimeout(() => {
-                    closeCheckoutModal();
-                    window.location.href = `my-courses.html`; // توجيه الطالب مباشرة إلى كورساتي الخاصة به
-                }, 1200);
+                    window.location.href = 'my-courses.html';
+                }, 1000);
 
             } catch(e) {
                 msg.style.color = 'red';
