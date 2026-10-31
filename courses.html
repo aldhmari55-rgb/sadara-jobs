@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كفاءات وخبراء محافظة ذمار | منصة صدارة</title>
+    <title>الدورات المرئية والاحترافية | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -20,21 +20,26 @@
         .notice-banner { background: linear-gradient(135deg, #0a1324, var(--primary)); color: white; padding: 12px 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--gold); font-size: 11px; line-height: 1.5; }
         .section-title { font-size: 15px; font-weight: 900; margin-bottom: 12px; color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
-        /* الشبكة الثنائية الاحترافية المطابقة للواجهة */
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        @media (max-width: 600px) { .products-grid { grid-template-columns: 1fr; } }
 
-        .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
+        .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
         
-        .product-img-container { width: 100%; height: 160px; background: #0a1324; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        .product-img-container { width: 100%; height: 150px; background: #0a1324; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
         .product-img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
-        .product-title { font-size: 12px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 34px; }
+        .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; }
         
         .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; }
         .product-price { color: #e11d48; font-weight: 900; font-size: 13px; }
 
         .order-btn { background: var(--primary); color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
         .order-btn:hover { background: #1e3a8a; }
+
+        /* خانة كود الخصم داخل الكارت */
+        .coupon-box-card { display: flex; gap: 4px; margin-top: 6px; }
+        .coupon-input { flex: 1; padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 10px; outline: none; }
+        .coupon-btn { background: var(--gold); color: #0a1324; border: none; padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; }
 
         .empty-box { text-align: center; padding: 30px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; font-size: 12px; }
 
@@ -45,7 +50,7 @@
         .modal-card input, .modal-card select { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
         .payment-info-box { background: #f8fafc; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid #e2e8f0; font-size: 11px; color: #334155; line-height: 1.6; }
 
-        .course-reviews-box { background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 10px; margin-top: 4px; }
+        .course-reviews-box { background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 10px; margin-top: 6px; }
         .stars-selector { font-size: 14px; color: #cbd5e1; cursor: pointer; display: inline-block; }
         .stars-selector.active { color: var(--gold); }
         .single-review { background: #ffffff; padding: 4px 6px; border-radius: 4px; margin-top: 4px; border-right: 2px solid var(--gold); border-bottom: 1px solid #e2e8f0; }
@@ -71,7 +76,7 @@
         </div>
     </div>
 
-    <!-- نافذة الدفع -->
+    <!-- نافذة الدفع التقليدي -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-card">
             <h3 style="color:var(--primary); font-size:15px; margin-bottom:4px;"><i class="fa-solid fa-cart-shopping" style="color:var(--gold);"></i> إتمام الاشتراك في الدورة</h3>
@@ -123,6 +128,9 @@
         let selectedCourseStarsMap = {};
         let currentCheckoutCourse = null;
 
+        // أكواد الخصم المجانية الخاصة بك (يمكنك إضافة أي كود تريده هنا)
+        const FREE_COUPONS = ["SADARA2026", "FREEVIP", "AHMADFREE", "VIP99"];
+
         async function loadCoursesPage() {
             let container = document.getElementById('coursesGrid');
 
@@ -151,14 +159,21 @@
                         : `<div class="product-img-container"><i class="fa-solid fa-graduation-cap" style="font-size:24px; color:var(--gold);"></i></div>`;
 
                     gridDiv.innerHTML += `
-                        <div class="product-card">
+                        <div class="product-card" id="cardCourse_${c.id}">
                             ${imgHtml}
                             <div class="product-title">${c.title}</div>
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
                                 <span class="product-subtext">📚 ${lessonsCount} دروس</span>
                                 <span class="product-price">${coursePrice}</span>
                             </div>
-                            <button onclick='openCheckoutModal(${JSON.stringify(c)})' class="order-btn"><i class="fa-solid fa-cart-plus"></i> اشتري الدورة 🛒</button>
+                            
+                            <button onclick='openCheckoutModal(${JSON.stringify(c)})' class="order-btn" id="btnBuy_${c.id}"><i class="fa-solid fa-cart-plus"></i> اشتري الدورة 🛒</button>
+
+                            <!-- خانة كود الخصم المجاني -->
+                            <div class="coupon-box-card">
+                                <input type="text" id="couponInput_${c.id}" class="coupon-input" placeholder="أدخل كود الخصم المجاني...">
+                                <button onclick="applyCoupon(${c.id})" class="coupon-btn">تفعيل</button>
+                            </div>
 
                             <div class="course-reviews-box">
                                 <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -188,6 +203,29 @@
 
             } catch(e) {
                 container.innerHTML = `<div class="empty-box">عذراً، حدث خطأ في الاتصال بقاعدة البيانات.</div>`;
+            }
+        }
+
+        // وظيفة التحقق وتفعيل كود الخصم المجاني
+        function applyCoupon(courseId) {
+            const inputVal = document.getElementById(`couponInput_${courseId}`).value.trim();
+            const btnBuy = document.getElementById(`btnBuy_${courseId}`);
+
+            if (!inputVal) {
+                alert('يرجى إدخال كود الخصم أولاً.');
+                return;
+            }
+
+            // التحقق إذا كان الكود موجوداً في قائمة الأكواد المجانية
+            if (FREE_COUPONS.includes(inputVal)) {
+                alert('🎉 مبروك! تم تفعيل كود الخصم بنجاح. أصبحت الدورة مجانية لك بالكامل.');
+                
+                // تحويل زر الشراء إلى زر مشاهدة مجانية يوجهه مباشرة لصفحة الدرس
+                btnBuy.style.background = 'var(--green)';
+                btnBuy.innerHTML = '<i class="fa-solid fa-play-circle"></i> مشاهدة الدورة مجاناً 🚀';
+                btnBuy.setAttribute('onclick', `window.location.href='watch.html?id=${courseId}'`);
+            } else {
+                alert('❌ عذراً، كود الخصم غير صحيح أو منتهي الصلاحية.');
             }
         }
 
