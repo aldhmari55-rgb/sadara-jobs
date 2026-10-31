@@ -3,41 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة صدارة للدورات الاحترافية | sadarah.top</title>
+    <title>كفاءات وخبراء محافظة ذمار | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f8fafc; --text-dark: #0f172a; }
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f3f4f6; --text-dark: #0f172a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-light); color: var(--text-dark); direction: rtl; text-align: right; padding-bottom: 50px; }
-        header { background: #0a1324; color: #fff; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
-        header h1 { font-size: 1.1rem; color: #38bdf8; }
-        .back-btn { background: #1e293b; color: #fff; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 12px; border: 1px solid var(--gold); }
-        .container { max-width: 900px; margin: 25px auto; padding: 0 16px; }
-        .section-title { font-size: 1.3rem; margin-bottom: 15px; color: var(--primary); border-right: 4px solid var(--gold); padding-right: 10px; }
         
-        .notice-banner { background: linear-gradient(135deg, #0a1324, var(--primary)); color: white; padding: 14px 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gold); font-size: 12px; line-height: 1.6; }
+        header { background: #0a1324; color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
+        header h1 { font-size: 14px; color: #38bdf8; font-weight: 900; }
+        .back-btn { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: 800; font-size: 11px; border: none; display: inline-flex; align-items: center; gap: 4px; }
         
-        .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
-        .course-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 10px; }
+        .notice-banner { background: linear-gradient(135deg, #0a1324, var(--primary)); color: white; padding: 12px 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--gold); font-size: 11px; line-height: 1.5; }
+        .section-title { font-size: 15px; font-weight: 900; margin-bottom: 12px; color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+
+        /* الشبكة الثنائية الاحترافية المطابقة للواجهة */
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+
+        .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
         
-        /* جعل الصورة مرنة وتظهر بالكامل دون أي قص باستخدام contain وخلفية متناسقة */
-        .course-img-wrap { width: 100%; height: 190px; background: #0a1324; display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 1px solid #e2e8f0; }
-        .course-img { width: 100%; height: 100%; object-fit: contain; background: #0a1324; }
+        .product-img-container { width: 100%; height: 160px; background: #0a1324; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        .product-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+        .product-title { font-size: 12px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 34px; }
         
-        .course-header { background: linear-gradient(135deg, #0a1324, var(--primary)); color: #fff; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .course-header h3 { font-size: 1.1rem; margin-bottom: 4px; }
-        .price-badge { background: var(--gold); color: #0a1324; font-weight: 900; font-size: 11px; padding: 4px 10px; border-radius: 20px; }
-        
-        .course-body { padding: 15px; }
-        .course-body p { color: #64748b; font-size: 0.9rem; margin-bottom: 10px; line-height: 1.5; }
-        .cert-badge { background: #fef3c7; color: #d97706; font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; }
-        
-        .course-footer { padding: 15px; background: #f1f5f9; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; }
-        .buy-btn { background: var(--primary); color: #fff; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
-        .buy-btn:hover { background: #0f172a; }
-        .empty-box { text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; }
+        .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; }
+        .product-price { color: #e11d48; font-weight: 900; font-size: 13px; }
+
+        .order-btn { background: var(--primary); color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .order-btn:hover { background: #1e3a8a; }
+
+        .empty-box { text-align: center; padding: 30px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; font-size: 12px; }
 
         /* نافذة الدفع */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
@@ -46,17 +45,17 @@
         .modal-card input, .modal-card select { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
         .payment-info-box { background: #f8fafc; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid #e2e8f0; font-size: 11px; color: #334155; line-height: 1.6; }
 
-        .course-reviews-box { background: #f8fafc; padding: 12px 15px; border-top: 1px solid #e2e8f0; font-size: 12px; }
-        .stars-selector { font-size: 16px; color: #cbd5e1; cursor: pointer; display: inline-block; margin: 4px 0; }
+        .course-reviews-box { background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 10px; margin-top: 4px; }
+        .stars-selector { font-size: 14px; color: #cbd5e1; cursor: pointer; display: inline-block; }
         .stars-selector.active { color: var(--gold); }
-        .single-review { background: #ffffff; padding: 6px 10px; border-radius: 6px; margin-top: 6px; border-right: 3px solid var(--gold); border-bottom: 1px solid #e2e8f0; }
+        .single-review { background: #ffffff; padding: 4px 6px; border-radius: 4px; margin-top: 4px; border-right: 2px solid var(--gold); border-bottom: 1px solid #e2e8f0; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>🎓 الدورات المرئية والاحترافية</h1>
-        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> العودة للرئيسية</a>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
     </header>
 
     <div class="container">
@@ -65,9 +64,9 @@
             <b>ملاحظة تدريبية:</b> جميع الدورات المرئية تمنحك <b>شهادة إتمام معتمدة برقم تحقق فريد (QR Code)</b> صادرة من منصة صدارة فور إكمال الدورة!
         </div>
 
-        <h2 class="section-title">الدورات التدريبية المتاحة</h2>
+        <div class="section-title"><i class="fa-solid fa-graduation-cap"></i> الدورات التدريبية المتاحة</div>
         
-        <div class="courses-grid" id="coursesGrid">
+        <div id="coursesGrid">
             <div class="empty-box">جاري تحميل الدورات من السحابة... ⏳</div>
         </div>
     </div>
@@ -125,7 +124,7 @@
         let currentCheckoutCourse = null;
 
         async function loadCoursesPage() {
-            let grid = document.getElementById('coursesGrid');
+            let container = document.getElementById('coursesGrid');
 
             try {
                 let { data: courses, error } = await db
@@ -135,61 +134,60 @@
                     .order('id', {ascending: false});
                 
                 if (error || !courses || courses.length === 0) {
-                    grid.innerHTML = `<div class="empty-box">لا توجد دورات تدريبية منشورة حالياً. يرجى إضافتها من لوحة التحكم.</div>`;
+                    container.innerHTML = `<div class="empty-box">لا توجد دورات تدريبية منشورة حالياً.</div>`;
                     return;
                 }
 
-                grid.innerHTML = '';
+                let gridDiv = document.createElement('div');
+                gridDiv.className = 'products-grid';
+
                 courses.forEach(c => {
                     let lessonsCount = (c.lessons && Array.isArray(c.lessons)) ? c.lessons.length : 0;
                     selectedCourseStarsMap[c.id] = 5;
                     let coursePrice = c.price ? `${c.price} ريال` : '1500 ريال';
                     
                     let imgHtml = c.image 
-                        ? `<div class="course-img-wrap"><img src="${c.image}" class="course-img"></div>` 
-                        : `<div class="course-img-wrap"><div style="color:#fff; font-size:12px;"><i class="fa-solid fa-graduation-cap"></i> منصة صدارة</div></div>`;
+                        ? `<div class="product-img-container"><img src="${c.image}" class="product-img"></div>` 
+                        : `<div class="product-img-container"><i class="fa-solid fa-graduation-cap" style="font-size:24px; color:var(--gold);"></i></div>`;
 
-                    grid.innerHTML += `
-                        <div class="course-card">
+                    gridDiv.innerHTML += `
+                        <div class="product-card">
                             ${imgHtml}
-                            <div class="course-header">
-                                <h3>${c.title}</h3>
-                                <span class="price-badge">🏷️ ${coursePrice}</span>
+                            <div class="product-title">${c.title}</div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
+                                <span class="product-subtext">📚 ${lessonsCount} دروس</span>
+                                <span class="product-price">${coursePrice}</span>
                             </div>
-                            <div class="course-body">
-                                <p>${c.description || 'دورة تدريبية احترافية شاملة مع دروس مرئية وتطبيق عملي.'}</p>
-                                <div class="cert-badge"><i class="fa-solid fa-certificate"></i> يشمل شهادة إتمام برقم تحقق رقمي</div>
-                            </div>
-                            <div class="course-footer">
-                                <span style="font-size:12px; font-weight:bold; color:#0f2347;"><i class="fa-solid fa-book"></i> ${lessonsCount} دروس</span>
-                                <button onclick='openCheckoutModal(${JSON.stringify(c)})' class="buy-btn"><i class="fa-solid fa-cart-plus"></i> اشتري الدورة 🛒</button>
-                            </div>
+                            <button onclick='openCheckoutModal(${JSON.stringify(c)})' class="order-btn"><i class="fa-solid fa-cart-plus"></i> اشتري الدورة 🛒</button>
 
                             <div class="course-reviews-box">
-                                <h4 style="font-size:12px; color:var(--primary); font-weight:bold;">⭐ تقييمات الطلاب وانطباع الشهادة:</h4>
-                                
-                                <div style="margin: 4px 0;" id="courseStarBox_${c.id}">
-                                    <span class="stars-selector active" onclick="setCourseStar(${c.id}, 1)">★</span>
-                                    <span class="stars-selector active" onclick="setCourseStar(${c.id}, 2)">★</span>
-                                    <span class="stars-selector active" onclick="setCourseStar(${c.id}, 3)">★</span>
-                                    <span class="stars-selector active" onclick="setCourseStar(${c.id}, 4)">★</span>
-                                    <span class="stars-selector active" onclick="setCourseStar(${c.id}, 5)">★</span>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="font-weight:bold; color:var(--primary);">⭐ التقييمات:</span>
+                                    <div id="courseStarBox_${c.id}">
+                                        <span class="stars-selector active" onclick="setCourseStar(${c.id}, 1)">★</span>
+                                        <span class="stars-selector active" onclick="setCourseStar(${c.id}, 2)">★</span>
+                                        <span class="stars-selector active" onclick="setCourseStar(${c.id}, 3)">★</span>
+                                        <span class="stars-selector active" onclick="setCourseStar(${c.id}, 4)">★</span>
+                                        <span class="stars-selector active" onclick="setCourseStar(${c.id}, 5)">★</span>
+                                    </div>
                                 </div>
-
-                                <div style="display:flex; gap:5px; margin-top:4px;">
-                                    <input type="text" id="courseReviewText_${c.id}" placeholder="اكتب رأيك بالدورة..." style="flex:1; padding:6px; border:1px solid #cbd5e1; border-radius:6px; font-size:11px; outline:none;">
-                                    <button onclick="submitCourseReview(${c.id})" style="background:var(--primary); color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">إرسال</button>
+                                <div style="display:flex; gap:3px; margin-top:3px;">
+                                    <input type="text" id="courseReviewText_${c.id}" placeholder="اكتب رأيك..." style="flex:1; padding:4px; border:1px solid #cbd5e1; border-radius:4px; font-size:9px; outline:none;">
+                                    <button onclick="submitCourseReview(${c.id})" style="background:var(--primary); color:white; border:none; padding:4px 8px; border-radius:4px; font-size:9px; font-weight:bold; cursor:pointer;">إرسال</button>
                                 </div>
-
-                                <div id="courseReviewsList_${c.id}" style="margin-top:8px;">جاري تحميل التعليقات...</div>
+                                <div id="courseReviewsList_${c.id}" style="margin-top:4px;">جاري التحميل...</div>
                             </div>
                         </div>
                     `;
-
-                    loadCourseReviews(c.id);
                 });
+
+                container.innerHTML = '';
+                container.appendChild(gridDiv);
+
+                courses.forEach(c => loadCourseReviews(c.id));
+
             } catch(e) {
-                grid.innerHTML = `<div class="empty-box">عذراً، حدث خطأ في الاتصال بقاعدة البيانات.</div>`;
+                container.innerHTML = `<div class="empty-box">عذراً، حدث خطأ في الاتصال بقاعدة البيانات.</div>`;
             }
         }
 
@@ -314,7 +312,7 @@
             listBox.innerHTML = '';
 
             if (!reviews || !reviews.length) {
-                listBox.innerHTML = '<p style="font-size:10px; color:#94a3b8;">لا توجد تقييمات حتى الآن.</p>';
+                listBox.innerHTML = '<p style="font-size:9px; color:#94a3b8;">لا توجد تقييمات حتى الآن.</p>';
                 return;
             }
 
@@ -322,11 +320,11 @@
                 let starsHTML = '★'.repeat(r.rating || 5);
                 listBox.innerHTML += `
                     <div class="single-review">
-                        <div style="display:flex; justify-content:space-between; font-weight:bold; color:#0f2347; font-size:11px;">
+                        <div style="display:flex; justify-content:space-between; font-weight:bold; color:#0f2347; font-size:9px;">
                             <span>👤 ${r.user_name}</span>
                             <span style="color:var(--gold);">${starsHTML}</span>
                         </div>
-                        <p style="color:#475569; font-size:10px; margin-top:2px;">${r.comment}</p>
+                        <p style="color:#475569; font-size:9px; margin-top:1px;">${r.comment}</p>
                     </div>
                 `;
             });
