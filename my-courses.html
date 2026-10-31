@@ -30,12 +30,15 @@
 <body>
 
     <header>
-        <h1>🎓 لوحة الطالب - كورساتي المشترك بها</h1>
-        <a href="courses.html" class="back-btn"><i class="fa-solid fa-graduation-cap"></i> تصفح كل الدورات</a>
+        <h1>🎓 لوحة الطالب - كورساتي الشخصية</h1>
+        <div style="display:flex; gap:8px;">
+            <a href="courses.html" class="back-btn"><i class="fa-solid fa-graduation-cap"></i> تصفح الدورات</a>
+            <a href="index.html" class="back-btn" style="background:#1e293b; color:white;"><i class="fa-solid fa-house"></i> الرئيسية</a>
+        </div>
     </header>
 
     <div class="container">
-        <div class="section-title"><i class="fa-solid fa-book-open"></i> الدورات التي تم الاشتراك بها وتفعيلها</div>
+        <div class="section-title"><i class="fa-solid fa-book-open"></i> دوراتي المفعلة التي أمتلك صلاحية الوصول إليها</div>
         
         <div id="myCoursesGrid">
             <div class="empty-box">جاري تحميل دوراتك الخاصة... ⏳</div>
@@ -47,10 +50,9 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // توحيد قراءة معرف المستخدم تماماً مثل صفحة الدورات
-        let currentUserId = localStorage.getItem('sadara_user_id');
+        let currentUserId = localStorage.getItem('sadara_logged_phone') || localStorage.getItem('sadara_user_id');
         if (!currentUserId) {
-            currentUserId = "user_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
+            currentUserId = "user_" + Math.random().toString(36).substring(2, 11);
             localStorage.setItem('sadara_user_id', currentUserId);
         }
 
@@ -58,36 +60,25 @@
             let container = document.getElementById('myCoursesGrid');
 
             try {
-                // 1. جلب الاشتراكات الخاصة بهذا المستخدم
+                let phoneKey = localStorage.getItem('sadara_logged_phone') || currentUserId;
                 let { data: enrollments, error: enError } = await db.from('user_enrollments')
                     .select('course_id')
-                    .eq('user_id', currentUserId)
+                    .or(`user_id.eq.${currentUserId},user_id.eq.${phoneKey}`)
                     .eq('is_enrolled', true);
 
-                // كاحتياطي: إذا لم توجد اشتراكات برقم الـ ID، جلب كل الدورات النشطة إذا كانت مفعلة للمتجول أو عرض الدورات المفعلة مؤخراً
-                let courseIds = [];
-                if (enrollments && enrollments.length > 0) {
-                    courseIds = enrollments.map(en => en.course_id);
-                } else {
-                    // حل احتياطي طارئ لضمان ظهور الكورس للمستخدم حال اختلاف الجلسة: جلب جميع الدورات النشطة التي تم تفعيلها في النظام
-                    let { data: allEnrolls } = await db.from('user_enrollments').select('course_id').eq('is_enrolled', true).limit(5);
-                    if (allEnrolls && allEnrolls.length > 0) {
-                        courseIds = allEnrolls.map(en => en.course_id);
-                    }
-                }
-
-                if (courseIds.length === 0) {
+                if (enError || !enrollments || enrollments.length === 0) {
                     container.innerHTML = `
                         <div class="empty-box">
                             <i class="fa-solid fa-folder-open" style="font-size:30px; color:#cbd5e1; margin-bottom:10px;"></i><br>
                             لم تقم بالاشتراك في أي دورة بعد.<br>
-                            <a href="courses.html" style="color:#2563eb; font-weight:bold; margin-top:10px; display:inline-block;">تصفح الدورات المتاحة الآن 🚀</a>
+                            <a href="courses.html" style="color:#2563eb; font-weight:bold; margin-top:10px; display:inline-block;">تصفح الدورات المتاحة الآن واشترك 🚀</a>
                         </div>
                     `;
                     return;
                 }
 
-                // 2. جلب تفاصيل الدورات المشترك بها
+                let courseIds = enrollments.map(en => en.course_id);
+
                 let { data: courses, error: courseError } = await db.from('platform_courses')
                     .select('*')
                     .in('id', courseIds);
@@ -111,7 +102,7 @@
                             ${imgHtml}
                             <div class="product-title">${c.title}</div>
                             <div style="font-size:11px; color:#64748b; font-weight:bold;">📚 عدد الدروس: ${lessonsCount} دروس</div>
-                            <a href="watch.html?id=${c.id}" class="watch-now-btn"><i class="fa-solid fa-play-circle"></i> دخول ومتابعة الدورة 🚀</a>
+                            <a href="watch.html?id=${c.id}" class="watch-now-btn"><i class="fa-solid fa-play-circle"></i> دخول ومتابعة الدروس 🚀</a>
                         </div>
                     `;
                 });
