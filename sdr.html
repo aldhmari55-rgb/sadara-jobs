@@ -68,7 +68,7 @@
             <div class="list-box" id="affiliatesList">جاري تحميل المسوقين...</div>
         </div>
 
-        <!-- إدارة متجر الخدمات والمنتجات الرقمية مع الأقسام والصور -->
+        <!-- إدارة متجر الخدمات والمنتجات الرقمية مع الأقسام الجديدة -->
         <div class="card">
             <h2>
                 <span>🛒 إدارة متجر الخدمات والمنتجات</span>
@@ -77,20 +77,21 @@
             <input type="hidden" id="editServiceId">
             
             <label>اسم الخدمة أو المنتج</label>
-            <input type="text" id="serviceTitle" placeholder="مثال: اشتراك نتفلكس / منتج رقمي">
+            <input type="text" id="serviceTitle" placeholder="مثال: آيفون 15 / عطر ليل الملكي">
             
             <label>تصنيف القسم 📁</label>
             <select id="serviceCategory">
-                <option value="اشتراكات">🔑 اشتراكات رقمية</option>
-                <option value="خدمات">🛠️ خدمات عامة</option>
-                <option value="ملابس">👗 ملابس وأزياء</option>
-                <option value="تجميل">💄 منتجات تجميل وعناية</option>
-                <option value="منزل">🏡 مستلزمات منزلية</option>
-                <option value="أخرى">📦 منتجات أخرى</option>
+                <option value="جوالات">📱 جوالات</option>
+                <option value="اكسسوارات">🎧 اكسسوارات</option>
+                <option value="الكترونيات">⚡ الكترونيات</option>
+                <option value="ادوات مكتبيه">📎 ادوات مكتبيه</option>
+                <option value="ادوات مدرسيه">🎒 ادوات مدرسيه</option>
+                <option value="عطور وهدايا">🎁 عطور وهدايا</option>
+                <option value="أخرى">📦 أخرى</option>
             </select>
 
             <label>وصف الخدمة أو المنتج</label>
-            <textarea id="serviceDesc" rows="2" placeholder="تفاصيل ومميزات الخدمة..."></textarea>
+            <textarea id="serviceDesc" rows="2" placeholder="تفاصيل ومميزات المنتج..."></textarea>
             
             <label>السعر / السعر التقديري</label>
             <input type="text" id="servicePrice" placeholder="مثال: 1500 أو 1,500 YER">
@@ -191,7 +192,7 @@
         if (res.error) {
             msg.style.color = 'red'; msg.textContent = 'خطأ سحابي: ' + res.error.message;
         } else {
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الخدمة بنجاح! ✅';
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر المنتج بنجاح! ✅';
             resetServiceForm();
             loadAdminServices();
         }
@@ -204,7 +205,7 @@
         document.getElementById('servicePrice').value = '';
         document.getElementById('serviceImgFile').value = '';
         document.getElementById('serviceStatus').value = 'true';
-        document.getElementById('btnSaveService').textContent = 'نشر الخدمة بالمتجر 🚀';
+        document.getElementById('btnSaveService').textContent = 'نشر الخدمة أو المنتج بالمتجر 🚀';
         document.getElementById('btnCancelService').style.display = 'none';
     }
 
@@ -217,7 +218,7 @@
         box.innerHTML = '';
 
         if (!cachedServices.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد خدمات مضافة بالمتجر حالياً.</p>';
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد منتجات مضافة بالمتجر حالياً.</p>';
             return;
         }
 
@@ -248,11 +249,11 @@
         if (!s) return;
         document.getElementById('editServiceId').value = s.id;
         document.getElementById('serviceTitle').value = s.title || '';
-        document.getElementById('serviceCategory').value = s.category || 'اشتراكات';
+        document.getElementById('serviceCategory').value = s.category || 'جوالات';
         document.getElementById('serviceDesc').value = s.description || '';
         document.getElementById('servicePrice').value = s.price || '';
         document.getElementById('serviceStatus').value = (s.is_active !== false) ? 'true' : 'false';
-        document.getElementById('btnSaveService').textContent = 'تعديل وحفظ الخدمة 💾';
+        document.getElementById('btnSaveService').textContent = 'تعديل وحفظ المنتج 💾';
         document.getElementById('btnCancelService').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -327,7 +328,7 @@
         box.innerHTML = '';
 
         if (!orders || orders.length === 0) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات سداد أو خدمات جديدة حالياً.</p>';
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات سداد أو منتجات جديدة حالياً.</p>';
             return;
         }
 
@@ -344,12 +345,12 @@
             box.innerHTML += `
                 <div class="item-row">
                     <div class="row-header">
-                        <strong>💎 الخدمة: ${o.service_name}</strong>
+                        <strong>💎 المنتج: ${o.service_name}</strong>
                         <span style="color:var(--gold); font-weight:bold;">كود المسوق: ${affCodeDisplay}</span>
                     </div>
                     <div style="color:#334155; font-size:11px; margin-top:2px;">
                         👤 العميل: <b>${o.client_name}</b> (${o.client_phone}) | 💳 وسيلة الدفع: ${o.payment_method}<br>
-                        💰 سعر الخدمة: <b>${numericPrice} YER</b> | 🎁 عمولة المسوق (20%): <b style="color:green;">${exactCommission} YER</b><br>
+                        💰 سعر المنتج: <b>${numericPrice} YER</b> | 🎁 عمولة المسوق (20%): <b style="color:green;">${exactCommission} YER</b><br>
                         🖼️ <b>سند التحويل المرفق:</b> <a href="${o.transaction_ref}" target="_blank" style="color:#0284c7; font-weight:bold;">معاينة صورة السند 🔍</a><br>
                         📝 ملاحظات: ${o.notes || 'لا يوجد'}
                     </div>
