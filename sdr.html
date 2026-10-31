@@ -47,8 +47,8 @@
         .btn-edit { background: #3b82f6; }
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         
-        .preview-img-container { width: 45px; height: 45px; background: #0f172a10; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; padding: 2px; }
-        .preview-img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; display: block; }
+        .preview-img-container { width: 55px; height: 55px; background: #0f172a10; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; padding: 2px; }
+        .preview-img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; display: block; }
         .nav-link-btn { display: inline-block; background: var(--gold); color: #0f2347; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; text-decoration: none; margin-top: 15px; }
     </style>
 </head>
@@ -66,8 +66,8 @@
 
     <div id="adminMainContent" style="display:none;">
         <div class="header">
-            <h1>لوحة التحكم - القسم الأساسي (المتجر والمسوقين) 🛠️</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة متجر الخدمات، طلبات العملاء، والأرشيف المالي الشهري والسنوي للمسوقين</p>
+            <h1>لوحة التحكم - إدارة المتجر والمنتجات والمسوقين 🛒</h1>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة المنتجات، متابعة طلبات العملاء المباشرة، والأرشيف المالي للعمولات</p>
             <div style="display:flex; justify-content:center; gap:10px; margin-top:10px;">
                 <a href="sdr_admin_extra.html" class="nav-link-btn" style="margin:0; background:var(--gold);">الانتقال إلى القسم الثاني (الوظائف والكفاءات) ➡️</a>
                 <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin:0; background:#ef4444; border:none; font-size:11px;">قفل 🔒</button>
@@ -77,12 +77,76 @@
         <div class="admin-stats-grid">
             <div class="stat-card-admin"><h3 id="adminOnline">...</h3><p>متواجد الآن 🟢</p></div>
             <div class="stat-card-admin"><h3 id="adminTotalViews">...</h3><p>إجمالي الزيارات 👥</p></div>
-            <div class="stat-card-admin"><h3 id="adminJobs">158+</h3><p>إجمالي الوظائف 💼</p></div>
-            <div class="stat-card-admin"><h3 id="adminResumes">سحابي</h3><p>إجمالي الكفاءات 📄</p></div>
+            <div class="stat-card-admin"><h3 id="adminProductsCountStat">0</h3><p>منتجات المتجر 🛒</p></div>
+            <div class="stat-card-admin"><h3 id="adminOrdersCountStat">0</h3><p>طلبات الشراء 📦</p></div>
         </div>
 
         <div class="grid-container">
-            <!-- إدارة المسوقين بالعمولة -->
+
+            <!-- 1. إدارة متجر المنتجات (متوافق مع جدول products) -->
+            <div class="card">
+                <h2>
+                    <span id="productFormTitle">🛒 إضافة منتج جديد للمتجر</span>
+                    <span class="badge" id="adminProductsCount">0</span>
+                </h2>
+                <input type="hidden" id="editProductId">
+                <input type="hidden" id="existingProductImg">
+
+                <label>اسم المنتج أو الخدمة</label>
+                <input type="text" id="productTitle" placeholder="مثال: توصيلة سوبرليزر 3 متر">
+
+                <label>القسم / التصنيف 📁</label>
+                <select id="productCategory">
+                    <option value="إلكترونيات">🔌 إلكترونيات</option>
+                    <option value="برامج وتطبيقات">💻 برامج وتطبيقات</option>
+                    <option value="بطاقات رقمية">💳 بطاقات رقمية</option>
+                    <option value="خدمات تسويق">📢 خدمات تسويق</option>
+                    <option value="جوالات وإكسسوارات">📱 جوالات وإكسسوارات</option>
+                    <option value="أخرى">📦 أخرى</option>
+                </select>
+
+                <label>السعر (بالريال)</label>
+                <input type="number" id="productPrice" placeholder="مثال: 2000">
+
+                <label>💰 عمولة المسوق لهذا المنتج (اختياري - مثال: 300 أو 15%)</label>
+                <input type="text" id="productCommission" placeholder="مثال: 300 ريال">
+
+                <label>وصف المنتج التفصيلي</label>
+                <textarea id="productDesc" rows="3" placeholder="أدخل تفاصيل ومواصفات المنتج..."></textarea>
+
+                <label>صورة المنتج (من الجهاز)</label>
+                <input type="file" id="productImgFile" accept="image/*">
+
+                <button id="btnSaveProduct" onclick="saveProductWithImage()" style="background:var(--primary); color:white;">نشر المنتج في المتجر الآن 🚀</button>
+                <button id="btnCancelProduct" onclick="resetProductForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
+                <div id="productMsg" class="status-msg"></div>
+                
+                <div class="list-box" id="adminProductsList">جاري تحميل المنتجات المعروضة بالمتجر...</div>
+            </div>
+
+            <!-- 2. طلبات الشراء الحالية وسندات التحويل (جدول orders) -->
+            <div class="card">
+                <h2>
+                    <span>🛒 طلبات المنتجات وإيصالات السداد الحالية</span>
+                    <span class="badge" id="ordersCount">0</span>
+                </h2>
+                <div class="list-box" id="serviceOrdersList" style="max-height: 480px;">جاري تحميل الطلبات...</div>
+            </div>
+
+            <!-- 3. قائمة الطلبات المنجزة والمُسلمة -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>
+                    <span>✅ سجل الطلبات المنجزة والمُسلمة</span>
+                    <div style="display:flex; gap:5px; align-items:center;">
+                        <button onclick="exportCompletedToExcel()" class="btn-sm" style="background:#10b981; padding:6px 12px; font-size:11px;">Excel 📊</button>
+                        <button onclick="exportCompletedToPDF()" class="btn-sm" style="background:#ef4444; padding:6px 12px; font-size:11px;">PDF 📄</button>
+                        <span class="badge" id="completedOrdersCount">0</span>
+                    </div>
+                </h2>
+                <div class="list-box" id="completedOrdersList" style="max-height: 350px;">جاري تحميل الأرشيف...</div>
+            </div>
+
+            <!-- 4. إدارة المسوقين بالعمولة والأرباح -->
             <div class="card" style="grid-column: 1 / -1;">
                 <h2>
                     <span>🤝 قائمة المسوقين بالعمولة والأرباح العامة</span>
@@ -91,7 +155,7 @@
                 <div class="list-box" id="affiliatesList">جاري تحميل المسوقين...</div>
             </div>
 
-            <!-- سجل العمولات المستحقة للمسوقين خلال الشهر (تتصفر نهاية الشهر/عند التسوية) -->
+            <!-- 5. سجل العمولات المستحقة للمسوقين خلال الشهر -->
             <div class="card" style="grid-column: 1 / -1;">
                 <h2>
                     <span>⏳ سجل العمولات المستحقة للمسوقين خلال الشهر الحالي</span>
@@ -104,7 +168,7 @@
                 <div class="list-box" id="dueList" style="max-height: 300px;">جاري التحميل...</div>
             </div>
 
-            <!-- سجل العمولات والأرباح المُسلمة والأرشيف الشهري/السنوي -->
+            <!-- 6. أرشيف العمولات والأرباح المُسلمة -->
             <div class="card" style="grid-column: 1 / -1;">
                 <h2>
                     <span>💰 أرشيف العمولات المُسلمة (سجلات الشهور والأرباح السنوية)</span>
@@ -117,67 +181,6 @@
                 <div class="list-box" id="payoutsList" style="max-height: 300px;">جاري التحميل...</div>
             </div>
 
-            <!-- إدارة متجر الخدمات -->
-            <div class="card">
-                <h2>
-                    <span>🛒 إدارة متجر الخدمات والعمولة الخاصة بكل منتج</span>
-                    <span class="badge" id="adminServicesCount">0</span>
-                </h2>
-                <input type="hidden" id="editServiceId">
-                <label>اسم الخدمة أو المنتج</label>
-                <input type="text" id="serviceTitle" placeholder="مثال: آيفون 15 برو / اشتراك نتفلكس">
-                <label>تصنيف القسم 📁</label>
-                <select id="serviceCategory">
-                    <option value="جوالات">📱 جوالات</option>
-                    <option value="إكسسوارات">🎧 إكسسوارات جوالات</option>
-                    <option value="إلكترونيات">⚡ إلكترونيات</option>
-                    <option value="اشتراكات">🔑 اشتراكات رقمية</option>
-                    <option value="خدمات">🛠️ خدمات عامة</option>
-                    <option value="ملابس">👗 ملابس وأزياء</option>
-                    <option value="تجميل">💄 منتجات تجميل</option>
-                    <option value="منزل">🏡 منزلية</option>
-                    <option value="أخرى">📦 أخرى</option>
-                </select>
-                <label>وصف الخدمة أو المنتج</label>
-                <textarea id="serviceDesc" rows="2" placeholder="تفاصيل..."></textarea>
-                <label>السعر / السعر التقديري</label>
-                <input type="text" id="servicePrice" placeholder="مثال: 1500 YER">
-                <label>💰 عمولة المسوق لهذا المنتج (مبلغ أو نسبة، مثال: 300 YER أو 20%)</label>
-                <input type="text" id="serviceCommission" placeholder="مثال: 300 YER">
-                <label>صورة المنتج أو الخدمة (من الجوال 📷)</label>
-                <input type="file" id="serviceImgFile" accept="image/*">
-                <label>حالة العرض بالمتجر</label>
-                <select id="serviceStatus">
-                    <option value="true">معروض للعملاء 🟢</option>
-                    <option value="false">مخفي 🔴</option>
-                </select>
-                <button id="btnSaveService" onclick="saveServiceWithImage()" style="background:var(--primary); color:white;">نشر الخدمة بالمتجر 🚀</button>
-                <button id="btnCancelService" onclick="resetServiceForm()" style="display:none; background:#64748b; margin-top:5px;">إلغاء التعديل</button>
-                <div id="serviceMsg" class="status-msg"></div>
-                <div class="list-box" id="adminServicesList">جاري التحميل...</div>
-            </div>
-
-            <!-- طلبات الخدمات وسندات التحويل الحالية -->
-            <div class="card">
-                <h2>
-                    <span>🛒 طلبات الخدمات الجديدة</span>
-                    <span class="badge" id="ordersCount">0</span>
-                </h2>
-                <div class="list-box" id="serviceOrdersList" style="max-height: 480px;">جاري التحميل...</div>
-            </div>
-
-            <!-- قائمة الطلبات المنجزه مع أزرار التصدير -->
-            <div class="card" style="grid-column: 1 / -1;">
-                <h2>
-                    <span>✅ سجل الطلبات المنجزة والمُسلمة</span>
-                    <div style="display:flex; gap:5px; align-items:center;">
-                        <button onclick="exportCompletedToExcel()" class="btn-sm" style="background:#10b981; padding:6px 12px; font-size:11px;">Excel 📊</button>
-                        <button onclick="exportCompletedToPDF()" class="btn-sm" style="background:#ef4444; padding:6px 12px; font-size:11px;">PDF 📄</button>
-                        <span class="badge" id="completedOrdersCount">0</span>
-                    </div>
-                </h2>
-                <div class="list-box" id="completedOrdersList" style="max-height: 350px;">جاري التحميل...</div>
-            </div>
         </div>
     </div>
 
@@ -186,7 +189,8 @@
     const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let cachedServices = [];
+    let cachedProducts = [];
+    let cachedOrders = [];
     let cachedCompletedOrders = [];
     let cachedPayouts = [];
     let cachedDueAffiliates = [];
@@ -229,109 +233,232 @@
         if (!file) return '';
         try {
             const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-            const { error: uploadError } = await db.storage.from('platform-files').upload(fileName, file);
-            if (uploadError) { alert('خطأ في الرفع: ' + uploadError.message); return null; }
+            const fileName = `prod_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const { data, error } = await db.storage.from('platform-files').upload(fileName, file);
+            if (error) { alert('خطأ في الرفع: ' + error.message); return null; }
             const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
             return publicUrlData.publicUrl || '';
         } catch(e) { return null; }
     }
 
-    async function saveServiceWithImage() {
-        const editId = document.getElementById('editServiceId').value;
-        const title = document.getElementById('serviceTitle').value.trim();
-        const category = document.getElementById('serviceCategory').value;
-        const description = document.getElementById('serviceDesc').value.trim();
-        const price = document.getElementById('servicePrice').value.trim();
-        const commission = document.getElementById('serviceCommission').value.trim();
-        const is_active = document.getElementById('serviceStatus').value === 'true';
-        const imgFile = document.getElementById('serviceImgFile').files[0];
-        const msg = document.getElementById('serviceMsg');
+    /* 1. حفظ وتعديل منتجات المتجر (جدول products) */
+    async function saveProductWithImage() {
+        const editId = document.getElementById('editProductId').value;
+        const title = document.getElementById('productTitle').value.trim();
+        const category = document.getElementById('productCategory').value;
+        const price = document.getElementById('productPrice').value.trim();
+        const commission = document.getElementById('productCommission').value.trim();
+        const description = document.getElementById('productDesc').value.trim();
+        const imgFile = document.getElementById('productImgFile').files[0];
+        let existingImg = document.getElementById('existingProductImg').value;
+        const msg = document.getElementById('productMsg');
 
-        if (!title || !price) { alert('أدخل اسم الخدمة وسعرها!'); return; }
+        if (!title || !price) { alert('أدخل اسم المنتج وسعره على الأقل!'); return; }
         msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ بالسحابة... ⏳';
 
-        let imgUrl = '';
+        let imgUrl = existingImg;
         if (imgFile) {
-            imgUrl = await uploadFileStrict(imgFile);
-            if (imgUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع الصورة.'; return; }
+            let uploadedUrl = await uploadFileStrict(imgFile);
+            if (uploadedUrl === null) { msg.style.color = 'red'; msg.textContent = 'فشل رفع صورة المنتج.'; return; }
+            imgUrl = uploadedUrl;
         }
 
-        let payload = { title, category, description, price, commission, is_active };
-        if (imgUrl) payload.image = imgUrl;
+        let payload = {
+            title: title,
+            category: category,
+            price: parseFloat(price) || 0,
+            description: description,
+            commission: commission,
+            image: imgUrl
+        };
 
-        let res = editId ? await db.from('platform_services').update(payload).eq('id', editId) : await db.from('platform_services').insert([payload]);
+        let res = editId 
+            ? await db.from('products').update(payload).eq('id', editId) 
+            : await db.from('products').insert([payload]);
 
         if (res.error) {
             msg.style.color = 'red'; msg.textContent = 'خطأ: ' + res.error.message;
         } else {
-            msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الخدمة بنجاح! ✅';
-            resetServiceForm();
-            loadAdminServices();
-            loadAdminAffiliates();
+            msg.style.color = 'green'; msg.textContent = 'تم نشر المنتج في المتجر بنجاح! ✅';
+            resetProductForm();
+            loadAdminProducts();
         }
     }
 
-    function resetServiceForm() {
-        document.getElementById('editServiceId').value = '';
-        document.getElementById('serviceTitle').value = '';
-        document.getElementById('serviceDesc').value = '';
-        document.getElementById('servicePrice').value = '';
-        document.getElementById('serviceCommission').value = '';
-        document.getElementById('serviceImgFile').value = '';
-        document.getElementById('serviceStatus').value = 'true';
-        document.getElementById('btnSaveService').textContent = 'نشر الخدمة بالمتجر 🚀';
-        document.getElementById('btnCancelService').style.display = 'none';
+    function resetProductForm() {
+        document.getElementById('editProductId').value = '';
+        document.getElementById('existingProductImg').value = '';
+        document.getElementById('productTitle').value = '';
+        document.getElementById('productCategory').value = 'إلكترونيات';
+        document.getElementById('productPrice').value = '';
+        document.getElementById('productCommission').value = '';
+        document.getElementById('productDesc').value = '';
+        document.getElementById('productImgFile').value = '';
+        document.getElementById('btnSaveProduct').textContent = 'نشر المنتج في المتجر الآن 🚀';
+        document.getElementById('btnCancelProduct').style.display = 'none';
+        document.getElementById('productFormTitle').textContent = '🛒 إضافة منتج جديد للمتجر';
     }
 
-    async function loadAdminServices() {
-        let { data } = await db.from('platform_services').select('*').order('id', { ascending: false });
-        cachedServices = data || [];
-        let box = document.getElementById('adminServicesList');
+    async function loadAdminProducts() {
+        let { data, error } = await db.from('products').select('*').order('id', { ascending: false });
+        cachedProducts = data || [];
+        let box = document.getElementById('adminProductsList');
         if(!box) return;
-        document.getElementById('adminServicesCount').textContent = cachedServices.length;
+
+        document.getElementById('adminProductsCount').textContent = cachedProducts.length;
+        document.getElementById('adminProductsCountStat').textContent = cachedProducts.length;
         box.innerHTML = '';
 
-        if (!cachedServices.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد خدمات مضافة.</p>';
+        if (!cachedProducts.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد منتجات مضافة حالياً في المتجر.</p>';
             return;
         }
 
-        cachedServices.forEach(s => {
-            let isActive = s.is_active !== false;
-            let statusBadge = isActive ? '<span style="color:green; font-weight:bold;">معروض 🟢</span>' : '<span style="color:red; font-weight:bold;">مخفي 🔴</span>';
-            let imgTag = s.image ? `<div class="preview-img-container"><img src="${s.image}" class="preview-img"></div>` : '';
-            let commText = s.commission ? ` | 💰 عمولة المنتج: ${s.commission}` : '';
+        cachedProducts.forEach(p => {
+            let imgTag = p.image ? `<div class="preview-img-container"><img src="${p.image}" class="preview-img"></div>` : `<div class="preview-img-container"><i class="fa-solid fa-box" style="color:var(--gold);"></i></div>`;
+            let commText = p.commission ? ` | 💰 العمولة: ${p.commission}` : '';
             box.innerHTML += `
                 <div class="item-row" style="background:#fafafa;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div style="display:flex; align-items:center; gap:8px;">${imgTag}<strong>[${s.category}] ${s.title} (${statusBadge})</strong></div>
-                        <span style="color:#10b981; font-weight:bold;">${s.price}</span>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            ${imgTag}
+                            <div>
+                                <strong>[${p.category || 'عام'}] ${p.title}</strong>
+                                <div style="font-size:11px; color:#64748b; margin-top:2px;">${p.description || 'بدون وصف'}${commText}</div>
+                            </div>
+                        </div>
+                        <span style="color:#e11d48; font-weight:900; font-size:13px;">${p.price} ريال</span>
                     </div>
-                    <div style="font-size:11px; color:#64748b;">${s.description || 'بدون وصف'}${commText}</div>
-                    <div style="display:flex; gap:6px; margin-top:4px;">
-                        <button class="btn-sm btn-edit" onclick="editService(${s.id})">تعديل ✏️</button>
-                        <button class="btn-sm btn-del" onclick="deleteItem('platform_services', ${s.id})">حذف 🗑️</button>
+                    <div style="display:flex; gap:6px; margin-top:6px; justify-content:flex-end;">
+                        <button class="btn-sm btn-edit" onclick="editProduct(${p.id})">تعديل ✏️</button>
+                        <button class="btn-sm btn-del" onclick="deleteItem('products', ${p.id})">حذف 🗑️</button>
                     </div>
                 </div>
             `;
         });
     }
 
-    function editService(id) {
-        let s = cachedServices.find(item => item.id == id);
-        if (!s) return;
-        document.getElementById('editServiceId').value = s.id;
-        document.getElementById('serviceTitle').value = s.title || '';
-        document.getElementById('serviceCategory').value = s.category || 'جوالات';
-        document.getElementById('serviceDesc').value = s.description || '';
-        document.getElementById('servicePrice').value = s.price || '';
-        document.getElementById('serviceCommission').value = s.commission || '';
-        document.getElementById('serviceStatus').value = (s.is_active !== false) ? 'true' : 'false';
-        document.getElementById('btnSaveService').textContent = 'تعديل وحفظ الخدمة 💾';
-        document.getElementById('btnCancelService').style.display = 'block';
+    function editProduct(id) {
+        let p = cachedProducts.find(item => item.id == id);
+        if (!p) return;
+        document.getElementById('editProductId').value = p.id;
+        document.getElementById('existingProductImg').value = p.image || '';
+        document.getElementById('productTitle').value = p.title || '';
+        document.getElementById('productCategory').value = p.category || 'إلكترونيات';
+        document.getElementById('productPrice').value = p.price || '';
+        document.getElementById('productCommission').value = p.commission || '';
+        document.getElementById('productDesc').value = p.description || '';
+        document.getElementById('btnSaveProduct').textContent = 'تعديل وحفظ المنتج 💾';
+        document.getElementById('btnCancelProduct').style.display = 'block';
+        document.getElementById('productFormTitle').textContent = '✏️ تعديل بيانات المنتج الحالي';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    /* 2. جلب وتنفيذ الطلبات الحالية (جدول orders) */
+    async function loadServiceOrders() {
+        let { data: orders } = await db.from('orders').select('*').order('id', { ascending: false });
+        cachedOrders = orders || [];
+        let box = document.getElementById('serviceOrdersList');
+        if(!box) return;
+
+        document.getElementById('ordersCount').textContent = cachedOrders.length;
+        document.getElementById('adminOrdersCountStat').textContent = cachedOrders.length;
+        box.innerHTML = '';
+
+        if (!cachedOrders.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات جديدة حالياً.</p>';
+            return;
+        }
+
+        cachedOrders.forEach(o => {
+            let dateFormatted = o.created_at ? new Date(o.created_at).toLocaleDateString('ar-EG') : '-';
+            let clientPhoneClean = o.buyer_phone ? o.buyer_phone.replace(/[^0-9]/g, '') : '';
+            let imgHtml = (o.image_url && o.image_url !== 'تم إرفاق السند') 
+                ? `<a href="${o.image_url}" target="_blank" style="color:#0284c7; font-weight:bold;"><i class="fa-solid fa-eye"></i> معاينة سند التحويل 🖼️</a>`
+                : '<span style="color:#94a3b8; font-size:11px;">تم إرفاق السند</span>';
+
+            box.innerHTML += `
+                <div class="item-row" style="background:#fff; border-right:5px solid var(--primary);">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>📦 المنتج / الخدمة: ${o.item_title}</strong>
+                        <span style="color:#e11d48; font-weight:900;">${o.price || '0'} ريال</span>
+                    </div>
+                    <div style="color:#334155; font-size:11px; margin-top:2px; line-height:1.6;">
+                        👤 المشتري: <b>${o.buyer_name}</b> (${o.buyer_phone})<br>
+                        💳 <b>تفاصيل الدفع والتحويل:</b> ${o.payment_method || '-'}<br>
+                        📑 <b>صورة الإيصال:</b> ${imgHtml}<br>
+                        📅 التاريخ: ${dateFormatted}
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; flex-wrap:wrap; gap:6px;">
+                        <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                            ${clientPhoneClean ? `<a href="https://wa.me/${clientPhoneClean}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none; padding:5px 8px;"><i class="fa-brands fa-whatsapp"></i> مراسلة 💬</a>` : ''}
+                            <button class="btn-sm" style="background:#0284c7; padding:5px 8px;" onclick="markOrderAsCompleted(${o.id})">تسليم المنفذ ✅</button>
+                        </div>
+                        <button class="btn-sm btn-del" onclick="deleteItem('orders', ${o.id})">حذف الطلب 🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    async function markOrderAsCompleted(orderId) {
+        if (!confirm('هل تريد نقل هذا الطلب إلى قائمة الطلبات المنجزة والمُسلمة؟')) return;
+        let { data: orderData } = await db.from('orders').select('*').eq('id', orderId).single();
+        if (!orderData) return;
+
+        await db.from('completed_orders').insert([{
+            service_name: orderData.item_title,
+            client_name: orderData.buyer_name,
+            client_phone: orderData.buyer_phone,
+            payment_method: orderData.payment_method,
+            transaction_ref: orderData.image_url,
+            notes: orderData.price + ' ريال',
+            completed_at: new Date().toISOString()
+        }]);
+
+        await db.from('orders').delete().eq('id', orderId);
+        alert('تم نقل الطلب إلى قائمة الأرشيف والطلبات المنجزة بنجاح! ✅');
+        initData();
+    }
+
+    /* 3. سجل الطلبات المنجزة والتصدير */
+    async function loadCompletedOrders() {
+        let { data } = await db.from('completed_orders').select('*').order('id', { ascending: false });
+        cachedCompletedOrders = data || [];
+        let box = document.getElementById('completedOrdersList');
+        if(!box) return;
+        document.getElementById('completedOrdersCount').textContent = cachedCompletedOrders.length;
+        box.innerHTML = '';
+        if (!cachedCompletedOrders.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات منجزة مسجلة.</p>'; return; }
+        
+        cachedCompletedOrders.forEach(o => {
+            box.innerHTML += `
+                <div class="item-row" style="background:#f0fdf4;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>✅ المنتج: ${o.service_name}</strong>
+                        <span>العميل: ${o.client_name} (${o.client_phone})</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function exportCompletedToExcel() {
+        if (!cachedCompletedOrders.length) { alert('لا توجد بيانات للتصدير.'); return; }
+        let ws = XLSX.utils.json_to_sheet(cachedCompletedOrders); let wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "الطلبات المنجزة"); XLSX.writeFile(wb, "Sadara_Completed_Orders.xlsx");
+    }
+
+    function exportCompletedToPDF() {
+        if (!cachedCompletedOrders.length) { alert('لا توجد بيانات للتصدير.'); return; }
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        doc.text("Completed Orders Archive", 105, 15, { align: "center" });
+        let body = cachedCompletedOrders.map((o, i) => [i + 1, o.service_name, o.client_name, o.client_phone]);
+        doc.autoTable({ head: [['#', 'Item', 'Client', 'Phone']], body: body, startY: 25 });
+        doc.save("Sadara_Completed_Orders.pdf");
+    }
+
+    /* 4. إدارة المسوقين والعمولات والأرشيف */
     async function loadAdminAffiliates() {
         let { data: affs } = await db.from('affiliates').select('*').order('id', { ascending: false });
         let box = document.getElementById('affiliatesList');
@@ -447,8 +574,7 @@
         if (dueAmount <= 0) { alert('لا توجد مستحقات للتسوية أو التصفير حالياً.'); return; }
         const currentMonthName = new Date().toLocaleString('ar-EG', { month: 'long', year: 'numeric' });
         
-        if (confirm(`تسوية وصرف مستحقات شهر (${currentMonthName}) بمبلغ (${dueAmount} YER) للمسوق ${affName}؟\n(سيتم تصفير المستحقات المعلقة وإضافتها للأرشيف المالي السنوي/الشهري)`)) {
-            // عند التسوية يتم جعل الـ paid_earnings مساوياً لـ total_earnings ليتم تصغير المستحقات المعلقة إلى 0 للشهر الجديد
+        if (confirm(`تسوية وصرف مستحقات شهر (${currentMonthName}) بمبلغ (${dueAmount} YER) للمسوق ${affName}؟`)) {
             await db.from('affiliates').update({ paid_earnings: totalEarned }).eq('id', affId);
             await db.from('affiliate_payouts').insert([{
                 affiliate_name: affName,
@@ -458,7 +584,7 @@
                 payout_month: currentMonthName,
                 payout_date: new Date().toISOString()
             }]);
-            alert('تمت تسوية الشهر وتصفير المستحقات بنجاح! ✅ وت رحيلها إلى الأرشيف.');
+            alert('تمت تسوية الشهر وتصفير المستحقات بنجاح! ✅ وتعديل الأرشيف.');
             loadAdminAffiliates();
             loadPayoutsLogs();
         }
@@ -510,129 +636,8 @@
         doc.save("Sadara_Payouts_Archive.pdf");
     }
 
-    async function loadServiceOrders() {
-        let { data: orders } = await db.from('service_orders').select('*').order('id', { ascending: false });
-        let box = document.getElementById('serviceOrdersList');
-        if(!box) return;
-        document.getElementById('ordersCount').textContent = orders ? orders.length : 0;
-        box.innerHTML = '';
-
-        if (!orders || orders.length === 0) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات جديدة.</p>';
-            return;
-        }
-
-        orders.forEach(o => {
-            let dateFormatted = o.created_at ? new Date(o.created_at).toLocaleDateString('ar-EG') : '-';
-            let affCodeDisplay = o.affiliate_id || o.affiliate_code || 'بدون';
-            let clientPhoneClean = o.client_phone ? o.client_phone.replace(/[^0-9]/g, '') : '';
-
-            box.innerHTML += `
-                <div class="item-row" style="background:#fff; border-right:5px solid var(--primary);">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <strong>💎 الخدمة: ${o.service_name}</strong>
-                        <span style="color:var(--gold); font-weight:bold;">كود المسوق: ${affCodeDisplay}</span>
-                    </div>
-                    <div style="color:#334155; font-size:11px; margin-top:2px;">
-                        👤 العميل: <b>${o.client_name}</b> (${o.client_phone}) | 💳 الدفع: ${o.payment_method}<br>
-                        📝 <b>الملاحظات:</b> <span style="color:#b91c1c; font-weight:bold;">${o.notes || 'لا يوجد ملاحظات'}</span><br>
-                        🖼️ <b>سند التحويل:</b> <a href="${o.transaction_ref}" target="_blank" style="color:#0284c7; font-weight:bold;">معاينة صورة السند 🔍</a><br>
-                        📅 التاريخ: ${dateFormatted}
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-                        <div style="display:flex; gap:5px; flex-wrap:wrap;">
-                            ${clientPhoneClean ? `<a href="https://wa.me/${clientPhoneClean}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none; padding:5px 8px;">مراسلة 💬</a>` : ''}
-                            <button class="btn-sm" style="background:#10b981; padding:5px 8px;" onclick="approveServiceCommission('${affCodeDisplay}', '${o.service_name}')">اعتماد عمولة المنتج 💰</button>
-                            <button class="btn-sm" style="background:#0284c7; padding:5px 8px;" onclick="markOrderAsCompleted(${o.id})">تم التسليم ✅</button>
-                        </div>
-                        <button class="btn-sm btn-del" onclick="deleteItem('service_orders', ${o.id})">حذف 🗑️</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    async function approveServiceCommission(affRefCode, serviceName) {
-        if (!affRefCode || affRefCode === 'بدون' || affRefCode === 'مباشر') { 
-            alert('هذا الطلب مباشر ولا يتبع لمسوق.'); 
-            return; 
-        }
-        
-        let srv = cachedServices.find(s => s.title === serviceName);
-        let commVal = srv && srv.commission ? srv.commission : '0';
-        let numericCommission = Number(commVal.replace(/[^0-9.]/g, '')) || 0;
-        if (numericCommission <= 0) {
-            alert('هذا المنتج ليس له عمولة محددة أو أن قيمتها صفر.');
-            return;
-        }
-
-        let { data: aff } = await db.from('affiliates').select('*').or(`ref_code.eq.${affRefCode},phone.eq.${affRefCode}`).single();
-        if (aff) {
-            let newSales = (aff.total_sales || 0) + 1;
-            let newTotalEarnings = Number(aff.total_earnings || 0) + numericCommission;
-            let { error } = await db.from('affiliates').update({ total_sales: newSales, total_earnings: newTotalEarnings }).eq('id', aff.id);
-            if (!error) {
-                alert(`تم اعتماد عمولة المنتج للمسوق بنجاح! 🎉 وإضافة (${numericCommission} YER) لرصيده.`);
-                loadAdminAffiliates();
-            } else {
-                alert('خطأ: ' + error.message);
-            }
-        } else {
-            alert('لم يتم العثور على المسوق المرتبط بهذا الكود.');
-        }
-    }
-
-    async function markOrderAsCompleted(orderId) {
-        if (!confirm('نقله إلى قائمة الطلبات المنجزة؟')) return;
-        let { data: orderData } = await db.from('service_orders').select('*').eq('id', orderId).single();
-        if (!orderData) return;
-
-        await db.from('completed_orders').insert([{
-            service_name: orderData.service_name,
-            client_name: orderData.client_name,
-            client_phone: orderData.client_phone,
-            payment_method: orderData.payment_method,
-            transaction_ref: orderData.transaction_ref,
-            notes: orderData.notes,
-            affiliate_code: orderData.affiliate_id || orderData.affiliate_code || 'بدون',
-            completed_at: new Date().toISOString()
-        }]);
-
-        await db.from('service_orders').delete().eq('id', orderId);
-        alert('تم نقل الطلب إلى الطلبات المنجزة بنجاح! ✅');
-        initData();
-    }
-
-    async function loadCompletedOrders() {
-        let { data } = await db.from('completed_orders').select('*').order('id', { ascending: false });
-        cachedCompletedOrders = data || [];
-        let box = document.getElementById('completedOrdersList');
-        if(!box) return;
-        document.getElementById('completedOrdersCount').textContent = cachedCompletedOrders.length;
-        box.innerHTML = '';
-        if (!cachedCompletedOrders.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات منجزة.</p>'; return; }
-        cachedCompletedOrders.forEach(o => {
-            box.innerHTML += `<div class="item-row" style="background:#f0fdf4;"><div style="display:flex; justify-content:space-between; align-items:center;"><strong>✅ ${o.service_name}</strong><span>${o.client_name}</span></div></div>`;
-        });
-    }
-
-    function exportCompletedToExcel() {
-        if (!cachedCompletedOrders.length) { alert('لا توجد بيانات.'); return; }
-        let ws = XLSX.utils.json_to_sheet(cachedCompletedOrders); let wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "الطلبات المنجزة"); XLSX.writeFile(wb, "Sadara_Completed.xlsx");
-    }
-
-    function exportCompletedToPDF() {
-        if (!cachedCompletedOrders.length) { alert('لا توجد بيانات.'); return; }
-        const { jsPDF } = window.jspdf; const doc = new jsPDF();
-        doc.text("Completed Orders", 105, 15, { align: "center" });
-        let body = cachedCompletedOrders.map((o, i) => [i + 1, o.service_name, o.client_name, o.client_phone]);
-        doc.autoTable({ head: [['#', 'Service', 'Client', 'Phone']], body: body, startY: 25 });
-        doc.save("Sadara_Completed.pdf");
-    }
-
     async function deleteItem(table, id) {
-        if (confirm('تأكيد الحذف؟')) {
+        if (confirm('تأكيد حذف العنصر؟')) {
             await db.from(table).delete().eq('id', id);
             initData();
         }
@@ -640,11 +645,11 @@
 
     async function initData() {
         loadStats();
-        await loadAdminServices();
-        loadAdminAffiliates();
-        loadPayoutsLogs();
+        await loadAdminProducts();
         loadServiceOrders();
         loadCompletedOrders();
+        loadAdminAffiliates();
+        loadPayoutsLogs();
     }
 
     document.addEventListener('DOMContentLoaded', checkSession);
