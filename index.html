@@ -83,10 +83,8 @@
         .stat-item h4 { font-size: 15px; font-weight: 900; color: var(--primary); }
         .stat-item p { font-size: 10px; color: #64748b; font-weight: 700; }
 
-        /* عناوين الأقسام */
         .category-section-title { font-size: 14px; font-weight: 900; color: var(--primary); margin: 18px 5px 8px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
-        /* الشبكة الثنائية الاحترافية للبطاقات (عمودان متجاوران تماماً مثل الصورة) */
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
 
         .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
@@ -132,12 +130,13 @@
             </button>
             <span style="font-weight: 900; font-size:14px;">منصة صدارة</span>
         </div>
-        <div id="authArea">
+        <div id="authArea" style="display:flex; gap:6px; align-items:center;">
+            <a href="my-courses.html" class="mini-btn" style="background:var(--green);"><i class="fa-solid fa-graduation-cap"></i> كورساتي</a>
             <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>
         </div>
     </div>
 
-    <!-- القائمة الجانبية (محمية وآمنة وخالية تماماً من لوحة التحكم) -->
+    <!-- القائمة الجانبية المحدثة مع رابط كورساتي -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="sidebar-drawer" id="sidebarDrawer">
         <div class="sidebar-header">
@@ -147,8 +146,9 @@
         <div class="sidebar-menu">
             <div class="sidebar-section-title">الأقسام الرئيسية</div>
             <a href="index.html" class="sidebar-item active"><i class="fa-solid fa-house"></i> الرئيسية والوظائف والكفاءات</a>
+            <a href="my-courses.html" class="sidebar-item" style="color:var(--gold);"><i class="fa-solid fa-graduation-cap"></i> كورساتي المشترك بها <span class="badge" style="background:var(--green);">خاصة</span></a>
             <a href="services.html" class="sidebar-item"><i class="fa-solid fa-store"></i> متجر الخدمات والمنتجات <span class="badge" style="background:var(--gold); color:#000;">🛒 متجر</span></a>
-            <a href="courses.html" class="sidebar-item"><i class="fa-solid fa-graduation-cap"></i> الدورات والمرئيات</a>
+            <a href="courses.html" class="sidebar-item"><i class="fa-solid fa-video"></i> الدورات المرئية الاحترافية</a>
             <a href="text-courses.html" class="sidebar-item"><i class="fa-solid fa-book-open"></i> الدورات النصية والاختبارات</a>
             
             <div class="sidebar-section-title">الأرباح والتسويق</div>
@@ -176,6 +176,7 @@
         <p>بوابتك للبحث عن الفرص الشاغرة، طلب الكفاءات، وتسوق أفضل الخدمات والاشتراكات الرقمية</p>
         <div class="hero-action-btns">
             <a href="#mainContentArea" class="hero-btn hero-btn-primary"><i class="fa-solid fa-briefcase"></i> استكشف الوظائف والكفاءات</a>
+            <a href="my-courses.html" class="hero-btn" style="background:var(--green); color:white;"><i class="fa-solid fa-graduation-cap"></i> كورساتي والدورات المفعلة 🎓</a>
             <a href="services.html" class="hero-btn hero-btn-secondary"><i class="fa-solid fa-store"></i> متجر الخدمات الرقمية 🛒</a>
             <a href="https://drive.google.com/file/d/17ANhJvs2xrzFqslYOadnc60RQCFLoZgU/view?usp=drivesdk" target="_blank" class="hero-btn hero-btn-app"><i class="fa-solid fa-download"></i> تحميل تطبيق المنصة مجاناً 📱</a>
         </div>
@@ -206,11 +207,9 @@
             <div class="stat-item"><h4 id="statResumesCount">...</h4><p>الكفاءات 📄</p></div>
         </div>
 
-        <!-- قسم الوظائف الشاغرة بنمط الشبكة الثنائية -->
         <div class="category-section-title"><i class="fa-solid fa-briefcase"></i> الوظائف الشاغرة المتاحة 💼</div>
         <div id="jobsBoxContainer">جاري تحميل الوظائف...</div>
 
-        <!-- قسم دليل الكفاءات والخبراء بنمط الشبكة الثنائية -->
         <div class="category-section-title"><i class="fa-solid fa-users-viewfinder"></i> دليل الكفاءات والخبراء 👨‍💻</div>
         <div id="resumesBoxContainer">جاري تحميل الكفاءات...</div>
 
@@ -484,9 +483,16 @@
             const loggedName = localStorage.getItem('sadara_logged_name');
             const authArea = document.getElementById('authArea');
             if (loggedName) {
-                authArea.innerHTML = `<span style="font-size:10px; color:var(--gold); font-weight:bold; margin-left:4px;">👤 ${loggedName}</span><button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border:none; color:white;">خروج</button>`;
+                authArea.innerHTML = `
+                    <a href="my-courses.html" class="mini-btn" style="background:var(--green);"><i class="fa-solid fa-graduation-cap"></i> كورساتي</a>
+                    <span style="font-size:10px; color:var(--gold); font-weight:bold; margin-left:4px;">👤 ${loggedName}</span>
+                    <button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border:none; color:white;">خروج</button>
+                `;
             } else {
-                authArea.innerHTML = `<button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>`;
+                authArea.innerHTML = `
+                    <a href="my-courses.html" class="mini-btn" style="background:var(--green);"><i class="fa-solid fa-graduation-cap"></i> كورساتي</a>
+                    <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>
+                `;
             }
         }
 
