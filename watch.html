@@ -32,6 +32,7 @@
         .lesson-item { padding: 12px; background: #f1f5f9; margin-bottom: 8px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid transparent; }
         .lesson-item:hover { background: #e2e8f0; }
         .lesson-item.active { background: var(--primary); color: white; border-right-color: var(--gold); }
+        .lesson-item.completed-lesson { border-right-color: var(--green); }
         
         .cert-box { margin-top: 25px; background: #dcfce7; border: 2px dashed #059669; padding: 20px; border-radius: 12px; text-align: center; display: none; }
         .cert-btn { background: var(--green); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 10px; }
@@ -52,9 +53,17 @@
     let player;
     let lessonsList = [];
     let currentIdx = 0;
+    let courseId = "";
     let watchedLessons = new Set();
     let currentCourseName = "";
     let checkInterval;
+
+    // إدارة جلسة المستخدم وثباتها لمنع إعادة التسجيل
+    let currentUserId = localStorage.getItem('sadara_user_id');
+    if (!currentUserId) {
+        currentUserId = "user_" + Math.random().toString(36).substring(2, 11);
+        localStorage.setItem('sadara_user_id', currentUserId);
+    }
 
     function getYouTubeId(url) {
         if (!url) return '';
@@ -67,7 +76,7 @@
 
     async function loadCourseData() {
         const urlParams = new URLSearchParams(window.location.search);
-        const courseId = urlParams.get('id');
+        courseId = urlParams.get('id');
         const container = document.getElementById('courseContainer');
 
         if (!courseId) {
@@ -89,8 +98,6 @@
             container.innerHTML = '<p style="color:red; text-align:center;">لا توجد دروس مضافة لهذه الدورة.</p>';
             return;
         }
-
-        let firstVideoId = getYouTubeId(lessonsList[0].video_url);
 
         let html = `
             <h1>🎓 ${course.title}</h1>
@@ -121,12 +128,15 @@
 
         html += `</div>
             <div class="cert-box" id="certificateBox">
-                <h3 style="color:#065f46; font-size:16px;">🎉 مبروك! لقد أكملت نصف مشاهدة كافة الدروس بنجاح</h3>
+                <h3 style="color:#065f46; font-size:16px;">🎉 مبروك! لقد أكملت كافة الدروس بنجاح</h3>
                 <p style="font-size:12px; color:#047857; margin-top:5px;">انقر أدناه لإدخال اسمك واستخراج الشهادة المعتمدة.</p>
                 <button onclick="generateAndOpenCert()" class="cert-btn">عرض واستلام الشهادة الرسمية 🎓</button>
             </div>
         `;
         container.innerHTML = html;
+
+        // جلب التقدم المحفوظ مسبقاً من قاعدة البيانات لتجنب ضياعه عند الـ Refresh
+        await fetchUserProgressFromDB();
 
         // تحميل يوتيوب API
         let tag = document.createElement('script');
@@ -135,7 +145,28 @@
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
 
-    // هذه الدالة تستدعيها يوتيوب تلقائياً عند تحميل الـ API
+    // جلب التقدم المخزن في سوبايس
+    async function fetchUserProgressFromDB() {
+        try {
+            let { data, error } = await db.from('user_progress')
+                .select('lesson_id')
+                .eq('user_id', currentUserId)
+                .eq('course_id', courseId)
+                .eq('is_completed', true);
+
+            if (!error && data) {
+                data.forEach(item => {
+                    let idx = parseInt(item.lesson_id);
+                    if (!isNaN(idx)) {
+                        markLessonAsWatchedUIOnly(idx);
+                    }
+                });
+            }
+        } catch (err) {
+            console.error("خطأ في جلب التقدم:", err);
+        }
+    }
+
     window.onYouTubeIframeAPIReady = function() {
         player = new YT.Player('youtubePlayer', {
             height: '100%',
@@ -152,12 +183,13 @@
         if (player && player.loadVideoById) {
             player.loadVideoById(vId);
         }
-        document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('active'));
-        document.getElementById(`lesson-row-${idx}`).classList.add('active');
+        document.querySelectorAll('.lesson-item').forEach((el, i) => {
+            el.classList.remove('active');
+            if (i === idx) el.classList.add('active');
+        });
     }
 
     function onPlayerStateChange(event) {
-        // إذا بدأ الفيديو بالتشغيل (YT.PlayerState.PLAYING)
         if (event.data == YT.PlayerState.PLAYING) {
             clearInterval(checkInterval);
             checkInterval = setInterval(() => {
@@ -166,9 +198,8 @@
                 
                 if (duration > 0) {
                     let percent = (currentTime / duration) * 100;
-                    // إذا شاهد الطالب 50% أو أكثر من الفيديو
                     if (percent >= 50) {
-                        markLessonAsWatched(currentIdx);
+                        saveLessonProgressToDB(currentIdx);
                     }
                 }
             }, 1000);
@@ -177,10 +208,35 @@
         }
     }
 
-    function markLessonAsWatched(idx) {
+    // حفظ التقدم مباشرة في جدول user_progress في سوبايس
+    async function saveLessonProgressToDB(idx) {
+        if (watchedLessons.has(idx)) return; // تم حفظه مسبقاً في هذه الجلسة
+
+        markLessonAsWatchedUIOnly(idx);
+
+        try {
+            await db.from('user_progress').upsert({
+                user_id: currentUserId,
+                course_id: courseId,
+                lesson_id: idx.toString(),
+                is_completed: true
+            }, { onConflict: 'user_id,course_id,lesson_id' });
+        } catch (err) {
+            console.error("خطأ في حفظ التقدم بقاعدة البيانات:", err);
+        }
+    }
+
+    function markLessonAsWatchedUIOnly(idx) {
         watchedLessons.add(idx);
-        document.getElementById(`badge-${idx}`).textContent = "تم إنجاز النصف ✓";
-        document.getElementById(`badge-${idx}`).style.color = "#059669";
+        let badge = document.getElementById(`badge-${idx}`);
+        let row = document.getElementById(`lesson-row-${idx}`);
+        if (badge) {
+            badge.textContent = "تم إنجاز النصف ✓";
+            badge.style.color = "#059669";
+        }
+        if (row) {
+            row.classList.add('completed-lesson');
+        }
         document.getElementById('progressText').textContent = `تم إنجاز: ${watchedLessons.size} / ${lessonsList.length}`;
         
         if (watchedLessons.size >= lessonsList.length) {
