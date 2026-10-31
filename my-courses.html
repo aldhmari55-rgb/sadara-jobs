@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كورساتي المشترك بها | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #059669; --bg-light: #f3f4f6; --text-dark: #0f172a; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg-light); color: var(--text-dark); direction: rtl; text-align: right; padding-bottom: 50px; }
+        header { background: #0a1324; color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
+        header h1 { font-size: 14px; color: #38bdf8; font-weight: 900; }
+        .back-btn { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: 800; font-size: 11px; border: none; display: inline-flex; align-items: center; gap: 4px; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 10px; }
+        .section-title { font-size: 16px; font-weight: 900; margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        @media (max-width: 600px) { .products-grid { grid-template-columns: 1fr; } }
+        .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
+        .product-img-container { width: 100%; height: 140px; background: #0a1324; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .product-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .product-title { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+        .watch-now-btn { background: var(--green); color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .watch-now-btn:hover { background: #047857; }
+        .empty-box { text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎓 لوحة الطالب - كورساتي المشترك بها</h1>
+        <a href="courses.html" class="back-btn"><i class="fa-solid fa-graduation-cap"></i> تصفح كل الدورات</a>
+    </header>
+
+    <div class="container">
+        <div class="section-title"><i class="fa-solid fa-book-open"></i> الدورات التي تم الاشتراك بها وتفعيلها</div>
+        
+        <div id="myCoursesGrid">
+            <div class="empty-box">جاري تحميل دوراتك الخاصة... ⏳</div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentUserId = localStorage.getItem('sadara_user_id');
+        if (!currentUserId) {
+            currentUserId = "user_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
+            localStorage.setItem('sadara_user_id', currentUserId);
+        }
+
+        async function loadMyCourses() {
+            let container = document.getElementById('myCoursesGrid');
+
+            try {
+                // 1. جلب معرفات الدورات التي اشترك فيها هذا المستخدم من جدول user_enrollments
+                let { data: enrollments, error: enError } = await db.from('user_enrollments')
+                    .select('course_id')
+                    .eq('user_id', currentUserId)
+                    .eq('is_enrolled', true);
+
+                if (enError || !enrollments || enrollments.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-box">
+                            <i class="fa-solid fa-folder-open" style="font-size:30px; color:#cbd5e1; margin-bottom:10px;"></i><br>
+                            لم تقم بالاشتراك في أي دورة بعد.<br>
+                            <a href="courses.html" style="color:#2563eb; font-weight:bold; margin-top:10px; display:inline-block;">تصفح الدورات المتاحة الآن 🚀</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // استخراج مصفوفة IDs الدورات المشترك بها
+                let courseIds = enrollments.map(en => en.course_id);
+
+                // 2. جلب تفاصيل هذه الدورات من جدول platform_courses
+                let { data: courses, error: courseError } = await db.from('platform_courses')
+                    .select('*')
+                    .in('id', courseIds);
+
+                if (courseError || !courses || courses.length === 0) {
+                    container.innerHTML = `<div class="empty-box">لا توجد دورات متاحة حالياً في حسابك.</div>`;
+                    return;
+                }
+
+                let gridDiv = document.createElement('div');
+                gridDiv.className = 'products-grid';
+
+                courses.forEach(c => {
+                    let lessonsCount = (c.lessons && Array.isArray(c.lessons)) ? c.lessons.length : 0;
+                    let imgHtml = c.image 
+                        ? `<div class="product-img-container"><img src="${c.image}" class="product-img"></div>` 
+                        : `<div class="product-img-container"><i class="fa-solid fa-graduation-cap" style="font-size:30px; color:var(--gold);"></i></div>`;
+
+                    gridDiv.innerHTML += `
+                        <div class="product-card">
+                            ${imgHtml}
+                            <div class="product-title">${c.title}</div>
+                            <div style="font-size:11px; color:#64748b; font-weight:bold;">📚 عدد الدروس: ${lessonsCount} دروس</div>
+                            <a href="watch.html?id=${c.id}" class="watch-now-btn"><i class="fa-solid fa-play-circle"></i> دخول ومتابعة الدورة 🚀</a>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = '';
+                container.appendChild(gridDiv);
+
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = `<div class="empty-box">عذراً، حدث خطأ في الاتصال بقاعدة البيانات.</div>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadMyCourses);
+    </script>
+</body>
+</html>
