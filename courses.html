@@ -26,7 +26,7 @@
         .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; }
         .product-price { color: #e11d48; font-weight: 900; font-size: 13px; }
         .order-btn { background: var(--primary); color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
-        .order-btn.enrolled { background: #059669; }
+        .order-btn.enrolled { background: #059669 !important; }
         .coupon-box-card { display: flex; gap: 4px; margin-top: 6px; }
         .coupon-input { flex: 1; padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 10px; outline: none; }
         .coupon-btn { background: var(--gold); color: #0a1324; border: none; padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; }
@@ -107,11 +107,13 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // تثبيت معرف المستخدم بـ localStorage وعدم تغييره أبداً لمنع فقدان حالة التسجيل
         let currentUserId = localStorage.getItem('sadara_user_id');
         if (!currentUserId) {
-            currentUserId = "user_" + Math.random().toString(36).substring(2, 11);
+            currentUserId = "user_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
             localStorage.setItem('sadara_user_id', currentUserId);
         }
+        console.log("معرف المستخدم الحالي الثابت:", currentUserId);
 
         let currentCheckoutCourse = null;
 
@@ -130,18 +132,19 @@
                     return;
                 }
 
+                // جلب الاشتراكات المسجلة لهذا المستخدم سحابياً بدقة
                 let enrolledCourseIds = new Set();
                 try {
-                    let { data: enrollments } = await db.from('user_enrollments')
+                    let { data: enrollments, error: enError } = await db.from('user_enrollments')
                         .select('course_id')
                         .eq('user_id', currentUserId)
                         .eq('is_enrolled', true);
                     
-                    if (enrollments) {
+                    if (!enError && enrollments) {
                         enrollments.forEach(en => enrolledCourseIds.add(en.course_id.toString()));
                     }
                 } catch(err) {
-                    console.log("لا توجد اشتراكات سابقة");
+                    console.log("خطأ في جلب الاشتراكات السابقة:", err);
                 }
 
                 let gridDiv = document.createElement('div');
@@ -161,9 +164,11 @@
                     let couponBoxHtml = '';
 
                     if (isAlreadyEnrolled) {
+                        // الزر الأخضر المباشر في حال كان مسجلاً مسبقاً
                         buttonHtml = `<button onclick="window.location.href='watch.html?id=${c.id}'" class="order-btn enrolled"><i class="fa-solid fa-play-circle"></i> أنت مسجل - متابعة المشاهدة 🚀</button>`;
                         couponBoxHtml = '';
                     } else {
+                        // زر الشراء وخانة الكود في حال لم يسجل بعد
                         buttonHtml = `<button onclick='openCheckoutModal(${JSON.stringify(c)})' class="order-btn" id="btnBuy_${c.id}"><i class="fa-solid fa-cart-plus"></i> اشتري الدورة 🛒</button>`;
                         couponBoxHtml = `
                             <div class="coupon-box-card" id="couponBox_${c.id}">
@@ -181,7 +186,9 @@
                                 <span class="product-subtext">📚 ${lessonsCount} دروس</span>
                                 <span class="product-price" id="priceDisplay_${c.id}">${coursePriceStr}</span>
                             </div>
-                            ${buttonHtml}
+                            <div id="actionContainer_${c.id}">
+                                ${buttonHtml}
+                            </div>
                             ${couponBoxHtml}
                         </div>
                     `;
@@ -197,7 +204,7 @@
 
         async function applyCoupon(courseId, originalPrice) {
             const inputVal = document.getElementById(`couponInput_${courseId}`).value.trim().toUpperCase();
-            const btnBuy = document.getElementById(`btnBuy_${courseId}`);
+            const btnContainer = document.getElementById(`actionContainer_${courseId}`);
             const priceDisp = document.getElementById(`priceDisplay_${courseId}`);
             const couponBox = document.getElementById(`couponBox_${courseId}`);
 
@@ -211,18 +218,22 @@
                     return;
                 }
 
-                await db.from('user_enrollments').upsert({
+                // حفظ اشتراك الطالب سحابياً فوراً ليبقى مسجلاً للأبد
+                let { error: enrollErr } = await db.from('user_enrollments').upsert({
                     user_id: currentUserId,
                     course_id: courseId,
                     is_enrolled: true
                 }, { onConflict: 'user_id,course_id' });
 
+                if (enrollErr) {
+                    console.error("خطأ في تسجيل الاشتراك:", enrollErr);
+                }
+
                 alert('🎉 مبروك! تم تفعيل الكود وتسجيلك في الدورة بنجاح!');
-                btnBuy.style.background = '#059669';
-                btnBuy.className = 'order-btn enrolled';
-                btnBuy.innerHTML = '<i class="fa-solid fa-play-circle"></i> أنت مسجل - متابعة المشاهدة 🚀';
-                btnBuy.setAttribute('onclick', `window.location.href='watch.html?id=${courseId}'`);
-                priceDisp.textContent = 'مجاني 🎁';
+                
+                // تحديث شكل الزر فوراً ليصبح زر متابعة المشاهدة
+                btnContainer.innerHTML = `<button onclick="window.location.href='watch.html?id=${courseId}'" class="order-btn enrolled"><i class="fa-solid fa-play-circle"></i> أنت مسجل - متابعة المشاهدة 🚀</button>`;
+                priceDisp.textContent = 'مفعل 🎁';
                 if (couponBox) couponBox.style.display = 'none';
 
             } catch(e) {
@@ -234,6 +245,12 @@
             currentCheckoutCourse = course;
             document.getElementById('modalCourseTitle').textContent = course.title;
             document.getElementById('modalCoursePrice').textContent = course.price ? `${course.price} ريال` : '1500 ريال';
+            
+            document.getElementById('buyerName').value = localStorage.getItem('sadara_logged_name') || '';
+            document.getElementById('buyerPhone').value = localStorage.getItem('sadara_logged_phone') || '';
+            document.getElementById('transferRef').value = '';
+            document.getElementById('transferImage').value = '';
+            
             document.getElementById('checkoutModal').style.display = 'flex';
         }
 
@@ -254,7 +271,11 @@
             if (!imageFile) { alert('يرجى رفع صورة سند التحويل أو الإيداع'); return; }
             if (!currentCheckoutCourse) return;
 
-            msg.style.color = 'blue'; msg.textContent = 'جاري إرسال الطلب وتفعيل الدورة... ⏳';
+            // حفظ بيانات المرتجع مؤقتاً
+            localStorage.setItem('sadara_logged_name', name);
+            localStorage.setItem('sadara_logged_phone', phone);
+
+            msg.style.color = 'blue'; msg.textContent = 'جاري إرسال الطلب وتفعيل الدورة سحابياً... ⏳';
 
             try {
                 let imageUrl = 'تم إرفاق السند';
@@ -268,6 +289,7 @@
                     }
                 } catch(err) {}
 
+                // تسجيل الطلب
                 await db.from('orders').insert([{
                     item_title: currentCheckoutCourse.title,
                     item_type: 'course',
@@ -279,11 +301,16 @@
                     status: 'مؤكد'
                 }]);
 
-                await db.from('user_enrollments').upsert({
+                // حفظ اشتراك الطالب في جدول user_enrollments لضمان عدم الحاجة لشراء الدورة مرة أخرى
+                let { error: enrollErr } = await db.from('user_enrollments').upsert({
                     user_id: currentUserId,
                     course_id: currentCheckoutCourse.id,
                     is_enrolled: true
                 }, { onConflict: 'user_id,course_id' });
+
+                if (enrollErr) {
+                    console.error("فشل حفظ الاشتراك في جدول user_enrollments:", enrollErr);
+                }
 
                 msg.style.color = 'green';
                 msg.textContent = 'تم تفعيل الدورة بنجاح! 🎉 جاري التوجيه للمشاهدة...';
