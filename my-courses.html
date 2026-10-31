@@ -64,33 +64,26 @@
             let container = document.getElementById('myCoursesGrid');
 
             try {
-                // 1. جلب الدورات المخزنة محلياً (عبر تفعيل الأكواد المجانية أو الشراء)
-                let localCourses = JSON.parse(localStorage.getItem('sadara_my_courses') || '[]');
-
-                // 2. جلب الطلبات المؤكدة من السحابة لزيادة الموثوقية
-                let { data: cloudOrders } = await db.from('orders').select('*').eq('item_type', 'course');
+                let userKey = localStorage.getItem('sadara_logged_phone') || localStorage.getItem('sadara_user_id');
                 
-                let allUnlockedTitles = new Set();
-                localCourses.forEach(c => allUnlockedTitles.add(c.title));
-
-                if (cloudOrders) {
-                    cloudOrders.forEach(o => {
-                        if (o.item_title) allUnlockedTitles.add(o.item_title);
-                    });
-                }
-
-                // 3. جلب كافة الدورات المتاحة من السحابة لمطابقة الأسماء والعروض
-                let { data: allCourses, error } = await db.from('platform_courses').select('*');
-
-                if (error || !allCourses) {
-                    container.innerHTML = `<div class="empty-box">عذراً، حدث خطأ في الاتصال بقاعدة البيانات.</div>`;
+                if (!userKey) {
+                    container.innerHTML = `
+                        <div class="empty-box">
+                            <i class="fa-solid fa-user-slash" style="font-size:28px; color:var(--gold); margin-bottom:8px;"></i><br>
+                            لم تقم بتسجيل الدخول أو تفعيل أي دورة بعد.<br>
+                            <a href="courses.html">تصفح الدورات المتاحة واشترك 🚀</a>
+                        </div>
+                    `;
                     return;
                 }
 
-                // تصفية الدورات التي يمتلك الطالب صلاحية الوصول إليها فقط
-                let myActiveCourses = allCourses.filter(c => allUnlockedTitles.has(c.title));
+                // 1. جلب معرفات الدورات المشترك فيها المستخدم من جدول user_enrollments
+                let { data: enrollments, error: enError } = await db.from('user_enrollments')
+                    .select('course_id')
+                    .eq('user_id', userKey)
+                    .eq('is_enrolled', true);
 
-                if (myActiveCourses.length === 0) {
+                if (enError || !enrollments || enrollments.length === 0) {
                     container.innerHTML = `
                         <div class="empty-box">
                             <i class="fa-solid fa-folder-open" style="font-size:28px; color:var(--gold); margin-bottom:8px;"></i><br>
@@ -98,6 +91,18 @@
                             <a href="courses.html">تصفح الدورات المتاحة الآن واشترك 🚀</a>
                         </div>
                     `;
+                    return;
+                }
+
+                let courseIds = enrollments.map(e => e.course_id);
+
+                // 2. جلب تفاصيل الدورات الخاصة بهذه المعرفات من جدول platform_courses
+                let { data: myActiveCourses, error: courseError } = await db.from('platform_courses')
+                    .select('*')
+                    .in('id', courseIds);
+
+                if (courseError || !myActiveCourses || myActiveCourses.length === 0) {
+                    container.innerHTML = `<div class="empty-box">لا توجد دورات مطابقة لحسابك حالياً.</div>`;
                     return;
                 }
 
