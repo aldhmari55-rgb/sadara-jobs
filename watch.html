@@ -116,7 +116,7 @@
         `;
         container.innerHTML = html;
 
-        // جلب التقدم المحفوظ مسبقاً من قاعدة البيانات لتجنب ضياعه عند الـ Refresh
+        // جلب التقدم المحفوظ مسبقاً من قاعدة البيانات
         await fetchUserProgressFromDB();
 
         let tag = document.createElement('script');
@@ -125,15 +125,20 @@
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
 
+    // دالة جلب التقدم المحدثة والمصححة
     async function fetchUserProgressFromDB() {
         try {
+            console.log("جاري جلب التقدم للمستخدم:", currentUserId, "والكورس:", courseId);
             let { data, error } = await db.from('user_progress')
                 .select('lesson_id')
                 .eq('user_id', currentUserId)
                 .eq('course_id', courseId)
                 .eq('is_completed', true);
 
-            if (!error && data) {
+            if (error) {
+                console.error("خطأ من سوبايس عند جلب التقدم:", error);
+            } else if (data) {
+                console.log("الدروس المنجزة المسترجعة:", data);
                 data.forEach(item => {
                     let idx = parseInt(item.lesson_id);
                     if (!isNaN(idx)) {
@@ -142,7 +147,7 @@
                 });
             }
         } catch (err) {
-            console.error("خطأ في جلب التقدم:", err);
+            console.error("خطأ استثنائي عند جلب التقدم:", err);
         }
     }
 
@@ -187,19 +192,27 @@
         }
     }
 
+    // دالة حفظ التقدم المحدثة والمصححة مع فحص الاستجابة
     async function saveLessonProgressToDB(idx) {
         if (watchedLessons.has(idx)) return;
         markLessonAsWatchedUIOnly(idx);
 
         try {
-            await db.from('user_progress').upsert({
+            console.log("جاري حفظ إنجاز الدرس رقم:", idx, "للمستخدم:", currentUserId);
+            let { error } = await db.from('user_progress').upsert({
                 user_id: currentUserId,
                 course_id: courseId,
                 lesson_id: idx.toString(),
                 is_completed: true
             }, { onConflict: 'user_id,course_id,lesson_id' });
+
+            if (error) {
+                console.error("❌ فشل الحفظ في سوبايس (تحقق من سياسات RLS):", error.message);
+            } else {
+                console.log("✅ تم حفظ إنجاز الدرس بنجاح في السحابة!");
+            }
         } catch (err) {
-            console.error("خطأ في حفظ التقدم بقاعدة البيانات:", err);
+            console.error("خطأ استثنائي أثناء الحفظ:", err);
         }
     }
 
