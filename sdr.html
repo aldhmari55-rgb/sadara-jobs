@@ -49,7 +49,7 @@
 
     <div class="header">
         <h1>لوحة تحكم المتجر والمسوقين 🛒</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة متجر المنتجات، طلبات السداد، ومتابعة المسوقين بالعمولة</p>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة متجر المنتجات، طلبات السداد، الأرشيف، ومتابعة المسوقين بالعمولة</p>
     </div>
 
     <div class="admin-stats-grid">
@@ -59,7 +59,7 @@
 
     <div class="grid-container">
 
-        <!-- إدارة المسوقين بالعمولة والإحصائيات الشاملة -->
+        <!-- 1. إدارة المسوقين بالعمولة والإحصائيات الشاملة -->
         <div class="card" style="grid-column: 1 / -1;">
             <h2>
                 <span>🤝 قائمة المسوقين بالعمولة والأرباح العامة</span>
@@ -68,7 +68,16 @@
             <div class="list-box" id="affiliatesList">جاري تحميل المسوقين...</div>
         </div>
 
-        <!-- إدارة متجر الخدمات والمنتجات الرقمية مع الأقسام الجديدة -->
+        <!-- 2. كشف عوائد وعمولات المسوقين المسلمة (سنوي وشهري) -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>
+                <span>📊 كشف العمولات والأرباح المُسلمة (سجل شهري وسنوي)</span>
+                <span class="badge" id="payoutsCount">0</span>
+            </h2>
+            <div class="list-box" id="payoutsList" style="max-height: 250px;">جاري تحميل الأرشيف المالي...</div>
+        </div>
+
+        <!-- 3. إدارة متجر الخدمات والمنتجات الرقمية مع الأقسام الجديدة -->
         <div class="card">
             <h2>
                 <span>🛒 إدارة متجر الخدمات والمنتجات</span>
@@ -112,13 +121,22 @@
             <div class="list-box" id="adminServicesList">جاري التحميل...</div>
         </div>
 
-        <!-- طلبات الخدمات وسندات التحويل المرفقة -->
+        <!-- 4. طلبات الخدمات وسندات التحويل الحالية -->
         <div class="card">
             <h2>
-                <span>🛒 طلبات الخدمات وسندات التحويل المرفقة</span>
+                <span>🛒 طلبات الخدمات وسندات التحويل الحالية</span>
                 <span class="badge" id="ordersCount">0</span>
             </h2>
             <div class="list-box" id="serviceOrdersList" style="max-height: 420px;">جاري التحميل...</div>
+        </div>
+
+        <!-- 5. سجل الطلبات المنجزة (الأرشيف) -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>
+                <span>✅ سجل الطلبات المنجزة والمُسلمة سابقاً</span>
+                <span class="badge" id="completedOrdersCount">0</span>
+            </h2>
+            <div class="list-box" id="completedOrdersList" style="max-height: 250px;">جاري تحميل الأرشيف...</div>
         </div>
 
     </div>
@@ -293,7 +311,7 @@
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <span style="font-size:10px; color:#64748b;">إجمالي الأرباح التاريخية: <b>${totalEarned} YER</b> | تم صرفه: ${paidEarned} YER</span>
                         <div style="display:flex; gap:5px;">
-                            <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, ${paidEarned}, ${dueEarnings})">تسوية المستحقات 💳</button>
+                            <button class="btn-sm" style="background:#10b981;" onclick="payOutAffiliate(${a.id}, ${paidEarned}, ${dueEarnings}, '${a.full_name || a.name || 'مسوق'}', '${refCodeDisplay}')">تسوية المستحقات 💳</button>
                             <a href="https://wa.me/${a.phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none;">مراسلة 💬</a>
                             <button class="btn-sm btn-del" onclick="deleteItem('affiliates', ${a.id})">حذف 🗑️</button>
                         </div>
@@ -303,21 +321,64 @@
         });
     }
 
-    async function payOutAffiliate(affId, currentPaid, dueAmount) {
+    async function payOutAffiliate(affId, currentPaid, dueAmount, affName, affCode) {
         if (dueAmount <= 0) {
             alert('لا توجد عمولات جديدة مستحقة لتسويتها حالياً.');
             return;
         }
-        if (confirm(`هل تؤكد تسوية وصرف المبلغ المستحق (${dueAmount} YER) للمسوق؟`)) {
+        if (confirm(`هل تؤكد تسوية وصرف المبلغ المستحق (${dueAmount} YER) للمسوق ${affName}؟\nسيتم تسجيل العملية في الأرشيف المالي الشهري والسنوي.`)) {
             let newPaidTotal = currentPaid + dueAmount;
             let { error } = await db.from('affiliates').update({ paid_earnings: newPaidTotal }).eq('id', affId);
-            if (error) {
-                alert('خطأ في عملية التسوية: ' + error.message);
-            } else {
-                alert('تمت تسوية الحساب بنجاح! ✅');
+            
+            if (!error) {
+                // حفظ كشف الصرف في جدول الأرشيف الشهري والسنوي
+                const currentDate = new Date();
+                const monthNamesAr = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+                const currentMonthYear = `${monthNamesAr[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+                
+                await db.from('affiliate_payouts').insert([{
+                    affiliate_name: affName,
+                    affiliate_code: affCode,
+                    payout_amount: dueAmount,
+                    payout_period: currentMonthYear,
+                    created_at: new Date().toISOString()
+                }]);
+
+                alert('تمت تسوية الحساب وترحيله إلى الأرشيف المالي بنجاح! ✅');
                 loadAdminAffiliates();
+                loadPayoutsArchive();
+            } else {
+                alert('خطأ في عملية التسوية: ' + error.message);
             }
         }
+    }
+
+    async function loadPayoutsArchive() {
+        let { data } = await db.from('affiliate_payouts').select('*').order('id', { ascending: false });
+        let box = document.getElementById('payoutsList');
+        if(!box) return;
+        
+        let list = data || [];
+        document.getElementById('payoutsCount').textContent = list.length;
+        box.innerHTML = '';
+
+        if (!list.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد سجلات أرباح مُسلمة حتى الآن.</p>';
+            return;
+        }
+
+        list.forEach(p => {
+            let dateFormatted = p.created_at ? new Date(p.created_at).toLocaleDateString('ar-EG') : '-';
+            box.innerHTML += `
+                <div class="item-row" style="background:#f0fdf4;">
+                    <div class="row-header">
+                        <strong>👤 المسوق: ${p.affiliate_name} (كود: ${p.affiliate_code})</strong>
+                        <span style="color:green; font-weight:bold;">المبلغ المسلم: ${p.payout_amount} YER</span>
+                    </div>
+                    <div style="color:#475569; font-size:11px;">📅 فترة الصرف: <b>${p.payout_period || 'شهرية / سنوية'}</b> | تاريخ التحويل: ${dateFormatted}</div>
+                </div>
+            `;
+        });
     }
 
     async function loadServiceOrders() {
@@ -357,14 +418,71 @@
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
                         <span style="font-size:10px; color:#64748b;">التاريخ: ${dateFormatted}</span>
                         <div style="display:flex; gap:5px;">
-                            <button class="btn-sm" style="background:#10b981;" onclick="approveAffiliateCommission('${affCodeDisplay}', ${numericPrice})">اعتماد وعمولة 20% (${exactCommission} YER) 💰</button>
-                            <a href="https://wa.me/${o.client_phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn-sm" style="background:var(--green); text-decoration:none;">واتساب العميل 💬</a>
+                            <button class="btn-sm" style="background:#10b981;" onclick="approveAffiliateCommission('${affCodeDisplay}', ${numericPrice})">اعتماد وعمولة 💰</button>
+                            <button class="btn-sm" style="background:#0284c7;" onclick="markOrderCompleted(${o.id})">تسليم الطلب ✅</button>
                             <button class="btn-sm btn-del" onclick="deleteItem('service_orders', ${o.id})">حذف 🗑️</button>
                         </div>
                     </div>
                 </div>
             `;
         }
+    }
+
+    async function markOrderCompleted(orderId) {
+        if (!confirm('هل أنت متأكد من إنجاز وتسليم هذا الطلب ونقله إلى سجل الطلبات المنجزة؟')) return;
+        
+        let { data: order } = await db.from('service_orders').select('*').eq('id', orderId).single();
+        if (!order) { alert('الطلب غير موجود.'); return; }
+
+        // نقل الطلب إلى جدول completed_orders (الطلبات المنجزة)
+        let { error } = await db.from('completed_orders').insert([{
+            service_name: order.service_name,
+            client_name: order.client_name,
+            client_phone: order.client_phone,
+            payment_method: order.payment_method,
+            transaction_ref: order.transaction_ref,
+            notes: order.notes,
+            affiliate_code: order.affiliate_id || order.affiliate_code || 'بدون',
+            completed_at: new Date().toISOString()
+        }]);
+
+        if (!error) {
+            // حذف الطلب من الطلبات الحالية
+            await db.from('service_orders').delete().eq('id', orderId);
+            alert('تم نقل الطلب إلى سجل الطلبات المنجزة بنجاح! ✅');
+            loadServiceOrders();
+            loadCompletedOrders();
+        } else {
+            alert('خطأ أثناء إنجاز الطلب: ' + error.message);
+        }
+    }
+
+    async function loadCompletedOrders() {
+        let { data } = await db.from('completed_orders').select('*').order('id', { ascending: false });
+        let box = document.getElementById('completedOrdersList');
+        if(!box) return;
+        
+        let list = data || [];
+        document.getElementById('completedOrdersCount').textContent = list.length;
+        box.innerHTML = '';
+
+        if (!list.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد طلبات منجزة مسجلة حتى الآن.</p>';
+            return;
+        }
+
+        list.forEach(c => {
+            let dateFormatted = c.completed_at ? new Date(c.completed_at).toLocaleDateString('ar-EG') : '-';
+            box.innerHTML += `
+                <div class="item-row" style="background:#f0fdf4;">
+                    <div class="row-header">
+                        <strong>✅ المنتج: ${c.service_name}</strong>
+                        <span style="color:green; font-weight:bold;">العميل: ${c.client_name} (${c.client_phone})</span>
+                    </div>
+                    <div style="color:#475569; font-size:11px;">🏷️ كود المسوق: <b>${c.affiliate_code || 'بدون'}</b> | تاريخ الإنجاز: ${dateFormatted}</div>
+                </div>
+            `;
+        });
     }
 
     async function approveAffiliateCommission(affRefCode, servicePrice) {
@@ -408,7 +526,9 @@
             }
             alert('تم الحذف بنجاح! ✅');
             if (table === 'service_orders') loadServiceOrders();
+            if (table === 'completed_orders') loadCompletedOrders();
             if (table === 'affiliates') loadAdminAffiliates();
+            if (table === 'affiliate_payouts') loadPayoutsArchive();
             if (table === 'platform_services') loadAdminServices();
         }
     }
@@ -416,7 +536,9 @@
     document.addEventListener('DOMContentLoaded', () => {
         loadAdminRealStats(); 
         loadServiceOrders();
+        loadCompletedOrders();
         loadAdminAffiliates();
+        loadPayoutsArchive();
         loadAdminServices();
     });
 </script>
