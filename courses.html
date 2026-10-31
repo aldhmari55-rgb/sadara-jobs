@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    <!-- نافذة الدفع التقليدي -->
+    <!-- نافذة الدفع التقليدي (تظهر فقط إن كان السعر أكبر من صفر) -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-card">
             <h3 style="color:var(--primary); font-size:15px; margin-bottom:4px;"><i class="fa-solid fa-cart-shopping" style="color:var(--gold);"></i> إتمام الاشتراك في الدورة</h3>
@@ -147,26 +147,27 @@
                 courses.forEach(c => {
                     let lessonsCount = (c.lessons && Array.isArray(c.lessons)) ? c.lessons.length : 0;
                     selectedCourseStarsMap[c.id] = 5;
-                    let coursePrice = c.price ? `${c.price} ريال` : '1500 ريال';
+                    let coursePriceNum = parseFloat(c.price) || 1500;
+                    let coursePriceStr = `${coursePriceNum} ريال`;
                     
                     let imgHtml = c.image 
                         ? `<div class="product-img-container"><img src="${c.image}" class="product-img"></div>` 
                         : `<div class="product-img-container"><i class="fa-solid fa-graduation-cap" style="font-size:24px; color:var(--gold);"></i></div>`;
 
                     gridDiv.innerHTML += `
-                        <div class="product-card" id="cardCourse_${c.id}">
+                        <div class="product-card" id="cardCourse_${c.id}" data-base-price="${coursePriceNum}">
                             ${imgHtml}
                             <div class="product-title">${c.title}</div>
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
                                 <span class="product-subtext">📚 ${lessonsCount} دروس</span>
-                                <span class="product-price" id="priceDisplay_${c.id}">${coursePrice}</span>
+                                <span class="product-price" id="priceDisplay_${c.id}">${coursePriceStr}</span>
                             </div>
                             
                             <button onclick='openCheckoutModal(${JSON.stringify(c)})' class="order-btn" id="btnBuy_${c.id}"><i class="fa-solid fa-cart-plus"></i> اشتري الدورة 🛒</button>
 
-                            <div class="coupon-box-card">
+                            <div class="coupon-box-card" id="couponBox_${c.id}">
                                 <input type="text" id="couponInput_${c.id}" class="coupon-input" placeholder="أدخل كود الخصم...">
-                                <button onclick="applyCoupon(${c.id}, ${parseFloat(c.price) || 1500})" class="coupon-btn">تفعيل</button>
+                                <button onclick="applyCoupon(${c.id}, ${coursePriceNum})" class="coupon-btn">تفعيل</button>
                             </div>
 
                             <div class="course-reviews-box">
@@ -204,6 +205,7 @@
             const inputVal = document.getElementById(`couponInput_${courseId}`).value.trim().toUpperCase();
             const btnBuy = document.getElementById(`btnBuy_${courseId}`);
             const priceDisp = document.getElementById(`priceDisplay_${courseId}`);
+            const couponBox = document.getElementById(`couponBox_${courseId}`);
 
             if (!inputVal) { alert('يرجى إدخال كود الخصم أولاً.'); return; }
 
@@ -215,26 +217,38 @@
                     return;
                 }
 
+                let newPrice = originalPrice;
+
                 if (coupon.discount_type === 'free') {
-                    alert('🎉 مبروك! تم تفعيل الخصم المجاني الكامل (100%). أصبحت الدورة مجانية لك.');
+                    newPrice = 0;
+                } else if (coupon.discount_type === 'fixed') {
+                    let discountAmount = coupon.discount_value || 0;
+                    newPrice = Math.max(0, originalPrice - discountAmount);
+                } else if (coupon.discount_type === 'percent') {
+                    let discountAmount = (originalPrice * (coupon.discount_value || 0)) / 100;
+                    newPrice = Math.max(0, originalPrice - discountAmount);
+                }
+
+                // إذا أصبح السعر صفر (أو غطى الخصم المبلغ بالكامل)
+                if (newPrice === 0) {
+                    alert('🎉 مبروك! تم تغطية قيمة الدورة بالكامل بواسطة الكود. أصبحت الدورة متاحة لك مجاناً!');
+                    
+                    // تحويل الزر مباشرة لمشاهدة الدورة وإلغاء نافذة الدفع وخانة الكود تماماً
                     btnBuy.style.background = 'var(--green)';
                     btnBuy.innerHTML = '<i class="fa-solid fa-play-circle"></i> مشاهدة الدورة مجاناً 🚀';
                     btnBuy.setAttribute('onclick', `window.location.href='watch.html?id=${courseId}'`);
                     priceDisp.textContent = 'مجاني 🎁';
-                } else {
-                    let discountAmount = 0;
-                    if (coupon.discount_type === 'fixed') {
-                        discountAmount = coupon.discount_value || 0;
-                    } else if (coupon.discount_type === 'percent') {
-                        discountAmount = (originalPrice * (coupon.discount_value || 0)) / 100;
-                    }
+                    if (couponBox) couponBox.style.display = 'none'; // إخفاء خانة الكود بعد التفعيل الناجح
 
-                    let newPrice = Math.max(0, originalPrice - discountAmount);
-                    alert(`🎉 تم تفعيل الخصم! تم خصم ${discountAmount} ريال. السعر الجديد: ${newPrice} ريال.`);
+                } else {
+                    // إذا بقي جزء من المبلغ مستحقاً
+                    let discountApplied = originalPrice - newPrice;
+                    alert(`🎉 تم تفعيل الخصم! تم خصم ${discountApplied} ريال. السعر الجديد: ${newPrice} ريال.`);
                     
                     priceDisp.innerHTML = `<del style="font-size:10px; color:#94a3b8;">${originalPrice}</del> ${newPrice} ريال`;
                     
-                    let cObj = { id: courseId, title: document.querySelector(`#cardCourse_${courseId} .product-title`).textContent, price: newPrice };
+                    let titleText = document.querySelector(`#cardCourse_${courseId} .product-title`).textContent;
+                    let cObj = { id: courseId, title: titleText, price: newPrice };
                     btnBuy.setAttribute('onclick', `openCheckoutModal(${JSON.stringify(cObj)})`);
                 }
 
