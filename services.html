@@ -1,99 +1,143 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- شفرة أدسنس -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096"
+         crossorigin="anonymous"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر الخدمات والمنتجات | منصة صدارة</title>
+    <title>متجر الخدمات والمنتجات الرقمية | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f3f4f6; }
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --red: #ef4444; --bg-light: #f3f4f6; --text-dark: #0f172a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-light); padding-bottom: 50px; color: #0f172a; }
+        body { background: var(--bg-light); color: var(--text-dark); direction: rtl; text-align: right; padding-bottom: 70px; }
+        
+        .top-navbar { background: #0a1324; color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); position: sticky; top: 0; z-index: 1000; }
+        .back-btn { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: 800; font-size: 11px; border: none; display: inline-flex; align-items: center; gap: 4px; }
+        
+        .container { max-width: 900px; margin: 15px auto; padding: 0 10px; }
+        .section-title { font-size: 15px; font-weight: 900; margin-bottom: 12px; color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
-        .top-navbar { background: #0a1324; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); position: sticky; top: 0; z-index: 1000; }
-        .back-btn { background: var(--gold); color: #0a1324; padding: 6px 12px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 11px; }
+        .search-filter-box { background: white; border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .search-input-main { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 8px; }
+        .categories-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+        .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .hero-store { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 20px 16px; text-align: center; }
-        .main-container { max-width: 900px; margin: 12px auto; padding: 0 10px; }
-
-        .search-cat-box { background: white; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-        .store-search { width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 10px; }
-        .cat-tags-container { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
-        .cat-tags-container::-webkit-scrollbar { display: none; }
-        .store-cat-tag { background: #f1f5f9; color: #334155; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; border: 1px solid #cbd5e1; transition: 0.2s; }
-        .store-cat-tag.active, .store-cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
-
-        .affiliate-badge-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 10px; border-radius: 10px; font-size: 11px; text-align: center; font-weight: bold; margin-bottom: 15px; display: none; }
-
-        /* عناوين التصنيفات عند العرض الكلي */
-        .category-section-title { font-size: 14px; font-weight: 900; color: var(--primary); margin: 15px 5px 8px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
-
-        /* تنسيق الشبكة الثنائية (منتجان في كل سطر تماماً مثل تطبيقات التسوق الكبرى) */
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        @media (max-width: 600px) { .products-grid { grid-template-columns: 1fr; } }
 
-        .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; cursor: pointer; transition: 0.2s; }
-        .product-card:active { transform: scale(0.98); }
-
-        .product-img-container { width: 100%; height: 170px; background: #f8fafc; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
+        
+        .product-img-container { width: 100%; height: 150px; background: #0a1324; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
         .product-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        .product-title { font-size: 12px; font-weight: 700; color: var(--text-dark, #0f172a); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 34px; }
+        .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; }
         
-        .product-price-row { display: flex; align-items: baseline; gap: 6px; margin-top: 2px; }
-        .product-price { color: #e11d48; font-weight: 900; font-size: 14px; }
-        
-        .product-cat-label { background: #eff6ff; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; width: fit-content; }
-        
-        .order-btn { background: var(--primary); color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; }
+        .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; }
+        .product-price { color: #e11d48; font-weight: 900; font-size: 13px; }
+
+        .order-btn { background: var(--primary); color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
         .order-btn:hover { background: #1e3a8a; }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-        .modal-card { background: white; padding: 20px; border-radius: 14px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .empty-box { text-align: center; padding: 30px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; font-size: 12px; }
+
+        /* نافذة الطلب */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 440px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); max-height: 90vh; overflow-y: auto; }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
-        .modal-card input, .modal-card select, .modal-card textarea { width: 100%; padding: 9px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; background: #fff; }
+        .modal-card input, .modal-card select, .modal-card textarea { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        
+        /* مربع تفاصيل الدفع المحدث */
+        .payment-info-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 15px; margin: 12px 0; font-size: 11px; color: #334155; line-height: 1.8; }
+        .payment-info-box .payment-title { font-weight: 900; color: var(--primary); font-size: 12px; margin-bottom: 6px; }
+        .payment-info-box ul { list-style: none; padding: 0; margin: 0; }
+        .payment-info-box li { margin-bottom: 4px; }
+        .payment-info-box code { background: #e2e8f0; padding: 1px 5px; border-radius: 4px; font-family: inherit; font-weight: bold; color: var(--primary); }
+        .payment-info-box .payee-name { margin-top: 8px; font-weight: bold; color: var(--primary); border-top: 1px dashed #cbd5e1; padding-top: 6px; }
     </style>
 </head>
 <body>
 
     <div class="top-navbar">
-        <span style="font-weight: 900; font-size:13px;">صدارة للخدمات الرقمية</span>
+        <span style="font-size: 14px; font-weight: 900; color: #38bdf8;">🛒 متجر صدارة للخدمات والمنتجات الرقمية</span>
         <a href="index.html" class="back-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
     </div>
 
-    <div class="hero-store">
-        <h1 style="font-size: 16px;">متجر الخدمات والاشتراكات والمنتجات 🛒</h1>
-        <p style="font-size: 10px; opacity: 0.85; margin-top: 3px;">اختر المنتج المطلوب لعرض تفاصيله والطلب المباشر</p>
-    </div>
-
-    <div class="main-container">
-
-        <div class="affiliate-badge-info" id="affiliateBanner">
-            🎉 مبروك! تم تفعيل كود الخصم والترشيح عبر مسوق موثق ✅
-        </div>
-
-        <div class="search-cat-box">
-            <input type="text" id="storeSearchInput" class="store-search" placeholder="🔍 ابحث عن منتج أو خدمة بالاسم..." oninput="filterStore()">
-            <div class="cat-tags-container">
-                <span class="store-cat-tag active" onclick="filterStoreCategory('الكل', this)">الكل 🌐</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('جوالات', this)">📱 جوالات</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('إكسسوارات', this)">🎧 إكسسوارات</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('إلكترونيات', this)">⚡ إلكترونيات</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('اشتراكات', this)">🔑 اشتراكات</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('خدمات', this)">🛠️ خدمات</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('ملابس', this)">👗 ملابس</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('تجميل', this)">💄 تجميل</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('منزل', this)">🏡 منزلية</span>
-                <span class="store-cat-tag" onclick="filterStoreCategory('أخرى', this)">📦 أخرى</span>
+    <div class="container">
+        <div class="search-filter-box">
+            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن منتج، خدمة، أو بطاقة رقمية..." oninput="filterProducts()">
+            <div class="categories-tags">
+                <span class="cat-tag active" onclick="filterByCategory('الكل', this)">الكل 🌐</span>
+                <span class="cat-tag" onclick="filterByCategory('إلكترونيات', this)">🔌 إلكترونيات</span>
+                <span class="cat-tag" onclick="filterByCategory('برامج وتطبيقات', this)">💻 برامج وتطبيقات</span>
+                <span class="cat-tag" onclick="filterByCategory('بطاقات رقمية', this)">💳 بطاقات رقمية</span>
+                <span class="cat-tag" onclick="filterByCategory('خدمات تسويق', this)">📢 خدمات تسويق</span>
             </div>
         </div>
 
-        <div id="storeProductsList">جاري تحميل المتجر...</div>
+        <div class="section-title"><i class="fa-solid fa-store"></i> المنتجات والخدمات المتاحة للطلب</div>
+        <div id="productsGrid">
+            <div class="empty-box">جاري تحميل المنتجات من السحابة... ⏳</div>
+        </div>
     </div>
 
+    <!-- نافذة الطلب والسداد -->
     <div class="modal-overlay" id="productModal">
-        <div class="modal-card" id="modalProductContent"></div>
+        <div class="modal-card">
+            <div id="modalProductImgContainer"></div>
+            <h3 id="modalProductTitle" style="font-size:14px; color:var(--primary); margin-top:8px;">اسم المنتج</h3>
+            <div id="modalProductPrice" style="color:#e11d48; font-weight:900; font-size:13px; margin-bottom:6px;">السعر: 0 ريال</div>
+            <div id="modalProductDesc" style="background:#f8fafc; padding:8px; border-radius:8px; font-size:11px; color:#64748b; line-height: 1.5;">وصف المنتج...</div>
+
+            <!-- مربع تفاصيل حسابات الدفع الرسمية -->
+            <div class="payment-info-box">
+                <div class="payment-title">💳 تفاصيل حسابات الدفع الرسمية:</div>
+                <ul>
+                    <li>• <b>بنك الكريمي (نقطة حاسب):</b> حساب رقم <code>2628009</code></li>
+                    <li>• <b>الحوالات المحلية (أي شركة):</b> رقم الجوال <code>780568507</code></li>
+                    <li>• <b>محفظة جيب (إيداع):</b> رقم الجوال <code>780568507</code></li>
+                </ul>
+                <div class="payee-name">الاسم المستفيد: عبدالرحمن عبدالله صالح الذماري</div>
+            </div>
+
+            <h4 style="font-size:12px; color:var(--primary); margin-top:10px; border-bottom:1px solid #e2e8f0; padding-bottom:4px;">🛒 نموذج الطلب والسداد المباشر</h4>
+            
+            <label>اسمك الكريم</label>
+            <input type="text" id="buyerName" placeholder="أحمد محمد">
+
+            <label>رقم الواتساب للتواصل</label>
+            <input type="tel" id="buyerPhone" placeholder="770000000">
+
+            <label>المحافظة الحالية</label>
+            <input type="text" id="buyerCity" placeholder="ذمار">
+
+            <label>كيف وصلت إلينا؟ (اختياري)</label>
+            <input type="text" id="buyerRef" placeholder="اسم المسوق أو وسائل التواصل...">
+
+            <label>وسيلة الدفع والتحويل</label>
+            <select id="paymentMethod">
+                <option value="محفظة جيب (780568507)">محفظة جيب (780568507)</option>
+                <option value="بنك الكريمي نقطة حاسب (حساب 2628009)">بنك الكريمي نقطة حاسب (حساب 2628009)</option>
+                <option value="الحوالات المحلية (780568507)">الحوالات المحلية (780568507)</option>
+            </select>
+
+            <label>صورة سند التحويل أو الدفع 📑</label>
+            <input type="file" id="transferImage" accept="image/*">
+
+            <label>ملاحظات إضافية (اختياري)</label>
+            <textarea id="buyerNotes" rows="2" placeholder="أي تفاصيل تود إضافتها..."></textarea>
+
+            <button onclick="submitOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-top:12px;">
+                تأكيد الطلب وإرسال الإيصال 🚀
+            </button>
+            <button onclick="closeProductModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:10px;">إلغاء</button>
+            <div id="orderMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
+        </div>
     </div>
 
     <script>
@@ -103,169 +147,91 @@
 
         let allProducts = [];
         let currentSelectedCategory = 'الكل';
-        let currentSelectedProduct = null;
+        let selectedProductForOrder = null;
 
-        async function initStore() {
-            const urlParams = new URLSearchParams(window.location.search);
-            let refParam = urlParams.get('ref');
-            let productIdParam = urlParams.get('product_id');
-
-            if (refParam) {
-                localStorage.setItem('sadara_affiliate_ref', refParam);
-                document.getElementById('affiliateBanner').style.display = 'block';
-                trackAffiliateClick(refParam);
-            } else if (localStorage.getItem('sadara_affiliate_ref')) {
-                document.getElementById('affiliateBanner').style.display = 'block';
-            }
-
-            let { data, error } = await db.from('platform_services').select('*').eq('is_active', true).order('id', { ascending: false });
-            if (error) {
-                document.getElementById('storeProductsList').innerHTML = '<p style="text-align:center; color:red; font-size:12px;">حدث خطأ في تحميل المتجر.</p>';
-                return;
-            }
-
-            allProducts = data || [];
-            renderStoreProducts(allProducts);
-
-            if (productIdParam) {
-                let targetProd = allProducts.find(p => p.id == productIdParam);
-                if (targetProd) openProductDetails(targetProd);
-            }
-        }
-
-        async function trackAffiliateClick(code) {
+        async function loadStoreProducts() {
+            let container = document.getElementById('productsGrid');
             try {
-                let { data: aff } = await db.from('affiliates').select('*').or(`ref_code.eq.${code},phone.eq.${code}`).single();
-                if (aff) {
-                    let currentClicks = Number(aff.clicks || 0) + 1;
-                    await db.from('affiliates').update({ clicks: currentClicks }).eq('id', aff.id);
+                let { data: products, error } = await db.from('products').select('*').order('id', {ascending: false});
+                if (error || !products || products.length === 0) {
+                    container.innerHTML = `<div class="empty-box">لا توجد منتجات أو خدمات مضافة حالياً في المتجر.</div>`;
+                    return;
                 }
-            } catch(e) {}
+                allProducts = products;
+                renderProducts(allProducts);
+            } catch(e) {
+                container.innerHTML = `<div class="empty-box">حدث خطأ في الاتصال بقاعدة البيانات.</div>`;
+            }
         }
 
-        function filterStoreCategory(category, el) {
-            currentSelectedCategory = category;
-            document.querySelectorAll('.store-cat-tag').forEach(t => t.classList.remove('active'));
+        function filterByCategory(categoryName, el) {
+            currentSelectedCategory = categoryName;
+            document.querySelectorAll('.cat-tag').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
-            executeStoreFilter();
+            executeFiltering();
         }
 
-        function filterStore() { executeStoreFilter(); }
+        function filterProducts() { executeFiltering(); }
 
-        function executeStoreFilter() {
-            let query = document.getElementById('storeSearchInput').value.toLowerCase().trim();
+        function executeFiltering() {
+            let query = document.getElementById('searchInput').value.toLowerCase().trim();
             let filtered = allProducts.filter(p => {
                 let matchCat = (currentSelectedCategory === 'الكل' || p.category === currentSelectedCategory);
                 let matchQuery = (!query || p.title.toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query)));
                 return matchCat && matchQuery;
             });
-            renderStoreProducts(filtered);
+            renderProducts(filtered);
         }
 
-        function renderStoreProducts(productsList) {
-            let box = document.getElementById('storeProductsList');
-            box.innerHTML = '';
-
-            if (!productsList || productsList.length === 0) {
-                box.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:20px;">لا توجد منتجات مطابقة لبحثك حالياً.</p>';
+        function renderProducts(list) {
+            let container = document.getElementById('productsGrid');
+            container.innerHTML = '';
+            if (list.length === 0) {
+                container.innerHTML = `<div class="empty-box">لا توجد منتجات مطابقة لبحثك.</div>`;
                 return;
             }
 
-            let query = document.getElementById('storeSearchInput').value.trim();
-            if (currentSelectedCategory === 'الكل' && !query) {
-                let grouped = {};
-                productsList.forEach(p => {
-                    let cat = p.category || 'أخرى';
-                    if (!grouped[cat]) grouped[cat] = [];
-                    grouped[cat].push(p);
-                });
+            let gridDiv = document.createElement('div');
+            gridDiv.className = 'products-grid';
 
-                for (let cat in grouped) {
-                    box.innerHTML += `<div class="category-section-title">📁 ${cat}</div>`;
-                    let gridDiv = document.createElement('div');
-                    gridDiv.className = 'products-grid';
-                    
-                    grouped[cat].forEach(p => {
-                        gridDiv.innerHTML += createProductCardHTML(p);
-                    });
-                    box.appendChild(gridDiv);
-                }
-            } else {
-                let gridDiv = document.createElement('div');
-                gridDiv.className = 'products-grid';
-                productsList.forEach(p => {
-                    gridDiv.innerHTML += createProductCardHTML(p);
-                });
-                box.appendChild(gridDiv);
-            }
-        }
-
-        function createProductCardHTML(p) {
-            let imgHTML = (p.image && p.image.trim() !== '') ? `<div class="product-img-container"><img src="${p.image}" class="product-img"></div>` : '<div class="product-img-container"><i class="fa-solid fa-image" style="font-size:24px; color:#cbd5e1;"></i></div>';
-
-            return `
-                <div class="product-card" onclick="openProductDetailsById(${p.id})">
-                    ${imgHTML}
-                    <div class="product-title">${p.title}</div>
-                    <div class="product-price-row">
-                        <span class="product-price">${p.price}</span>
+            list.forEach(p => {
+                let imgHtml = p.image ? `<div class="product-img-container"><img src="${p.image}" class="product-img"></div>` : `<div class="product-img-container"><i class="fa-solid fa-box" style="font-size:24px; color:#cbd5e1;"></i></div>`;
+                gridDiv.innerHTML += `
+                    <div class="product-card">
+                        ${imgHtml}
+                        <div class="product-title">${p.title}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="product-subtext">${p.category || 'خدمة عامة'}</span>
+                            <span class="product-price">${p.price} ريال</span>
+                        </div>
+                        <button onclick='openProductModal(${JSON.stringify(p)})' class="order-btn">اطلب الآن 🛒</button>
                     </div>
-                    <button class="order-btn" onclick="event.stopPropagation(); openProductDetailsById(${p.id})">اطلب الآن 🚀</button>
-                </div>
-            `;
+                `;
+            });
+            container.appendChild(gridDiv);
         }
 
-        function openProductDetailsById(id) {
-            let p = allProducts.find(item => item.id == id);
-            if (p) openProductDetails(p);
-        }
+        function openProductModal(product) {
+            selectedProductForOrder = product;
+            document.getElementById('modalProductTitle').textContent = product.title;
+            document.getElementById('modalProductPrice').textContent = `السعر: ${product.price} ريال`;
+            document.getElementById('modalProductDesc').textContent = product.description || 'لا يوجد وصف تفصيلي لهذا المنتج.';
+            
+            let imgContainer = document.getElementById('modalProductImgContainer');
+            if (product.image) {
+                imgContainer.innerHTML = `<div style="width:100%; height:140px; border-radius:8px; overflow:hidden; background:#0a1324;"><img src="${product.image}" style="width:100%; height:100%; object-fit:cover;"></div>`;
+            } else {
+                imgContainer.innerHTML = '';
+            }
 
-        function openProductDetails(p) {
-            currentSelectedProduct = p;
-            let imgHTML = (p.image && p.image.trim() !== '') ? `<div style="width:100%; background:#f8fafc; border-radius:8px; display:flex; justify-content:center; align-items:center; overflow:hidden; padding:5px; margin-bottom:12px;"><img src="${p.image}" style="width:100%; height:auto; max-height:300px; object-fit:contain; border-radius:6px; display:block;"></div>` : '';
+            document.getElementById('buyerName').value = localStorage.getItem('sadara_logged_name') || '';
+            document.getElementById('buyerPhone').value = localStorage.getItem('sadara_logged_phone') || '';
+            document.getElementById('buyerCity').value = '';
+            document.getElementById('buyerRef').value = '';
+            document.getElementById('transferImage').value = '';
+            document.getElementById('buyerNotes').value = '';
+            document.getElementById('orderMsg').textContent = '';
 
-            document.getElementById('modalProductContent').innerHTML = `
-                ${imgHTML}
-                <span class="product-cat-label">📁 ${p.category || 'عام'}</span>
-                <h2 style="font-size:16px; color:var(--primary); margin:6px 0;">${p.title}</h2>
-                <div style="font-size:15px; color:#e11d48; font-weight:900; margin-bottom:10px;">السعر: ${p.price}</div>
-                <div style="font-size:12px; color:#475569; line-height:1.6; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:12px;">
-                    <strong>وصف المنتج:</strong><br>${p.description || 'لا يوجد وصف إضافي.'}
-                </div>
-
-                <hr style="border:0; border-top:1px solid #e2e8f0; margin:12px 0;">
-
-                <h3 style="font-size:13px; color:var(--primary); margin-bottom:6px;">🛒 نموذج الطلب والسداد المباشر</h3>
-                
-                <label>اسمك الكريم</label>
-                <input type="text" id="clientName" placeholder="أحمد محمد">
-
-                <label>رقم الواتساب للتواصل</label>
-                <input type="tel" id="clientPhone" placeholder="770000000">
-
-                <label>المحافظة الحالية</label>
-                <input type="text" id="clientCity" placeholder="ذمار">
-
-                <label>كيف وصلت إلينا؟ (اختياري)</label>
-                <input type="text" id="clientReferralSource" placeholder="اسم المسوق أو وسائل التواصل...">
-
-                <label>وسيلة الدفع والتحويل</label>
-                <select id="payMethod">
-                    <option value="محفظة جيب">محفظة جيب (780568507)</option>
-                    <option value="بنك الكريمي">بنك الكريمي (2628009)</option>
-                </select>
-
-                <label>صورة سند التحويل أو الدفع 📄</label>
-                <input type="file" id="payReceiptFile" accept="image/*">
-
-                <label>ملاحظات إضافية (اختياري)</label>
-                <input type="text" id="orderNotes" placeholder="أي تفاصيل تود إضافتها...">
-
-                <button onclick="submitProductOrder()" style="width:100%; background:var(--green); color:white; border:none; padding:11px; border-radius:8px; font-weight:bold; margin-top:12px; cursor:pointer; font-size:12px;">تأكيد وإرسال الطلب 📱</button>
-                <button onclick="closeProductModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:11px;">إغلاق</button>
-                
-                <div id="orderStatusMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
-            `;
             document.getElementById('productModal').style.display = 'flex';
         }
 
@@ -273,55 +239,70 @@
             document.getElementById('productModal').style.display = 'none';
         }
 
-        async function submitProductOrder() {
-            const name = document.getElementById('clientName').value.trim();
-            const phone = document.getElementById('clientPhone').value.trim();
-            const city = document.getElementById('clientCity').value.trim();
-            const refSource = document.getElementById('clientReferralSource').value.trim();
-            const payMethod = document.getElementById('payMethod').value;
-            const file = document.getElementById('payReceiptFile').files[0];
-            const notes = document.getElementById('orderNotes').value.trim();
-            const msg = document.getElementById('orderStatusMsg');
+        async function submitOrder() {
+            let name = document.getElementById('buyerName').value.trim();
+            let phone = document.getElementById('buyerPhone').value.trim();
+            let city = document.getElementById('buyerCity').value.trim();
+            let ref = document.getElementById('buyerRef').value.trim();
+            let method = document.getElementById('paymentMethod').value;
+            let imageFile = document.getElementById('transferImage').files[0];
+            let notes = document.getElementById('buyerNotes').value.trim();
+            let msg = document.getElementById('orderMsg');
 
-            if (!name || !phone) { alert('يرجى إدخال اسمك ورقم الواتساب!'); return; }
-            if (!file) { alert('يرجى إرفاق صورة سند الدفع أو التحويل!'); return; }
-
-            msg.style.color = 'blue'; msg.textContent = 'جاري رفع الطلب ومعالجته... ⏳';
-
-            let receiptUrl = '';
-            try {
-                const fileExt = file.name.split('.').pop();
-                const fileName = `order_${Date.now()}.${fileExt}`;
-                const { error: uploadErr } = await db.storage.from('platform-files').upload(fileName, file);
-                if (uploadErr) { msg.style.color = 'red'; msg.textContent = 'فشل رفع صورة السند.'; return; }
-                const { data: publicUrlData } = db.storage.from('platform-files').getPublicUrl(fileName);
-                receiptUrl = publicUrlData.publicUrl;
-            } catch(e) {
-                msg.style.color = 'red'; msg.textContent = 'خطأ أثناء رفع السند.'; return;
+            if (!name || !phone || !city) {
+                alert('يرجى إكمال الحقول الأساسية (الاسم، الهاتف، المحافظة)');
+                return;
             }
+            if (!imageFile) {
+                alert('يرجى رفع صورة سند التحويل أو الدفع');
+                return;
+            }
+            if (!selectedProductForOrder) return;
 
-            let activeRefCode = localStorage.getItem('sadara_affiliate_ref') || new URLSearchParams(window.location.search).get('ref') || 'مباشر';
-            let fullNotes = `المحافظة: ${city || 'غير محدد'} | مصدر الدلالة: ${refSource || 'غير محدد'} | ملاحظات: ${notes || 'لا يوجد'}`;
+            msg.style.color = 'blue';
+            msg.textContent = 'جاري رفع الإيصال وحفظ الطلب سحابياً... ⏳';
 
-            let { error } = await db.from('service_orders').insert([{
-                service_name: currentSelectedProduct.title,
-                client_name: name,
-                client_phone: phone,
-                payment_method: payMethod,
-                transaction_ref: receiptUrl,
-                notes: fullNotes,
-                affiliate_id: activeRefCode
-            }]);
+            try {
+                let imageUrl = 'تم إرفاق السند';
+                try {
+                    const fileExt = imageFile.name.split('.').pop();
+                    const fileName = `store_order_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+                    let { data: uploadData } = await db.storage.from('platform-files').upload(fileName, imageFile);
+                    if (uploadData) {
+                        let { data: publicURL } = db.storage.from('platform-files').getPublicUrl(fileName);
+                        imageUrl = publicURL.publicUrl;
+                    }
+                } catch(err) {}
 
-            if (error) {
-                msg.style.color = 'red'; msg.textContent = 'خطأ في حفظ الطلب: ' + error.message;
-            } else {
-                msg.style.color = 'green'; msg.textContent = 'تم إرسال طلبك بنجاح! سيتم التواصل معك عبر الواتساب لتأكيد الخدمة. ✅';
-                setTimeout(() => { closeProductModal(); }, 2000);
+                let fullPaymentDetails = `${method} | المدينة: ${city} | المسوق: ${ref || 'لا يوجد'} | ملاحظات: ${notes || 'لا يوجد'}`;
+
+                let { error } = await db.from('orders').insert([{
+                    item_title: selectedProductForOrder.title,
+                    item_type: 'product',
+                    buyer_name: name,
+                    buyer_phone: phone,
+                    payment_method: fullPaymentDetails,
+                    price: selectedProductForOrder.price || '0',
+                    image_url: imageUrl,
+                    status: 'قيد المراجعة'
+                }]);
+
+                if (error) throw error;
+
+                msg.style.color = 'green';
+                msg.textContent = 'تم إرسال طلبك بنجاح! 🎉 سيتم التواصل معك عبر الواتساب قريباً.';
+                
+                setTimeout(() => {
+                    closeProductModal();
+                }, 2000);
+
+            } catch(e) {
+                msg.style.color = 'red';
+                msg.textContent = 'حدث خطأ أثناء حفظ الطلب. يرجى المحاولة مرة أخرى.';
             }
         }
 
-        document.addEventListener('DOMContentLoaded', initStore);
+        document.addEventListener('DOMContentLoaded', loadStoreProducts);
     </script>
 </body>
 </html>
