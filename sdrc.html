@@ -58,7 +58,7 @@
     <div id="adminMainContent" style="display:none;">
         <div class="header">
             <h1>لوحة تحكم الدورات والمبيعات الشاملة 🎓</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية، الدورات النصية المستقلة، الأسعار، والمبيعات</p>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية، الدورات النصية المستقلة، أكواد الخصم، الأسعار، والمبيعات</p>
             <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin-top:10px; background:#ef4444; border:none; font-size:11px;">قفل لوحة التحكم 🔒</button>
         </div>
 
@@ -69,7 +69,7 @@
                 <h2>
                     <span id="formTitleText">🎓 إدارة الدورات المرئية وصور المعرض والأسعار</span>
                     <span class="badge" id="coursesCount">0</span>
-                </h1>
+                </h2>
 
                 <div class="guide-box">
                     <strong>📖 تعليمات لوحة الدورات المرئية:</strong><br>
@@ -121,7 +121,33 @@
                 <div class="list-box" id="adminCoursesList" style="margin-top: 15px;">جاري التحميل...</div>
             </div>
 
-            <!-- 2. إدارة الدورات النصية والاختبارات (الجدول المستقل text_courses) -->
+            <!-- 2. إدارة أكواد الخصم المجانية (القسم الجديد) -->
+            <div class="card">
+                <h2>
+                    <span>🎟️ إدارة أكواد الخصم المجانية</span>
+                    <span class="badge" id="couponsCount">0</span>
+                </h2>
+
+                <div class="guide-box" style="background:#f0fdf4; border-color:#bbf7d0; color:#166534;">
+                    <strong>📖 إدارة الأكواد:</strong><br>
+                    • أنشئ كود خصم جديد (مثلاً <code>SADARA2026</code> أو <code>FREEVIP</code>)، واجعله يمنح الدورة مجاناً (100%) للمستفيدين فور إدخاله في الصفحة العامة.
+                </div>
+
+                <label>كود الخصم (أحرف إنجليزية وأرقام بدون مسافات)</label>
+                <input type="text" id="couponCodeInput" placeholder="مثال: VIP2026">
+
+                <label>نوع الخصم</label>
+                <select id="couponType">
+                    <option value="free">خصم 100% (فتح الدورة مجاناً 🟢)</option>
+                </select>
+
+                <button onclick="saveNewCoupon()" style="background:#059669; color:white; margin-top:10px;">إضافة وحفظ الكود 🎟️</button>
+                <div id="couponMsg" class="status-msg"></div>
+
+                <div class="list-box" id="adminCouponsList" style="margin-top: 15px;">جاري التحميل...</div>
+            </div>
+
+            <!-- 3. إدارة الدورات النصية والاختبارات -->
             <div class="card">
                 <h2>
                     <span id="formTitleTC">📝 إدارة الدورات النصية والاختبارات المستقلة</span>
@@ -156,7 +182,7 @@
                 <div class="list-box" id="adminTCList" style="margin-top: 15px;">جاري التحميل...</div>
             </div>
 
-            <!-- 3. الدورات المباعة -->
+            <!-- 4. الدورات المباعة -->
             <div class="card">
                 <h2>
                     <span>🛒 الدورات المباعة والطلبات (مع الإيصالات)</span>
@@ -165,7 +191,7 @@
                 <div class="list-box" id="ordersList">جاري التحميل...</div>
             </div>
 
-            <!-- 4. المشتركين -->
+            <!-- 5. المشتركين -->
             <div class="card">
                 <h2>
                     <span>👥 المشتركين في الدورات المدفوعة</span>
@@ -174,7 +200,7 @@
                 <div class="list-box" id="subscribersList">جاري التحميل...</div>
             </div>
 
-            <!-- 5. سجل الشهادات -->
+            <!-- 6. سجل الشهادات -->
             <div class="card">
                 <h2>
                     <span>📜 سجل الشهادات الصادرة للطلاب</span>
@@ -196,6 +222,7 @@
     let cachedOrders = [];
     let cachedCertResults = [];
     let cachedTC = [];
+    let cachedCoupons = [];
 
     function verifyAdminPass() {
         const secret = document.getElementById('adminSecretInput').value.trim();
@@ -392,6 +419,54 @@
         let { error } = await db.from('platform_courses').update({ is_active: !currentStatus }).eq('id', id);
         if (error) { alert('خطأ في تغيير الحالة: ' + error.message); return; }
         loadAdminCourses();
+    }
+
+    /* دوال إدارة أكواد الخصم المجانية */
+    async function saveNewCoupon() {
+        const code = document.getElementById('couponCodeInput').value.trim().toUpperCase();
+        const msg = document.getElementById('couponMsg');
+
+        if (!code) { alert('يرجى إدخال كود الخصم!'); return; }
+
+        msg.style.color = 'blue'; msg.textContent = 'جاري حفظ الكود في السحابة... ⏳';
+
+        let { error } = await db.from('coupons').insert([{ code: code, discount_type: 'free', is_active: true }]);
+
+        if (error) {
+            msg.style.color = 'red';
+            msg.textContent = 'خطأ أثناء حفظ الكود: ' + error.message;
+        } else {
+            msg.style.color = 'green';
+            msg.textContent = 'تم إضافة الكود بنجاح! ✅';
+            document.getElementById('couponCodeInput').value = '';
+            loadAdminCoupons();
+        }
+    }
+
+    async function loadAdminCoupons() {
+        let { data } = await db.from('coupons').select('*').order('id', { ascending: false });
+        cachedCoupons = data || [];
+        let box = document.getElementById('adminCouponsList');
+        if (!box) return;
+        document.getElementById('couponsCount').textContent = cachedCoupons.length;
+        box.innerHTML = '';
+
+        if (!cachedCoupons.length) {
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد أكواد خصم مسجلة حتى الآن.</p>';
+            return;
+        }
+
+        cachedCoupons.forEach(cp => {
+            box.innerHTML += `
+                <div class="item-row" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong>🎟️ الكود: <span style="color:var(--primary); font-size:13px;">${cp.code}</span></strong>
+                        <div style="color:green; font-size:10px; font-weight:bold;">خصم 100% (مجاني بالكامل) 🟢</div>
+                    </div>
+                    <button class="btn-sm btn-del" onclick="deleteItem('coupons', ${cp.id})" style="width:auto;">حذف 🗑️</button>
+                </div>
+            `;
+        });
     }
 
     /* دوال إدارة الدورات النصية المستقلة (جدول text_courses) */
@@ -595,6 +670,7 @@
 
     function initData() {
         loadAdminCourses();
+        loadAdminCoupons(); // تحميل أكواد الخصم
         loadAdminTC();
         loadOrders();
         loadSubscribers();
