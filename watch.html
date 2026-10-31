@@ -13,30 +13,15 @@
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         h1 { color: var(--primary); font-size: 20px; margin-bottom: 5px; }
         .desc { color: #64748b; font-size: 13px; margin-bottom: 15px; }
-        
-        .secure-video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(15, 35, 71, 0.15);
-            margin-bottom: 20px;
-        }
+        .secure-video-container { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(15, 35, 71, 0.15); margin-bottom: 20px; }
         #youtubePlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .shield-top { position: absolute; top: 0; left: 0; width: 100%; height: 65px; z-index: 20; background: transparent; pointer-events: auto; }
-        .shield-bottom-left { position: absolute; bottom: 0; left: 0; width: 120px; height: 50px; z-index: 20; background: transparent; pointer-events: auto; }
-
         .lessons-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
         .lesson-item { padding: 12px; background: #f1f5f9; margin-bottom: 8px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid transparent; }
         .lesson-item:hover { background: #e2e8f0; }
         .lesson-item.active { background: var(--primary); color: white; border-right-color: var(--gold); }
         .lesson-item.completed-lesson { border-right-color: var(--green); }
-        
         .cert-box { margin-top: 25px; background: #dcfce7; border: 2px dashed #059669; padding: 20px; border-radius: 12px; text-align: center; display: none; }
         .cert-btn { background: var(--green); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 10px; }
-        .cert-btn:hover { background: #047857; }
     </style>
 </head>
 <body>
@@ -58,7 +43,6 @@
     let currentCourseName = "";
     let checkInterval;
 
-    // إدارة جلسة المستخدم وثباتها لمنع إعادة التسجيل
     let currentUserId = localStorage.getItem('sadara_user_id');
     if (!currentUserId) {
         currentUserId = "user_" + Math.random().toString(36).substring(2, 11);
@@ -104,8 +88,6 @@
             <p class="desc">${course.description || 'لا يوجد وصف متاح.'}</p>
             
             <div class="secure-video-container">
-                <div class="shield-top"></div>
-                <div class="shield-bottom-left"></div>
                 <div id="youtubePlayer"></div>
             </div>
 
@@ -129,7 +111,6 @@
         html += `</div>
             <div class="cert-box" id="certificateBox">
                 <h3 style="color:#065f46; font-size:16px;">🎉 مبروك! لقد أكملت كافة الدروس بنجاح</h3>
-                <p style="font-size:12px; color:#047857; margin-top:5px;">انقر أدناه لإدخال اسمك واستخراج الشهادة المعتمدة.</p>
                 <button onclick="generateAndOpenCert()" class="cert-btn">عرض واستلام الشهادة الرسمية 🎓</button>
             </div>
         `;
@@ -138,14 +119,12 @@
         // جلب التقدم المحفوظ مسبقاً من قاعدة البيانات لتجنب ضياعه عند الـ Refresh
         await fetchUserProgressFromDB();
 
-        // تحميل يوتيوب API
         let tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         let firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
 
-    // جلب التقدم المخزن في سوبايس
     async function fetchUserProgressFromDB() {
         try {
             let { data, error } = await db.from('user_progress')
@@ -208,10 +187,8 @@
         }
     }
 
-    // حفظ التقدم مباشرة في جدول user_progress في سوبايس
     async function saveLessonProgressToDB(idx) {
-        if (watchedLessons.has(idx)) return; // تم حفظه مسبقاً في هذه الجلسة
-
+        if (watchedLessons.has(idx)) return;
         markLessonAsWatchedUIOnly(idx);
 
         try {
