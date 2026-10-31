@@ -64,7 +64,7 @@
         .hero-btn-app { background: #25d366; color: white; }
         .hero-btn:hover { transform: translateY(-2px); }
 
-        .main-container { max-width: 1100px; margin: -25px auto 0; padding: 0 10px; }
+        .main-container { max-width: 900px; margin: -25px auto 0; padding: 0 10px; }
 
         .search-filter-box { background: white; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .search-input-main { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 8px; }
@@ -83,36 +83,25 @@
         .stat-item h4 { font-size: 15px; font-weight: 900; color: var(--primary); }
         .stat-item p { font-size: 10px; color: #64748b; font-weight: 700; }
 
-        /* نظام العمودين: عمود للوظائف وعمود للكفاءات */
-        .content-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        @media (max-width: 768px) {
-            .content-grid-layout { grid-template-columns: 1fr; }
-        }
+        /* عناوين الأقسام */
+        .category-section-title { font-size: 14px; font-weight: 900; color: var(--primary); margin: 18px 5px 8px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
-        .section-column-title { font-size: 14px; font-weight: 900; color: var(--primary); margin: 15px 5px 8px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
-
-        /* الشبكة الثنائية للبطاقات */
+        /* الشبكة الثنائية الاحترافية للبطاقات (عمودان متجاوران تماماً مثل الصورة) */
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+
         .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
-        .product-img-container { width: 100%; height: 150px; background: #f8fafc; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        
+        .product-img-container { width: 100%; height: 160px; background: #f8fafc; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
         .product-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
         .product-title { font-size: 12px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 34px; }
-        .order-btn { background: var(--primary); color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; }
-
-        /* بطاقة الكفاءة المدمجة */
-        .resume-card { background: white; border-radius: 10px; padding: 10px; margin-bottom: 10px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 8px; }
-        .resume-header-flex { display: flex; gap: 10px; align-items: flex-start; }
-        .resume-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: #f1f5f9; flex-shrink: 0; }
-        .resume-info { flex: 1; }
-        .resume-name { font-size: 13px; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 4px; }
-        .resume-title { font-size: 10px; font-weight: 700; color: #3b82f6; margin-top: 2px; }
-        .resume-exp { font-size: 10px; color: #64748b; margin-top: 4px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .whatsapp-contact-btn { background: var(--green); color: white; text-decoration: none; padding: 5px 8px; border-radius: 6px; font-weight: bold; font-size: 10px; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; }
-
-        .resume-reviews-box { background: #f8fafc; border-radius: 6px; padding: 6px; border: 1px solid #cbd5e1; font-size: 10px; width: 100%; margin-top: 4px; }
-        .star-select-resume { font-size: 12px; color: #cbd5e1; cursor: pointer; display: inline-block; }
-        .star-select-resume.active { color: var(--gold); }
-        .single-resume-review { background: white; padding: 4px 6px; border-radius: 4px; margin-top: 4px; border-right: 2px solid var(--gold); border-bottom: 1px solid #e2e8f0; }
+        
+        .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; }
+        
+        .order-btn { background: var(--primary); color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .order-btn:hover { background: #1e3a8a; }
+        .whatsapp-btn { background: var(--green); }
+        .whatsapp-btn:hover { background: #1da851; }
 
         .social-footer-box { background: #0f2347; border-radius: 12px; padding: 18px; text-align: center; margin-top: 25px; border: 1px solid rgba(212, 175, 55, 0.3); }
         .social-footer-box h4 { color: var(--gold); font-size: 13px; margin-bottom: 10px; font-weight: bold; }
@@ -148,7 +137,7 @@
         </div>
     </div>
 
-    <!-- القائمة الجانبية (محمية وآمنة وخالية من لوحة التحكم) -->
+    <!-- القائمة الجانبية (محمية وآمنة وخالية تماماً من لوحة التحكم) -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="sidebar-drawer" id="sidebarDrawer">
         <div class="sidebar-header">
@@ -194,7 +183,7 @@
 
     <div class="main-container" id="mainContentArea">
         <div class="search-filter-box">
-            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن وظيفة، خدمة، أو تخصص..." oninput="filterJobsAndServices()">
+            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن وظيفة، كفاءة، أو تخصص..." oninput="filterJobsAndResumes()">
             <div class="categories-tags">
                 <span class="cat-tag active" onclick="filterByCategory('الكل', this)">الكل 🌐</span>
                 <span class="cat-tag" onclick="filterByCategory('محاسبية', this)">🧮 محاسبية</span>
@@ -217,17 +206,13 @@
             <div class="stat-item"><h4 id="statResumesCount">...</h4><p>الكفاءات 📄</p></div>
         </div>
 
-        <!-- نظام العمودين: العمود الأيمن للوظائف والعمود الأيسر للكفاءات -->
-        <div class="content-grid-layout">
-            <div>
-                <div class="section-column-title"><i class="fa-solid fa-briefcase"></i> الوظائف الشاغرة المتاحة 💼</div>
-                <div id="jobsBoxContainer">جاري تحميل الوظائف...</div>
-            </div>
-            <div>
-                <div class="section-column-title"><i class="fa-solid fa-users-viewfinder"></i> دليل الكفاءات والخبراء 👨‍💻</div>
-                <div id="resumesBoxContainer">جاري تحميل الكفاءات...</div>
-            </div>
-        </div>
+        <!-- قسم الوظائف الشاغرة بنمط الشبكة الثنائية -->
+        <div class="category-section-title"><i class="fa-solid fa-briefcase"></i> الوظائف الشاغرة المتاحة 💼</div>
+        <div id="jobsBoxContainer">جاري تحميل الوظائف...</div>
+
+        <!-- قسم دليل الكفاءات والخبراء بنمط الشبكة الثنائية -->
+        <div class="category-section-title"><i class="fa-solid fa-users-viewfinder"></i> دليل الكفاءات والخبراء 👨‍💻</div>
+        <div id="resumesBoxContainer">جاري تحميل الكفاءات...</div>
 
         <div class="social-footer-box">
             <h4>تابع منصة صدارة على منصات التواصل الاجتماعي 🌐</h4>
@@ -283,7 +268,6 @@
         let allGlobalJobs = [];
         let allGlobalResumes = [];
         let currentSelectedCategory = 'الكل';
-        let selectedResumeStarsMap = {};
 
         function toggleSidebar() {
             document.getElementById('sidebarDrawer').classList.toggle('active');
@@ -355,7 +339,7 @@
             executeFiltering();
         }
 
-        function filterJobsAndServices() { executeFiltering(); }
+        function filterJobsAndResumes() { executeFiltering(); }
 
         function executeFiltering() {
             let query = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -379,6 +363,7 @@
         function renderJobs(list) {
             let jBox = document.getElementById('jobsBoxContainer');
             jBox.innerHTML = '';
+            
             if (list && list.length > 0) {
                 let gridDiv = document.createElement('div');
                 gridDiv.className = 'products-grid';
@@ -391,14 +376,14 @@
                         <div class="product-card">
                             ${imgHTML}
                             <div class="product-title">${j.title}</div>
-                            <div style="font-size:10px; color:#64748b; margin-top:2px;">الجهة: ${j.company || 'صدارة'}</div>
-                            <a href="https://wa.me/${phoneNum}" target="_blank" class="order-btn">تقديم عبر الواتساب 🚀</a>
+                            <div class="product-subtext">الجهة: ${j.company || 'صدارة'}</div>
+                            <a href="https://wa.me/${phoneNum}" target="_blank" class="order-btn whatsapp-btn">تقديم عبر الواتساب 🚀</a>
                         </div>
                     `;
                 });
                 jBox.appendChild(gridDiv);
             } else {
-                jBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:11px; padding:15px;">لا توجد وظائف مطابقة لبحثك.</p>';
+                jBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:15px;">لا توجد وظائف مطابقة لبحثك.</p>';
             }
         }
 
@@ -413,117 +398,32 @@
         function renderResumes(list) {
             let rBox = document.getElementById('resumesBoxContainer');
             rBox.innerHTML = '';
+            
             if (list && list.length > 0) {
+                let gridDiv = document.createElement('div');
+                gridDiv.className = 'products-grid';
+
                 list.forEach(r => {
                     let displayName = r.name || r.title || 'مستقل / كفاءة';
                     let displayTitle = r.job_title || r.specialty || r.title || 'تخصص عام';
-                    let displayExp = r.experience ? (r.experience.substring(0, 80) + '...') : 'لا توجد نبذة مختصرة مسجلة.';
                     let displayPhone = r.phone ? r.phone.replace(/[^0-9]/g, '') : '967780568507';
                     let displayImg = (r.image && r.image.trim() !== '') ? r.image : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
                     let verifiedBadge = r.is_verified ? getBlueBadgeHTML() : '';
-                    selectedResumeStarsMap[r.id] = 5;
+                    let imgHTML = `<div class="product-img-container"><img src="${displayImg}" class="product-img"></div>`;
 
-                    rBox.innerHTML += `
-                        <div class="resume-card">
-                            <div class="resume-header-flex">
-                                <img src="${displayImg}" class="resume-img" alt="صورة الكفاءة">
-                                <div class="resume-info">
-                                    <div class="resume-name">${displayName} ${verifiedBadge}</div>
-                                    <div class="resume-title">${displayTitle}</div>
-                                    <div class="resume-exp">${displayExp}</div>
-                                    <a href="https://wa.me/${displayPhone}?text=مرحباً،%20تواصلت%20معك%20عبر%20منصة%20صدارة" target="_blank" class="whatsapp-contact-btn">
-                                        <i class="fa-brands fa-whatsapp"></i> تواصل واتساب
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="resume-reviews-box">
-                                <h4 style="font-size:10px; color:var(--primary); font-weight:bold;">⭐ تقييمات وتوصيات أصحاب الأعمال:</h4>
-                                <div style="margin: 2px 0;" id="resumeStarBox_${r.id}">
-                                    <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 1)">★</span>
-                                    <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 2)">★</span>
-                                    <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 3)">★</span>
-                                    <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 4)">★</span>
-                                    <span class="star-select-resume active" onclick="setResumeStar(${r.id}, 5)">★</span>
-                                </div>
-                                <div style="display:flex; gap:3px; margin-top:3px;">
-                                    <input type="text" id="resumeReviewText_${r.id}" placeholder="اكتب توصيتك..." style="flex:1; padding:4px; border:1px solid #cbd5e1; border-radius:6px; font-size:9px; outline:none;">
-                                    <button onclick="submitResumeReview(${r.id})" style="background:var(--primary); color:white; border:none; padding:4px 8px; border-radius:6px; font-size:9px; font-weight:bold; cursor:pointer;">إرسال</button>
-                                </div>
-                                <div id="resumeReviewsList_${r.id}" style="margin-top:4px;">جاري التحميل...</div>
-                            </div>
+                    gridDiv.innerHTML += `
+                        <div class="product-card">
+                            ${imgHTML}
+                            <div class="product-title">${displayName} ${verifiedBadge}</div>
+                            <div class="product-subtext">${displayTitle}</div>
+                            <a href="https://wa.me/${displayPhone}?text=مرحباً،%20تواصلت%20معك%20عبر%20منصة%20صدارة" target="_blank" class="order-btn whatsapp-btn">تواصل عبر الواتساب 📱</a>
                         </div>
                     `;
-                    loadResumeReviews(r.id);
                 });
+                rBox.appendChild(gridDiv);
             } else {
-                rBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:11px; padding:15px;">لا توجد كفاءات مطابقة لبحثك.</p>';
+                rBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:15px;">لا توجد كفاءات مطابقة لبحثك.</p>';
             }
-        }
-
-        function setResumeStar(resumeId, stars) {
-            selectedResumeStarsMap[resumeId] = stars;
-            const starEls = document.querySelectorAll(`#resumeStarBox_${resumeId} .star-select-resume`);
-            starEls.forEach((el, idx) => {
-                if (idx < stars) el.classList.add('active');
-                else el.classList.remove('active');
-            });
-        }
-
-        async function submitResumeReview(resumeId) {
-            const commentInput = document.getElementById(`resumeReviewText_${resumeId}`);
-            const comment = commentInput.value.trim();
-            if (!comment) { alert('يرجى كتابة التوصية قبل الإرسال'); return; }
-
-            const userPhone = localStorage.getItem('sadara_logged_phone') || 'غير مسجل';
-            const userName = localStorage.getItem('sadara_logged_name') || 'جهة عمل';
-            const fullIdentity = `${userName} (${userPhone})`;
-
-            let { error } = await db.from('reviews').insert([{
-                item_type: 'resume',
-                item_id: resumeId,
-                user_name: fullIdentity,
-                rating: selectedResumeStarsMap[resumeId] || 5,
-                comment: comment
-            }]);
-
-            if (error) {
-                alert('خطأ أثناء إرسال التقييم: ' + error.message);
-            } else {
-                alert('شكراً لك! تم نشر التوصية بنجاح ✅');
-                commentInput.value = '';
-                loadResumeReviews(resumeId);
-            }
-        }
-
-        async function loadResumeReviews(resumeId) {
-            let { data: reviews } = await db.from('reviews')
-                .select('*')
-                .eq('item_type', 'resume')
-                .eq('item_id', resumeId)
-                .order('created_at', { ascending: false });
-
-            let listBox = document.getElementById(`resumeReviewsList_${resumeId}`);
-            if (!listBox) return;
-            listBox.innerHTML = '';
-
-            if (!reviews || !reviews.length) {
-                listBox.innerHTML = '<p style="font-size:9px; color:#94a3b8;">لا توجد توصيات حتى الآن.</p>';
-                return;
-            }
-
-            reviews.forEach(r => {
-                let starsHTML = '★'.repeat(r.rating || 5);
-                listBox.innerHTML += `
-                    <div class="single-resume-review">
-                        <div style="display:flex; justify-content:space-between; font-weight:bold; color:#0f2347; font-size:9px;">
-                            <span>👤 ${r.user_name}</span>
-                            <span style="color:var(--gold);">${starsHTML}</span>
-                        </div>
-                        <p style="color:#475569; font-size:9px; margin-top:1px;">${r.comment}</p>
-                    </div>
-                `;
-            });
         }
 
         function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
