@@ -58,13 +58,13 @@
     <div id="adminMainContent" style="display:none;">
         <div class="header">
             <h1>لوحة تحكم الدورات والمبيعات الشاملة 🎓</h1>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية، الدورات النصية المستقلة، أكواد الخصم، الأسعار، والمبيعات</p>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة الدورات المرئية، أكواد الخصم المالي المخصص، الأسعار، والمبيعات</p>
             <button onclick="logoutAdmin()" style="width:auto; padding:5px 15px; margin-top:10px; background:#ef4444; border:none; font-size:11px;">قفل لوحة التحكم 🔒</button>
         </div>
 
         <div class="grid-container">
 
-            <!-- 1. إدارة الدورات المرئية وصورها وسعرها -->
+            <!-- 1. إدارة الدورات المرئية -->
             <div class="card">
                 <h2>
                     <span id="formTitleText">🎓 إدارة الدورات المرئية وصور المعرض والأسعار</span>
@@ -73,7 +73,7 @@
 
                 <div class="guide-box">
                     <strong>📖 تعليمات لوحة الدورات المرئية:</strong><br>
-                    • أدخل اسم الدورة، **اختر صورة الغلاف من معرض الجوال**، وسعر الدورة.<br>
+                    • أدخل اسم الدورة، اختر صورة الغلاف من معرض الجوال، وسعر الدورة.<br>
                     • تُحفظ الصور تلقائياً في الحاوية السحابية للمنصة (`platform-files`).
                 </div>
                 
@@ -121,25 +121,33 @@
                 <div class="list-box" id="adminCoursesList" style="margin-top: 15px;">جاري التحميل...</div>
             </div>
 
-            <!-- 2. إدارة أكواد الخصم المجانية (القسم الجديد) -->
+            <!-- 2. إدارة أكواد الخصم المتقدمة (مبلغ ثابت / مجاني / نسبة) -->
             <div class="card">
                 <h2>
-                    <span>🎟️ إدارة أكواد الخصم المجانية</span>
+                    <span>🎟️ إدارة أكواد الخصم وتخفيض الأسعار</span>
                     <span class="badge" id="couponsCount">0</span>
                 </h2>
 
                 <div class="guide-box" style="background:#f0fdf4; border-color:#bbf7d0; color:#166534;">
-                    <strong>📖 إدارة الأكواد:</strong><br>
-                    • أنشئ كود خصم جديد (مثلاً <code>SADARA2026</code> أو <code>FREEVIP</code>)، واجعله يمنح الدورة مجاناً (100%) للمستفيدين فور إدخاله في الصفحة العامة.
+                    <strong>📖 طريقة عمل الأكواد المخصصة:</strong><br>
+                    • <b>خصم مبلغ ثابت بالريال:</b> حدد النوع "خصم بمبلغ ثابت" وأدخل القيمة (مثال: `100` ينقص 100 ريال من السعر الأصل).<br>
+                    • <b>دورة مجانية بالكامل:</b> اختر "مجاني بالكامل (100%)" لفتح الدورة دون أي مبلغ.
                 </div>
 
-                <label>كود الخصم (أحرف إنجليزية وأرقام بدون مسافات)</label>
-                <input type="text" id="couponCodeInput" placeholder="مثال: VIP2026">
+                <label>كود الخصم (أحرف إنجليزية/أرقام)</label>
+                <input type="text" id="couponCodeInput" placeholder="مثال: DISCOUNT100">
 
                 <label>نوع الخصم</label>
-                <select id="couponType">
-                    <option value="free">خصم 100% (فتح الدورة مجاناً 🟢)</option>
+                <select id="couponType" onchange="toggleDiscountValField()">
+                    <option value="fixed">خصم بمبلغ ثابت بالريال (مثال: 100 ، 200 ريال)</option>
+                    <option value="free">مجاني بالكامل (خصم 100%)</option>
+                    <option value="percent">خصم بنسبة مئوية (مثال: 20%)</option>
                 </select>
+
+                <div id="discountValueBox">
+                    <label id="discountValLabel">قيمة المبلغ المخصوم (بالريال)</label>
+                    <input type="number" id="couponValueInput" placeholder="مثال: 100">
+                </div>
 
                 <button onclick="saveNewCoupon()" style="background:#059669; color:white; margin-top:10px;">إضافة وحفظ الكود 🎟️</button>
                 <div id="couponMsg" class="status-msg"></div>
@@ -147,7 +155,7 @@
                 <div class="list-box" id="adminCouponsList" style="margin-top: 15px;">جاري التحميل...</div>
             </div>
 
-            <!-- 3. إدارة الدورات النصية والاختبارات -->
+            <!-- 3. إدارة الدورات النصية -->
             <div class="card">
                 <h2>
                     <span id="formTitleTC">📝 إدارة الدورات النصية والاختبارات المستقلة</span>
@@ -155,8 +163,7 @@
                 </h2>
 
                 <div class="guide-box" style="background:#fdf8f6; border-color:#fed7aa; color:#9a3412;">
-                    <strong>📖 قسم الدورات النصية المستقلة:</strong><br>
-                    • أضف المقالات والأدلة النصية والمحتوى التدريبي المجاني لتظهر في صفحة الطلاب الخاصة بالدورات النصية بجدول مستقل تماماً عن الدورات المرئية.
+                    • أضف المقالات والأدولة النصية لتظهر في صفحة الطلاب الخاصة بالدورات النصية.
                 </div>
 
                 <input type="hidden" id="editTextCourseId">
@@ -250,6 +257,18 @@
         window.location.reload();
     }
 
+    function toggleDiscountValField() {
+        const type = document.getElementById('couponType').value;
+        const box = document.getElementById('discountValueBox');
+        const lbl = document.getElementById('discountValLabel');
+        if (type === 'free') {
+            box.style.display = 'none';
+        } else {
+            box.style.display = 'block';
+            lbl.textContent = type === 'fixed' ? 'قيمة المبلغ المخصوم (بالريال)' : 'نسبة الخصم (%)';
+        }
+    }
+
     function addLessonField(titleVal = '', urlVal = '') {
         let container = document.getElementById('lessonsContainer');
         container.innerHTML += `
@@ -272,22 +291,16 @@
         const msg = document.getElementById('courseMsg');
 
         if (!title) { alert('يرجى إدخال اسم الدورة الرئيسية!'); return; }
-
         msg.style.color = 'blue'; 
 
         try {
             if (imageFile) {
-                msg.textContent = 'جاري رفع صورة الدورة إلى الحاوية المشتركة (platform-files)... ⏳';
+                msg.textContent = 'جاري رفع صورة الدورة... ⏳';
                 const fileExt = imageFile.name.split('.').pop();
                 const fileName = `course_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
                 
                 let { data: uploadData, error: uploadErr } = await db.storage.from('platform-files').upload(fileName, imageFile);
-                if (uploadErr) {
-                    msg.style.color = 'red';
-                    msg.textContent = 'خطأ في رفع الصورة: ' + uploadErr.message;
-                    return;
-                }
-                if (uploadData) {
+                if (!uploadErr && uploadData) {
                     let { data: publicURL } = db.storage.from('platform-files').getPublicUrl(fileName);
                     imageUrl = publicURL.publicUrl;
                 }
@@ -295,7 +308,6 @@
         } catch(err) {}
 
         msg.textContent = 'جاري حفظ بيانات الدورة في السحابة... ⏳';
-
         let titles = document.querySelectorAll('.lesson-title');
         let urls = document.querySelectorAll('.lesson-url');
         let lessonsArray = [];
@@ -306,30 +318,15 @@
             if (t || u) { lessonsArray.push({ lesson_title: t || 'درس بدون مسمى', video_url: u || '' }); }
         }
 
-        let payload = { 
-            title: title, 
-            image: imageUrl, 
-            price: price, 
-            description: description, 
-            is_active: is_active, 
-            lessons: lessonsArray 
-        };
+        let payload = { title, image: imageUrl, price, description, is_active, lessons: lessonsArray };
 
-        let res;
-        if (editId) {
-            res = await db.from('platform_courses').update(payload).eq('id', editId);
-        } else {
-            res = await db.from('platform_courses').insert([payload]);
-        }
+        let res = editId ? await db.from('platform_courses').update(payload).eq('id', editId) : await db.from('platform_courses').insert([payload]);
 
         if (res.error) { 
-            msg.style.color = 'red'; 
-            msg.textContent = 'خطأ سحابي في الحفظ: ' + res.error.message; 
+            msg.style.color = 'red'; msg.textContent = 'خطأ: ' + res.error.message; 
         } else {
-            msg.style.color = 'green'; 
-            msg.textContent = 'تم حفظ وتحديث الدورة وصورتها بنجاح تام! ✅';
-            resetCourseForm(); 
-            loadAdminCourses();
+            msg.style.color = 'green'; msg.textContent = 'تم حفظ وتحديث الدورة بنجاح! ✅';
+            resetCourseForm(); loadAdminCourses();
         }
     }
 
@@ -381,7 +378,6 @@
                         <button type="button" class="btn-sm btn-del" onclick="deleteItem('platform_courses', ${c.id})">حذف 🗑️</button>
                     </div>
                 </div>
-                <div style="color:#64748b; font-size:11px;">الوصف: ${c.description || 'بدون وصف'}</div>
             </div>`;
         });
     }
@@ -395,19 +391,12 @@
         document.getElementById('coursePrice').value = c.price || '';
         document.getElementById('courseMainDesc').value = c.description || '';
         document.getElementById('courseStatus').value = (c.is_active !== false) ? 'true' : 'false';
-        document.getElementById('courseImageFile').value = '';
-        
-        let statusText = c.image ? '✅ توجد صورة محفوظة سحابياً' : '⚠️ لا توجد صورة حالياً';
-        document.getElementById('imagePreviewStatus').textContent = statusText;
         
         let container = document.getElementById('lessonsContainer'); 
         container.innerHTML = '';
-        
         if (c.lessons && Array.isArray(c.lessons) && c.lessons.length > 0) {
             c.lessons.forEach(l => { addLessonField(l.lesson_title, l.video_url); });
-        } else { 
-            addLessonField('', ''); 
-        }
+        } else { addLessonField('', ''); }
 
         document.getElementById('btnSaveCourse').textContent = 'تعديل وحفظ الدورة 💾';
         document.getElementById('btnCancelCourse').style.display = 'block';
@@ -421,24 +410,32 @@
         loadAdminCourses();
     }
 
-    /* دوال إدارة أكواد الخصم المجانية */
+    /* دوال إدارة أكواد الخصم الجديدة (مبلغ/مجاني/نسبة) */
     async function saveNewCoupon() {
         const code = document.getElementById('couponCodeInput').value.trim().toUpperCase();
+        const type = document.getElementById('couponType').value;
+        const val = document.getElementById('couponValueInput').value.trim() || 0;
         const msg = document.getElementById('couponMsg');
 
         if (!code) { alert('يرجى إدخال كود الخصم!'); return; }
 
-        msg.style.color = 'blue'; msg.textContent = 'جاري حفظ الكود في السحابة... ⏳';
+        msg.style.color = 'blue'; msg.textContent = 'جاري حفظ الكود... ⏳';
 
-        let { error } = await db.from('coupons').insert([{ code: code, discount_type: 'free', is_active: true }]);
+        let payload = { 
+            code: code, 
+            discount_type: type, 
+            discount_value: parseFloat(val) || 0,
+            is_active: true 
+        };
+
+        let { error } = await db.from('coupons').insert([payload]);
 
         if (error) {
-            msg.style.color = 'red';
-            msg.textContent = 'خطأ أثناء حفظ الكود: ' + error.message;
+            msg.style.color = 'red'; msg.textContent = 'خطأ: ' + error.message;
         } else {
-            msg.style.color = 'green';
-            msg.textContent = 'تم إضافة الكود بنجاح! ✅';
+            msg.style.color = 'green'; msg.textContent = 'تم إضافة وتفعيل الكود بنجاح! ✅';
             document.getElementById('couponCodeInput').value = '';
+            document.getElementById('couponValueInput').value = '';
             loadAdminCoupons();
         }
     }
@@ -452,16 +449,21 @@
         box.innerHTML = '';
 
         if (!cachedCoupons.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد أكواد خصم مسجلة حتى الآن.</p>';
+            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد أكواد خصم مسجلة.</p>';
             return;
         }
 
         cachedCoupons.forEach(cp => {
+            let descText = '';
+            if (cp.discount_type === 'free') descText = 'خصم 100% (مجاني بالكامل)';
+            else if (cp.discount_type === 'fixed') descText = `خصم مبلغ ثابت (${cp.discount_value || 0} ريال)`;
+            else descText = `خصم بنسبة (${cp.discount_value || 0}%)`;
+
             box.innerHTML += `
                 <div class="item-row" style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
                         <strong>🎟️ الكود: <span style="color:var(--primary); font-size:13px;">${cp.code}</span></strong>
-                        <div style="color:green; font-size:10px; font-weight:bold;">خصم 100% (مجاني بالكامل) 🟢</div>
+                        <div style="color:green; font-size:11px; font-weight:bold;">${descText} 🟢</div>
                     </div>
                     <button class="btn-sm btn-del" onclick="deleteItem('coupons', ${cp.id})" style="width:auto;">حذف 🗑️</button>
                 </div>
@@ -469,7 +471,7 @@
         });
     }
 
-    /* دوال إدارة الدورات النصية المستقلة (جدول text_courses) */
+    /* دوال الدورات النصية والمبيعات */
     async function saveTextCourse() {
         const editId = document.getElementById('editTextCourseId').value;
         const title = document.getElementById('tcTitle').value.trim();
@@ -480,7 +482,6 @@
         const msg = document.getElementById('tcMsg');
 
         if (!title || !content) { alert('يرجى إدخال العنوان والمحتوى النصي للدورة!'); return; }
-
         msg.style.color = 'blue'; msg.textContent = 'جاري الحفظ بالسحابة... ⏳';
 
         try {
@@ -502,8 +503,7 @@
             msg.style.color = 'red'; msg.textContent = 'خطأ: ' + res.error.message;
         } else {
             msg.style.color = 'green'; msg.textContent = 'تم حفظ ونشر الدورة النصية بنجاح! ✅';
-            resetTCForm();
-            loadAdminTC();
+            resetTCForm(); loadAdminTC();
         }
     }
 
@@ -526,11 +526,7 @@
         if(!box) return;
         document.getElementById('textCoursesCount').textContent = cachedTC.length;
         box.innerHTML = '';
-
-        if (!cachedTC.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات نصية مضافة.</p>';
-            return;
-        }
+        if (!cachedTC.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات نصية مضافة.</p>'; return; }
 
         cachedTC.forEach(item => {
             box.innerHTML += `
@@ -567,11 +563,7 @@
         if(!box) return;
         document.getElementById('ordersCount').textContent = cachedOrders.length;
         box.innerHTML = '';
-
-        if (!cachedOrders.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات مباعة أو طلبات حتى الآن.</p>';
-            return;
-        }
+        if (!cachedOrders.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد دورات مباعة أو طلبات.</p>'; return; }
 
         cachedOrders.forEach(o => {
             let imgHtml = o.image_url ? `<a href="${o.image_url}" target="_blank"><img src="${o.image_url}" class="receipt-img"></a>` : '<span style="color:#94a3b8; font-size:10px;">بدون صورة</span>';
@@ -599,11 +591,7 @@
         let subs = data || [];
         document.getElementById('subscribersCount').textContent = subs.length;
         box.innerHTML = '';
-
-        if (!subs.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا يوجد مشتركون مسجلون حالياً.</p>';
-            return;
-        }
+        if (!subs.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا يوجد مشتركون مسجلون.</p>'; return; }
 
         subs.forEach(s => {
             box.innerHTML += `
@@ -625,11 +613,7 @@
         if(!box) return;
         document.getElementById('certCount').textContent = cachedCertResults.length;
         box.innerHTML = '';
-
-        if (!cachedCertResults.length) {
-            box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد شهادات مصدّرة حتى الآن.</p>';
-            return;
-        }
+        if (!cachedCertResults.length) { box.innerHTML = '<p style="color:#64748b; font-size:11px;">لا توجد شهادات مصدّرة.</p>'; return; }
 
         cachedCertResults.forEach(c => {
             box.innerHTML += `
@@ -670,7 +654,7 @@
 
     function initData() {
         loadAdminCourses();
-        loadAdminCoupons(); // تحميل أكواد الخصم
+        loadAdminCoupons();
         loadAdminTC();
         loadOrders();
         loadSubscribers();
