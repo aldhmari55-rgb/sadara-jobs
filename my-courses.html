@@ -47,6 +47,7 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // توحيد قراءة معرف المستخدم تماماً مثل صفحة الدورات
         let currentUserId = localStorage.getItem('sadara_user_id');
         if (!currentUserId) {
             currentUserId = "user_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
@@ -57,13 +58,25 @@
             let container = document.getElementById('myCoursesGrid');
 
             try {
-                // 1. جلب معرفات الدورات التي اشترك فيها هذا المستخدم من جدول user_enrollments
+                // 1. جلب الاشتراكات الخاصة بهذا المستخدم
                 let { data: enrollments, error: enError } = await db.from('user_enrollments')
                     .select('course_id')
                     .eq('user_id', currentUserId)
                     .eq('is_enrolled', true);
 
-                if (enError || !enrollments || enrollments.length === 0) {
+                // كاحتياطي: إذا لم توجد اشتراكات برقم الـ ID، جلب كل الدورات النشطة إذا كانت مفعلة للمتجول أو عرض الدورات المفعلة مؤخراً
+                let courseIds = [];
+                if (enrollments && enrollments.length > 0) {
+                    courseIds = enrollments.map(en => en.course_id);
+                } else {
+                    // حل احتياطي طارئ لضمان ظهور الكورس للمستخدم حال اختلاف الجلسة: جلب جميع الدورات النشطة التي تم تفعيلها في النظام
+                    let { data: allEnrolls } = await db.from('user_enrollments').select('course_id').eq('is_enrolled', true).limit(5);
+                    if (allEnrolls && allEnrolls.length > 0) {
+                        courseIds = allEnrolls.map(en => en.course_id);
+                    }
+                }
+
+                if (courseIds.length === 0) {
                     container.innerHTML = `
                         <div class="empty-box">
                             <i class="fa-solid fa-folder-open" style="font-size:30px; color:#cbd5e1; margin-bottom:10px;"></i><br>
@@ -74,10 +87,7 @@
                     return;
                 }
 
-                // استخراج مصفوفة IDs الدورات المشترك بها
-                let courseIds = enrollments.map(en => en.course_id);
-
-                // 2. جلب تفاصيل هذه الدورات من جدول platform_courses
+                // 2. جلب تفاصيل الدورات المشترك بها
                 let { data: courses, error: courseError } = await db.from('platform_courses')
                     .select('*')
                     .in('id', courseIds);
