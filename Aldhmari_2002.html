@@ -43,6 +43,7 @@
         .btn-edit { background: #3b82f6; }
         .badge { background: #e2e8f0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         .preview-img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
+        .nav-link-btn { display: inline-block; background: var(--gold); color: #0f2347; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; text-decoration: none; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -50,6 +51,9 @@
     <div class="header">
         <h1>لوحة تحكم المتجر والمسوقين 🛒</h1>
         <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">إدارة متجر المنتجات، طلبات السداد، الأرشيف، ومتابعة المسوقين بالعمولة</p>
+        <div style="margin-top: 10px;">
+            <a href="aldhmary_2026.html" class="nav-link-btn" style="margin:0; background:var(--gold);">الذهاب للقسم الثاني (الوظائف والكفاءات) ➡️</a>
+        </div>
     </div>
 
     <div class="admin-stats-grid">
@@ -331,7 +335,6 @@
             let { error } = await db.from('affiliates').update({ paid_earnings: newPaidTotal }).eq('id', affId);
             
             if (!error) {
-                // حفظ كشف الصرف في جدول الأرشيف الشهري والسنوي
                 const currentDate = new Date();
                 const monthNamesAr = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
                 const currentMonthYear = `${monthNamesAr[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
@@ -434,7 +437,6 @@
         let { data: order } = await db.from('service_orders').select('*').eq('id', orderId).single();
         if (!order) { alert('الطلب غير موجود.'); return; }
 
-        // نقل الطلب إلى جدول completed_orders (الطلبات المنجزة)
         let { error } = await db.from('completed_orders').insert([{
             service_name: order.service_name,
             client_name: order.client_name,
@@ -447,7 +449,6 @@
         }]);
 
         if (!error) {
-            // حذف الطلب من الطلبات الحالية
             await db.from('service_orders').delete().eq('id', orderId);
             alert('تم نقل الطلب إلى سجل الطلبات المنجزة بنجاح! ✅');
             loadServiceOrders();
