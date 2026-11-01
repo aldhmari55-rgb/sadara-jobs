@@ -51,7 +51,9 @@
         .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 460px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); max-height: 90vh; overflow-y: auto; position: relative; }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
         .modal-card input, .modal-card select, .modal-card textarea { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
-        .modal-img-preview { width: 100%; max-height: 280px; object-fit: contain; background: #0f172a; border-radius: 8px; margin-bottom: 10px; display: block; }
+        
+        .modal-img-preview { width: 100%; max-height: 280px; object-fit: contain; background: #0f172a; border-radius: 8px; margin-bottom: 5px; display: block; cursor: pointer; transition: transform 0.2s; }
+        .modal-img-preview:hover { transform: scale(1.01); opacity: 0.95; }
         
         .payment-info-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin: 12px 0; font-size: 11px; color: #334155; line-height: 1.8; }
         .payment-info-box .payment-title { font-weight: 900; color: var(--primary); font-size: 12px; margin-bottom: 6px; }
@@ -88,7 +90,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل المنتج والطلب والسداد المباشر (تغلق بالضغط في أي مكان خارجها) -->
+    <!-- نافذة تفاصيل المنتج (الضغط على الصورة داخلها يقوم بتنزيلها مباشرة) -->
     <div class="modal-overlay" id="productModal" onclick="checkOutsideClick(event)">
         <div class="modal-card" id="modalCardContent">
             <div id="modalProductImgContainer"></div>
@@ -217,11 +219,12 @@
             
             let imgContainer = document.getElementById('modalProductImgContainer');
             if (product.image) {
+                // جعل الصورة نفسها رابط تنزيل مباشر عند النقر عليها
                 imgContainer.innerHTML = `
-                    <img src="${product.image}" class="modal-img-preview">
-                    <a href="${product.image}" download="product_${Date.now()}.jpg" target="_blank" style="display:block; text-align:center; background:var(--gold); color:#0f2347; padding:6px; border-radius:6px; font-weight:bold; font-size:11px; text-decoration:none; margin-bottom:8px;">
-                        <i class="fa-solid fa-download"></i> تحميل صورة المنتج 📥
+                    <a href="${product.image}" download="product_${Date.now()}.jpg" target="_blank" title="اضغط لتنزيل الصورة مباشرة">
+                        <img src="${product.image}" class="modal-img-preview">
                     </a>
+                    <div style="text-align:center; font-size:10px; color:#64748b; margin-bottom:6px;">💡 (اضغط على الصورة أعلاه لتنزيلها مباشرة على جهازك)</div>
                 `;
             } else {
                 imgContainer.innerHTML = '';
