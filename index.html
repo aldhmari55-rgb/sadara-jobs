@@ -117,10 +117,11 @@
 
         .footer-copyright { text-align: center; color: #64748b; font-size: 11px; padding: 15px 0 40px; }
 
-        /* نافذة العرض والتفاصيل المنبثقة الشاملة */
+        /* نافذة تفاصيل العنصر مع الصورة القابلة للتنزيل فور الضغط عليها */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
         .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 480px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); position: relative; max-height: 90vh; overflow-y: auto; }
-        .modal-img-preview { width: 100%; max-height: 320px; object-fit: contain; background: #0f172a; border-radius: 8px; margin-bottom: 12px; display: block; }
+        .modal-img-preview { width: 100%; max-height: 320px; object-fit: contain; background: #0f172a; border-radius: 8px; margin-bottom: 10px; display: block; cursor: pointer; transition: transform 0.2s; }
+        .modal-img-preview:hover { transform: scale(1.01); opacity: 0.95; }
         .modal-card h3 { color: var(--primary); font-size: 16px; margin-bottom: 8px; font-weight: 900; }
         .modal-card p { font-size: 12px; color: #475569; line-height: 1.6; margin-bottom: 10px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; }
     </style>
@@ -236,7 +237,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل العنصر والصورة القابلة للتحميل -->
+    <!-- نافذة تفاصيل العنصر (اضغط على الصورة داخل النافذة لتنزل تلقائياً) -->
     <div class="modal-overlay" id="detailModal" onclick="checkOutsideModalClick(event, 'detailModalContent')">
         <div class="modal-card" id="detailModalContent">
             <div id="modalImageContainer"></div>
@@ -439,7 +440,7 @@
             }
         }
 
-        // دالة فتح نافذة تفاصيل الوظيفة أو الكفاءة وعرض الصورة القابلة للتحميل مع المواصفات
+        // دالة فتح نافذة التفاصيل (الضغط على الصورة داخل النافذة يحملها مباشرة)
         function openDetailsModal(item, type) {
             let title = type === 'job' ? item.title : (item.name || item.title);
             let imgUrl = item.image || (type === 'resume' ? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' : '');
@@ -449,11 +450,12 @@
             
             let imgContainer = document.getElementById('modalImageContainer');
             if (imgUrl) {
+                // جعل الصورة نفسها قابلة للنقر للتحميل الفوري مع تنبيه توضيحي
                 imgContainer.innerHTML = `
-                    <img src="${imgUrl}" class="modal-img-preview">
-                    <a href="${imgUrl}" download="sadarah_${type}_${Date.now()}.jpg" target="_blank" style="display:block; text-align:center; background:var(--gold); color:#0f2347; padding:7px; border-radius:6px; font-weight:bold; font-size:11px; text-decoration:none; margin-bottom:10px;">
-                        <i class="fa-solid fa-download"></i> تحميل الصورة المرفقة 📥
+                    <a href="${imgUrl}" download="sadarah_${type}_${Date.now()}.jpg" target="_blank" title="اضغط لتنزيل الصورة مباشرة">
+                        <img src="${imgUrl}" class="modal-img-preview">
                     </a>
+                    <div style="text-align:center; font-size:10px; color:#64748b; margin-bottom:8px;">💡 (اضغط على الصورة أعلاه لتنزيلها مباشرة على جهازك)</div>
                 `;
             } else {
                 imgContainer.innerHTML = '';
@@ -487,7 +489,6 @@
             document.getElementById(modalId).style.display = 'none'; 
         }
 
-        // دالة إغلاق أي نافذة منبثقة عند النقر في أي مكان خارجي
         function checkOutsideModalClick(event, cardContentId) {
             let cardContent = document.getElementById(cardContentId);
             if (!cardContent.contains(event.target)) {
