@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- شفرة أدسنس -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096"
+         crossorigin="anonymous"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>متجر الخدمات والمنتجات الرقمية | منصة صدارة</title>
@@ -24,18 +28,17 @@
         .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* شبكة المنتجات المتجاوبة تماماً (أندرويد وويندوز) */
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
         @media (max-width: 768px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
         @media (max-width: 480px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
 
         .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
         
-        /* ضبط الصورة لتكون مرنة وتظهر كاملة تماماً بدون قص */
-        .product-img-container { width: 100%; height: 160px; background: #0f172a; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
-        .product-img { width: 100%; height: 100%; object-fit: contain; display: block; background: #0f172a; }
+        .product-img-container { width: 100%; background: transparent; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; }
+        .product-img { width: 100%; height: auto; max-height: 260px; object-fit: cover; display: block; border-radius: 6px; transition: 0.2s; }
+        .product-img-container:hover .product-img { opacity: 0.9; transform: scale(1.02); }
 
-        .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; }
+        .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; cursor: pointer; }
         .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; display: inline-block; }
         .product-price { color: #e11d48; font-weight: 900; font-size: 13px; }
 
@@ -44,11 +47,11 @@
 
         .empty-box { text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1; background: white; border-radius: 12px; border: 1px dashed #cbd5e1; font-size: 13px; }
 
-        /* نافذة الطلب المنبثقة مع خاصية الإغلاق بالنقر في أي مكان خارجي */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
         .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 460px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); max-height: 90vh; overflow-y: auto; position: relative; }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
         .modal-card input, .modal-card select, .modal-card textarea { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        .modal-img-preview { width: 100%; max-height: 280px; object-fit: contain; background: #0f172a; border-radius: 8px; margin-bottom: 10px; display: block; }
         
         .payment-info-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin: 12px 0; font-size: 11px; color: #334155; line-height: 1.8; }
         .payment-info-box .payment-title { font-weight: 900; color: var(--primary); font-size: 12px; margin-bottom: 6px; }
@@ -85,13 +88,13 @@
         </div>
     </div>
 
-    <!-- نافذة الطلب والسداد (تغلق عند النقر خارجها في أي مكان) -->
+    <!-- نافذة تفاصيل المنتج والطلب والسداد المباشر (تغلق بالضغط في أي مكان خارجها) -->
     <div class="modal-overlay" id="productModal" onclick="checkOutsideClick(event)">
         <div class="modal-card" id="modalCardContent">
             <div id="modalProductImgContainer"></div>
             <h3 id="modalProductTitle" style="font-size:14px; color:var(--primary); margin-top:8px;">اسم المنتج</h3>
             <div id="modalProductPrice" style="color:#e11d48; font-weight:900; font-size:13px; margin-bottom:6px;">السعر: 0 ريال</div>
-            <div id="modalProductDesc" style="background:#f8fafc; padding:8px; border-radius:8px; font-size:11px; color:#64748b; line-height: 1.5;">وصف المنتج...</div>
+            <div id="modalProductDesc" style="background:#f8fafc; padding:8px; border-radius:8px; font-size:11px; color:#64748b; line-height: 1.5; margin-bottom: 10px;">وصف المنتج...</div>
 
             <div class="payment-info-box">
                 <div class="payment-title">💳 تفاصيل حسابات الدفع الرسمية:</div>
@@ -190,12 +193,11 @@
             gridDiv.className = 'products-grid';
 
             list.forEach(p => {
-                // تفعيل عرض الصورة كاملة باستخدام object-fit: contain وبدون قص
-                let imgHtml = p.image ? `<div class="product-img-container"><img src="${p.image}" class="product-img"></div>` : `<div class="product-img-container"><i class="fa-solid fa-box" style="font-size:24px; color:#cbd5e1;"></i></div>`;
+                let imgHtml = p.image ? `<div class="product-img-container" onclick='openProductModal(${JSON.stringify(p)})'><img src="${p.image}" class="product-img"></div>` : `<div class="product-img-container"><i class="fa-solid fa-box" style="font-size:24px; color:#cbd5e1; padding:40px 0;"></i></div>`;
                 gridDiv.innerHTML += `
                     <div class="product-card">
                         ${imgHtml}
-                        <div class="product-title">${p.title}</div>
+                        <div class="product-title" onclick='openProductModal(${JSON.stringify(p)})'>${p.title}</div>
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <span class="product-subtext">${p.category || 'عام'}</span>
                             <span class="product-price">${p.price}</span>
@@ -215,7 +217,12 @@
             
             let imgContainer = document.getElementById('modalProductImgContainer');
             if (product.image) {
-                imgContainer.innerHTML = `<div style="width:100%; height:150px; border-radius:8px; overflow:hidden; background:#0f172a; display:flex; justify-content:center; align-items:center;"><img src="${product.image}" style="max-width:100%; max-height:100%; object-fit:contain;"></div>`;
+                imgContainer.innerHTML = `
+                    <img src="${product.image}" class="modal-img-preview">
+                    <a href="${product.image}" download="product_${Date.now()}.jpg" target="_blank" style="display:block; text-align:center; background:var(--gold); color:#0f2347; padding:6px; border-radius:6px; font-weight:bold; font-size:11px; text-decoration:none; margin-bottom:8px;">
+                        <i class="fa-solid fa-download"></i> تحميل صورة المنتج 📥
+                    </a>
+                `;
             } else {
                 imgContainer.innerHTML = '';
             }
@@ -235,7 +242,6 @@
             document.getElementById('productModal').style.display = 'none';
         }
 
-        // دالة إغلاق النافذة المنبثقة عند النقر في أي مكان خارج محتوى البطاقة
         function checkOutsideClick(event) {
             let modalCard = document.getElementById('modalCardContent');
             if (!modalCard.contains(event.target)) {
