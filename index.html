@@ -85,16 +85,15 @@
 
         .category-section-title { font-size: 15px; font-weight: 900; color: var(--primary); margin: 20px 5px 10px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
-        /* الشبكة المتجاوبة بالكامل لتناسب أندرويد وويندوز بمرونة تامة */
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
         @media (max-width: 768px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
         @media (max-width: 480px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
 
         .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
         
-        /* تعديل الحاوية والصورة لتلغي الفراغات تماماً وتظهر بأبعادها الأصلية الكاملة والمرنة */
-        .product-img-container { width: 100%; background: transparent; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
-        .product-img { width: 100%; height: auto; max-height: 260px; object-fit: cover; display: block; border-radius: 6px; }
+        .product-img-container { width: 100%; background: transparent; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; }
+        .product-img { width: 100%; height: auto; max-height: 260px; object-fit: cover; display: block; border-radius: 6px; transition: 0.2s; }
+        .product-img-container:hover .product-img { opacity: 0.9; transform: scale(1.02); }
 
         .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; }
         .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; }
@@ -118,11 +117,12 @@
 
         .footer-copyright { text-align: center; color: #64748b; font-size: 11px; padding: 15px 0 40px; }
 
-        /* نافذة تسجيل الدخول المنبثقة مع دعم الإغلاق بالضغط في أي مكان خارجي */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 400px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); position: relative; }
-        .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
-        .modal-card input { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        /* نافذة العرض والتفاصيل المنبثقة الشاملة */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 480px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-img-preview { width: 100%; max-height: 320px; object-fit: contain; background: #0f172a; border-radius: 8px; margin-bottom: 12px; display: block; }
+        .modal-card h3 { color: var(--primary); font-size: 16px; margin-bottom: 8px; font-weight: 900; }
+        .modal-card p { font-size: 12px; color: #475569; line-height: 1.6; margin-bottom: 10px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; }
     </style>
 </head>
 <body>
@@ -236,9 +236,20 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول المنبثقة مع خاصية الإغلاق بالنقر في أي مكان خارجي -->
-    <div class="modal-overlay" id="authModal" onclick="checkOutsideClick(event)">
-        <div class="modal-card" id="modalCardContent">
+    <!-- نافذة تفاصيل العنصر والصورة القابلة للتحميل -->
+    <div class="modal-overlay" id="detailModal" onclick="checkOutsideModalClick(event, 'detailModalContent')">
+        <div class="modal-card" id="detailModalContent">
+            <div id="modalImageContainer"></div>
+            <h3 id="modalItemTitle">عنوان العنصر</h3>
+            <div id="modalItemDetails">تفاصيل المواصفات...</div>
+            <div id="modalActionBtnContainer" style="margin-top: 12px;"></div>
+            <button onclick="closeModal('detailModal')" style="width:100%; background:#64748b; color:white; border:none; padding:8px; border-radius:8px; margin-top:8px; cursor:pointer; font-size:11px; font-weight:bold;">إغلاق النافذة</button>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل الدخول المنبثقة -->
+    <div class="modal-overlay" id="authModal" onclick="checkOutsideModalClick(event, 'authModalContent')">
+        <div class="modal-card" id="authModalContent">
             <h3 style="color:var(--primary); font-size:15px; margin-bottom:5px;" id="modalTitle">تسجيل حساب جديد 🚀</h3>
             <p style="font-size:11px; color:#64748b; margin-bottom:10px;" id="modalSubtitle">يرجى تسجيل حسابك الجديد للمتابعة.</p>
             
@@ -255,7 +266,7 @@
 
             <button id="mainAuthBtn" onclick="processAuth()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-top:12px;">إنشاء وحفظ الحساب 📱</button>
             <button onclick="switchMode()" id="switchBtnText" style="width:100%; background:#f1f5f9; color:#0f2347; border:none; padding:7px; border-radius:8px; margin-top:6px; cursor:pointer; font-size:11px; font-weight:bold;">لديك حساب مسجل؟ تسجيل الدخول</button>
-            <button onclick="closeAuthModal()" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:10px;">إلغاء</button>
+            <button onclick="closeModal('authModal')" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:10px;">إلغاء</button>
             <div id="authMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
         </div>
     </div>
@@ -370,14 +381,13 @@
                 gridDiv.className = 'products-grid';
 
                 list.forEach(j => {
-                    // عرض الصورة الأصلية كاملة بدون أي فراغات فارغة في الحاوية
-                    let imgHTML = (j.image && j.image.trim() !== '') ? `<div class="product-img-container"><img src="${j.image}" class="product-img"></div>` : '<div class="product-img-container"><i class="fa-solid fa-briefcase" style="font-size:24px; color:#cbd5e1; padding:30px 0;"></i></div>';
+                    let imgHTML = (j.image && j.image.trim() !== '') ? `<div class="product-img-container" onclick='openDetailsModal(${JSON.stringify(j)}, "job")'><img src="${j.image}" class="product-img"></div>` : '<div class="product-img-container"><i class="fa-solid fa-briefcase" style="font-size:24px; color:#cbd5e1; padding:30px 0;"></i></div>';
                     let phoneNum = j.phone ? j.phone.replace(/[^0-9]/g, '') : '967780568507';
 
                     gridDiv.innerHTML += `
                         <div class="product-card">
                             ${imgHTML}
-                            <div class="product-title">${j.title}</div>
+                            <div class="product-title" style="cursor:pointer;" onclick='openDetailsModal(${JSON.stringify(j)}, "job")'>${j.title}</div>
                             <div class="product-subtext">الجهة: ${j.company || 'صدارة'}</div>
                             <a href="https://wa.me/${phoneNum}" target="_blank" class="order-btn whatsapp-btn">تقديم عبر الواتساب 🚀</a>
                         </div>
@@ -412,13 +422,12 @@
                     let displayImg = (r.image && r.image.trim() !== '') ? r.image : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
                     let verifiedBadge = r.is_verified ? getBlueBadgeHTML() : '';
                     
-                    // عرض صورة الكفاءة بالكامل وبأبعادها الأصلية دون فراغات
-                    let imgHTML = `<div class="product-img-container"><img src="${displayImg}" class="product-img"></div>`;
+                    let imgHTML = `<div class="product-img-container" onclick='openDetailsModal(${JSON.stringify(r)}, "resume")'><img src="${displayImg}" class="product-img"></div>`;
 
                     gridDiv.innerHTML += `
                         <div class="product-card">
                             ${imgHTML}
-                            <div class="product-title">${displayName} ${verifiedBadge}</div>
+                            <div class="product-title" style="cursor:pointer;" onclick='openDetailsModal(${JSON.stringify(r)}, "resume")'>${displayName} ${verifiedBadge}</div>
                             <div class="product-subtext">${displayTitle}</div>
                             <a href="https://wa.me/${displayPhone}?text=مرحباً،%20تواصلت%20معك%20عبر%20منصة%20صدارة" target="_blank" class="order-btn whatsapp-btn">تواصل عبر الواتساب 📱</a>
                         </div>
@@ -430,14 +439,60 @@
             }
         }
 
-        function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
-        function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+        // دالة فتح نافذة تفاصيل الوظيفة أو الكفاءة وعرض الصورة القابلة للتحميل مع المواصفات
+        function openDetailsModal(item, type) {
+            let title = type === 'job' ? item.title : (item.name || item.title);
+            let imgUrl = item.image || (type === 'resume' ? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' : '');
+            let phoneNum = item.phone ? item.phone.replace(/[^0-9]/g, '') : '967780568507';
 
-        // دالة إغلاق النافذة المنبثقة عند النقر في أي مكان خارجي (للأندرويد والويندوز)
-        function checkOutsideClick(event) {
-            let modalCard = document.getElementById('modalCardContent');
-            if (!modalCard.contains(event.target)) {
-                closeAuthModal();
+            document.getElementById('modalItemTitle').textContent = title;
+            
+            let imgContainer = document.getElementById('modalImageContainer');
+            if (imgUrl) {
+                imgContainer.innerHTML = `
+                    <img src="${imgUrl}" class="modal-img-preview">
+                    <a href="${imgUrl}" download="sadarah_${type}_${Date.now()}.jpg" target="_blank" style="display:block; text-align:center; background:var(--gold); color:#0f2347; padding:7px; border-radius:6px; font-weight:bold; font-size:11px; text-decoration:none; margin-bottom:10px;">
+                        <i class="fa-solid fa-download"></i> تحميل الصورة المرفقة 📥
+                    </a>
+                `;
+            } else {
+                imgContainer.innerHTML = '';
+            }
+
+            let detailsBox = document.getElementById('modalItemDetails');
+            if (type === 'job') {
+                detailsBox.innerHTML = `
+                    <b>🏢 الجهة الطالبة:</b> ${item.company || 'صدارة'}<br>
+                    <b>📁 القسم / المجال:</b> ${item.category || 'عام'}<br>
+                    <b>📝 تفاصيل الوظيفة:</b> ${item.description || item.details || 'لا توجد تفاصيل إضافية مسجلة.'}<br>
+                    <b>📞 للتواصل المباشر:</b> ${item.phone || 'غير متوفر'}
+                `;
+            } else {
+                detailsBox.innerHTML = `
+                    <b>👨‍💻 الاسم / التخصص:</b> ${item.job_title || item.specialty || item.title || 'كفاءة رقمية'}<br>
+                    <b>⭐ الخبرات والمهارات:</b> ${item.experience || item.details || 'مستقل وخبير معتمد في منصة صدارة.'}<br>
+                    <b>📞 للتواصل المباشر:</b> ${item.phone || 'غير متوفر'}
+                `;
+            }
+
+            let actionContainer = document.getElementById('modalActionBtnContainer');
+            actionContainer.innerHTML = `<a href="https://wa.me/${phoneNum}" target="_blank" class="order-btn whatsapp-btn" style="display:block; text-align:center; text-decoration:none;">التواصل والتقديم عبر الواتساب 🚀</a>`;
+
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+
+        function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
+        
+        function closeModal(modalId) { 
+            document.getElementById(modalId).style.display = 'none'; 
+        }
+
+        // دالة إغلاق أي نافذة منبثقة عند النقر في أي مكان خارجي
+        function checkOutsideModalClick(event, cardContentId) {
+            let cardContent = document.getElementById(cardContentId);
+            if (!cardContent.contains(event.target)) {
+                let overlay = cardContent.closest('.modal-overlay');
+                if (overlay) overlay.style.display = 'none';
             }
         }
 
@@ -487,7 +542,7 @@
             }
 
             msg.style.color = 'green'; msg.textContent = 'تم النجاح! 🎉';
-            setTimeout(() => { closeAuthModal(); checkActiveSession(); }, 800);
+            setTimeout(() => { closeModal('authModal'); checkActiveSession(); }, 800);
         }
 
         checkActiveSession();
