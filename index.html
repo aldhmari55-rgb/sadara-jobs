@@ -25,9 +25,9 @@
     <style>
         :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f3f4f6; --text-dark: #0f172a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-light); padding-bottom: 110px; color: var(--text-dark); }
+        body { background: var(--bg-light); padding-bottom: 110px; color: var(--text-dark); overflow-x: hidden; }
 
-        .top-navbar { background: #0a1324; color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); position: sticky; top: 0; z-index: 1000; }
+        .top-navbar { background: #0a1324; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); position: sticky; top: 0; z-index: 1000; }
         .nav-left { display: flex; align-items: center; gap: 10px; }
         .sidebar-toggle-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; }
         
@@ -54,9 +54,9 @@
         .channel-bar { background: #25d366; color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; }
         .channel-bar a { color: white; text-decoration: underline; margin-right: 5px; }
 
-        .hero { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 28px 16px 40px; text-align: center; }
-        .hero h1 { font-size: 18px; margin-bottom: 8px; font-weight: 900; }
-        .hero p { font-size: 12px; color: #cbd5e1; margin-bottom: 16px; }
+        .hero { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 32px 16px 45px; text-align: center; }
+        .hero h1 { font-size: 20px; margin-bottom: 8px; font-weight: 900; }
+        .hero p { font-size: 12px; color: #cbd5e1; margin-bottom: 16px; max-width: 700px; margin-left: auto; margin-right: auto; }
         .hero-action-btns { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
         .hero-btn { text-decoration: none; padding: 9px 16px; border-radius: 8px; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
         .hero-btn-primary { background: var(--gold); color: #0a1324; }
@@ -64,49 +64,52 @@
         .hero-btn-app { background: #25d366; color: white; }
         .hero-btn:hover { transform: translateY(-2px); }
 
-        .main-container { max-width: 900px; margin: -25px auto 0; padding: 0 10px; }
+        .main-container { max-width: 1200px; margin: -25px auto 0; padding: 0 15px; width: 100%; }
 
-        .search-filter-box { background: white; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .search-input-main { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; margin-bottom: 8px; }
-        .categories-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-        .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .search-filter-box { background: white; border-radius: 12px; padding: 15px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .search-input-main { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; margin-bottom: 10px; }
+        .categories-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+        .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 16px; min-height: 130px; border: 1px solid #e2e8f0; }
-        .ad-slider-img { width: 100%; max-height: 220px; object-fit: cover; display: none; opacity: 0; transition: opacity 0.6s; }
+        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 16px; min-height: 140px; border: 1px solid #e2e8f0; }
+        .ad-slider-img { width: 100%; max-height: 250px; object-fit: contain; background: #0f172a; display: none; opacity: 0; transition: opacity 0.6s; }
         .ad-slider-img.active { display: block; opacity: 1; }
         .slider-dots { position: absolute; bottom: 8px; display: flex; gap: 6px; width: 100%; justify-content: center; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); }
         .dot.active { background: var(--gold); width: 18px; border-radius: 10px; }
 
-        .stats-bar { background: white; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .stat-item h4 { font-size: 15px; font-weight: 900; color: var(--primary); }
-        .stat-item p { font-size: 10px; color: #64748b; font-weight: 700; }
+        .stats-bar { background: white; border-radius: 12px; padding: 15px; margin-bottom: 16px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .stat-item h4 { font-size: 16px; font-weight: 900; color: var(--primary); }
+        .stat-item p { font-size: 11px; color: #64748b; font-weight: 700; }
 
         /* عناوين الأقسام */
-        .category-section-title { font-size: 14px; font-weight: 900; color: var(--primary); margin: 18px 5px 8px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .category-section-title { font-size: 15px; font-weight: 900; color: var(--primary); margin: 20px 5px 10px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
-        /* الشبكة الثنائية للبطاقات */
-        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        /* الشبكة المتجاوبة بالكامل لتناسب أندرويد وويندوز بمرونة تامة */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        @media (max-width: 768px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+        @media (max-width: 480px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
 
-        .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
+        .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
         
-        .product-img-container { width: 100%; height: 160px; background: #f8fafc; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
-        .product-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        /* ضبط الصورة لتظهر كاملة ومرنة تماماً بدون قص أبدًا */
+        .product-img-container { width: 100%; height: 160px; background: #0f172a; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        .product-img { width: 100%; height: 100%; object-fit: contain; display: block; background: #0f172a; }
 
-        .product-title { font-size: 12px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 34px; }
+        .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; }
         
         .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; }
         
-        .order-btn { background: var(--primary); color: white; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .order-btn { background: var(--primary); color: white; text-align: center; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
         .order-btn:hover { background: #1e3a8a; }
         .whatsapp-btn { background: var(--green); }
         .whatsapp-btn:hover { background: #1da851; }
 
-        .social-footer-box { background: #0f2347; border-radius: 12px; padding: 18px; text-align: center; margin-top: 25px; border: 1px solid rgba(212, 175, 55, 0.3); }
-        .social-footer-box h4 { color: var(--gold); font-size: 13px; margin-bottom: 10px; font-weight: bold; }
+        .social-footer-box { background: #0f2347; border-radius: 12px; padding: 20px; text-align: center; margin-top: 30px; border: 1px solid rgba(212, 175, 55, 0.3); }
+        .social-footer-box h4 { color: var(--gold); font-size: 14px; margin-bottom: 10px; font-weight: bold; }
         .social-icons-row { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; }
-        .social-icon-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 16px; transition: 0.2s; border: 1px solid rgba(212, 175, 55, 0.4); }
+        .social-icon-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 16px; transition: 0.2s; border: 1px solid rgba(212, 175, 55, 0.4); }
         .social-icon-btn:hover { background: var(--gold); color: #0f2347; transform: scale(1.1); }
 
         .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; }
@@ -115,12 +118,13 @@
         .ticker-content img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        .footer-copyright { text-align: center; color: #64748b; font-size: 11px; padding: 15px 0 35px; }
+        .footer-copyright { text-align: center; color: #64748b; font-size: 11px; padding: 15px 0 40px; }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; }
-        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 90%; max-width: 380px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        /* نافذة المصادقة المنبثقة مع دعم الإغلاق بالضغط في أي مكان خارجي */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 400px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); position: relative; }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
-        .modal-card input { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        .modal-card input { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
     </style>
 </head>
 <body>
@@ -137,7 +141,7 @@
         </div>
     </div>
 
-    <!-- القائمة الجانبية (محمية وخالية تماماً من أقسام الدورات) -->
+    <!-- القائمة الجانبية -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="sidebar-drawer" id="sidebarDrawer">
         <div class="sidebar-header">
@@ -171,7 +175,7 @@
 
     <div class="hero">
         <h1>المنصة الأولى للوظائف والخدمات الرقمية في اليمن</h1>
-        <p>بوابتك للبحث عن الفرص الشاغرة، طلب الكفاءات، وتسوق أفضل الخدمات والمنتجات الرقمية</p>
+        <p>بوابتك للبحث عن الفرص الشاغرة، طلب الكفاءات، وتسوق أفضل الخدمات والمنتجات الرقمية بمرونة كاملة عبر مختلف الأجهزة</p>
         <div class="hero-action-btns">
             <a href="#mainContentArea" class="hero-btn hero-btn-primary"><i class="fa-solid fa-briefcase"></i> استكشف الوظائف والكفاءات</a>
             <a href="services.html" class="hero-btn hero-btn-secondary"><i class="fa-solid fa-store"></i> متجر الخدمات الرقمية 🛒</a>
@@ -234,8 +238,9 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="authModal">
-        <div class="modal-card">
+    <!-- نافذة تسجيل الدخول المنبثقة مع خاصية الإغلاق بالنقر في أي مكان خارجي -->
+    <div class="modal-overlay" id="authModal" onclick="checkOutsideClick(event)">
+        <div class="modal-card" id="modalCardContent">
             <h3 style="color:var(--primary); font-size:15px; margin-bottom:5px;" id="modalTitle">تسجيل حساب جديد 🚀</h3>
             <p style="font-size:11px; color:#64748b; margin-bottom:10px;" id="modalSubtitle">يرجى تسجيل حسابك الجديد للمتابعة.</p>
             
@@ -367,6 +372,7 @@
                 gridDiv.className = 'products-grid';
 
                 list.forEach(j => {
+                    // تفعيل عرض الصورة كاملة ومرنة باستخدام object-fit: contain وبدون أي قص
                     let imgHTML = (j.image && j.image.trim() !== '') ? `<div class="product-img-container"><img src="${j.image}" class="product-img"></div>` : '<div class="product-img-container"><i class="fa-solid fa-briefcase" style="font-size:24px; color:#cbd5e1;"></i></div>';
                     let phoneNum = j.phone ? j.phone.replace(/[^0-9]/g, '') : '967780568507';
 
@@ -407,6 +413,8 @@
                     let displayPhone = r.phone ? r.phone.replace(/[^0-9]/g, '') : '967780568507';
                     let displayImg = (r.image && r.image.trim() !== '') ? r.image : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
                     let verifiedBadge = r.is_verified ? getBlueBadgeHTML() : '';
+                    
+                    // عرض الصورة مرنة وكاملة تماماً
                     let imgHTML = `<div class="product-img-container"><img src="${displayImg}" class="product-img"></div>`;
 
                     gridDiv.innerHTML += `
@@ -426,6 +434,14 @@
 
         function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
         function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+
+        // دالة إغلاق النافذة المنبثقة عند النقر في أي مكان خارجي (للأندرويد والويندوز)
+        function checkOutsideClick(event) {
+            let modalCard = document.getElementById('modalCardContent');
+            if (!modalCard.contains(event.target)) {
+                closeAuthModal();
+            }
+        }
 
         function switchMode() {
             isLoginMode = !isLoginMode;
