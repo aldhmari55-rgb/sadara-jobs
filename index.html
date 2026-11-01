@@ -72,10 +72,10 @@
         .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 16px; min-height: 140px; border: 1px solid #e2e8f0; }
-        .ad-slider-img { width: 100%; max-height: 250px; object-fit: contain; background: #0f172a; display: none; opacity: 0; transition: opacity 0.6s; }
+        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 16px; border: 1px solid #e2e8f0; display: flex; justify-content: center; align-items: center; }
+        .ad-slider-img { width: 100%; height: auto; max-height: 280px; object-fit: cover; display: none; opacity: 0; transition: opacity 0.6s; }
         .ad-slider-img.active { display: block; opacity: 1; }
-        .slider-dots { position: absolute; bottom: 8px; display: flex; gap: 6px; width: 100%; justify-content: center; }
+        .slider-dots { position: absolute; bottom: 8px; display: flex; gap: 6px; width: 100%; justify-content: center; z-index: 5; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); }
         .dot.active { background: var(--gold); width: 18px; border-radius: 10px; }
 
@@ -83,7 +83,6 @@
         .stat-item h4 { font-size: 16px; font-weight: 900; color: var(--primary); }
         .stat-item p { font-size: 11px; color: #64748b; font-weight: 700; }
 
-        /* عناوين الأقسام */
         .category-section-title { font-size: 15px; font-weight: 900; color: var(--primary); margin: 20px 5px 10px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
         /* الشبكة المتجاوبة بالكامل لتناسب أندرويد وويندوز بمرونة تامة */
@@ -93,12 +92,11 @@
 
         .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
         
-        /* ضبط الصورة لتظهر كاملة ومرنة تماماً بدون قص أبدًا */
-        .product-img-container { width: 100%; height: 160px; background: #0f172a; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
-        .product-img { width: 100%; height: 100%; object-fit: contain; display: block; background: #0f172a; }
+        /* تعديل الحاوية والصورة لتلغي الفراغات تماماً وتظهر بأبعادها الأصلية الكاملة والمرنة */
+        .product-img-container { width: 100%; background: transparent; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        .product-img { width: 100%; height: auto; max-height: 260px; object-fit: cover; display: block; border-radius: 6px; }
 
         .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; }
-        
         .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; }
         
         .order-btn { background: var(--primary); color: white; text-align: center; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
@@ -120,7 +118,7 @@
 
         .footer-copyright { text-align: center; color: #64748b; font-size: 11px; padding: 15px 0 40px; }
 
-        /* نافذة المصادقة المنبثقة مع دعم الإغلاق بالضغط في أي مكان خارجي */
+        /* نافذة تسجيل الدخول المنبثقة مع دعم الإغلاق بالضغط في أي مكان خارجي */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
         .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 400px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); position: relative; }
         .modal-card label { font-size: 11px; font-weight: bold; color: #475569; display: block; margin-top: 8px; }
@@ -372,8 +370,8 @@
                 gridDiv.className = 'products-grid';
 
                 list.forEach(j => {
-                    // تفعيل عرض الصورة كاملة ومرنة باستخدام object-fit: contain وبدون أي قص
-                    let imgHTML = (j.image && j.image.trim() !== '') ? `<div class="product-img-container"><img src="${j.image}" class="product-img"></div>` : '<div class="product-img-container"><i class="fa-solid fa-briefcase" style="font-size:24px; color:#cbd5e1;"></i></div>';
+                    // عرض الصورة الأصلية كاملة بدون أي فراغات فارغة في الحاوية
+                    let imgHTML = (j.image && j.image.trim() !== '') ? `<div class="product-img-container"><img src="${j.image}" class="product-img"></div>` : '<div class="product-img-container"><i class="fa-solid fa-briefcase" style="font-size:24px; color:#cbd5e1; padding:30px 0;"></i></div>';
                     let phoneNum = j.phone ? j.phone.replace(/[^0-9]/g, '') : '967780568507';
 
                     gridDiv.innerHTML += `
@@ -414,7 +412,7 @@
                     let displayImg = (r.image && r.image.trim() !== '') ? r.image : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
                     let verifiedBadge = r.is_verified ? getBlueBadgeHTML() : '';
                     
-                    // عرض الصورة مرنة وكاملة تماماً
+                    // عرض صورة الكفاءة بالكامل وبأبعادها الأصلية دون فراغات
                     let imgHTML = `<div class="product-img-container"><img src="${displayImg}" class="product-img"></div>`;
 
                     gridDiv.innerHTML += `
