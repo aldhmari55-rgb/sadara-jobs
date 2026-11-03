@@ -23,15 +23,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f3f4f6; --text-dark: #0f172a; }
+        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --bg-light: #f3f4f6; --text-dark: #0f172a; --accent-glow: rgba(212, 175, 55, 0.25); }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-light); padding-bottom: 110px; color: var(--text-dark); overflow-x: hidden; }
 
-        .top-navbar { background: #0a1324; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); position: sticky; top: 0; z-index: 1000; }
+        .top-navbar { background: #0a1324; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .nav-left { display: flex; align-items: center; gap: 10px; }
-        .sidebar-toggle-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; }
+        .sidebar-toggle-btn { background: var(--gold); color: #0a1324; border: none; padding: 6px 14px; border-radius: 10px; font-size: 13px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .sidebar-toggle-btn:hover { background: #e6c547; transform: translateY(-1px); }
         
-        .mini-btn { background: #1e293b; color: white; border: 1px solid var(--gold); padding: 5px 10px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+        .mini-btn { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; border: 1px solid var(--gold); padding: 6px 14px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .mini-btn:hover { transform: translateY(-1px); background: #334155; }
 
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 19, 36, 0.75); backdrop-filter: blur(4px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .sidebar-overlay.active { opacity: 1; visibility: visible; }
@@ -41,7 +43,8 @@
 
         .sidebar-header { padding: 18px; background: #0f2347; border-bottom: 1px solid rgba(212, 175, 55, 0.3); display: flex; justify-content: space-between; align-items: center; }
         .sidebar-header h3 { font-size: 15px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
-        .sidebar-close-btn { background: rgba(255,255,255,0.1); color: #ef4444; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; }
+        .sidebar-close-btn { background: rgba(255,255,255,0.1); color: #ef4444; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: 0.2s; }
+        .sidebar-close-btn:hover { background: #ef4444; color: white; }
 
         .sidebar-menu { padding: 15px 10px; flex: 1; overflow-y: auto; }
         .sidebar-section-title { font-size: 11px; color: #94a3b8; font-weight: bold; margin: 12px 10px 6px; text-transform: uppercase; }
@@ -51,83 +54,103 @@
         .sidebar-item .badge { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-right: auto; }
         .sidebar-footer { padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); background: #060d1a; text-align: center; font-size: 11px; color: #64748b; }
 
-        .channel-bar { background: #25d366; color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; }
-        .channel-bar a { color: white; text-decoration: underline; margin-right: 5px; }
+        /* زر الواتساب العائم المميز في الجهة اليسار من الأسفل */
+        .whatsapp-float-btn { position: fixed; bottom: 65px; left: 20px; background: linear-gradient(135deg, #25d366, #1ebe5d); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); z-index: 950; text-decoration: none; transition: all 0.3s ease; animation: pulse-whatsapp 2s infinite; }
+        .whatsapp-float-btn:hover { transform: scale(1.1) rotate(10deg); }
+        @keyframes pulse-whatsapp { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
 
-        .hero { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 32px 16px 45px; text-align: center; }
-        .hero h1 { font-size: 20px; margin-bottom: 8px; font-weight: 900; }
-        .hero p { font-size: 12px; color: #cbd5e1; margin-bottom: 16px; max-width: 700px; margin-left: auto; margin-right: auto; }
-        .hero-action-btns { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-        .hero-btn { text-decoration: none; padding: 9px 16px; border-radius: 8px; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .hero { background: linear-gradient(180deg, #0a1324 0%, var(--primary) 100%); color: white; padding: 36px 16px 48px; text-align: center; border-bottom: 4px solid var(--gold); }
+        .hero h1 { font-size: 22px; margin-bottom: 10px; font-weight: 900; }
+        .hero p { font-size: 13px; color: #cbd5e1; margin-bottom: 18px; max-width: 750px; margin-left: auto; margin-right: auto; line-height: 1.5; }
+        .hero-action-btns { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+        .hero-btn { text-decoration: none; padding: 10px 18px; border-radius: 10px; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .hero-btn-primary { background: var(--gold); color: #0a1324; }
         .hero-btn-secondary { background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(212, 175, 55, 0.5); }
         .hero-btn-app { background: #25d366; color: white; }
-        .hero-btn:hover { transform: translateY(-2px); }
+        .hero-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
 
         .main-container { max-width: 1200px; margin: -25px auto 0; padding: 0 15px; width: 100%; }
 
-        .search-filter-box { background: white; border-radius: 12px; padding: 15px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .search-input-main { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; margin-bottom: 10px; }
+        .search-filter-box { background: white; border-radius: 14px; padding: 18px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 6px 20px rgba(0,0,0,0.04); }
+        .search-input-main { width: 100%; padding: 13px 16px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; outline: none; margin-bottom: 12px; transition: 0.2s; background: #fafafa; }
+        .search-input-main:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15, 35, 71, 0.1); background: white; }
         .categories-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-        .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 7px 14px; border-radius: 22px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-1px); }
 
-        /* صندوق إعلان البنر الأول المستقل (تحت البحث مباشرة) */
-        .external-ad-box { background: white; border-radius: 12px; padding: 10px; margin-bottom: 16px; border: 1px solid #e2e8f0; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); min-height: 90px; }
-
-        /* صندوق السلايدر الخاص بالبنرات المتحركة (للصور المرفوعة من لوحة التحكم فقط) */
-        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 16px; border: 1px solid #e2e8f0; display: flex; justify-content: center; align-items: center; }
-        .ad-slider-img { width: 100%; height: auto; max-height: 280px; object-fit: cover; display: none; opacity: 0; transition: opacity 0.6s; }
+        /* صندوق السلايدر لعرض الصور بأحجامها الواقعية والمرنة في جميع الأجهزة */
+        .ad-slider-box { position: relative; background: #ffffff; border-radius: 14px; overflow: hidden; margin-bottom: 20px; border: 1px solid #e2e8f0; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); min-height: 180px; }
+        .ad-slider-img { width: 100%; height: auto; max-height: 340px; object-fit: contain; display: none; opacity: 0; transition: opacity 0.6s ease-in-out; background: #0a1324; }
         .ad-slider-img.active { display: block; opacity: 1; }
-        .slider-dots { position: absolute; bottom: 8px; display: flex; gap: 6px; width: 100%; justify-content: center; z-index: 5; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); }
-        .dot.active { background: var(--gold); width: 18px; border-radius: 10px; }
+        .slider-dots { position: absolute; bottom: 10px; display: flex; gap: 6px; width: 100%; justify-content: center; z-index: 5; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); transition: 0.3s; }
+        .dot.active { background: var(--gold); width: 20px; border-radius: 10px; }
 
-        .stats-bar { background: white; border-radius: 12px; padding: 15px; margin-bottom: 16px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .stat-item h4 { font-size: 16px; font-weight: 900; color: var(--primary); }
-        .stat-item p { font-size: 11px; color: #64748b; font-weight: 700; }
+        .stats-bar { background: white; border-radius: 14px; padding: 18px; margin-bottom: 20px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center; box-shadow: 0 6px 20px rgba(0,0,0,0.04); }
+        .stat-item h4 { font-size: 18px; font-weight: 900; color: var(--primary); }
+        .stat-item p { font-size: 11px; color: #64748b; font-weight: 700; margin-top: 2px; }
 
-        .category-section-title { font-size: 15px; font-weight: 900; color: var(--primary); margin: 20px 5px 10px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .category-section-title { font-size: 16px; font-weight: 900; color: var(--primary); margin: 25px 5px 12px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
 
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        @media (max-width: 768px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
-        @media (max-width: 480px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
+        /* تنظيم الشبكة للمنتجات والخدمات والكفاءات (3 أو 4 أعمدة مرنة بدقة تامة) */
+        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 25px; }
+        @media (max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
+        @media (max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 
-        .product-card { background: white; border-radius: 10px; border: 1px solid #e2e8f0; padding: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
+        .product-card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; padding: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: transform 0.2s, box-shadow 0.2s; }
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
         
-        .product-img-container { width: 100%; background: transparent; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; }
-        .product-img { width: 100%; height: auto; max-height: 260px; object-fit: cover; display: block; border-radius: 6px; transition: 0.2s; }
-        .product-img-container:hover .product-img { opacity: 0.9; transform: scale(1.02); }
+        .product-img-container { width: 100%; background: #f8fafc; border-radius: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; border: 1px solid #edf2f7; }
+        .product-img { width: 100%; height: auto; max-height: 240px; object-fit: cover; display: block; border-radius: 8px; transition: transform 0.3s ease; }
+        .product-img-container:hover .product-img { transform: scale(1.03); }
 
         .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; }
-        .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; }
+        .product-subtext { font-size: 11px; color: #64748b; font-weight: bold; }
         
-        .order-btn { background: var(--primary); color: white; text-align: center; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; }
-        .order-btn:hover { background: #1e3a8a; }
-        .whatsapp-btn { background: var(--green); }
+        .order-btn { background: var(--primary); color: white; text-align: center; padding: 9px; border-radius: 8px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; box-shadow: 0 2px 6px rgba(15, 35, 71, 0.2); }
+        .order-btn:hover { background: #1e3a8a; transform: translateY(-1px); }
+        .whatsapp-btn { background: var(--green); box-shadow: 0 2px 6px rgba(37, 211, 102, 0.3); }
         .whatsapp-btn:hover { background: #1da851; }
 
-        .social-footer-box { background: #0f2347; border-radius: 12px; padding: 20px; text-align: center; margin-top: 30px; border: 1px solid rgba(212, 175, 55, 0.3); }
-        .social-footer-box h4 { color: var(--gold); font-size: 14px; margin-bottom: 10px; font-weight: bold; }
-        .social-icons-row { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; }
-        .social-icon-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 16px; transition: 0.2s; border: 1px solid rgba(212, 175, 55, 0.4); }
-        .social-icon-btn:hover { background: var(--gold); color: #0f2347; transform: scale(1.1); }
+        .social-footer-box { background: #0f2347; border-radius: 14px; padding: 22px; text-align: center; margin-top: 35px; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+        .social-footer-box h4 { color: var(--gold); font-size: 15px; margin-bottom: 12px; font-weight: bold; }
+        .social-icons-row { display: flex; justify-content: center; gap: 14px; margin-bottom: 14px; }
+        .social-icon-btn { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 18px; transition: 0.2s; border: 1px solid rgba(212, 175, 55, 0.4); }
+        .social-icon-btn:hover { background: var(--gold); color: #0f2347; transform: scale(1.15); }
 
-        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; }
-        .ticker-label { background: var(--gold); color: #0a1324; font-weight: 900; font-size: 10px; padding: 6px 10px; border-radius: 0 10px 10px 0; z-index: 10; white-space: nowrap; }
-        .ticker-content { display: flex; align-items: center; gap: 12px; animation: ticker 20s linear infinite; }
+        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: #0a1324; padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
+        .ticker-label { background: var(--gold); color: #0a1324; font-weight: 900; font-size: 10px; padding: 6px 12px; border-radius: 0 10px 10px 0; z-index: 10; white-space: nowrap; }
+        .ticker-content { display: flex; align-items: center; gap: 12px; animation: ticker 25s linear infinite; }
         .ticker-content img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        .footer-copyright { text-align: center; color: #64748b; font-size: 11px; padding: 15px 0 40px; }
+        .footer-copyright { text-align: center; color: #64748b; font-size: 11px; padding: 15px 0 50px; }
 
-        /* نافذة تفاصيل العنصر مع الصورة القابلة للتنزيل فور الضغط عليها */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-        .modal-card { background: white; color: #0f172a; padding: 20px; border-radius: 14px; width: 100%; max-width: 480px; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-top: 4px solid var(--gold); position: relative; max-height: 90vh; overflow-y: auto; }
-        .modal-img-preview { width: 100%; max-height: 320px; object-fit: contain; background: #0f172a; border-radius: 8px; margin-bottom: 10px; display: block; cursor: pointer; transition: transform 0.2s; }
-        .modal-img-preview:hover { transform: scale(1.01); opacity: 0.95; }
-        .modal-card h3 { color: var(--primary); font-size: 16px; margin-bottom: 8px; font-weight: 900; }
-        .modal-card p { font-size: 12px; color: #475569; line-height: 1.6; margin-bottom: 10px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        /* نافذة تفاصيل العنصر مع الصورة الواقعية القابلة للتنزيل فور الضغط عليها */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+        .modal-card { background: white; color: #0f172a; padding: 22px; border-radius: 16px; width: 100%; max-width: 500px; text-align: right; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 5px solid var(--gold); position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-img-preview { width: 100%; max-height: 350px; object-fit: contain; background: #0a1324; border-radius: 10px; margin-bottom: 12px; display: block; cursor: pointer; transition: transform 0.2s; border: 1px solid #334155; }
+        .modal-img-preview:hover { transform: scale(1.01); filter: brightness(1.05); }
+        .modal-card h3 { color: var(--primary); font-size: 17px; margin-bottom: 10px; font-weight: 900; }
+        .modal-card p { font-size: 12px; color: #475569; line-height: 1.6; margin-bottom: 12px; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; }
+
+        /* واجهة تسجيل الحساب الجديدة ذات الرونق الجميل والتصميم العصري الفاخر */
+        .auth-card-box { background: white; color: #0f172a; padding: 25px; border-radius: 18px; width: 100%; max-width: 440px; text-align: right; box-shadow: 0 20px 40px rgba(0,0,0,0.35); border-top: 5px solid var(--gold); position: relative; }
+        .auth-card-box h3 { color: var(--primary); font-size: 18px; margin-bottom: 6px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .auth-card-box p { font-size: 11px; color: #64748b; margin-bottom: 16px; }
+        .auth-input-group { margin-bottom: 14px; text-align: right; }
+        .auth-input-group label { display: block; font-size: 11px; font-weight: bold; color: #334155; margin-bottom: 5px; }
+        .auth-input-group input { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; outline: none; background: #f8fafc; transition: 0.2s; }
+        .auth-input-group input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); background: white; }
+        
+        .auth-btn-primary { width: 100%; background: linear-gradient(135deg, var(--green), #16a34a); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 10px; transition: 0.2s; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
+        .auth-btn-primary:hover { filter: brightness(1.05); transform: translateY(-1px); }
+        
+        .auth-btn-switch { width: 100%; background: #f1f5f9; color: var(--primary); border: 1px solid #e2e8f0; padding: 9px; border-radius: 10px; margin-top: 8px; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.2s; }
+        .auth-btn-switch:hover { background: #e2e8f0; }
+        
+        .auth-btn-cancel { width: 100%; background: transparent; color: #64748b; border: none; margin-top: 6px; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .auth-btn-cancel:hover { color: #ef4444; }
     </style>
 </head>
 <body>
@@ -140,9 +163,14 @@
             <span style="font-weight: 900; font-size:14px;">منصة صدارة</span>
         </div>
         <div id="authArea">
-            <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>
+            <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user-shield"></i> حساب / دخول</button>
         </div>
     </div>
+
+    <!-- زر الواتساب العائم المميز في الجهة اليسار من الأسفل -->
+    <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank" class="whatsapp-float-btn" title="انضم لمجتمعنا على الواتساب">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
 
     <!-- القائمة الجانبية -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -171,14 +199,9 @@
         </div>
     </div>
 
-    <div class="channel-bar">
-        📢 انضم لمجتمعنا الرسمي على الواتساب لمتابعة جديد الوظائف والخدمات:
-        <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank">اضغط هنا للانضمام للمجتمع 🟢</a>
-    </div>
-
     <div class="hero">
         <h1>المنصة الأولى للوظائف والخدمات الرقمية في اليمن</h1>
-        <p>بوابتك للبحث عن الفرص الشاغرة، طلب الكفاءات، وتسوق أفضل الخدمات والمنتجات الرقمية بمرونة كاملة عبر مختلف الأجهزة</p>
+        <p>بوابتك المتكاملة للبحث عن الفرص الشاغرة، طلب الكفاءات المعتمدة، وتسوق أفضل الخدمات والمنتجات الرقمية بمرونة فائقة عبر كافة الأجهزة</p>
         <div class="hero-action-btns">
             <a href="#mainContentArea" class="hero-btn hero-btn-primary"><i class="fa-solid fa-briefcase"></i> استكشف الوظائف والكفاءات</a>
             <a href="services.html" class="hero-btn hero-btn-secondary"><i class="fa-solid fa-store"></i> متجر الخدمات الرقمية 🛒</a>
@@ -199,23 +222,7 @@
             </div>
         </div>
 
-        <!-- 🚀 1. صندوق إعلان البنر الأول (HilltopAds Banner) -->
-        <div class="external-ad-box">
-            <script>
-            (function(dvrpa){
-            var d = document,
-                s = d.createElement('script'),
-                l = d.currentScript || d.scripts[d.scripts.length - 1];
-            s.settings = dvrpa || {};
-            s.src = "\/\/embellishedcoffee.com\/bJXLV.swd\/Gdlw0IYYWbcv\/Segm_9\/u\/ZHUclkkRPWTyCG1gO\/T_A\/0U0yD\/kotkNszKUU5UMdDaQ\/5UMiWO";
-            s.async = true;
-            s.referrerPolicy = 'no-referrer-when-downgrade';
-            l.parentNode.insertBefore(s, l);
-            })({})
-            </script>
-        </div>
-
-        <!-- صندوق السلايدر الخاص بالبنرات المتحركة (للصور المرفوعة من لوحة التحكم فقط) -->
+        <!-- صندوق السلايدر المرن لعرض البنرات بأحجامها الواقعية والمتناسقة -->
         <div class="ad-slider-box" id="sliderBox">
             <div id="sliderImages"></div>
             <div class="slider-dots" id="sliderDots"></div>
@@ -228,7 +235,7 @@
             <div class="stat-item"><h4 id="statResumesCount">...</h4><p>الكفاءات 📄</p></div>
         </div>
 
-        <!-- قسم الوظائف الشاغرة -->
+        <!-- قسم الوظائف الشاغرة (شبكة مرنة ومنظمة) -->
         <div class="category-section-title"><i class="fa-solid fa-briefcase"></i> الوظائف الشاغرة المتاحة 💼</div>
         <div id="jobsBoxContainer">جاري تحميل الوظائف...</div>
 
@@ -258,54 +265,44 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل العنصر (اضغط على الصورة داخل النافذة لتنزل تلقائياً) -->
+    <!-- نافذة تفاصيل العنصر (عرض الصور الواقعية مع خاصية التحميل المباشر عند النقر) -->
     <div class="modal-overlay" id="detailModal" onclick="checkOutsideModalClick(event, 'detailModalContent')">
         <div class="modal-card" id="detailModalContent">
             <div id="modalImageContainer"></div>
             <h3 id="modalItemTitle">عنوان العنصر</h3>
             <div id="modalItemDetails">تفاصيل المواصفات...</div>
-            <div id="modalActionBtnContainer" style="margin-top: 12px;"></div>
-            <button onclick="closeModal('detailModal')" style="width:100%; background:#64748b; color:white; border:none; padding:8px; border-radius:8px; margin-top:8px; cursor:pointer; font-size:11px; font-weight:bold;">إغلاق النافذة</button>
+            <div id="modalActionBtnContainer" style="margin-top: 14px;"></div>
+            <button onclick="closeModal('detailModal')" style="width:100%; background:#64748b; color:white; border:none; padding:10px; border-radius:10px; margin-top:10px; cursor:pointer; font-size:11px; font-weight:bold; transition:0.2s;">إغلاق النافذة</button>
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول المنبثقة -->
+    <!-- نافذة تسجيل الحساب أو الدخول الجديدة بتصميم عصري وأزرار فاخرة -->
     <div class="modal-overlay" id="authModal" onclick="checkOutsideModalClick(event, 'authModalContent')">
-        <div class="modal-card" id="authModalContent">
-            <h3 style="color:var(--primary); font-size:15px; margin-bottom:5px;" id="modalTitle">تسجيل حساب جديد 🚀</h3>
-            <p style="font-size:11px; color:#64748b; margin-bottom:10px;" id="modalSubtitle">يرجى تسجيل حسابك الجديد للمتابعة.</p>
+        <div class="auth-card-box" id="authModalContent">
+            <h3 id="modalTitle"><i class="fa-solid fa-user-astronaut" style="color:var(--gold);"></i> تسجيل حساب جديد 🚀</h3>
+            <p id="modalSubtitle">أنشئ حسابك الآن لتنضم إلى نخبة الكفاءات وأصحاب الأعمال.</p>
             
-            <label>رقم الواتساب</label>
-            <input type="tel" id="authPhone" placeholder="770000000">
+            <div class="auth-input-group">
+                <label>رقم الواتساب</label>
+                <input type="tel" id="authPhone" placeholder="مثال: 770000000">
+            </div>
 
-            <div id="nameFieldBox">
+            <div class="auth-input-group" id="nameFieldBox">
                 <label>الاسم الكامل / اسم الشركة</label>
                 <input type="text" id="authName" placeholder="مثال: شركة صدارة / أحمد">
             </div>
 
-            <label>كلمة المرور (4 أرقام فقط)</label>
-            <input type="password" id="authPass" maxlength="4" placeholder="1234">
+            <div class="auth-input-group">
+                <label>كلمة المرور (4 أرقام فقط)</label>
+                <input type="password" id="authPass" maxlength="4" placeholder="••••">
+            </div>
 
-            <button id="mainAuthBtn" onclick="processAuth()" style="width:100%; background:var(--green); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-top:12px;">إنشاء وحفظ الحساب 📱</button>
-            <button onclick="switchMode()" id="switchBtnText" style="width:100%; background:#f1f5f9; color:#0f2347; border:none; padding:7px; border-radius:8px; margin-top:6px; cursor:pointer; font-size:11px; font-weight:bold;">لديك حساب مسجل؟ تسجيل الدخول</button>
-            <button onclick="closeModal('authModal')" style="width:100%; background:transparent; color:#64748b; border:none; margin-top:5px; cursor:pointer; font-size:10px;">إلغاء</button>
-            <div id="authMsg" style="font-size:11px; margin-top:8px; text-align:center; font-weight:bold;"></div>
+            <button id="mainAuthBtn" onclick="processAuth()" class="auth-btn-primary">إنشاء وحفظ الحساب 📱</button>
+            <button onclick="switchMode()" id="switchBtnText" class="auth-btn-switch">لديك حساب مسجل؟ تسجيل الدخول</button>
+            <button onclick="closeModal('authModal')" class="auth-btn-cancel">إلغاء</button>
+            <div id="authMsg" style="font-size:11px; margin-top:10px; text-align:center; font-weight:bold;"></div>
         </div>
     </div>
-
-    <!-- 🚀 2. كود الإشعارات الجديد (In-Page Push) يعمل في الخلفية -->
-    <script>
-    (function(fkbwj){
-    var d = document,
-        s = d.createElement('script'),
-        l = d.currentScript || d.scripts[d.scripts.length - 1];
-    s.settings = fkbwj || {};
-    s.src = "\/\/embellishedcoffee.com\/bsX\/VjsTd.G\/ln0qYjWRcD\/CeEmT9Iu\/Z\/UUlUkXP\/Txcp1DO\/TBAp1UNPTOMdt\/NLzqU\/5KMiDVUg1\/NIwe";
-    s.async = true;
-    s.referrerPolicy = 'no-referrer-when-downgrade';
-    l.parentNode.insertBefore(s, l);
-    })({})
-    </script>
 
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
@@ -417,7 +414,7 @@
                 gridDiv.className = 'products-grid';
 
                 list.forEach(j => {
-                    let imgHTML = (j.image && j.image.trim() !== '') ? `<div class="product-img-container" onclick='openDetailsModal(${JSON.stringify(j)}, "job")'><img src="${j.image}" class="product-img"></div>` : '<div class="product-img-container"><i class="fa-solid fa-briefcase" style="font-size:24px; color:#cbd5e1; padding:30px 0;"></i></div>';
+                    let imgHTML = (j.image && j.image.trim() !== '') ? `<div class="product-img-container" onclick='openDetailsModal(${JSON.stringify(j)}, "job")'><img src="${j.image}" class="product-img"></div>` : '<div class="product-img-container" style="padding:40px 0;"><i class="fa-solid fa-briefcase" style="font-size:28px; color:#cbd5e1;"></i></div>';
                     let phoneNum = j.phone ? j.phone.replace(/[^0-9]/g, '') : '967780568507';
 
                     gridDiv.innerHTML += `
@@ -431,13 +428,13 @@
                 });
                 jBox.appendChild(gridDiv);
             } else {
-                jBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:15px;">لا توجد وظائف مطابقة لبحثك.</p>';
+                jBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:20px;">لا توجد وظائف مطابقة لبحثك.</p>';
             }
         }
 
         function getBlueBadgeHTML() {
             return `<span title="حساب موثق" style="display:inline-flex; align-items:center; vertical-align:middle;">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#1877F2"/>
                 </svg>
             </span>`;
@@ -471,11 +468,11 @@
                 });
                 rBox.appendChild(gridDiv);
             } else {
-                rBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:15px;">لا توجد كفاءات مطابقة لبحثك.</p>';
+                rBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:20px;">لا توجد كفاءات مطابقة لبحثك.</p>';
             }
         }
 
-        // دالة فتح نافذة التفاصيل (الضغط على الصورة داخل النافذة يحملها مباشرة)
+        // دالة عرض التفاصيل مع دعم الصورة الواقعية والتحميل الفوري
         function openDetailsModal(item, type) {
             let title = type === 'job' ? item.title : (item.name || item.title);
             let imgUrl = item.image || (type === 'resume' ? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' : '');
@@ -485,12 +482,11 @@
             
             let imgContainer = document.getElementById('modalImageContainer');
             if (imgUrl) {
-                // جعل الصورة نفسها قابلة للنقر للتحميل الفوري مع تنبيه توضيحي
                 imgContainer.innerHTML = `
                     <a href="${imgUrl}" download="sadarah_${type}_${Date.now()}.jpg" target="_blank" title="اضغط لتنزيل الصورة مباشرة">
                         <img src="${imgUrl}" class="modal-img-preview">
                     </a>
-                    <div style="text-align:center; font-size:10px; color:#64748b; margin-bottom:8px;">💡 (اضغط على الصورة أعلاه لتنزيلها مباشرة على جهازك)</div>
+                    <div style="text-align:center; font-size:10px; color:#64748b; margin-bottom:8px;">💡 (اضغط على الصورة أعلاه لتنزيلها بالحجم الواقعي)</div>
                 `;
             } else {
                 imgContainer.innerHTML = '';
@@ -542,17 +538,17 @@
 
             if (isLoginMode) {
                 nameBox.style.display = 'none';
-                title.textContent = 'تسجيل الدخول 🔐';
-                subtitle.textContent = 'أدخل رقم الواتساب وكلمة المرور.';
+                title.innerHTML = '<i class="fa-solid fa-lock" style="color:var(--primary);"></i> تسجيل الدخول 🔐';
+                subtitle.textContent = 'أدخل رقم الواتساب وكلمة المرور للوصول إلى حسابك.';
                 btn.textContent = 'تسجيل الدخول 🚀';
-                btn.style.background = 'var(--primary)';
+                btn.style.background = 'linear-gradient(135deg, var(--primary), #1e3a8a)';
                 switchBtn.textContent = 'ليس لديك حساب؟ سجل حساب جديد';
             } else {
                 nameBox.style.display = 'block';
-                title.textContent = 'تسجيل حساب جديد 🚀';
-                subtitle.textContent = 'يرجى تسجيل حسابك الجديد للمتابعة.';
+                title.innerHTML = '<i class="fa-solid fa-user-astronaut" style="color:var(--gold);"></i> تسجيل حساب جديد 🚀';
+                subtitle.textContent = 'أنشئ حسابك الآن لتنضم إلى نخبة الكفاءات وأصحاب الأعمال.';
                 btn.textContent = 'إنشاء وحفظ الحساب 📱';
-                btn.style.background = 'var(--green)';
+                btn.style.background = 'linear-gradient(135deg, var(--green), #16a34a)';
                 switchBtn.textContent = 'لديك حساب مسجل؟ تسجيل الدخول';
             }
         }
@@ -562,8 +558,8 @@
             const pass = document.getElementById('authPass').value.trim();
             const msg = document.getElementById('authMsg');
 
-            if (!phone || !pass) { alert('يرجى إدخال رقم الواتساب وكلمة المرور'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري المعالجة...';
+            if (!phone || !pass) { alert('يرجى إدخال رقم الواتساب وكلمة المرور بدقة'); return; }
+            msg.style.color = 'blue'; msg.textContent = 'جاري المعالجة الحالية...';
 
             if (!isLoginMode) {
                 const name = document.getElementById('authName').value.trim() || phone;
@@ -577,7 +573,7 @@
                 localStorage.setItem('sadara_logged_name', 'مستخدم (' + phone.slice(-4) + ')');
             }
 
-            msg.style.color = 'green'; msg.textContent = 'تم النجاح! 🎉';
+            msg.style.color = 'green'; msg.textContent = 'تمت العملية بنجاح تام! 🎉';
             setTimeout(() => { closeModal('authModal'); checkActiveSession(); }, 800);
         }
 
@@ -587,9 +583,9 @@
             const loggedName = localStorage.getItem('sadara_logged_name');
             const authArea = document.getElementById('authArea');
             if (loggedName) {
-                authArea.innerHTML = `<span style="font-size:10px; color:var(--gold); font-weight:bold; margin-left:4px;">👤 ${loggedName}</span><button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border:none; color:white;">خروج</button>`;
+                authArea.innerHTML = `<span style="font-size:11px; color:var(--gold); font-weight:bold; margin-left:6px;">👤 ${loggedName}</span><button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border-color:#ef4444;">خروج</button>`;
             } else {
-                authArea.innerHTML = `<button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user"></i> حساب</button>`;
+                authArea.innerHTML = `<button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user-shield"></i> حساب / دخول</button>`;
             }
         }
 
