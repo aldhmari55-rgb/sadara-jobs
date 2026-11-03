@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- شفرة أدسنس - تم الحفاظ عليها في مكانها بدقة متناهية لسلامة المراجعة -->
+    <!-- شفرة أدسنس - تم الحفاظ عليها بدقة متناهية لسلامة المراجعة[span_0](start_span)[span_0](end_span) -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096"
          crossorigin="anonymous"></script>
 
@@ -13,12 +13,12 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://sadarah.top/">
 
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* لوحة الألوان الزرقاء الملكية المستخرجة خصيصاً لهويتك */
+        /* لوحة الألوان الزرقاء الملكية الاحترافية المستخرجة من هويتك */
         :root { 
             --c-darkest: #001D39; 
             --c-dark: #0A4174; 
@@ -29,147 +29,156 @@
             --c-lightest: #BDD8E9;
             --gold: #d4af37; 
             --green: #25d366; 
-            --bg-body: #f0f5fa; 
-            --card-bg: #ffffff;
-            --text-dark: #0f172a; 
-            --shadow-3d: 0 15px 35px rgba(0, 29, 57, 0.08), 0 5px 15px rgba(0, 0, 0, 0.04);
-            --shadow-3d-hover: 0 25px 50px rgba(0, 29, 57, 0.15), 0 10px 20px rgba(0, 0, 0, 0.08);
+            --bg-body: #edf3f8; 
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --text-dark: #0b132b; 
+            
+            /* تأثيرات الـ 3D العائمة العالمية الفخمة */
+            --shadow-3d: 0 20px 45px -10px rgba(0, 29, 57, 0.15), 0 10px 20px -5px rgba(0, 65, 116, 0.1);
+            --shadow-3d-hover: 0 30px 60px -12px rgba(0, 29, 57, 0.25), 0 18px 30px -8px rgba(78, 142, 162, 0.2);
+            --glass-border: 1px solid rgba(123, 189, 232, 0.4);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-body); padding-bottom: 120px; color: var(--text-dark); overflow-x: hidden; }
+        body { background: var(--bg-body); padding-bottom: 130px; color: var(--text-dark); overflow-x: hidden; }
 
-        .global-top-bar { background: var(--c-darkest); color: var(--c-lightest); font-size: 11px; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(123, 189, 232, 0.2); }
-        .global-top-bar span { display: inline-flex; align-items: center; gap: 5px; color: var(--gold); }
+        .global-top-bar { background: var(--c-darkest); color: var(--c-lightest); font-size: 11px; padding: 9px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(123, 189, 232, 0.2); }
+        .global-top-bar span { display: inline-flex; align-items: center; gap: 6px; color: var(--gold); font-weight: 700; }
 
-        /* شريط التنقل العلوي العائم (Floating Navbar) */
-        .top-navbar { background: rgba(10, 65, 116, 0.95); backdrop-filter: blur(10px); color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 10px 25px rgba(0,29,57,0.2); }
-        .nav-left { display: flex; align-items: center; gap: 12px; }
-        .sidebar-toggle-btn { background: var(--gold); color: var(--c-darkest); border: none; padding: 8px 16px; border-radius: 12px; font-size: 13px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 12px rgba(212,175,55,0.3); }
-        .sidebar-toggle-btn:hover { background: #e6c547; transform: translateY(-2px); }
+        /* شريط التنقل العلوي العائم 3D بالكامل */
+        .top-navbar { background: rgba(0, 29, 57, 0.92); backdrop-filter: blur(12px); color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 10px 30px rgba(0,29,57,0.3); }
+        .nav-left { display: flex; align-items: center; gap: 14px; }
+        .sidebar-toggle-btn { background: var(--gold); color: var(--c-darkest); border: none; padding: 9px 18px; border-radius: 14px; font-size: 13px; cursor: pointer; font-weight: 900; display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 5px 15px rgba(212,175,55,0.4); }
+        .sidebar-toggle-btn:hover { background: #e6c547; transform: translateY(-3px) scale(1.02); }
         
-        .mini-btn { background: linear-gradient(135deg, var(--c-dark), var(--c-darkest)); color: white; border: 1px solid var(--gold); padding: 8px 16px; border-radius: 12px; font-weight: 700; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,29,57,0.2); }
-        .mini-btn:hover { transform: translateY(-2px); background: var(--c-mid); }
+        .mini-btn { background: linear-gradient(135deg, var(--c-dark), var(--c-darkest)); color: white; border: 1px solid var(--gold); padding: 9px 18px; border-radius: 14px; font-weight: 800; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,29,57,0.3); }
+        .mini-btn:hover { transform: translateY(-3px) scale(1.02); background: var(--c-mid); }
 
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 29, 57, 0.8); backdrop-filter: blur(6px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 29, 57, 0.82); backdrop-filter: blur(8px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.4s ease; }
         .sidebar-overlay.active { opacity: 1; visibility: visible; }
         
-        .sidebar-drawer { position: fixed; top: 0; right: -310px; width: 300px; height: 100%; background: var(--c-darkest); color: white; z-index: 99999; box-shadow: -10px 0 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-left: 3px solid var(--gold); }
+        .sidebar-drawer { position: fixed; top: 0; right: -320px; width: 310px; height: 100%; background: var(--c-darkest); color: white; z-index: 99999; box-shadow: -15px 0 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-left: 3px solid var(--gold); }
         .sidebar-drawer.active { right: 0; }
 
-        .sidebar-header { padding: 20px; background: var(--c-dark); border-bottom: 1px solid rgba(212, 175, 55, 0.3); display: flex; justify-content: space-between; align-items: center; }
-        .sidebar-header h3 { font-size: 15px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
-        .sidebar-close-btn { background: rgba(255,255,255,0.1); color: #ef4444; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: 0.2s; }
-        .sidebar-close-btn:hover { background: #ef4444; color: white; }
+        .sidebar-header { padding: 22px; background: var(--c-dark); border-bottom: 1px solid rgba(212, 175, 55, 0.3); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-header h3 { font-size: 16px; color: var(--gold); display: flex; align-items: center; gap: 8px; font-weight: 900; }
+        .sidebar-close-btn { background: rgba(255,255,255,0.1); color: #ef4444; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .sidebar-close-btn:hover { background: #ef4444; color: white; transform: rotate(90deg); }
 
-        .sidebar-menu { padding: 15px 10px; flex: 1; overflow-y: auto; }
-        .sidebar-section-title { font-size: 11px; color: var(--c-light-blue); font-weight: bold; margin: 12px 10px 6px; text-transform: uppercase; }
-        .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #e2e8f0; text-decoration: none; font-size: 13px; font-weight: bold; border-radius: 12px; margin-bottom: 6px; transition: 0.3s; }
-        .sidebar-item i { width: 20px; font-size: 15px; text-align: center; color: var(--gold); }
-        .sidebar-item:hover, .sidebar-item.active { background: rgba(123, 189, 232, 0.2); color: var(--gold); transform: translateX(-4px); }
-        .sidebar-item .badge { background: #ef4444; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-right: auto; }
-        .sidebar-footer { padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); background: var(--c-darkest); text-align: center; font-size: 11px; color: var(--c-muted); }
+        .sidebar-menu { padding: 18px 12px; flex: 1; overflow-y: auto; }
+        .sidebar-section-title { font-size: 11px; color: var(--c-light-blue); font-weight: 900; margin: 15px 10px 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 13px 16px; color: #e2e8f0; text-decoration: none; font-size: 13px; font-weight: 800; border-radius: 14px; margin-bottom: 6px; transition: 0.3s; }
+        .sidebar-item i { width: 22px; font-size: 16px; text-align: center; color: var(--gold); }
+        .sidebar-item:hover, .sidebar-item.active { background: rgba(123, 189, 232, 0.2); color: var(--gold); transform: translateX(-5px); }
+        .sidebar-item .badge { background: #ef4444; color: white; font-size: 10px; padding: 3px 9px; border-radius: 12px; margin-right: auto; font-weight: 900; }
+        .sidebar-footer { padding: 18px; border-top: 1px solid rgba(255,255,255,0.1); background: var(--c-darkest); text-align: center; font-size: 11px; color: var(--c-muted); font-weight: 700; }
 
-        /* زر الواتساب العائم بتصميم 3D وتأثير نبض */
-        .whatsapp-float-btn { position: fixed; bottom: 70px; left: 20px; background: linear-gradient(135deg, #25d366, #1ebe5d); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.5); z-index: 950; text-decoration: none; transition: all 0.3s ease; animation: pulse-whatsapp 2s infinite; }
-        .whatsapp-float-btn:hover { transform: scale(1.12) rotate(10deg); }
-        @keyframes pulse-whatsapp { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
+        /* زر الواتساب العائم 3D متطور */
+        .whatsapp-float-btn { position: fixed; bottom: 75px; left: 22px; background: linear-gradient(135deg, #25d366, #1ebe5d); color: white; width: 64px; height: 64px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 34px; box-shadow: 0 12px 30px rgba(37, 211, 102, 0.6); z-index: 950; text-decoration: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); animation: pulse-whatsapp 2s infinite; }
+        .whatsapp-float-btn:hover { transform: scale(1.18) rotate(12deg); box-shadow: 0 18px 40px rgba(37, 211, 102, 0.8); }
+        @keyframes pulse-whatsapp { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { box-shadow: 0 0 0 22px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
 
-        /* الهيدر الرئيسي (Hero) بتصميم عائم 3D متطور */
-        .hero { background: linear-gradient(135deg, var(--c-darkest), var(--c-dark)); color: white; padding: 60px 20px 80px; text-align: center; border-radius: 0 0 35px 35px; box-shadow: 0 20px 40px rgba(0,29,57,0.3); position: relative; overflow: hidden; }
-        .hero h1 { font-size: 28px; margin-bottom: 12px; font-weight: 900; letter-spacing: -0.5px; }
-        .hero h1 span { color: var(--gold); }
-        .hero p { font-size: 13px; color: var(--c-lightest); margin-bottom: 25px; max-width: 750px; margin-left: auto; margin-right: auto; line-height: 1.7; }
-        .hero-action-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-top: 15px; }
-        .hero-btn { text-decoration: none; padding: 12px 22px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        /* الهيدر الرئيسي (Hero) بتصميم عائم ثلاثي الأبعاد 3D فاخر جداً */
+        .hero { background: linear-gradient(145deg, var(--c-darkest), var(--c-dark)); color: white; padding: 70px 20px 95px; text-align: center; border-radius: 0 0 45px 45px; box-shadow: 0 25px 50px rgba(0,29,57,0.35); position: relative; overflow: hidden; border-bottom: 4px solid var(--gold); }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(123,189,232,0.1) 0%, transparent 70%); pointer-events: none; }
+        .hero h1 { font-size: 31px; margin-bottom: 14px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.3; }
+        .hero h1 span { color: var(--gold); text-shadow: 0 2px 10px rgba(212,175,55,0.4); }
+        .hero p { font-size: 14px; color: var(--c-lightest); margin-bottom: 28px; max-width: 780px; margin-left: auto; margin-right: auto; line-height: 1.8; font-weight: 500; }
+        .hero-action-btns { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 18px; }
+        .hero-btn { text-decoration: none; padding: 14px 24px; border-radius: 14px; font-size: 13px; font-weight: 900; display: inline-flex; align-items: center; gap: 9px; transition: 0.3s; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
         .hero-btn-primary { background: var(--gold); color: var(--c-darkest); }
-        .hero-btn-secondary { background: rgba(123, 189, 232, 0.2); color: white; border: 1px solid var(--c-light-blue); backdrop-filter: blur(5px); }
+        .hero-btn-secondary { background: rgba(123, 189, 232, 0.22); color: white; border: 1px solid var(--c-light-blue); backdrop-filter: blur(8px); }
         .hero-btn-app { background: var(--green); color: white; }
-        .hero-btn:hover { transform: translateY(-3px); filter: brightness(1.1); box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        .hero-btn:hover { transform: translateY(-4px) scale(1.03); filter: brightness(1.12); box-shadow: 0 12px 30px rgba(0,0,0,0.45); }
 
-        .main-container { max-width: 1200px; margin: -40px auto 0; padding: 0 15px; width: 100%; position: relative; z-index: 10; }
+        .main-container { max-width: 1200px; margin: -50px auto 0; padding: 0 15px; width: 100%; position: relative; z-index: 10; }
 
-        /* صندوق البحث بتصميم عائم 3D */
-        .search-filter-box { background: var(--card-bg); border-radius: 20px; padding: 22px; margin-bottom: 25px; border: 1px solid var(--c-lightest); box-shadow: var(--shadow-3d); }
-        .search-input-main { width: 100%; padding: 15px 20px; border: 1px solid var(--c-muted); border-radius: 14px; font-size: 13px; outline: none; margin-bottom: 14px; transition: 0.3s; background: #fafafa; }
-        .search-input-main:focus { border-color: var(--c-teal); box-shadow: 0 0 0 4px rgba(78, 142, 162, 0.2); background: white; }
-        .categories-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-        .cat-tag { background: #f1f5f9; color: var(--c-dark); border: 1px solid var(--c-muted); padding: 8px 16px; border-radius: 25px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .cat-tag.active, .cat-tag:hover { background: var(--c-dark); color: white; border-color: var(--c-dark); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(10,65,116,0.3); }
+        /* صندوق البحث بتصميم 3D عائم بالكامل */
+        .search-filter-box { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 24px; padding: 25px; margin-bottom: 30px; border: var(--glass-border); box-shadow: var(--shadow-3d); transition: transform 0.3s; }
+        .search-filter-box:hover { box-shadow: var(--shadow-3d-hover); }
+        .search-input-main { width: 100%; padding: 16px 20px; border: 1px solid var(--c-muted); border-radius: 16px; font-size: 14px; font-weight: 700; outline: none; margin-bottom: 16px; transition: 0.3s; background: #ffffff; color: var(--text-dark); box-shadow: inset 0 2px 5px rgba(0,0,0,0.03); }
+        .search-input-main:focus { border-color: var(--c-teal); box-shadow: 0 0 0 4px rgba(78, 142, 162, 0.25), inset 0 2px 5px rgba(0,0,0,0.02); }
+        .categories-tags { display: flex; gap: 10px; flex-wrap: wrap; }
+        .cat-tag { background: #e2eaf2; color: var(--c-dark); border: 1px solid var(--c-muted); padding: 9px 18px; border-radius: 30px; font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .cat-tag.active, .cat-tag:hover { background: var(--c-dark); color: white; border-color: var(--c-dark); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(10,65,116,0.35); }
 
-        /* السلايدر العائم للصور */
-        .ad-slider-box { position: relative; background: var(--card-bg); border-radius: 20px; overflow: hidden; margin-bottom: 25px; border: 1px solid var(--c-lightest); display: flex; justify-content: center; align-items: center; box-shadow: var(--shadow-3d); min-height: 200px; }
-        .ad-slider-img { width: 100%; height: auto; max-height: 400px; object-fit: contain; display: none; opacity: 0; transition: opacity 0.6s ease-in-out; background: var(--c-darkest); }
+        /* السلايدر العائم 3D للصور */
+        .ad-slider-box { position: relative; background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 24px; overflow: hidden; margin-bottom: 30px; border: var(--glass-border); display: flex; justify-content: center; align-items: center; box-shadow: var(--shadow-3d); min-height: 220px; transition: transform 0.3s; }
+        .ad-slider-box:hover { box-shadow: var(--shadow-3d-hover); }
+        .ad-slider-img { width: 100%; height: auto; max-height: 420px; object-fit: contain; display: none; opacity: 0; transition: opacity 0.6s ease-in-out; background: var(--c-darkest); }
         .ad-slider-img.active { display: block; opacity: 1; }
-        .slider-dots { position: absolute; bottom: 12px; display: flex; gap: 6px; width: 100%; justify-content: center; z-index: 5; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); transition: 0.3s; }
-        .dot.active { background: var(--gold); width: 22px; border-radius: 10px; }
+        .slider-dots { position: absolute; bottom: 14px; display: flex; gap: 8px; width: 100%; justify-content: center; z-index: 5; }
+        .dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.6); transition: 0.3s; }
+        .dot.active { background: var(--gold); width: 26px; border-radius: 12px; box-shadow: 0 0 10px var(--gold); }
 
-        /* شريط الإحصائيات 3D */
-        .stats-bar { background: var(--card-bg); border-radius: 20px; padding: 22px; margin-bottom: 25px; border: 1px solid var(--c-lightest); display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; text-align: center; box-shadow: var(--shadow-3d); }
-        .stat-item h4 { font-size: 19px; font-weight: 900; color: var(--c-dark); }
-        .stat-item p { font-size: 11px; color: var(--c-mid); font-weight: 700; margin-top: 4px; }
+        /* شريط الإحصائيات 3D عائم */
+        .stats-bar { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 24px; padding: 25px; margin-bottom: 30px; border: var(--glass-border); display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; text-align: center; box-shadow: var(--shadow-3d); transition: transform 0.3s; }
+        .stats-bar:hover { box-shadow: var(--shadow-3d-hover); }
+        .stat-item h4 { font-size: 21px; font-weight: 900; color: var(--c-dark); text-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .stat-item p { font-size: 11px; color: var(--c-mid); font-weight: 800; margin-top: 5px; }
 
-        .category-section-title { font-size: 17px; font-weight: 900; color: var(--c-darkest); margin: 30px 5px 16px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .category-section-title { font-size: 18px; font-weight: 900; color: var(--c-darkest); margin: 35px 5px 18px 5px; border-bottom: 3px solid var(--gold); padding-bottom: 8px; display: flex; align-items: center; gap: 10px; text-shadow: 0 1px 2px rgba(0,0,0,0.05); }
 
-        /* شبكة مربعات الوظائف والكفاءات بتصميم عائم 3D فريد */
-        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 35px; }
-        @media (max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } }
-        @media (max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+        /* شبكة مربعات الكفاءات، الخبرات، والوظائف (عائمة ثلاثية الأبعاد بالكامل 3D Floating) */
+        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 40px; }
+        @media (max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+        @media (max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
 
-        .product-card { background: var(--card-bg); border-radius: 20px; border: 1px solid var(--c-lightest); padding: 16px; box-shadow: var(--shadow-3d); display: flex; flex-direction: column; justify-content: space-between; gap: 12px; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
-        .product-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-3d-hover); border-color: var(--c-teal); }
+        .product-card { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: 24px; border: var(--glass-border); padding: 18px; box-shadow: var(--shadow-3d); display: flex; flex-direction: column; justify-content: space-between; gap: 14px; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); position: relative; }
+        .product-card:hover { transform: translateY(-10px) scale(1.01); box-shadow: var(--shadow-3d-hover); border-color: var(--c-teal); }
         
         /* حاوية صور مرنة بالكامل تعرض الصورة بأبعادها الواقعية دون أي قص أو تشويه */
-        .product-img-container { width: 100%; height: auto; max-height: 290px; background: #f8fafc; border-radius: 14px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; border: 1px solid var(--c-lightest); padding: 6px; }
-        .product-img { width: 100%; height: auto; max-height: 270px; object-fit: contain; display: block; border-radius: 10px; transition: transform 0.4s ease; }
-        .product-img-container:hover .product-img { transform: scale(1.05); }
+        .product-img-container { width: 100%; height: auto; max-height: 310px; background: #f4f8fb; border-radius: 16px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; border: 1px solid rgba(123, 189, 232, 0.3); padding: 8px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.04); }
+        .product-img { width: 100%; height: auto; max-height: 290px; object-fit: contain; display: block; border-radius: 12px; transition: transform 0.5s ease; }
+        .product-img-container:hover .product-img { transform: scale(1.06); }
 
-        .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; cursor: pointer; }
+        .product-title { font-size: 14px; font-weight: 900; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 38px; cursor: pointer; transition: color 0.2s; }
         .product-title:hover { color: var(--c-teal); }
-        .product-subtext { font-size: 11px; color: var(--c-mid); font-weight: bold; }
+        .product-subtext { font-size: 11px; color: var(--c-mid); font-weight: 800; background: #e2eaf2; padding: 4px 10px; border-radius: 8px; display: inline-block; width: fit-content; }
         
-        .order-btn { background: var(--c-dark); color: white; text-align: center; padding: 11px; border-radius: 10px; font-weight: bold; font-size: 11px; margin-top: 6px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 15px rgba(10, 65, 116, 0.25); }
-        .order-btn:hover { background: var(--c-darkest); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 29, 57, 0.35); }
-        .whatsapp-btn { background: var(--green); box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35); }
-        .whatsapp-btn:hover { background: #1da851; }
+        .order-btn { background: var(--c-dark); color: white; text-align: center; padding: 12px; border-radius: 12px; font-weight: 900; font-size: 12px; margin-top: 6px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; box-shadow: 0 5px 18px rgba(10, 65, 116, 0.3); }
+        .order-btn:hover { background: var(--c-darkest); transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0, 29, 57, 0.4); }
+        .whatsapp-btn { background: linear-gradient(135deg, #25d366, #1ebe5d); box-shadow: 0 5px 18px rgba(37, 211, 102, 0.4); }
+        .whatsapp-btn:hover { background: linear-gradient(135deg, #1ebe5d, #159a4b); }
 
-        .social-footer-box { background: var(--c-darkest); border-radius: 20px; padding: 30px; text-align: center; margin-top: 45px; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-        .social-footer-box h4 { color: var(--gold); font-size: 16px; margin-bottom: 12px; font-weight: bold; }
-        .social-icons-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; }
-        .social-icon-btn { width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 18px; transition: 0.3s; border: 1px solid rgba(212, 175, 55, 0.4); }
-        .social-icon-btn:hover { background: var(--gold); color: var(--c-darkest); transform: scale(1.2) rotate(10deg); }
+        /* صندوق التواصل الاجتماعي بتصميم عائم 3D */
+        .social-footer-box { background: var(--c-darkest); border-radius: 26px; padding: 35px 20px; text-align: center; margin-top: 50px; border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: 0 20px 45px rgba(0,29,57,0.3); position: relative; overflow: hidden; }
+        .social-footer-box h4 { color: var(--gold); font-size: 17px; margin-bottom: 14px; font-weight: 900; text-shadow: 0 2px 8px rgba(212,175,55,0.3); }
+        .social-icons-row { display: flex; justify-content: center; gap: 16px; margin-bottom: 16px; }
+        .social-icon-btn { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 20px; transition: 0.3s; border: 1px solid rgba(212, 175, 55, 0.5); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .social-icon-btn:hover { background: var(--gold); color: var(--c-darkest); transform: scale(1.2) rotate(12deg); box-shadow: 0 8px 20px rgba(212,175,55,0.5); }
 
-        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: var(--c-darkest); padding: 9px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); }
-        .ticker-label { background: var(--gold); color: var(--c-darkest); font-weight: 900; font-size: 10px; padding: 7px 14px; border-radius: 0 12px 12px 0; z-index: 10; white-space: nowrap; }
-        .ticker-content { display: flex; align-items: center; gap: 14px; animation: ticker 25s linear infinite; }
-        .ticker-content img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
+        /* شريط شركاء النجاح المتحرك العائم */
+        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: var(--c-darkest); padding: 10px 0; border-top: 3px solid var(--gold); display: flex; align-items: center; z-index: 900; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); }
+        .ticker-label { background: var(--gold); color: var(--c-darkest); font-weight: 900; font-size: 11px; padding: 8px 16px; border-radius: 0 14px 14px 0; z-index: 10; white-space: nowrap; box-shadow: 3px 0 10px rgba(0,0,0,0.2); }
+        .ticker-content { display: flex; align-items: center; gap: 16px; animation: ticker 25s linear infinite; }
+        .ticker-content img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        .footer-copyright { text-align: center; color: var(--c-muted); font-size: 11px; padding: 15px 0 55px; }
+        .footer-copyright { text-align: center; color: var(--c-muted); font-size: 11px; padding: 15px 0 60px; font-weight: 700; }
 
-        /* نافذة تفاصيل العنصر المرنة 3D */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,29,57,0.85); backdrop-filter: blur(8px); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-        .modal-card { background: var(--card-bg); color: #0f172a; padding: 25px; border-radius: 22px; width: 100%; max-width: 500px; text-align: right; box-shadow: 0 25px 50px rgba(0,29,57,0.4); border-top: 6px solid var(--gold); position: relative; max-height: 90vh; overflow-y: auto; }
-        .modal-img-preview { width: 100%; max-height: 400px; object-fit: contain; background: var(--c-darkest); border-radius: 12px; margin-bottom: 12px; display: block; cursor: pointer; transition: transform 0.3s; border: 1px solid var(--c-teal); }
+        /* النوافذ المنبثقة 3D الفخمة */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,29,57,0.88); backdrop-filter: blur(10px); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+        .modal-card { background: #ffffff; color: #0f172a; padding: 28px; border-radius: 26px; width: 100%; max-width: 520px; text-align: right; box-shadow: 0 30px 60px rgba(0,29,57,0.5); border-top: 6px solid var(--gold); position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-img-preview { width: 100%; max-height: 420px; object-fit: contain; background: var(--c-darkest); border-radius: 14px; margin-bottom: 14px; display: block; cursor: pointer; transition: transform 0.3s; border: 1px solid var(--c-teal); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
         .modal-img-preview:hover { transform: scale(1.02); }
-        .modal-card h3 { color: var(--c-dark); font-size: 18px; margin-bottom: 10px; font-weight: 900; }
-        .modal-card p { font-size: 12px; color: var(--c-mid); line-height: 1.6; margin-bottom: 14px; background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid var(--c-lightest); }
+        .modal-card h3 { color: var(--c-dark); font-size: 19px; margin-bottom: 12px; font-weight: 900; }
+        .modal-card p { font-size: 12px; color: var(--c-mid); line-height: 1.7; margin-bottom: 16px; background: #f8fafc; padding: 16px; border-radius: 14px; border: 1px solid var(--c-lightest); font-weight: 600; }
 
-        /* نافذة تسجيل الحساب 3D */
-        .auth-card-box { background: var(--card-bg); color: #0f172a; padding: 28px; border-radius: 22px; width: 100%; max-width: 440px; text-align: right; box-shadow: 0 25px 50px rgba(0,29,57,0.4); border-top: 6px solid var(--gold); position: relative; }
-        .auth-card-box h3 { color: var(--c-dark); font-size: 19px; margin-bottom: 8px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
-        .auth-card-box p { font-size: 11px; color: var(--c-mid); margin-bottom: 18px; }
-        .auth-input-group { margin-bottom: 14px; text-align: right; }
-        .auth-input-group label { display: block; font-size: 11px; font-weight: bold; color: var(--c-dark); margin-bottom: 5px; }
-        .auth-input-group input { width: 100%; padding: 13px 16px; border: 1px solid var(--c-muted); border-radius: 12px; font-size: 13px; outline: none; background: #fafafa; transition: 0.3s; }
-        .auth-input-group input:focus { border-color: var(--c-teal); box-shadow: 0 0 0 4px rgba(78, 142, 162, 0.2); background: white; }
+        /* نافذة الحساب 3D */
+        .auth-card-box { background: #ffffff; color: #0f172a; padding: 32px; border-radius: 26px; width: 100%; max-width: 460px; text-align: right; box-shadow: 0 30px 60px rgba(0,29,57,0.5); border-top: 6px solid var(--gold); position: relative; }
+        .auth-card-box h3 { color: var(--c-dark); font-size: 20px; margin-bottom: 8px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .auth-card-box p { font-size: 12px; color: var(--c-mid); margin-bottom: 20px; font-weight: 600; }
+        .auth-input-group { margin-bottom: 16px; text-align: right; }
+        .auth-input-group label { display: block; font-size: 12px; font-weight: 900; color: var(--c-dark); margin-bottom: 6px; }
+        .auth-input-group input { width: 100%; padding: 14px 18px; border: 1px solid var(--c-muted); border-radius: 14px; font-size: 14px; font-weight: 700; outline: none; background: #fafafa; transition: 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.03); }
+        .auth-input-group input:focus { border-color: var(--c-teal); box-shadow: 0 0 0 4px rgba(78, 142, 162, 0.25), inset 0 2px 5px rgba(0,0,0,0.02); background: white; }
         
-        .auth-btn-primary { width: 100%; background: linear-gradient(135deg, var(--green), #16a34a); color: white; border: none; padding: 13px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 10px; transition: 0.3s; box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35); }
-        .auth-btn-primary:hover { filter: brightness(1.1); transform: translateY(-2px); }
-        .auth-btn-switch { width: 100%; background: #f1f5f9; color: var(--c-dark); border: 1px solid var(--c-lightest); padding: 11px; border-radius: 12px; margin-top: 10px; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.3s; }
+        .auth-btn-primary { width: 100%; background: linear-gradient(135deg, #25d366, #1ebe5d); color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 900; cursor: pointer; font-size: 14px; margin-top: 12px; transition: 0.3s; box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4); }
+        .auth-btn-primary:hover { filter: brightness(1.1); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(37, 211, 102, 0.5); }
+        .auth-btn-switch { width: 100%; background: #f1f5f9; color: var(--c-dark); border: 1px solid var(--c-lightest); padding: 12px; border-radius: 14px; margin-top: 12px; cursor: pointer; font-size: 12px; font-weight: 800; transition: 0.3s; }
         .auth-btn-switch:hover { background: var(--c-lightest); }
-        .auth-btn-cancel { width: 100%; background: transparent; color: var(--c-mid); border: none; margin-top: 8px; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .auth-btn-cancel { width: 100%; background: transparent; color: var(--c-mid); border: none; margin-top: 8px; cursor: pointer; font-size: 12px; font-weight: 800; }
         .auth-btn-cancel:hover { color: #ef4444; }
     </style>
 </head>
@@ -185,14 +194,14 @@
             <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
                 <i class="fa-solid fa-bars"></i> الأقسام
             </button>
-            <span style="font-weight: 900; font-size:16px;">منصة <span>صدارة</span></span>
+            <span style="font-weight: 900; font-size:17px;">منصة <span>صدارة</span></span>
         </div>
         <div id="authArea">
             <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user-shield"></i> حساب / دخول</button>
         </div>
     </div>
 
-    <!-- زر الواتساب العائم -->
+    <!-- زر الواتساب العائم 3D -->
     <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank" class="whatsapp-float-btn" title="انضم لمجتمعنا على الواتساب">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
@@ -248,7 +257,7 @@
             </div>
         </div>
 
-        <!-- السلايدر المرن للصور -->
+        <!-- السلايدر العائم 3D للصور -->
         <div class="ad-slider-box" id="sliderBox">
             <div id="sliderImages"></div>
             <div class="slider-dots" id="sliderDots"></div>
@@ -276,7 +285,7 @@
                 <a href="https://tiktok.com/@sadarahsdr" target="_blank" class="social-icon-btn" title="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
                 <a href="https://www.facebook.com/Sadarah2026?mibextid=ZbWKwL" target="_blank" class="social-icon-btn" title="فيسبوك"><i class="fa-brands fa-facebook"></i></a>
             </div>
-            <p style="font-size: 11px; color: var(--c-lightest);">كن على اطلاع دائم بأحدث الفرص والخدمات الرقمية</p>
+            <p style="font-size: 12px; color: var(--c-lightest); font-weight: 700;">كن على اطلاع دائم بأحدث الفرص والخدمات الرقمية</p>
         </div>
 
         <div class="footer-copyright">
@@ -298,11 +307,11 @@
             <h3 id="modalItemTitle">عنوان العنصر</h3>
             <div id="modalItemDetails">تفاصيل المواصفات...</div>
             <div id="modalActionBtnContainer" style="margin-top: 14px;"></div>
-            <button onclick="closeModal('detailModal')" style="width:100%; background:var(--c-mid); color:white; border:none; padding:11px; border-radius:10px; margin-top:10px; cursor:pointer; font-size:11px; font-weight:bold; transition:0.3s;">إغلاق النافذة</button>
+            <button onclick="closeModal('detailModal')" style="width:100%; background:var(--c-mid); color:white; border:none; padding:13px; border-radius:12px; margin-top:12px; cursor:pointer; font-size:12px; font-weight:900; transition:0.3s;">إغلاق النافذة</button>
         </div>
     </div>
 
-    <!-- نافذة تسجيل الحساب أو الدخول -->
+    <!-- نافذة تسجيل الحساب أو الدخول 3D -->
     <div class="modal-overlay" id="authModal" onclick="checkOutsideModalClick(event, 'authModalContent')">
         <div class="auth-card-box" id="authModalContent">
             <h3 id="modalTitle"><i class="fa-solid fa-user-astronaut" style="color:var(--gold);"></i> تسجيل حساب جديد 🚀</h3>
@@ -326,7 +335,7 @@
             <button id="mainAuthBtn" onclick="processAuth()" class="auth-btn-primary">إنشاء وحفظ الحساب 📱</button>
             <button onclick="switchMode()" id="switchBtnText" class="auth-btn-switch">لديك حساب مسجل؟ تسجيل الدخول</button>
             <button onclick="closeModal('authModal')" class="auth-btn-cancel">إلغاء</button>
-            <div id="authMsg" style="font-size:11px; margin-top:10px; text-align:center; font-weight:bold;"></div>
+            <div id="authMsg" style="font-size:12px; margin-top:12px; text-align:center; font-weight:900;"></div>
         </div>
     </div>
 
@@ -454,13 +463,13 @@
                 });
                 jBox.appendChild(gridDiv);
             } else {
-                jBox.innerHTML = '<p style="text-align:center; color:var(--c-mid); font-size:12px; padding:20px;">لا توجد وظائف مطابقة لبحثك.</p>';
+                jBox.innerHTML = '<p style="text-align:center; color:var(--c-mid); font-size:13px; padding:25px; font-weight:750;">لا توجد وظائف مطابقة لبحثك.</p>';
             }
         }
 
         function getBlueBadgeHTML() {
             return `<span title="حساب موثق" style="display:inline-flex; align-items:center; vertical-align:middle;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#1877F2"/>
                 </svg>
             </span>`;
@@ -494,7 +503,7 @@
                 });
                 rBox.appendChild(gridDiv);
             } else {
-                rBox.innerHTML = '<p style="text-align:center; color:var(--c-mid); font-size:12px; padding:20px;">لا توجد كفاءات مطابقة لبحثك.</p>';
+                rBox.innerHTML = '<p style="text-align:center; color:var(--c-mid); font-size:13px; padding:25px; font-weight:750;">لا توجد كفاءات مطابقة لبحثك.</p>';
             }
         }
 
@@ -511,7 +520,7 @@
                     <a href="${imgUrl}" download="sadarah_${type}_${Date.now()}.jpg" target="_blank" title="اضغط لتنزيل الصورة مباشرة">
                         <img src="${imgUrl}" class="modal-img-preview">
                     </a>
-                    <div style="text-align:center; font-size:10px; color:var(--c-muted); margin-bottom:8px;">💡 (اضغط على الصورة أعلاه لتنزيلها بالحجم الواقعي)</div>
+                    <div style="text-align:center; font-size:11px; color:var(--c-muted); margin-bottom:10px; font-weight:700;">💡 (اضغط على الصورة أعلاه لتنزيلها بالحجم الواقعي)</div>
                 `;
             } else {
                 imgContainer.innerHTML = '';
@@ -573,7 +582,7 @@
                 title.innerHTML = '<i class="fa-solid fa-user-astronaut" style="color:var(--gold);"></i> تسجيل حساب جديد 🚀';
                 subtitle.textContent = 'أنشئ حسابك الآن لتنضم إلى نخبة الكفاءات وأصحاب الأعمال.';
                 btn.textContent = 'إنشاء وحفظ الحساب 📱';
-                btn.style.background = 'linear-gradient(135deg, var(--green), #16a34a)';
+                btn.style.background = 'linear-gradient(135deg, #25d366, #1ebe5d)';
                 switchBtn.textContent = 'لديك حساب مسجل؟ تسجيل الدخول';
             }
         }
@@ -608,7 +617,7 @@
             const loggedName = localStorage.getItem('sadara_logged_name');
             const authArea = document.getElementById('authArea');
             if (loggedName) {
-                authArea.innerHTML = `<span style="font-size:11px; color:var(--gold); font-weight:bold; margin-left:6px;">👤 ${loggedName}</span><button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border-color:#ef4444;">خروج</button>`;
+                authArea.innerHTML = `<span style="font-size:12px; color:var(--gold); font-weight:900; margin-left:6px;">👤 ${loggedName}</span><button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border-color:#ef4444;">خروج</button>`;
             } else {
                 authArea.innerHTML = `<button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user-shield"></i> حساب / دخول</button>`;
             }
