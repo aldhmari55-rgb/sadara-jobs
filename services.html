@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- شفرة أدسنس - تم الحفاظ عليها في مكانها بدقة متناهية لسلامة المراجعة -->
+    <!-- شفرة أدسنس - تم الحفاظ عليها لسلامة المراجعة -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096"
          crossorigin="anonymous"></script>
 
@@ -31,7 +31,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-light); color: var(--text-dark); direction: rtl; text-align: right; padding-bottom: 90px; overflow-x: hidden; }
         
-        /* الهيدر العلوي العالمي الفخم */
         .global-top-bar { background: var(--bg-dark); color: #94a3b8; font-size: 11px; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
         .global-top-bar span { display: inline-flex; align-items: center; gap: 5px; color: var(--gold); }
 
@@ -41,14 +40,13 @@
         .back-btn { background: var(--gold); color: var(--primary); padding: 7px 14px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 11px; border: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3); }
         .back-btn:hover { background: #e6c547; transform: translateY(-1px); }
 
-        /* شريط الأقسام السريع بالأيقونات العلوية (كما في المتاجر العالمية) */
+        /* شريط الأقسام السريع العلوي */
         .quick-categories-bar { background: var(--primary-light); padding: 12px 10px; display: flex; justify-content: center; gap: 20px; overflow-x: auto; border-bottom: 1px solid rgba(212,175,55,0.2); white-space: nowrap; }
         .quick-cat-item { color: #cbd5e1; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; padding: 4px 10px; border-radius: 8px; }
         .quick-cat-item i { font-size: 16px; color: var(--gold); }
         .quick-cat-item:hover, .quick-cat-item.active { color: white; background: rgba(212, 175, 55, 0.15); transform: translateY(-2px); }
 
-        /* شريط الترحيب الهيدر الرئيسي (Hero) */
-        .store-hero { background: linear-gradient(135deg, var(--primary), var(--bg-dark)); color: white; padding: 40px 20px; text-align: center; border-bottom: 4px solid var(--gold); box-shadow: inset 0 -15px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+        .store-hero { background: linear-gradient(135deg, var(--primary), var(--bg-dark)); color: white; padding: 40px 20px; text-align: center; border-bottom: 4px solid var(--gold); box-shadow: inset 0 -15px 30px rgba(0,0,0,0.3); }
         .store-hero h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; color: #fff; }
         .store-hero h1 span { color: var(--gold); }
         .store-hero p { font-size: 12px; color: #cbd5e1; max-width: 650px; margin: 0 auto 15px; line-height: 1.6; }
@@ -56,26 +54,21 @@
         .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; width: 100%; }
         .section-title { font-size: 16px; font-weight: 900; margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
 
-        /* صندوق البحث والفلاتر العصري */
         .search-filter-box { background: var(--card-bg); border-radius: 14px; padding: 18px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 6px 20px rgba(0,0,0,0.04); }
-        .search-input-main { width: 100%; padding: 13px 16px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; outline: none; margin-bottom: 12px; background: #fafafa; transition: 0.2s; }
+        .search-input-main { width: 100%; padding: 13px 16px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; outline: none; background: #fafafa; transition: 0.2s; }
         .search-input-main:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15); background: white; }
-        
-        .categories-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-        .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 7px 14px; border-radius: 22px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-1px); }
 
-        /* شبكة المنتجات الفخمة المتناسقة (3 أعمدة في الشاشات الكبيرة و2 في الجوال) */
         .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
         @media (max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
         @media (max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 
-        .product-card { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color); padding: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .product-card { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color); padding: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: all 0.3s ease; }
         .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); border-color: var(--gold); }
         
-        .product-img-container { width: 100%; background: #f8fafc; border-radius: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; border: 1px solid #edf2f7; min-height: 180px; }
-        .product-img { width: 100%; height: auto; max-height: 240px; object-fit: cover; display: block; border-radius: 8px; transition: transform 0.4s ease; }
-        .product-img-container:hover .product-img { transform: scale(1.05); }
+        /* الحاوية مرنة لعرض الصورة بأبعادها الواقعية دون قص (object-fit: contain) */
+        .product-img-container { width: 100%; height: auto; max-height: 320px; background: #f8fafc; border-radius: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; border: 1px solid #edf2f7; padding: 6px; }
+        .product-img { width: 100%; height: auto; max-height: 300px; object-fit: contain; display: block; border-radius: 6px; transition: transform 0.3s ease; }
+        .product-img-container:hover .product-img { transform: scale(1.02); }
 
         .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; cursor: pointer; transition: color 0.2s; }
         .product-title:hover { color: var(--accent-blue); }
@@ -83,13 +76,11 @@
         .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; background: #f1f5f9; padding: 3px 8px; border-radius: 6px; display: inline-block; }
         .product-price { color: #e11d48; font-weight: 900; font-size: 14px; }
 
-        /* زر طلب أنيق وعصري يحاكي المتاجر العالمية */
         .order-btn { background: linear-gradient(135deg, var(--green), #16a34a); color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
         .order-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
 
         .empty-box { text-align: center; padding: 50px 20px; color: #64748b; grid-column: 1 / -1; background: var(--card-bg); border-radius: 14px; border: 2px dashed #cbd5e1; font-size: 13px; }
 
-        /* النوافذ المنبثقة (Modals) العصرية الفخمة */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
         .modal-card { background: var(--card-bg); color: #0f172a; padding: 24px; border-radius: 18px; width: 100%; max-width: 480px; text-align: right; box-shadow: 0 20px 40px rgba(0,0,0,0.35); border-top: 5px solid var(--gold); max-height: 90vh; overflow-y: auto; position: relative; }
         
@@ -97,8 +88,9 @@
         .modal-card input, .modal-card select, .modal-card textarea { width: 100%; padding: 11px 14px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 12px; outline: none; background: #f8fafc; transition: 0.2s; }
         .modal-card input:focus, .modal-card select:focus, .modal-card textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); background: white; }
         
-        .modal-img-preview { width: 100%; max-height: 280px; object-fit: contain; background: var(--bg-dark); border-radius: 10px; margin-bottom: 8px; display: block; cursor: pointer; transition: transform 0.2s; border: 1px solid #334155; }
-        .modal-img-preview:hover { transform: scale(1.01); filter: brightness(1.05); }
+        /* الصورة داخل النافذة مرنة وبالحجم الواقعي الكامل دون قص */
+        .modal-img-preview { width: 100%; max-height: 400px; object-fit: contain; background: var(--bg-dark); border-radius: 10px; margin-bottom: 8px; display: block; cursor: pointer; transition: transform 0.2s; border: 1px solid #334155; }
+        .modal-img-preview:hover { transform: scale(1.01); }
         
         .payment-info-box { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin: 14px 0; font-size: 11px; color: #334155; line-height: 1.8; }
         .payment-info-box .payment-title { font-weight: 900; color: var(--primary); font-size: 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
@@ -120,7 +112,7 @@
         <a href="index.html" class="back-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
     </div>
 
-    <!-- شريط الأقسام السريع بالأيقونات الفخمة العلوي -->
+    <!-- شريط الأقسام السريع العلوي -->
     <div class="quick-categories-bar">
         <div class="quick-cat-item active" onclick="filterByCategory('الكل', this)"><i class="fa-solid fa-globe"></i> الكل</div>
         <div class="quick-cat-item" onclick="filterByCategory('جوالات', this)"><i class="fa-solid fa-mobile-screen"></i> جوالات</div>
@@ -139,15 +131,6 @@
     <div class="container">
         <div class="search-filter-box">
             <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن منتج، خدمة، جوال، أو إلكترونيات..." oninput="filterProducts()">
-            <div class="categories-tags">
-                <span class="cat-tag active" onclick="filterByCategory('الكل', this)">الكل 🌐</span>
-                <span class="cat-tag" onclick="filterByCategory('جوالات', this)">📱 جوالات</span>
-                <span class="cat-tag" onclick="filterByCategory('اكسسوارات', this)">🎧 اكسسوارات</span>
-                <span class="cat-tag" onclick="filterByCategory('الكترونيات', this)">⚡ الكترونيات</span>
-                <span class="cat-tag" onclick="filterByCategory('ادوات مكتبيه', this)">📎 ادوات مكتبيه</span>
-                <span class="cat-tag" onclick="filterByCategory('ادوات مدرسيه', this)">🎒 ادوات مدرسيه</span>
-                <span class="cat-tag" onclick="filterByCategory('عطور وهدايا', this)">🎁 عطور وهدايا</span>
-            </div>
         </div>
 
         <div class="section-title"><i class="fa-solid fa-store"></i> قائمة المنتجات والخدمات المتاحة للطلب الفوري</div>
@@ -232,7 +215,7 @@
 
         function filterByCategory(categoryName, el) {
             currentSelectedCategory = categoryName;
-            document.querySelectorAll('.cat-tag, .quick-cat-item').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.quick-cat-item').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
             executeFiltering();
         }
