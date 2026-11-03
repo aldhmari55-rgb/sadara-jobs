@@ -72,8 +72,8 @@
         .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* تعديلات السلايدر ليدعم إعلان HilltopAds ومحتوى الصورة بالتساوي */
-        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 16px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 120px; padding: 10px 0; }
+        /* صندوق السلايدر لعرض البنرات والإعلانات بشكل متناسق ومستقر */
+        .ad-slider-box { position: relative; background: white; border-radius: 14px; overflow: hidden; margin-bottom: 16px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 140px; padding: 10px 0; }
         .ad-slider-img { width: 100%; height: auto; max-height: 280px; object-fit: cover; display: none; opacity: 0; transition: opacity 0.6s; }
         .ad-slider-img.active { display: block; opacity: 1; }
         .slider-dots { position: absolute; bottom: 8px; display: flex; gap: 6px; width: 100%; justify-content: center; z-index: 5; }
@@ -196,21 +196,22 @@
             </div>
         </div>
 
-        <!-- صندوق السلايدر محتوياً على إعلان HilltopAds وبنرات القاعدة -->
+        <!-- صندوق السلايدر والإعلان (تم دمج إعلان HilltopAds داخله بحاوية آمنة ومستقلة) -->
         <div class="ad-slider-box" id="sliderBox">
-            <!-- كود إعلان HilltopAds للبنرات #7590489 -->
-            <script>
-            (function(dvrpa){
-            var d = document,
-                s = d.createElement('script'),
-                l = d.currentScript || d.scripts[d.scripts.length - 1];
-            s.settings = dvrpa || {};
-            s.src = "\/\/embellishedcoffee.com\/bJXLV.swd\/Gdlw0IYYWbcv\/Segm_9\/u\/ZHUclkkRPWTyCG1gO\/T_A\/0U0yD\/kotkNszKUU5UMdDaQ\/5UMiWO";
-            s.async = true;
-            s.referrerPolicy = 'no-referrer-when-downgrade';
-            l.parentNode.insertBefore(s, l);
-            })({})
-            </script>
+            <div id="hilltop-ad-container" style="width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 6px;">
+                <script>
+                (function(dvrpa){
+                var d = document,
+                    s = d.createElement('script'),
+                    l = d.currentScript || d.scripts[d.scripts.length - 1];
+                s.settings = dvrpa || {};
+                s.src = "\/\/embellishedcoffee.com\/bJXLV.swd\/Gdlw0IYYWbcv\/Segm_9\/u\/ZHUclkkRPWTyCG1gO\/T_A\/0U0yD\/kotkNszKUU5UMdDaQ\/5UMiWO";
+                s.async = true;
+                s.referrerPolicy = 'no-referrer-when-downgrade';
+                l.parentNode.insertBefore(s, l);
+                })({})
+                </script>
+            </div>
             
             <div id="sliderImages"></div>
             <div class="slider-dots" id="sliderDots"></div>
