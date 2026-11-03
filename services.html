@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- شفرة أدسنس - الحفاظ عليها لسلامة المراجعة[span_1](start_span)[span_1](end_span) -->
+    <!-- شفرة أدسنس - الحفاظ عليها لسلامة المراجعة[span_0](start_span)[span_0](end_span) -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096"
          crossorigin="anonymous"></script>
 
@@ -25,7 +25,6 @@
             --green: #25d366; 
             --text-main: #0b132b;
             
-            /* تأثيرات النيومورفيسم العالمية (الظلال الناعمة البارزة والغائرة) */
             --neu-shadow: 9px 9px 18px #cbced1, -9px -9px 18px #ffffff;
             --neu-shadow-inset: inset 5px 5px 10px #cbced1, inset -5px -5px 10px #ffffff;
             --neu-card-hover: 12px 12px 24px #cbced1, -12px -12px 24px #ffffff;
@@ -44,9 +43,13 @@
         .back-btn { background: var(--neu-surface); color: var(--c-darkest); border: 1px solid rgba(212,175,55,0.4); padding: 10px 18px; border-radius: 16px; font-weight: 800; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: var(--neu-shadow); }
         .back-btn:hover { box-shadow: var(--neu-shadow-inset); color: var(--gold); }
 
-        /* شريط الأقسام السريع العلوي بنمط النيومورفيسم */
-        .quick-categories-bar { background: var(--neu-surface); padding: 14px 15px; display: flex; justify-content: center; gap: 15px; overflow-x: auto; border-bottom: 1px solid rgba(212,175,55,0.2); white-space: nowrap; box-shadow: var(--neu-shadow-inset); }
-        .quick-cat-item { color: var(--c-mid); font-size: 12px; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.3s; padding: 8px 16px; border-radius: 14px; background: var(--neu-surface); box-shadow: var(--neu-shadow); }
+        /* شريط الأقسام السريع العلوي (مرن ومتكامل 100% يضمن ظهور كافة الأقسام مع السحب الأفقي الناعم) */
+        .quick-categories-bar { background: var(--neu-surface); padding: 16px 20px; display: flex; justify-content: flex-start; gap: 15px; overflow-x: auto; border-bottom: 1px solid rgba(212,175,55,0.2); white-space: nowrap; box-shadow: var(--neu-shadow-inset); scrollbar-width: thin; scrollbar-color: var(--c-mid) transparent; width: 100%; }
+        @media (min-width: 992px) { .quick-categories-bar { justify-content: center; } }
+        .quick-categories-bar::-webkit-scrollbar { height: 6px; }
+        .quick-categories-bar::-webkit-scrollbar-thumb { background: var(--c-mid); border-radius: 10px; }
+
+        .quick-cat-item { color: var(--c-mid); font-size: 12px; font-weight: 800; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.3s; padding: 10px 18px; border-radius: 14px; background: var(--neu-surface); box-shadow: var(--neu-shadow); flex-shrink: 0; min-width: 105px; }
         .quick-cat-item i { font-size: 16px; color: var(--gold); }
         .quick-cat-item:hover, .quick-cat-item.active { color: var(--c-darkest); box-shadow: var(--neu-shadow-inset); transform: translateY(-2px); }
 
@@ -113,7 +116,7 @@
         <a href="index.html" class="back-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
     </div>
 
-    <!-- شريط الأقسام السريع العلوي -->
+    <!-- شريط الأقسام السريع العلوي (متكامل تماماً لجميع التصنيفات على الكمبيوتر والجوال مع تمرير أفقي سلس) -->
     <div class="quick-categories-bar">
         <div class="quick-cat-item active" onclick="filterByCategory('الكل', this)"><i class="fa-solid fa-globe"></i> الكل</div>
         <div class="quick-cat-item" onclick="filterByCategory('جوالات', this)"><i class="fa-solid fa-mobile-screen"></i> جوالات</div>
@@ -140,7 +143,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الطلب بنمط النيومورفيسم -->
+    <!-- نافذة تفاصيل الطلب -->
     <div class="modal-overlay" id="productModal" onclick="checkOutsideClick(event)">
         <div class="modal-card" id="modalCardContent">
             <div id="modalProductImgContainer"></div>
@@ -283,7 +286,7 @@
             document.getElementById('buyerPhone').value = '';
             document.getElementById('buyerCity').value = '';
             document.getElementById('buyerRef').value = '';
-            document.getElementById('transferImage').value = '';
+            document.getElementById('transferImage').value, document.getElementById('transferImage').value = '';
             document.getElementById('buyerNotes').value = '';
             document.getElementById('orderMsg').textContent = '';
 
