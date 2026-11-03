@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- شفرة أدسنس - تم الحفاظ عليها في مكانها بدقة متناهية لسلامة المراجعة -->
+    <!-- شفرة أدسنس - تم الحفاظ عليها لسلامة المراجعة -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096"
          crossorigin="anonymous"></script>
 
@@ -9,167 +9,160 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>منصة صدارة | أفضل الوظائف والخدمات الرقمية في اليمن</title>
-    <meta name="description" content="منصة صدارة الرقمية للوظائف الشاغرة، الكفاءات والخبراء، خدمات التسويق، والمتجر الرقمي المباشر في اليمن. تصفح أحدث الفرص والخدمات بسهولة.">
-    <meta name="keywords" content="وظائف اليمن, خدمات رقمية, كفاءات يمنية, متجر خدمات, تسويق بالعمولة, منصة صدارة, وظائف شاغرة">
+    <meta name="description" content="منصة صدارة الرقمية للوظائف الشاغرة، الكفاءات والخبراء، خدمات التسويق، والمتجر الرقمي المباشر في اليمن.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://sadarah.top/">
-
-    <meta property="og:title" content="منصة صدارة للوظائف والخدمات الرقمية">
-    <meta property="og:description" content="منصتك الأولى للبحث عن الوظائف، الكفاءات، والخدمات الرقمية في اليمن.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://sadarah.top/">
 
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* لوحة الألوان الاحترافية المستخرجة من صورتك */
         :root { 
-            --primary: #0b132b; 
-            --primary-light: #1c2541;
-            --accent-blue: #3a86ff;
+            --c-darkest: #001D39; 
+            --c-dark: #0A4174; 
+            --c-mid: #49769F; 
+            --c-teal: #4E8EA2; 
+            --c-muted: #6EA2B3; 
+            --c-light-blue: #7BBDE8; 
+            --c-lightest: #BDD8E9;
             --gold: #d4af37; 
             --green: #25d366; 
-            --bg-dark: #070b19;
-            --bg-light: #f4f6f9; 
-            --text-dark: #0f172a; 
+            --bg-body: #f4f8fb; 
             --card-bg: #ffffff;
-            --border-color: #e2e8f0;
+            --text-dark: #0f172a; 
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-light); padding-bottom: 110px; color: var(--text-dark); overflow-x: hidden; }
+        body { background: var(--bg-body); padding-bottom: 110px; color: var(--text-dark); overflow-x: hidden; }
 
-        /* الشريط العلوي الفخم */
-        .global-top-bar { background: var(--bg-dark); color: #94a3b8; font-size: 11px; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .global-top-bar { background: var(--c-darkest); color: var(--c-lightest); font-size: 11px; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(123, 189, 232, 0.2); }
         .global-top-bar span { display: inline-flex; align-items: center; gap: 5px; color: var(--gold); }
 
-        .top-navbar { background: var(--primary); color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .top-navbar { background: var(--c-dark); color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,29,57,0.3); }
         .nav-left { display: flex; align-items: center; gap: 10px; }
-        .sidebar-toggle-btn { background: var(--gold); color: var(--primary); border: none; padding: 7px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .sidebar-toggle-btn { background: var(--gold); color: var(--c-darkest); border: none; padding: 7px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
         .sidebar-toggle-btn:hover { background: #e6c547; transform: translateY(-1px); }
         
-        .mini-btn { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; border: 1px solid var(--gold); padding: 7px 14px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .mini-btn:hover { transform: translateY(-1px); background: #334155; }
+        .mini-btn { background: linear-gradient(135deg, var(--c-dark), var(--c-darkest)); color: white; border: 1px solid var(--gold); padding: 7px 14px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .mini-btn:hover { transform: translateY(-1px); background: var(--c-mid); }
 
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 19, 36, 0.75); backdrop-filter: blur(4px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 29, 57, 0.75); backdrop-filter: blur(4px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .sidebar-overlay.active { opacity: 1; visibility: visible; }
         
-        .sidebar-drawer { position: fixed; top: 0; right: -310px; width: 300px; height: 100%; background: var(--bg-dark); color: white; z-index: 99999; box-shadow: -5px 0 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-left: 2px solid var(--gold); }
+        .sidebar-drawer { position: fixed; top: 0; right: -310px; width: 300px; height: 100%; background: var(--c-darkest); color: white; z-index: 99999; box-shadow: -5px 0 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-left: 2px solid var(--gold); }
         .sidebar-drawer.active { right: 0; }
 
-        .sidebar-header { padding: 18px; background: var(--primary); border-bottom: 1px solid rgba(212, 175, 55, 0.3); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-header { padding: 18px; background: var(--c-dark); border-bottom: 1px solid rgba(212, 175, 55, 0.3); display: flex; justify-content: space-between; align-items: center; }
         .sidebar-header h3 { font-size: 15px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
         .sidebar-close-btn { background: rgba(255,255,255,0.1); color: #ef4444; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: 0.2s; }
         .sidebar-close-btn:hover { background: #ef4444; color: white; }
 
         .sidebar-menu { padding: 15px 10px; flex: 1; overflow-y: auto; }
-        .sidebar-section-title { font-size: 11px; color: #94a3b8; font-weight: bold; margin: 12px 10px 6px; text-transform: uppercase; }
+        .sidebar-section-title { font-size: 11px; color: var(--c-light-blue); font-weight: bold; margin: 12px 10px 6px; text-transform: uppercase; }
         .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; color: #e2e8f0; text-decoration: none; font-size: 13px; font-weight: bold; border-radius: 10px; margin-bottom: 4px; transition: 0.2s; }
         .sidebar-item i { width: 20px; font-size: 15px; text-align: center; color: var(--gold); }
-        .sidebar-item:hover, .sidebar-item.active { background: rgba(212, 175, 55, 0.15); color: var(--gold); transform: translateX(-4px); }
+        .sidebar-item:hover, .sidebar-item.active { background: rgba(123, 189, 232, 0.15); color: var(--gold); transform: translateX(-4px); }
         .sidebar-item .badge { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-right: auto; }
-        .sidebar-footer { padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); background: #060d1a; text-align: center; font-size: 11px; color: #64748b; }
+        .sidebar-footer { padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); background: var(--c-darkest); text-align: center; font-size: 11px; color: var(--c-muted); }
 
-        /* زر الواتساب العائم المميز في أسفل اليسار */
+        /* زر الواتساب العائم */
         .whatsapp-float-btn { position: fixed; bottom: 65px; left: 20px; background: linear-gradient(135deg, #25d366, #1ebe5d); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); z-index: 950; text-decoration: none; transition: all 0.3s ease; animation: pulse-whatsapp 2s infinite; }
         .whatsapp-float-btn:hover { transform: scale(1.1) rotate(10deg); }
         @keyframes pulse-whatsapp { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
 
-        /* واجهة الـ Hero الاحترافية المستوحاة من أفضل تصاميم الشركات العالمية */
-        .hero { background: linear-gradient(135deg, var(--bg-dark), var(--primary)); color: white; padding: 50px 20px 60px; text-align: center; border-bottom: 4px solid var(--gold); position: relative; overflow: hidden; box-shadow: inset 0 -20px 40px rgba(0,0,0,0.4); }
+        /* واجهة الـ Hero الفخمة بألوانك المرفقة */
+        .hero { background: linear-gradient(135deg, var(--c-darkest), var(--c-dark)); color: white; padding: 50px 20px 60px; text-align: center; border-bottom: 4px solid var(--gold); position: relative; overflow: hidden; box-shadow: inset 0 -20px 40px rgba(0,29,57,0.4); }
         .hero h1 { font-size: 26px; margin-bottom: 10px; font-weight: 900; letter-spacing: -0.5px; }
         .hero h1 span { color: var(--gold); }
-        .hero p { font-size: 13px; color: #cbd5e1; margin-bottom: 22px; max-width: 750px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+        .hero p { font-size: 13px; color: var(--c-lightest); margin-bottom: 22px; max-width: 750px; margin-left: auto; margin-right: auto; line-height: 1.6; }
         .hero-action-btns { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 15px; }
         .hero-btn { text-decoration: none; padding: 11px 20px; border-radius: 10px; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.25); }
-        .hero-btn-primary { background: var(--gold); color: var(--primary); }
-        .hero-btn-secondary { background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(212, 175, 55, 0.5); }
+        .hero-btn-primary { background: var(--gold); color: var(--c-darkest); }
+        .hero-btn-secondary { background: rgba(123, 189, 232, 0.15); color: white; border: 1px solid var(--c-light-blue); }
         .hero-btn-app { background: var(--green); color: white; }
         .hero-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
 
         .main-container { max-width: 1200px; margin: -30px auto 0; padding: 0 15px; width: 100%; position: relative; z-index: 10; }
 
-        .search-filter-box { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
-        .search-input-main { width: 100%; padding: 14px 18px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 13px; outline: none; margin-bottom: 12px; transition: 0.2s; background: #fafafa; }
-        .search-input-main:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); background: white; }
+        .search-filter-box { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 25px; border: 1px solid var(--c-lightest); box-shadow: 0 10px 30px rgba(0,29,57,0.06); }
+        .search-input-main { width: 100%; padding: 14px 18px; border: 1px solid var(--c-muted); border-radius: 12px; font-size: 13px; outline: none; margin-bottom: 12px; transition: 0.2s; background: #fafafa; }
+        .search-input-main:focus { border-color: var(--c-teal); box-shadow: 0 0 0 3px rgba(78, 142, 162, 0.2); background: white; }
         .categories-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-        .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 7px 14px; border-radius: 22px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-1px); }
+        .cat-tag { background: #f1f5f9; color: var(--c-dark); border: 1px solid var(--c-muted); padding: 7px 14px; border-radius: 22px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .cat-tag.active, .cat-tag:hover { background: var(--c-dark); color: white; border-color: var(--c-dark); transform: translateY(-1px); }
 
-        /* صندوق السلايدر المرن لعرض البنرات بأحجامها الواقعية والمتناسقة */
-        .ad-slider-box { position: relative; background: var(--card-bg); border-radius: 16px; overflow: hidden; margin-bottom: 25px; border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.05); min-height: 200px; }
-        .ad-slider-img { width: 100%; height: auto; max-height: 380px; object-fit: contain; display: none; opacity: 0; transition: opacity 0.6s ease-in-out; background: var(--bg-dark); }
+        /* صندوق السلايدر المرن للصور */
+        .ad-slider-box { position: relative; background: var(--card-bg); border-radius: 16px; overflow: hidden; margin-bottom: 25px; border: 1px solid var(--c-lightest); display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 25px rgba(0,29,57,0.05); min-height: 200px; }
+        .ad-slider-img { width: 100%; height: auto; max-height: 380px; object-fit: contain; display: none; opacity: 0; transition: opacity 0.6s ease-in-out; background: var(--c-darkest); }
         .ad-slider-img.active { display: block; opacity: 1; }
         .slider-dots { position: absolute; bottom: 12px; display: flex; gap: 6px; width: 100%; justify-content: center; z-index: 5; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); transition: 0.3s; }
         .dot.active { background: var(--gold); width: 22px; border-radius: 10px; }
 
-        .stats-bar { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 25px; border: 1px solid var(--border-color); display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.05); }
-        .stat-item h4 { font-size: 18px; font-weight: 900; color: var(--primary); }
-        .stat-item p { font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px; }
+        .stats-bar { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 25px; border: 1px solid var(--c-lightest); display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center; box-shadow: 0 8px 25px rgba(0,29,57,0.05); }
+        .stat-item h4 { font-size: 18px; font-weight: 900; color: var(--c-dark); }
+        .stat-item p { font-size: 11px; color: var(--c-mid); font-weight: 700; margin-top: 3px; }
 
-        .category-section-title { font-size: 16px; font-weight: 900; color: var(--primary); margin: 28px 5px 14px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .category-section-title { font-size: 16px; font-weight: 900; color: var(--c-darkest); margin: 28px 5px 14px 5px; border-bottom: 2px solid var(--gold); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
 
-        /* شبكة المنتجات والوظائف والكفاءات المرنة والمنظمة (3 أعمدة في اللابتوب و2 في الجوال) */
+        /* شبكة عرض المنتجات والوظائف والكفاءات مرنة بالكامل */
         .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
         @media (max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
         @media (max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 
-        .product-card { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color); padding: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: all 0.3s ease; }
-        .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); border-color: var(--gold); }
+        .product-card { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--c-lightest); padding: 14px; box-shadow: 0 4px 15px rgba(0,29,57,0.03); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: all 0.3s ease; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,29,57,0.1); border-color: var(--c-teal); }
         
-        /* حاوية صور مرنة بالكامل تعرض الصورة بحجمها الطبيعي الواقعي دون قص */
-        .product-img-container { width: 100%; height: auto; max-height: 280px; background: #f8fafc; border-radius: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; border: 1px solid #edf2f7; padding: 4px; }
+        /* حاوية صور مرنة تعرض الصورة بحجمها الطبيعي الواقعي دون قص */
+        .product-img-container { width: 100%; height: auto; max-height: 280px; background: #f8fafc; border-radius: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; border: 1px solid var(--c-lightest); padding: 4px; }
         .product-img { width: 100%; height: auto; max-height: 260px; object-fit: contain; display: block; border-radius: 6px; transition: transform 0.3s ease; }
         .product-img-container:hover .product-img { transform: scale(1.03); }
 
         .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; cursor: pointer; }
-        .product-title:hover { color: var(--accent-blue); }
-        .product-subtext { font-size: 11px; color: #64748b; font-weight: bold; }
+        .product-title:hover { color: var(--c-teal); }
+        .product-subtext { font-size: 11px; color: var(--c-mid); font-weight: bold; }
         
-        .order-btn { background: var(--primary); color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; box-shadow: 0 2px 6px rgba(15, 35, 71, 0.2); }
-        .order-btn:hover { background: #1e3a8a; transform: translateY(-1px); }
+        .order-btn { background: var(--c-dark); color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; box-shadow: 0 2px 6px rgba(10, 65, 116, 0.2); }
+        .order-btn:hover { background: var(--c-darkest); transform: translateY(-1px); }
         .whatsapp-btn { background: var(--green); box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3); }
         .whatsapp-btn:hover { background: #1da851; }
 
-        .social-footer-box { background: var(--bg-dark); border-radius: 16px; padding: 25px; text-align: center; margin-top: 40px; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .social-footer-box { background: var(--c-darkest); border-radius: 16px; padding: 25px; text-align: center; margin-top: 40px; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
         .social-footer-box h4 { color: var(--gold); font-size: 15px; margin-bottom: 12px; font-weight: bold; }
         .social-icons-row { display: flex; justify-content: center; gap: 14px; margin-bottom: 14px; }
         .social-icon-btn { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 18px; transition: 0.2s; border: 1px solid rgba(212, 175, 55, 0.4); }
-        .social-icon-btn:hover { background: var(--gold); color: var(--primary); transform: scale(1.15); }
+        .social-icon-btn:hover { background: var(--gold); color: var(--c-darkest); transform: scale(1.15); }
 
-        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-dark); padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
-        .ticker-label { background: var(--gold); color: var(--primary); font-weight: 900; font-size: 10px; padding: 6px 12px; border-radius: 0 10px 10px 0; z-index: 10; white-space: nowrap; }
+        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: var(--c-darkest); padding: 8px 0; border-top: 2px solid var(--gold); display: flex; align-items: center; z-index: 900; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
+        .ticker-label { background: var(--gold); color: var(--c-darkest); font-weight: 900; font-size: 10px; padding: 6px 12px; border-radius: 0 10px 10px 0; z-index: 10; white-space: nowrap; }
         .ticker-content { display: flex; align-items: center; gap: 12px; animation: ticker 25s linear infinite; }
         .ticker-content img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        .footer-copyright { text-align: center; color: #64748b; font-size: 11px; padding: 15px 0 50px; }
+        .footer-copyright { text-align: center; color: var(--c-muted); font-size: 11px; padding: 15px 0 50px; }
 
-        /* نافذة تفاصيل العنصر مع عرض الصور الواقعية وقابلية التحميل المباشر */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-        .modal-card { background: var(--card-bg); color: #0f172a; padding: 24px; border-radius: 18px; width: 100%; max-width: 500px; text-align: right; box-shadow: 0 20px 40px rgba(0,0,0,0.35); border-top: 5px solid var(--gold); position: relative; max-height: 90vh; overflow-y: auto; }
-        .modal-img-preview { width: 100%; max-height: 380px; object-fit: contain; background: var(--bg-dark); border-radius: 10px; margin-bottom: 10px; display: block; cursor: pointer; transition: transform 0.2s; border: 1px solid #334155; }
-        .modal-img-preview:hover { transform: scale(1.01); filter: brightness(1.05); }
-        .modal-card h3 { color: var(--primary); font-size: 17px; margin-bottom: 10px; font-weight: 900; }
-        .modal-card p { font-size: 12px; color: #475569; line-height: 1.6; margin-bottom: 12px; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        /* النوافذ المنبثقة المرنة */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,29,57,0.8); backdrop-filter: blur(5px); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+        .modal-card { background: var(--card-bg); color: #0f172a; padding: 24px; border-radius: 18px; width: 100%; max-width: 500px; text-align: right; box-shadow: 0 20px 40px rgba(0,29,57,0.35); border-top: 5px solid var(--gold); position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-img-preview { width: 100%; max-height: 380px; object-fit: contain; background: var(--c-darkest); border-radius: 10px; margin-bottom: 10px; display: block; cursor: pointer; transition: transform 0.2s; border: 1px solid var(--c-teal); }
+        .modal-card h3 { color: var(--c-dark); font-size: 17px; margin-bottom: 10px; font-weight: 900; }
+        .modal-card p { font-size: 12px; color: var(--c-mid); line-height: 1.6; margin-bottom: 12px; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid var(--c-lightest); }
 
-        /* نافذة تسجيل الحساب أو الدخول الجديدة بتصميم عصري وأزرار فاخرة */
-        .auth-card-box { background: var(--card-bg); color: #0f172a; padding: 25px; border-radius: 18px; width: 100%; max-width: 440px; text-align: right; box-shadow: 0 20px 40px rgba(0,0,0,0.35); border-top: 5px solid var(--gold); position: relative; }
-        .auth-card-box h3 { color: var(--primary); font-size: 18px; margin-bottom: 6px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
-        .auth-card-box p { font-size: 11px; color: #64748b; margin-bottom: 16px; }
+        /* نافذة الحساب الجديدة */
+        .auth-card-box { background: var(--card-bg); color: #0f172a; padding: 25px; border-radius: 18px; width: 100%; max-width: 440px; text-align: right; box-shadow: 0 20px 40px rgba(0,29,57,0.35); border-top: 5px solid var(--gold); position: relative; }
+        .auth-card-box h3 { color: var(--c-dark); font-size: 18px; margin-bottom: 6px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .auth-card-box p { font-size: 11px; color: var(--c-mid); margin-bottom: 16px; }
         .auth-input-group { margin-bottom: 14px; text-align: right; }
-        .auth-input-group label { display: block; font-size: 11px; font-weight: bold; color: #334155; margin-bottom: 5px; }
-        .auth-input-group input { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; outline: none; background: #f8fafc; transition: 0.2s; }
-        .auth-input-group input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); background: white; }
+        .auth-input-group label { display: block; font-size: 11px; font-weight: bold; color: var(--c-dark); margin-bottom: 5px; }
+        .auth-input-group input { width: 100%; padding: 12px 14px; border: 1px solid var(--c-muted); border-radius: 10px; font-size: 13px; outline: none; background: #f8fafc; transition: 0.2s; }
+        .auth-input-group input:focus { border-color: var(--c-teal); box-shadow: 0 0 0 3px rgba(78, 142, 162, 0.2); background: white; }
         
         .auth-btn-primary { width: 100%; background: linear-gradient(135deg, var(--green), #16a34a); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 10px; transition: 0.2s; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
         .auth-btn-primary:hover { filter: brightness(1.05); transform: translateY(-1px); }
-        
-        .auth-btn-switch { width: 100%; background: #f1f5f9; color: var(--primary); border: 1px solid #e2e8f0; padding: 10px; border-radius: 10px; margin-top: 8px; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.2s; }
-        .auth-btn-switch:hover { background: #e2e8f0; }
-        
-        .auth-btn-cancel { width: 100%; background: transparent; color: #64748b; border: none; margin-top: 6px; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .auth-btn-switch { width: 100%; background: #f1f5f9; color: var(--c-dark); border: 1px solid var(--c-lightest); padding: 10px; border-radius: 10px; margin-top: 8px; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.2s; }
+        .auth-btn-switch:hover { background: var(--c-lightest); }
+        .auth-btn-cancel { width: 100%; background: transparent; color: var(--c-mid); border: none; margin-top: 6px; cursor: pointer; font-size: 11px; font-weight: bold; }
         .auth-btn-cancel:hover { color: #ef4444; }
     </style>
 </head>
@@ -192,7 +185,7 @@
         </div>
     </div>
 
-    <!-- زر الواتساب العائم في أسفل اليسار -->
+    <!-- زر الواتساب العائم -->
     <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank" class="whatsapp-float-btn" title="انضم لمجتمعنا على الواتساب">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
@@ -224,7 +217,7 @@
         </div>
     </div>
 
-    <!-- الهيدر الفخم المستوحى من أحدث التصاميم العالمية -->
+    <!-- الهيدر الفخم بالألوان الجديدة -->
     <div class="hero">
         <h1>المنصة الأولى لتمكين <span>الأعمال والتوظيف الرقمي</span> في اليمن</h1>
         <p>بوابتك المتكاملة لاستكشاف الفرص الشاغرة، طلب النخب والكفاءات المعتمدة، وتسوق أفضل المنتجات والخدمات الرقمية بمرونة فائقة عبر كافة الأجهزة</p>
@@ -248,7 +241,7 @@
             </div>
         </div>
 
-        <!-- صندوق السلايدر المرن لعرض الصور بأحجامها الواقعية والمتناسقة -->
+        <!-- السلايدر المرن للصور -->
         <div class="ad-slider-box" id="sliderBox">
             <div id="sliderImages"></div>
             <div class="slider-dots" id="sliderDots"></div>
@@ -276,7 +269,7 @@
                 <a href="https://tiktok.com/@sadarahsdr" target="_blank" class="social-icon-btn" title="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
                 <a href="https://www.facebook.com/Sadarah2026?mibextid=ZbWKwL" target="_blank" class="social-icon-btn" title="فيسبوك"><i class="fa-brands fa-facebook"></i></a>
             </div>
-            <p style="font-size: 11px; color: #cbd5e1;">كن على اطلاع دائم بأحدث الفرص والخدمات الرقمية</p>
+            <p style="font-size: 11px; color: var(--c-lightest);">كن على اطلاع دائم بأحدث الفرص والخدمات الرقمية</p>
         </div>
 
         <div class="footer-copyright">
@@ -291,18 +284,18 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل العنصر (عرض الصور الواقعية مع خاصية التحميل المباشر عند النقر) -->
+    <!-- نافذة تفاصيل العنصر المرنة -->
     <div class="modal-overlay" id="detailModal" onclick="checkOutsideModalClick(event, 'detailModalContent')">
         <div class="modal-card" id="detailModalContent">
             <div id="modalImageContainer"></div>
             <h3 id="modalItemTitle">عنوان العنصر</h3>
             <div id="modalItemDetails">تفاصيل المواصفات...</div>
             <div id="modalActionBtnContainer" style="margin-top: 14px;"></div>
-            <button onclick="closeModal('detailModal')" style="width:100%; background:#64748b; color:white; border:none; padding:10px; border-radius:10px; margin-top:10px; cursor:pointer; font-size:11px; font-weight:bold; transition:0.2s;">إغلاق النافذة</button>
+            <button onclick="closeModal('detailModal')" style="width:100%; background:var(--c-mid); color:white; border:none; padding:10px; border-radius:10px; margin-top:10px; cursor:pointer; font-size:11px; font-weight:bold; transition:0.2s;">إغلاق النافذة</button>
         </div>
     </div>
 
-    <!-- نافذة تسجيل الحساب أو الدخول بتصميم عصري وأزرار فاخرة -->
+    <!-- نافذة تسجيل الحساب أو الدخول -->
     <div class="modal-overlay" id="authModal" onclick="checkOutsideModalClick(event, 'authModalContent')">
         <div class="auth-card-box" id="authModalContent">
             <h3 id="modalTitle"><i class="fa-solid fa-user-astronaut" style="color:var(--gold);"></i> تسجيل حساب جديد 🚀</h3>
@@ -440,7 +433,7 @@
                 gridDiv.className = 'products-grid';
 
                 list.forEach(j => {
-                    let imgHTML = (j.image && j.image.trim() !== '') ? `<div class="product-img-container" onclick='openDetailsModal(${JSON.stringify(j)}, "job")'><img src="${j.image}" class="product-img"></div>` : '<div class="product-img-container" style="padding:40px 0;"><i class="fa-solid fa-briefcase" style="font-size:28px; color:#cbd5e1;"></i></div>';
+                    let imgHTML = (j.image && j.image.trim() !== '') ? `<div class="product-img-container" onclick='openDetailsModal(${JSON.stringify(j)}, "job")'><img src="${j.image}" class="product-img"></div>` : '<div class="product-img-container" style="padding:40px 0;"><i class="fa-solid fa-briefcase" style="font-size:28px; color:var(--c-muted);"></i></div>';
                     let phoneNum = j.phone ? j.phone.replace(/[^0-9]/g, '') : '967780568507';
 
                     gridDiv.innerHTML += `
@@ -454,7 +447,7 @@
                 });
                 jBox.appendChild(gridDiv);
             } else {
-                jBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:20px;">لا توجد وظائف مطابقة لبحثك.</p>';
+                jBox.innerHTML = '<p style="text-align:center; color:var(--c-mid); font-size:12px; padding:20px;">لا توجد وظائف مطابقة لبحثك.</p>';
             }
         }
 
@@ -494,7 +487,7 @@
                 });
                 rBox.appendChild(gridDiv);
             } else {
-                rBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; padding:20px;">لا توجد كفاءات مطابقة لبحثك.</p>';
+                rBox.innerHTML = '<p style="text-align:center; color:var(--c-mid); font-size:12px; padding:20px;">لا توجد كفاءات مطابقة لبحثك.</p>';
             }
         }
 
@@ -511,7 +504,7 @@
                     <a href="${imgUrl}" download="sadarah_${type}_${Date.now()}.jpg" target="_blank" title="اضغط لتنزيل الصورة مباشرة">
                         <img src="${imgUrl}" class="modal-img-preview">
                     </a>
-                    <div style="text-align:center; font-size:10px; color:#64748b; margin-bottom:8px;">💡 (اضغط على الصورة أعلاه لتنزيلها بالحجم الواقعي)</div>
+                    <div style="text-align:center; font-size:10px; color:var(--c-muted); margin-bottom:8px;">💡 (اضغط على الصورة أعلاه لتنزيلها بالحجم الواقعي)</div>
                 `;
             } else {
                 imgContainer.innerHTML = '';
@@ -563,10 +556,10 @@
 
             if (isLoginMode) {
                 nameBox.style.display = 'none';
-                title.innerHTML = '<i class="fa-solid fa-lock" style="color:var(--primary);"></i> تسجيل الدخول 🔐';
+                title.innerHTML = '<i class="fa-solid fa-lock" style="color:var(--c-dark);"></i> تسجيل الدخول 🔐';
                 subtitle.textContent = 'أدخل رقم الواتساب وكلمة المرور للوصول إلى حسابك.';
                 btn.textContent = 'تسجيل الدخول 🚀';
-                btn.style.background = 'linear-gradient(135deg, var(--primary), #1e3a8a)';
+                btn.style.background = 'linear-gradient(135deg, var(--c-dark), var(--c-darkest))';
                 switchBtn.textContent = 'ليس لديك حساب؟ سجل حساب جديد';
             } else {
                 nameBox.style.display = 'block';
