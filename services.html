@@ -15,12 +15,14 @@
     
     <style>
         :root { 
-            --primary: #0f2347; 
-            --primary-dark: #07101e;
+            --primary: #0b132b; 
+            --primary-light: #1c2541;
+            --accent-blue: #3a86ff;
             --gold: #d4af37; 
             --green: #25d366; 
             --red: #ef4444; 
-            --bg-light: #f8fafc; 
+            --bg-dark: #070b19;
+            --bg-light: #f4f6f9; 
             --text-dark: #0f172a; 
             --card-bg: #ffffff;
             --border-color: #e2e8f0;
@@ -29,21 +31,32 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-light); color: var(--text-dark); direction: rtl; text-align: right; padding-bottom: 90px; overflow-x: hidden; }
         
-        /* شريط التنقل العلوي الفخم */
-        .top-navbar { background: var(--primary-dark); color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .store-logo { font-size: 15px; font-weight: 900; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
-        .back-btn { background: var(--gold); color: var(--primary-dark); padding: 7px 14px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 11px; border: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3); }
+        /* الهيدر العلوي العالمي الفخم */
+        .global-top-bar { background: var(--bg-dark); color: #94a3b8; font-size: 11px; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .global-top-bar span { display: inline-flex; align-items: center; gap: 5px; color: var(--gold); }
+
+        .top-navbar { background: var(--primary); color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .store-logo { font-size: 16px; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .store-logo span { color: var(--gold); }
+        .back-btn { background: var(--gold); color: var(--primary); padding: 7px 14px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 11px; border: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3); }
         .back-btn:hover { background: #e6c547; transform: translateY(-1px); }
 
-        /* قسم الهيدر الترويجي (Hero Banner) العصري */
-        .store-hero { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 35px 20px; text-align: center; border-bottom: 4px solid var(--gold); margin-bottom: 25px; box-shadow: inset 0 -10px 20px rgba(0,0,0,0.2); }
-        .store-hero h1 { font-size: 22px; font-weight: 900; margin-bottom: 8px; color: #fff; }
+        /* شريط الأقسام السريع بالأيقونات العلوية (كما في المتاجر العالمية) */
+        .quick-categories-bar { background: var(--primary-light); padding: 12px 10px; display: flex; justify-content: center; gap: 20px; overflow-x: auto; border-bottom: 1px solid rgba(212,175,55,0.2); white-space: nowrap; }
+        .quick-cat-item { color: #cbd5e1; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; padding: 4px 10px; border-radius: 8px; }
+        .quick-cat-item i { font-size: 16px; color: var(--gold); }
+        .quick-cat-item:hover, .quick-cat-item.active { color: white; background: rgba(212, 175, 55, 0.15); transform: translateY(-2px); }
+
+        /* شريط الترحيب الهيدر الرئيسي (Hero) */
+        .store-hero { background: linear-gradient(135deg, var(--primary), var(--bg-dark)); color: white; padding: 40px 20px; text-align: center; border-bottom: 4px solid var(--gold); box-shadow: inset 0 -15px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+        .store-hero h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; color: #fff; }
+        .store-hero h1 span { color: var(--gold); }
         .store-hero p { font-size: 12px; color: #cbd5e1; max-width: 650px; margin: 0 auto 15px; line-height: 1.6; }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; width: 100%; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; width: 100%; }
         .section-title { font-size: 16px; font-weight: 900; margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
 
-        /* صندوق البحث والفلاتر */
+        /* صندوق البحث والفلاتر العصري */
         .search-filter-box { background: var(--card-bg); border-radius: 14px; padding: 18px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 6px 20px rgba(0,0,0,0.04); }
         .search-input-main { width: 100%; padding: 13px 16px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; outline: none; margin-bottom: 12px; background: #fafafa; transition: 0.2s; }
         .search-input-main:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15); background: white; }
@@ -52,26 +65,27 @@
         .cat-tag { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 7px 14px; border-radius: 22px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .cat-tag.active, .cat-tag:hover { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-1px); }
 
-        /* شبكة المنتجات الفخمة المتناسقة */
+        /* شبكة المنتجات الفخمة المتناسقة (3 أعمدة في الشاشات الكبيرة و2 في الجوال) */
         .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
         @media (max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
         @media (max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 
-        .product-card { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color); padding: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: all 0.3s ease; }
-        .product-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-color: var(--gold); }
+        .product-card { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color); padding: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); border-color: var(--gold); }
         
         .product-img-container { width: 100%; background: #f8fafc; border-radius: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; border: 1px solid #edf2f7; min-height: 180px; }
         .product-img { width: 100%; height: auto; max-height: 240px; object-fit: cover; display: block; border-radius: 8px; transition: transform 0.4s ease; }
         .product-img-container:hover .product-img { transform: scale(1.05); }
 
         .product-title { font-size: 13px; font-weight: 700; color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; cursor: pointer; transition: color 0.2s; }
-        .product-title:hover { color: #2563eb; }
+        .product-title:hover { color: var(--accent-blue); }
         
         .product-subtext { font-size: 10px; color: #64748b; font-weight: bold; background: #f1f5f9; padding: 3px 8px; border-radius: 6px; display: inline-block; }
         .product-price { color: #e11d48; font-weight: 900; font-size: 14px; }
 
-        .order-btn { background: linear-gradient(135deg, var(--primary), #1e3a8a); color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-block; transition: 0.2s; box-shadow: 0 4px 12px rgba(15, 35, 71, 0.2); }
-        .order-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        /* زر طلب أنيق وعصري يحاكي المتاجر العالمية */
+        .order-btn { background: linear-gradient(135deg, var(--green), #16a34a); color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 11px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
+        .order-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
 
         .empty-box { text-align: center; padding: 50px 20px; color: #64748b; grid-column: 1 / -1; background: var(--card-bg); border-radius: 14px; border: 2px dashed #cbd5e1; font-size: 13px; }
 
@@ -83,7 +97,7 @@
         .modal-card input, .modal-card select, .modal-card textarea { width: 100%; padding: 11px 14px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 12px; outline: none; background: #f8fafc; transition: 0.2s; }
         .modal-card input:focus, .modal-card select:focus, .modal-card textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); background: white; }
         
-        .modal-img-preview { width: 100%; max-height: 280px; object-fit: contain; background: #07101e; border-radius: 10px; margin-bottom: 8px; display: block; cursor: pointer; transition: transform 0.2s; border: 1px solid #334155; }
+        .modal-img-preview { width: 100%; max-height: 280px; object-fit: contain; background: var(--bg-dark); border-radius: 10px; margin-bottom: 8px; display: block; cursor: pointer; transition: transform 0.2s; border: 1px solid #334155; }
         .modal-img-preview:hover { transform: scale(1.01); filter: brightness(1.05); }
         
         .payment-info-box { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin: 14px 0; font-size: 11px; color: #334155; line-height: 1.8; }
@@ -96,14 +110,30 @@
 </head>
 <body>
 
+    <div class="global-top-bar">
+        <span><i class="fa-solid fa-shield-halved"></i> متجر معتمد وآمن 100%</span>
+        <span><i class="fa-solid fa-truck-fast"></i> توصيل فوري ودعم متواصل عبر الواتساب</span>
+    </div>
+
     <div class="top-navbar">
-        <div class="store-logo"><i class="fa-solid fa-bag-shopping" style="color:var(--gold);"></i> متجر صدارة الرقمي</div>
+        <div class="store-logo"><i class="fa-solid fa-bag-shopping" style="color:var(--gold);"></i> متجر <span>صدارة</span> الرقمي</div>
         <a href="index.html" class="back-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
     </div>
 
+    <!-- شريط الأقسام السريع بالأيقونات الفخمة العلوي -->
+    <div class="quick-categories-bar">
+        <div class="quick-cat-item active" onclick="filterByCategory('الكل', this)"><i class="fa-solid fa-globe"></i> الكل</div>
+        <div class="quick-cat-item" onclick="filterByCategory('جوالات', this)"><i class="fa-solid fa-mobile-screen"></i> جوالات</div>
+        <div class="quick-cat-item" onclick="filterByCategory('اكسسوارات', this)"><i class="fa-solid fa-headphones"></i> اكسسوارات</div>
+        <div class="quick-cat-item" onclick="filterByCategory('الكترونيات', this)"><i class="fa-solid fa-bolt"></i> الكترونيات</div>
+        <div class="quick-cat-item" onclick="filterByCategory('ادوات مكتبيه', this)"><i class="fa-solid fa-paperclip"></i> أدوات مكتبية</div>
+        <div class="quick-cat-item" onclick="filterByCategory('ادوات مدرسيه', this)"><i class="fa-solid fa-backpack"></i> أدوات مدرسية</div>
+        <div class="quick-cat-item" onclick="filterByCategory('عطور وهدايا', this)"><i class="fa-solid fa-gift"></i> عطور وهدايا</div>
+    </div>
+
     <div class="store-hero">
-        <h1>تسوق أفضل المنتجات، الأجهزة والخدمات الرقمية</h1>
-        <p>تصفح تشكيلة واسعة من الجوالات، الاكسسوارات، الأدوات التقنية والمكتبية بأسعار منافسة وخدمة دفع وسداد آمنة وسريعة.</p>
+        <h1>اكتشف أحدث <span>المنتجات والأجهزة التقنية</span></h1>
+        <p>تصفح تشكيلة حصرية من الهواتف الذكية، الاكسسوارات، المستلزمات التقنية والمكتبية بأفضل الأسعار وبنظام سداد فوري وآمن.</p>
     </div>
 
     <div class="container">
@@ -155,7 +185,7 @@
             <label>المحافظة الحالية</label>
             <input type="text" id="buyerCity" placeholder="ذمار">
 
-            <label>كيف وصلت إلينا؟ (كود المسوق - اختيارى)</label>
+            <label>كيف وصلت إلينا؟ (كود المسوق - اختياري)</label>
             <input type="text" id="buyerRef" placeholder="أدخل كود المسوق أو اتركها فارغة...">
 
             <label>وسيلة الدفع والتحويل المستخدمة</label>
@@ -196,13 +226,13 @@
                 allProducts = products.filter(p => p.is_active !== false);
                 renderProducts(allProducts);
             } catch(e) {
-                container.innerHTML = `<div class="empty-box">حدث خطأ في الاتصال بقاعدة البيانات السحابية.</div>`;
+                container.innerHTML = `<div class="empty-box">حدث خطأ في الاتصال بقاعدة البيانات السحابية[span_0](start_span)[span_0](end_span).</div>`;
             }
         }
 
         function filterByCategory(categoryName, el) {
             currentSelectedCategory = categoryName;
-            document.querySelectorAll('.cat-tag').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.cat-tag, .quick-cat-item').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
             executeFiltering();
         }
@@ -240,7 +270,7 @@
                             <span class="product-subtext">${p.category || 'عام'}</span>
                             <span class="product-price">${p.price}</span>
                         </div>
-                        <button onclick='openProductModal(${JSON.stringify(p)})' class="order-btn">اطلب الآن 🛒</button>
+                        <button onclick='openProductModal(${JSON.stringify(p)})' class="order-btn"><i class="fa-solid fa-cart-shopping"></i> اطلب الآن</button>
                     </div>
                 `;
             });
