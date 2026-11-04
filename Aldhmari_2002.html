@@ -13,55 +13,58 @@
             --sadarah-light: #F4F7FB;
             --sadarah-gold: #D4AF37;
             --sadarah-btn: #0284C7;
+            --sadarah-btn-hover: #0369A1;
             --red: #ef4444; 
             --green: #10b981;
+            --spec-bg: #F0F7FF;
+            --spec-border: #0284C7;
+            --spec-text: #1E3A8A;
             --neu-shadow: 6px 6px 14px #cbced1, -6px -6px 14px #ffffff;
             --neu-shadow-inset: inset 3px 3px 6px #cbced1, inset -3px -3px 6px #ffffff;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--sadarah-light); padding: 15px; color: #0f172a; }
+        body { background: var(--sadarah-light); padding: 15px; color: #0f172a; padding-bottom: 60px; }
 
         .container { max-width: 950px; margin: 0 auto; }
-        .top-navbar { background: var(--sadarah-primary); padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 20px; }
-        .mini-btn { background: rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; }
+        .top-navbar { background: var(--sadarah-primary); padding: 14px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 20px; box-shadow: var(--neu-shadow); }
+        .mini-btn { background: rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: bold; border: 1px solid rgba(212,175,55,0.4); }
 
         .section-box { background: var(--sadarah-light); padding: 18px; border-radius: 16px; margin-bottom: 20px; box-shadow: var(--neu-shadow-inset); }
-        .section-box h3 { color: var(--sadarah-primary); font-size: 14px; margin-bottom: 12px; font-weight: 900; }
+        .section-box h3 { color: var(--sadarah-primary); font-size: 14px; margin-bottom: 12px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
 
         .form-group { margin-bottom: 10px; }
         .form-group label { display: block; font-size: 11px; font-weight: 900; color: var(--sadarah-primary); margin-bottom: 4px; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: none; border-radius: 8px; font-size: 11px; outline: none; background: #ffffff; box-shadow: var(--neu-shadow-inset); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: none; border-radius: 8px; font-size: 11px; font-weight: 700; outline: none; background: #ffffff; box-shadow: var(--neu-shadow-inset); color: #0f172a; }
 
-        .submit-btn { background: var(--sadarah-btn); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; }
+        .submit-btn { background: var(--sadarah-btn); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 900; width: 100%; cursor: pointer; font-size: 12px; box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3); transition: 0.3s; }
+        .submit-btn:hover { background: var(--sadarah-btn-hover); }
         
-        .data-row { background: #ffffff; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--neu-shadow); }
-        .action-btn { border: none; padding: 6px 10px; border-radius: 6px; font-weight: 900; font-size: 10px; cursor: pointer; color: white; }
+        .data-row { background: #ffffff; padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--neu-shadow); flex-wrap: wrap; gap: 10px; }
+        .data-info { font-size: 11px; color: var(--spec-text); line-height: 1.6; font-weight: 700; flex-grow: 1; }
+        .action-btns { display: flex; gap: 6px; align-items: center; }
+        .action-btn { border: none; padding: 7px 12px; border-radius: 8px; font-weight: 900; font-size: 10px; cursor: pointer; color: white; transition: 0.3s; }
+        .btn-edit { background: var(--sadarah-btn); }
+        .btn-delete { background: var(--red); }
+        .btn-pay { background: var(--green); }
+        
+        .product-thumb-small { width: 45px; height: 45px; border-radius: 8px; object-fit: contain; background: var(--sadarah-light); box-shadow: var(--neu-shadow-inset); padding: 2px; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="top-navbar">
-            <span>⚙️ لوحة الإدارة المطلقة والتحكم الكامل</span>
-            <a href="index.html" class="mini-btn">المتجر الرئيسي 🏪</a>
+            <span style="font-weight: 900; font-size: 14px;">⚙️ لوحة الإدارة الشاملة والتحكم المطلق</span>
+            <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. مربع إدارة الشعار والهوية -->
+        <!-- 1. نموذج إضافة أو تعديل المنتجات والعروض -->
         <div class="section-box">
-            <h3>🖼️ إدارة الشعار المباشر للمنصة والمتجر</h3>
+            <h3 id="formTitle">➕ إضافة / تعديل منتج أو خدمة جديدة</h3>
+            <input type="hidden" id="editProductId">
+            <div class="form-group"><label>عنوان المنتج/الخدمة</label><input type="text" id="pTitle" placeholder="مثال: تاب لينوفو M8"></div>
             <div class="form-group">
-                <label>اختر صورة الشعار الجديد من المعرض</label>
-                <input type="file" id="logoFile" accept="image/*">
-            </div>
-            <button onclick="uploadStoreLogo()" class="submit-btn" style="background:var(--sadarah-primary); color:var(--sadarah-gold);">تحديث الشعار فوراً 🌟</button>
-        </div>
-
-        <!-- 2. مربع إدارة المنتجات والتخفيضات -->
-        <div class="section-box">
-            <h3>📦 إضافة وتعديل المنتجات والعروض</h3>
-            <div class="form-group"><label>عنوان المنتج/الخدمة</label><input type="text" id="pTitle"></div>
-            <div class="form-group">
-                <label>التصنيف</label>
+                <label>القسم / التصنيف</label>
                 <select id="pCategory">
                     <option value="إلكترونيات">إلكترونيات</option>
                     <option value="جوالات">جوالات</option>
@@ -70,26 +73,51 @@
                     <option value="ملابس">ملابس</option>
                     <option value="ادوات تجميل">أدوات تجميل</option>
                     <option value="اشتراكات رقمية">اشتراكات رقمية</option>
+                    <option value="خدمات">خدمات</option>
                 </select>
             </div>
-            <div class="form-group"><label>السعر الحالي</label><input type="text" id="pPrice" placeholder="3500 YER"></div>
-            <div class="form-group"><label>السعر السابق (المشطوب - التخفيضات)</label><input type="text" id="pOldPrice" placeholder="5000 YER"></div>
-            <div class="form-group"><label>نسبة الخصم</label><input type="text" id="pDiscount" placeholder="-30%"></div>
-            <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage"></div>
-            <div class="form-group"><label>الوصف</label><textarea id="pDesc" rows="2"></textarea></div>
-            <button onclick="saveProductData()" class="submit-btn">نشر / حفظ المنتج 🚀</button>
+            <div class="form-group"><label>السعر الحالي</label><input type="text" id="pPrice" placeholder="15000 YER"></div>
+            <div class="form-group"><label>السعر السابق (المشطوب - للتخفيضات والعروض)</label><input type="text" id="pOldPrice" placeholder="18000 YER"></div>
+            <div class="form-group"><label>نسبة أو شارة الخصم</label><input type="text" id="pDiscount" placeholder="خصم 15%"></div>
+            <div class="form-group"><label>صورة المنتج (اختر من المعرض)</label><input type="file" id="pImage" accept="image/*"></div>
+            <div class="form-group"><label>الوصف والمميزات</label><textarea id="pDesc" rows="2" placeholder="تفاصيل المنتج..."></textarea></div>
+            <button onclick="saveProductData()" id="saveBtn" class="submit-btn">حفظ ونشر المنتج 🚀</button>
+            <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:var(--sadarah-light); color:var(--sadarah-primary); border:none; padding:8px; border-radius:8px; margin-top:6px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
         </div>
 
-        <!-- 3. مربع تسوية العمولات والمسوقين -->
+        <!-- 2. مربع عرض المنتجات السابقة والتحكم الكامل بها (تعديل وحذف) -->
         <div class="section-box">
-            <h3>🤝 مربع المسوقين وتصفية العمولات</h3>
-            <div id="affiliatesList">جاري تحميل المسوقين...</div>
+            <h3>📦 قائمة المنتجات المعروضة في المتجر (تعديل وحذف)</h3>
+            <div id="productsAdminList">جاري تحميل المنتجات...</div>
         </div>
 
-        <!-- 4. مربع الطلبات الواردة -->
+        <!-- 3. مربع إدارة العروض والتخفيضات المميزة (الشريط المتحرك) -->
         <div class="section-box">
-            <h3>🛒 طلبات الشراء المباشرة</h3>
-            <div id="ordersList">جاري تحميل الطلبات...</div>
+            <h3>🔥 إدارة العروض والتخفيضات المميزة (الشريط المتحرك)</h3>
+            <p style="font-size:10.5px; color:#64748b; margin-bottom:10px;">جميع المنتجات التي يحتوي سعرها على (سعر سابق) أو (نسبة خصم) تظهر تلقائياً في شريط أفضل العروض المتحرك أفقياً في الصفحة الرئيسية.</p>
+            <div id="offersAdminList">جاري تحميل العروض والتخفيضات...</div>
+        </div>
+
+        <!-- 4. مربع المسوقين وتصفية العمولات بالشكل التفصيلي الشامل -->
+        <div class="section-box">
+            <h3>🤝 مربع المسوقين (الأفلييت) والتفاصيل الشاملة</h3>
+            <div id="affiliatesAdminList">جاري تحميل المسوقين...</div>
+        </div>
+
+        <!-- 5. مربع الطلبات الواردة المباشرة -->
+        <div class="section-box">
+            <h3>🛒 طلبات الشراء الواردة والتحكم بها</h3>
+            <div id="ordersAdminList">جاري تحميل الطلبات...</div>
+        </div>
+
+        <!-- 6. قسم إدارة الشعار (موجود في أسفل اللوحة) -->
+        <div class="section-box">
+            <h3>🖼️ إدارة وتحديث شعار المنصة والمتجر</h3>
+            <div class="form-group">
+                <label>تحديث الشعار الأساسي (اختر صورة الشعار من المعرض)</label>
+                <input type="file" id="logoFile" accept="image/*">
+            </div>
+            <button onclick="uploadStoreLogo()" class="submit-btn" style="background:var(--sadarah-primary); color:var(--sadarah-gold);">تحديث شعار المتجر فوراً 🌟</button>
         </div>
     </div>
 
@@ -98,49 +126,151 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        let globalProducts = [];
+
         async function loadAdminPanel() {
-            // تحميل المسوقين والعمولات
+            // 1. تحميل المنتجات وإظهار زر التعديل والحذف لكل منتج
+            let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
+            globalProducts = prods || [];
+            let pBox = document.getElementById('productsAdminList');
+            let oBox = document.getElementById('offersAdminList');
+            
+            pBox.innerHTML = '';
+            oBox.innerHTML = '';
+
+            if(!globalProducts || globalProducts.length === 0) {
+                pBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد منتجات حالياً.</p>';
+                oBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد تخفيضات مفعلة.</p>';
+            } else {
+                globalProducts.forEach(p => {
+                    let img = p.image || 'images/logo.jpg';
+                    
+                    // قائمة المنتجات الكلية
+                    pBox.innerHTML += `
+                        <div class="data-row">
+                            <img src="${img}" class="product-thumb-small">
+                            <div class="data-info">
+                                <b>${p.title}</b> [${p.category}]<br>
+                                הסعر: <span style="color:var(--red);">${p.price}</span> ${p.old_price ? `|<span style="text-decoration:line-through; color:#64748b;"> ${p.old_price}</span>` : ''}
+                            </div>
+                            <div class="action-btns">
+                                <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل ✏️</button>
+                                <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
+                            </div>
+                        </div>
+                    `;
+
+                    // قائمة العروض والتخفيضات المميزة
+                    if(p.old_price || p.discount) {
+                        oBox.innerHTML += `
+                            <div class="data-row" style="border-right:3px solid var(--red);">
+                                <img src="${img}" class="product-thumb-small">
+                                <div class="data-info">
+                                    <b>${p.title}</b><br>
+                                    خصم: <span style="color:var(--red);">${p.discount || 'عرض خاص'}</span> | السعر الحالي: ${p.price} (السابق: ${p.old_price || 'لا يوجد'})
+                                </div>
+                                <div class="action-btns">
+                                    <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل العرض ✏️</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+                if(oBox.innerHTML === '') oBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد منتجات عليها خصم حالياً.</p>';
+            }
+
+            // 2. تحميل المسوقين والبيانات الشاملة بكل مسوق
             let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
-            let affBox = document.getElementById('affiliatesList');
+            let affBox = document.getElementById('affiliatesAdminList');
             affBox.innerHTML = '';
-            if(affs) {
+            if(!affs || affs.length === 0) {
+                affBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا يوجد مسوقين مسجلين.</p>';
+            } else {
                 affs.forEach(a => {
                     affBox.innerHTML += `
                         <div class="data-row">
-                            <div style="font-size:11px;"><b>${a.full_name || a.name}</b> (${a.phone})<br>كود: <code>${a.ref_code}</code> | العمولات: <b>${a.total_earnings || 0} YER</b></div>
-                            <div>
-                                <button class="action-btn" style="background:var(--green);" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تسوية العمولة 💰</button>
-                                <button class="action-btn" style="background:var(--red);" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
+                            <div class="data-info">
+                                👤 المسوق: <b>${a.full_name || a.name || 'بدون اسم'}</b> (${a.phone})<br>
+                                🔗 كود الإحالة: <code>${a.ref_code}</code> | الدفع: ${a.payout_method || 'غير محدد'} (${a.payout_number || 'بدون رقم'})<br>
+                                👁️ الزيارات: ${a.clicks || 0} | 🛒 المبيعات: ${a.total_sales || 0} | 💰 العمولات المستحقة: <b style="color:var(--green);">${a.total_earnings || 0} YER</b>
+                            </div>
+                            <div class="action-btns">
+                                <button class="action-btn btn-pay" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية العمولة 💰</button>
+                                <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
                             </div>
                         </div>
                     `;
                 });
             }
 
-            // تحميل الطلبات
+            // 3. تحميل الطلبات المباشرة
             let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
-            let ordBox = document.getElementById('ordersList');
+            let ordBox = document.getElementById('ordersAdminList');
             ordBox.innerHTML = '';
-            if(orders) {
+            if(!orders || orders.length === 0) {
+                ordBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد طلبات شراء واردة.</p>';
+            } else {
                 orders.forEach(o => {
+                    let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--sadarah-btn);">[عرض السند]</a>` : 'بدون سند';
                     ordBox.innerHTML += `
                         <div class="data-row">
-                            <div style="font-size:11px;"><b>${o.product_title}</b><br>العميل: ${o.customer_name} | المسوق: ${o.ref_code}</div>
-                            <button class="action-btn" style="background:var(--red);" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
+                            <div class="data-info">
+                                📦 <b>${o.product_title}</b><br>
+                                👤 العميل: ${o.customer_name} (${o.customer_phone})<br>
+                                💳 الدفع: ${o.payment_method} | السند: ${receiptLink} | 🔗 المسوق: ${o.ref_code}<br>
+                                📝 ملاحظات: ${o.notes || 'لا توجد'}
+                            </div>
+                            <div class="action-btns">
+                                <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
+                            </div>
                         </div>
                     `;
                 });
             }
         }
 
+        function editProduct(id) {
+            let p = globalProducts.find(item => item.id === id);
+            if(p) {
+                document.getElementById('editProductId').value = p.id;
+                document.getElementById('pTitle').value = p.title || '';
+                document.getElementById('pCategory').value = p.category || 'إلكترونيات';
+                document.getElementById('pPrice').value = p.price || '';
+                document.getElementById('pOldPrice').value = p.old_price || '';
+                document.getElementById('pDiscount').value = p.discount || '';
+                document.getElementById('pDesc').value = p.description || '';
+                
+                document.getElementById('formTitle').textContent = '✏️ تعديل بيانات المنتج: ' + p.title;
+                document.getElementById('saveBtn').textContent = 'تحديث المنتج الآن 🔄';
+                document.getElementById('cancelEditBtn').style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('editProductId').value = '';
+            document.getElementById('pTitle').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('pOldPrice').value = '';
+            document.getElementById('pDiscount').value = '';
+            document.getElementById('pImage').value = '';
+            document.getElementById('pDesc').value = '';
+            document.getElementById('formTitle').textContent = '➕ إضافة / تعديل منتج أو خدمة جديدة';
+            document.getElementById('saveBtn').textContent = 'حفظ ونشر المنتج 🚀';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
         async function saveProductData() {
-            let title = document.getElementById('pTitle').value;
+            let editId = document.getElementById('editProductId').value;
+            let title = document.getElementById('pTitle').value.trim();
             let category = document.getElementById('pCategory').value;
-            let price = document.getElementById('pPrice').value;
-            let old_price = document.getElementById('pOldPrice').value;
-            let discount = document.getElementById('pDiscount').value;
+            let price = document.getElementById('pPrice').value.trim();
+            let old_price = document.getElementById('pOldPrice').value.trim();
+            let discount = document.getElementById('pDiscount').value.trim();
             let fileInput = document.getElementById('pImage');
-            let description = document.getElementById('pDesc').value;
+            let description = document.getElementById('pDesc').value.trim();
+
+            if(!title || !price) { alert('يرجى إدخال عنوان المنتج والسعر على الأقل.'); return; }
 
             let imageUrl = '';
             if(fileInput.files[0]) {
@@ -153,18 +283,26 @@
                 }
             }
 
-            await db.from('platform_services').insert([{
-                title, category, price, old_price, discount, image: imageUrl, description, is_active: true
-            }]);
+            let payload = { title, category, price, old_price, discount, description, is_active: true };
+            if(imageUrl) payload.image = imageUrl;
 
-            alert('تم نشر المنتج والعرض بنجاح! 🎉');
-            location.reload();
+            if(editId) {
+                await db.from('platform_services').update(payload).eq('id', editId);
+                alert('تم تحديث بيانات المنتج بنجاح! ✅');
+            } else {
+                await db.from('platform_services').insert([payload]);
+                alert('تمت إضافة المنتج بنجاح إلى المتجر! 🎉');
+            }
+
+            resetForm();
+            loadAdminPanel();
         }
 
         async function settleCommission(affId, current) {
-            let paid = prompt('أدخل المبلغ المراد تسويته مع المسوق:', current);
-            if(paid) {
-                await db.from('affiliates').update({ total_earnings: current - Number(paid) }).eq('id', affId);
+            let paid = prompt('أدخل المبلغ المراد تسويته مع المسوق (خصم من العمولات):', current);
+            if(paid !== null) {
+                let remaining = Math.max(0, current - Number(paid));
+                await db.from('affiliates').update({ total_earnings: remaining }).eq('id', affId);
                 alert('تمت تسوية العمولة بنجاح! 💵');
                 loadAdminPanel();
             }
@@ -175,12 +313,14 @@
             if(fileInput.files[0]) {
                 let file = fileInput.files[0];
                 await db.storage.from('products_images').upload('logo.jpg', file, { upsert: true });
-                alert('تم تحديث شعار المتجر بنجاح!');
+                alert('تم تحديث شعار المتجر بنجاح! 🌟');
+            } else {
+                alert('يرجى اختيار صورة الشعار أولاً.');
             }
         }
 
         async function deleteRecord(table, id) {
-            if(confirm('تأكيد الحذف؟')) {
+            if(confirm('هل أنت متأكد من رغبتك في الحذف؟')) {
                 await db.from(table).delete().eq('id', id);
                 loadAdminPanel();
             }
