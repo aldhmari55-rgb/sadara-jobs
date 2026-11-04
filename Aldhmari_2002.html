@@ -3,138 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الشاملة والأدمن | منصة صدارة</title>
+    <title>لوحة التحكم الشاملة والإدارة المطلقة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
             --sadarah-primary: #0F2A4A;
-            --sadarah-dark: #0A1C33;
             --sadarah-light: #F4F7FB;
             --sadarah-gold: #D4AF37;
             --sadarah-btn: #0284C7;
-            --sadarah-btn-hover: #0369A1;
-            --spec-bg: #F0F7FF;
-            --spec-border: #0284C7;
-            --spec-text: #1E3A8A;
             --red: #ef4444; 
             --green: #10b981;
-            --neu-shadow: 8px 8px 16px #cbced1, -8px -8px 16px #ffffff;
-            --neu-shadow-inset: inset 4px 4px 8px #cbced1, inset -4px -4px 8px #ffffff;
+            --neu-shadow: 6px 6px 14px #cbced1, -6px -6px 14px #ffffff;
+            --neu-shadow-inset: inset 3px 3px 6px #cbced1, inset -3px -3px 6px #ffffff;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--sadarah-light); padding: 15px; color: #0f172a; }
 
-        .admin-container { max-width: 1050px; margin: 0 auto; width: 100%; }
-        .top-navbar { background: var(--sadarah-primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sadarah-gold); border-radius: 14px; margin-bottom: 20px; box-shadow: var(--neu-shadow); }
-        .mini-btn { background: rgba(255,255,255,0.1); color: #FFFFFF; border: 1px solid rgba(212,175,55,0.4); padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; }
-        .mini-btn:hover { background: var(--sadarah-gold); color: var(--sadarah-dark); }
+        .container { max-width: 950px; margin: 0 auto; }
+        .top-navbar { background: var(--sadarah-primary); padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 20px; }
+        .mini-btn { background: rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; }
 
-        .admin-card { background: var(--sadarah-light); padding: 22px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.9); margin-bottom: 20px; box-shadow: var(--neu-shadow); }
-        .admin-header { background: var(--sadarah-primary); color: white; padding: 18px; border-radius: 14px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid var(--sadarah-gold); }
-        
         .section-box { background: var(--sadarah-light); padding: 18px; border-radius: 16px; margin-bottom: 20px; box-shadow: var(--neu-shadow-inset); }
         .section-box h3 { color: var(--sadarah-primary); font-size: 14px; margin-bottom: 12px; font-weight: 900; }
 
-        .data-row { background: var(--sadarah-light); border-right: 4px solid var(--spec-border); padding: 12px 16px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--neu-shadow); gap: 10px; flex-wrap: wrap; }
-        .data-info { font-size: 11px; color: var(--spec-text); font-weight: 700; line-height: 1.6; }
-
-        .action-btns { display: flex; gap: 6px; align-items: center; }
-        .action-btn { border: none; padding: 7px 12px; border-radius: 8px; font-weight: 900; font-size: 10px; cursor: pointer; color: white; transition: 0.3s; }
-        .btn-delete { background: var(--red); }
-        .btn-delete:hover { opacity: 0.8; }
-        .btn-edit { background: var(--sadarah-btn); }
-        .btn-edit:hover { background: var(--sadarah-btn-hover); }
-        .btn-pay { background: var(--green); }
-        
-        .form-group { margin-bottom: 12px; }
+        .form-group { margin-bottom: 10px; }
         .form-group label { display: block; font-size: 11px; font-weight: 900; color: var(--sadarah-primary); margin-bottom: 4px; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 11px; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; outline: none; background: var(--sadarah-light); box-shadow: var(--neu-shadow-inset); }
-        .submit-btn { background: var(--sadarah-btn); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 900; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: none; border-radius: 8px; font-size: 11px; outline: none; background: #ffffff; box-shadow: var(--neu-shadow-inset); }
+
+        .submit-btn { background: var(--sadarah-btn); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; }
+        
+        .data-row { background: #ffffff; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--neu-shadow); }
+        .action-btn { border: none; padding: 6px 10px; border-radius: 6px; font-weight: 900; font-size: 10px; cursor: pointer; color: white; }
     </style>
 </head>
 <body>
 
-    <div class="admin-container">
+    <div class="container">
         <div class="top-navbar">
-            <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
-            <span style="font-weight: 900; font-size: 14px; color: #FFFFFF;">لوحة تحكم <span style="color:var(--sadarah-gold);">الأدمن الشاملة</span></span>
-            <a href="affiliate.html" class="mini-btn"><i class="fa-solid fa-handshake-angle"></i> الأفلييت</a>
+            <span>⚙️ لوحة الإدارة المطلقة والتحكم الكامل</span>
+            <a href="index.html" class="mini-btn">المتجر الرئيسي 🏪</a>
         </div>
 
-        <div class="admin-card">
-            <div class="admin-header">
-                <h2>⚙️ لوحة التحكم والتحكم المطلق بمتجر صدارة</h2>
-                <p style="font-size:11px; opacity:0.8; margin-top:4px;">إدارة المنتجات، الأسعار، الخصومات، صور الشعارات، الطلبات، وعمولات المسوقين</p>
+        <!-- 1. مربع إدارة الشعار والهوية -->
+        <div class="section-box">
+            <h3>🖼️ إدارة الشعار المباشر للمنصة والمتجر</h3>
+            <div class="form-group">
+                <label>اختر صورة الشعار الجديد من المعرض</label>
+                <input type="file" id="logoFile" accept="image/*">
             </div>
+            <button onclick="uploadStoreLogo()" class="submit-btn" style="background:var(--sadarah-primary); color:var(--sadarah-gold);">تحديث الشعار فوراً 🌟</button>
+        </div>
 
-            <!-- قسم إضافة أو تعديل منتج -->
-            <div class="section-box">
-                <h3 id="formTitle">➕ إضافة منتج أو خدمة جديدة للمتجر</h3>
-                <input type="hidden" id="editProductId">
-                <div class="form-group">
-                    <label>عنوان المنتج / الخدمة</label>
-                    <input type="text" id="pTitle" placeholder="مثال: آيفون 15 برو ماكس">
-                </div>
-                <div class="form-group">
-                    <label>القسم / التصنيف</label>
-                    <select id="pCategory">
-                        <option value="إلكترونيات">🖥️ إلكترونيات</option>
-                        <option value="جوالات">📱 جوالات</option>
-                        <option value="اكسسوارات">🎧 اكسسوارات</option>
-                        <option value="عطور">✨ عطور</option>
-                        <option value="ملابس">👕 ملابس</option>
-                        <option value="ادوات تجميل">💄 أدوات تجميل</option>
-                        <option value="اشتراكات رقمية">🔑 اشتراكات رقمية</option>
-                        <option value="خدمات">🛠️ خدمات</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>السعر الحالي (اللاحق)</label>
-                    <input type="text" id="pPrice" placeholder="مثال: 3500 YER">
-                </div>
-                <div class="form-group">
-                    <label>السعر السابق (المشطوب - اختياري)</label>
-                    <input type="text" id="pOldPrice" placeholder="مثال: 5000 YER">
-                </div>
-                <div class="form-group">
-                    <label>نسبة الخصم (اختياري)</label>
-                    <input type="text" id="pDiscount" placeholder="مثال: -30%">
-                </div>
-                <div class="form-group">
-                    <label>رفع أو تغيير صورة المنتج من المعرض 🖼️</label>
-                    <input type="file" id="pImageFile" accept="image/*" style="padding: 6px;">
-                </div>
-                <div class="form-group">
-                    <label>الوصف التسويقي والمميزات</label>
-                    <textarea id="pDesc" rows="2" placeholder="اكتب تفاصيل المنتج..."></textarea>
-                </div>
-                <button onclick="saveProduct()" id="saveProductBtn" class="submit-btn">نشر المنتج في المتجر 🚀</button>
+        <!-- 2. مربع إدارة المنتجات والتخفيضات -->
+        <div class="section-box">
+            <h3>📦 إضافة وتعديل المنتجات والعروض</h3>
+            <div class="form-group"><label>عنوان المنتج/الخدمة</label><input type="text" id="pTitle"></div>
+            <div class="form-group">
+                <label>التصنيف</label>
+                <select id="pCategory">
+                    <option value="إلكترونيات">إلكترونيات</option>
+                    <option value="جوالات">جوالات</option>
+                    <option value="اكسسوارات">اكسسوارات</option>
+                    <option value="عطور">عطور</option>
+                    <option value="ملابس">ملابس</option>
+                    <option value="ادوات تجميل">أدوات تجميل</option>
+                    <option value="اشتراكات رقمية">اشتراكات رقمية</option>
+                </select>
             </div>
+            <div class="form-group"><label>السعر الحالي</label><input type="text" id="pPrice" placeholder="3500 YER"></div>
+            <div class="form-group"><label>السعر السابق (المشطوب - التخفيضات)</label><input type="text" id="pOldPrice" placeholder="5000 YER"></div>
+            <div class="form-group"><label>نسبة الخصم</label><input type="text" id="pDiscount" placeholder="-30%"></div>
+            <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage"></div>
+            <div class="form-group"><label>الوصف</label><textarea id="pDesc" rows="2"></textarea></div>
+            <button onclick="saveProductData()" class="submit-btn">نشر / حفظ المنتج 🚀</button>
+        </div>
 
-            <!-- قسم إدارة شعار المنصة وصور الهيدر والبنرات -->
-            <div class="section-box">
-                <h3>🖼️ التحكم بشعار المنصة والبنرات الأساسية</h3>
-                <p style="font-size:10px; color:#64748b; margin-bottom:10px;">يمكنك رفع شعار جديد (سيحفظ باسم `logo.jpg` في مجلد images تلقائياً) أو تحديث الهوية.</p>
-                <div class="form-group">
-                    <label>اختر صورة الشعار الجديد للمنصة (Logo)</label>
-                    <input type="file" id="logoFile" accept="image/*" style="padding: 6px;">
-                </div>
-                <button onclick="updateStoreLogo()" class="submit-btn" style="background:var(--sadarah-primary); color:var(--sadarah-gold);">تحديث شعار المنصة فوراً 🌟</button>
-            </div>
+        <!-- 3. مربع تسوية العمولات والمسوقين -->
+        <div class="section-box">
+            <h3>🤝 مربع المسوقين وتصفية العمولات</h3>
+            <div id="affiliatesList">جاري تحميل المسوقين...</div>
+        </div>
 
-            <!-- قسم إدارة الطلبات -->
-            <div class="section-box">
-                <h3>🛒 طلبات الزبائن الواردة</h3>
-                <div id="ordersAdminList">جاري تحميل الطلبات...</div>
-            </div>
-
-            <!-- قسم إدارة المسوقين والعمولات والأرباح -->
-            <div class="section-box">
-                <h3>🤝 إدارة مسوقي المنصة (الأفلييت والعمولات)</h3>
-                <div id="affiliatesAdminList">جاري تحميل المسوقين...</div>
-            </div>
+        <!-- 4. مربع الطلبات الواردة -->
+        <div class="section-box">
+            <h3>🛒 طلبات الشراء المباشرة</h3>
+            <div id="ordersList">جاري تحميل الطلبات...</div>
         </div>
     </div>
 
@@ -143,147 +98,95 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function loadAdminData() {
+        async function loadAdminPanel() {
+            // تحميل المسوقين والعمولات
+            let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
+            let affBox = document.getElementById('affiliatesList');
+            affBox.innerHTML = '';
+            if(affs) {
+                affs.forEach(a => {
+                    affBox.innerHTML += `
+                        <div class="data-row">
+                            <div style="font-size:11px;"><b>${a.full_name || a.name}</b> (${a.phone})<br>كود: <code>${a.ref_code}</code> | العمولات: <b>${a.total_earnings || 0} YER</b></div>
+                            <div>
+                                <button class="action-btn" style="background:var(--green);" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تسوية العمولة 💰</button>
+                                <button class="action-btn" style="background:var(--red);" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
             // تحميل الطلبات
             let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
-            let oBox = document.getElementById('ordersAdminList');
-            oBox.innerHTML = '';
-            if(!orders || orders.length === 0) {
-                oBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد طلبات جديدة حالياً.</p>';
-            } else {
+            let ordBox = document.getElementById('ordersList');
+            ordBox.innerHTML = '';
+            if(orders) {
                 orders.forEach(o => {
-                    let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--sadarah-btn);">[عرض السند]</a>` : 'بدون سند';
-                    oBox.innerHTML += `
+                    ordBox.innerHTML += `
                         <div class="data-row">
-                            <div class="data-info">📦 <b>${o.product_title}</b><br>👤 العميل: ${o.customer_name} (${o.customer_phone})<br>💳 الدفع: ${o.payment_method} | السند: ${receiptLink} | الإحالة: ${o.ref_code}</div>
-                            <div class="action-btns">
-                                <button class="action-btn btn-delete" onclick="deleteItem('orders', ${o.id})">حذف 🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            // تحميل المسوقين والتحكم بأرباحهم
-            let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
-            let aBox = document.getElementById('affiliatesAdminList');
-            aBox.innerHTML = '';
-            if(!affs || affs.length === 0) {
-                aBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد مسجلين في الأفلييت حتى الآن.</p>';
-            } else {
-                affs.forEach(a => {
-                    aBox.innerHTML += `
-                        <div class="data-row">
-                            <div class="data-info">🤝 المسوق: <b>${a.full_name || a.name}</b> (${a.phone})<br>🔗 كود الإحالة: <code>${a.ref_code}</code> | الأرباح: <b>${a.total_earnings || 0} YER</b></div>
-                            <div class="action-btns">
-                                <button class="action-btn btn-pay" onclick="payAffiliate(${a.id}, ${a.total_earnings || 0})">تصفية الأرباح 💰</button>
-                                <button class="action-btn btn-delete" onclick="deleteItem('affiliates', ${a.id})">حذف 🗑️</button>
-                            </div>
+                            <div style="font-size:11px;"><b>${o.product_title}</b><br>العميل: ${o.customer_name} | المسوق: ${o.ref_code}</div>
+                            <button class="action-btn" style="background:var(--red);" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
                         </div>
                     `;
                 });
             }
         }
 
-        async function saveProduct() {
-            let editId = document.getElementById('editProductId').value;
-            let title = document.getElementById('pTitle').value.trim();
+        async function saveProductData() {
+            let title = document.getElementById('pTitle').value;
             let category = document.getElementById('pCategory').value;
-            let price = document.getElementById('pPrice').value.trim();
-            let old_price = document.getElementById('pOldPrice').value.trim();
-            let discount = document.getElementById('pDiscount').value.trim();
-            let fileInput = document.getElementById('pImageFile');
-            let description = document.getElementById('pDesc').value.trim();
-
-            if(!title || !price) {
-                alert('يرجى إدخال عنوان المنتج والسعر على الأقل.');
-                return;
-            }
+            let price = document.getElementById('pPrice').value;
+            let old_price = document.getElementById('pOldPrice').value;
+            let discount = document.getElementById('pDiscount').value;
+            let fileInput = document.getElementById('pImage');
+            let description = document.getElementById('pDesc').value;
 
             let imageUrl = '';
-            if (fileInput.files && fileInput.files[0]) {
+            if(fileInput.files[0]) {
                 let file = fileInput.files[0];
                 let fileName = 'products/' + Date.now() + '_' + file.name;
-                let { data: uploadData, error: uploadErr } = await db.storage.from('products_images').upload(fileName, file);
-                if (!uploadErr) {
-                    let { data: pubUrl } = db.storage.from('products_images').getPublicUrl(fileName);
-                    imageUrl = pubUrl.publicUrl;
+                let { data } = await db.storage.from('products_images').upload(fileName, file);
+                if(data) {
+                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                    imageUrl = pub.publicUrl;
                 }
             }
 
-            let productData = { title, category, price, old_price, discount, description, is_active: true };
-            if(imageUrl) productData.image = imageUrl;
+            await db.from('platform_services').insert([{
+                title, category, price, old_price, discount, image: imageUrl, description, is_active: true
+            }]);
 
-            if(editId) {
-                // تعديل منتج موجود
-                let { error } = await db.from('platform_services').update(productData).eq('id', editId);
-                if(error) alert('خطأ في التعديل: ' + error.message);
-                else {
-                    alert('تم تعديل المنتج بنجاح! ✅');
-                    resetForm();
-                    loadAdminData();
-                }
-            } else {
-                // إضافة منتج جديد
-                let { error } = await db.from('platform_services').insert([productData]);
-                if(error) alert('خطأ أثناء النشر: ' + error.message);
-                else {
-                    alert('تمت إضافة المنتج بنجاح إلى المتجر! 🎉');
-                    resetForm();
-                    loadAdminData();
-                }
+            alert('تم نشر المنتج والعرض بنجاح! 🎉');
+            location.reload();
+        }
+
+        async function settleCommission(affId, current) {
+            let paid = prompt('أدخل المبلغ المراد تسويته مع المسوق:', current);
+            if(paid) {
+                await db.from('affiliates').update({ total_earnings: current - Number(paid) }).eq('id', affId);
+                alert('تمت تسوية العمولة بنجاح! 💵');
+                loadAdminPanel();
             }
         }
 
-        function resetForm() {
-            document.getElementById('editProductId').value = '';
-            document.getElementById('pTitle').value = '';
-            document.getElementById('pPrice').value = '';
-            document.getElementById('pOldPrice').value = '';
-            document.getElementById('pDiscount').value = '';
-            document.getElementById('pImageFile').value = '';
-            document.getElementById('pDesc').value = '';
-            document.getElementById('formTitle').textContent = '➕ إضافة منتج أو خدمة جديدة للمتجر';
-            document.getElementById('saveProductBtn').textContent = 'نشر المنتج في المتجر 🚀';
-        }
-
-        async function payAffiliate(affId, currentEarnings) {
-            let amount = prompt('أدخل المبلغ المراد تسليمه للمسوق (تصفية الأرباح):', currentEarnings);
-            if(amount !== null) {
-                let { error } = await db.from('affiliates').update({ total_earnings: Number(currentEarnings) - Number(amount) }).eq('id', affId);
-                if(error) alert('حدث خطأ: ' + error.message);
-                else {
-                    alert('تمت تسوية أرباح المسوق بنجاح! 💵');
-                    loadAdminData();
-                }
-            }
-        }
-
-        async function updateStoreLogo() {
+        async function uploadStoreLogo() {
             let fileInput = document.getElementById('logoFile');
-            if(!fileInput.files || !fileInput.files[0]) {
-                alert('يرجى اختيار صورة الشعار أولاً.');
-                return;
-            }
-            let file = fileInput.files[0];
-            let fileName = 'logo.jpg'; // حفظ الشعار بالاسم المطلوب
-            let { error } = await db.storage.from('products_images').upload(fileName, file, { upsert: true });
-            if(error) {
-                alert('خطأ أثناء رفع الشعار: ' + error.message);
-            } else {
-                alert('تم تحديث شعار المنصة بنجاح! 🌟');
-                document.getElementById('logoFile').value = '';
+            if(fileInput.files[0]) {
+                let file = fileInput.files[0];
+                await db.storage.from('products_images').upload('logo.jpg', file, { upsert: true });
+                alert('تم تحديث شعار المتجر بنجاح!');
             }
         }
 
-        async function deleteItem(table, id) {
-            if(confirm('هل أنت متأكد من رغبتك في حذف هذا العنصر نهائياً؟')) {
+        async function deleteRecord(table, id) {
+            if(confirm('تأكيد الحذف؟')) {
                 await db.from(table).delete().eq('id', id);
-                loadAdminData();
+                loadAdminPanel();
             }
         }
 
-        window.addEventListener('DOMContentLoaded', loadAdminData);
+        window.addEventListener('DOMContentLoaded', loadAdminPanel);
     </script>
 </body>
 </html>
