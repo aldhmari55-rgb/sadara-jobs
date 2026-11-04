@@ -6,198 +6,103 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>منصة صدارة | SADARAH MARKETING AGENCY</title>
-    <meta name="description" content="منصة صدارة الرقمية للوظائف الشاغرة، الكفاءات والخبراء، خدمات التسويق، والمتجر الرقمي المباشر في اليمن.">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://sadarah.top/">
-
+    <title>متجر صدارة | SADARAH STORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <style>
         :root { 
-            --sadarah-primary: #0F2A4A;     /* أزرق الشعار الداكن */
-            --sadarah-dark: #0A1C33;        /* أزرق داكن عميق */
-            --sadarah-light: #F4F7FB;       /* خلفية النيومورفيسم الفاتحة */
-            --sadarah-gold: #D4AF37;        /* الذهبي الخاص بصدارة */
-            
-            /* ألوان الأزرار والمواصفات المخصصة للمنصة */
-            --sadarah-btn: #0284C7;         /* الأزرق الحيوي البارز للأزرار */
+            --sadarah-primary: #0F2A4A;
+            --sadarah-dark: #0A1C33;
+            --sadarah-light: #F4F7FB;
+            --sadarah-gold: #D4AF37;
+            --sadarah-btn: #0284C7;
             --sadarah-btn-hover: #0369A1;
-            --green-wa: #25D366; 
-            
+            --green-wa: #25D366;
             --spec-bg: #F0F7FF;
             --spec-border: #0284C7;
             --spec-text: #1E3A8A;
             --text-main: #0B132B;
-            
             --neu-shadow: 8px 8px 16px #cbced1, -8px -8px 16px #ffffff;
             --neu-shadow-inset: inset 4px 4px 8px #cbced1, inset -4px -4px 8px #ffffff;
             --neu-card-hover: 12px 12px 24px #cbced1, -12px -12px 24px #ffffff;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--sadarah-light); padding-bottom: 130px; color: var(--text-main); overflow-x: hidden; width: 100%; }
+        html { scroll-behavior: smooth; }
+        body { background: var(--sadarah-light); padding-bottom: 100px; color: var(--text-main); overflow-x: hidden; -webkit-overflow-scrolling: touch; }
 
-        .global-top-bar { background: var(--sadarah-dark); color: #BDD8E9; font-size: 11px; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); width: 100%; }
-        .global-top-bar span { display: inline-flex; align-items: center; gap: 6px; color: var(--sadarah-gold); font-weight: 700; }
-
-        /* شريط التنقل العلوي مع شعار منصة صدارة البارز */
-        .top-navbar { background: var(--sadarah-primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sadarah-gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 8px 20px rgba(10, 28, 51, 0.3); width: 100%; }
-        .nav-left { display: flex; align-items: center; gap: 12px; }
+        /* شريط علوي مرن وشي إن ستايل */
+        .top-navbar { background: var(--sadarah-primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sadarah-gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 8px 20px rgba(10,28,51,0.3); width: 100%; }
+        .brand-logo-container { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .brand-logo-img { height: 38px; object-fit: contain; }
         
-        .brand-logo-img { height: 42px; object-fit: contain; border-radius: 6px; }
-        .brand-title { font-size: 17px; font-weight: 900; color: #FFFFFF; display: flex; flex-direction: column; line-height: 1.1; }
-        .brand-title span { font-size: 9px; color: var(--sadarah-gold); font-weight: 700; letter-spacing: 1px; }
-
-        .sidebar-toggle-btn { background: rgba(255, 255, 255, 0.1); color: #FFFFFF; border: 1px solid rgba(212, 175, 55, 0.4); padding: 8px 14px; border-radius: 12px; font-size: 12px; cursor: pointer; font-weight: 900; display: flex; align-items: center; gap: 6px; transition: 0.3s; }
-        .sidebar-toggle-btn:hover { background: var(--sadarah-gold); color: var(--sadarah-dark); }
-        
-        .mini-btn { background: rgba(255, 255, 255, 0.1); color: #FFFFFF; border: 1px solid rgba(212,175,55,0.4); padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; }
+        .nav-actions { display: flex; gap: 10px; align-items: center; }
+        .mini-btn { background: rgba(255,255,255,0.1); color: #FFFFFF; border: 1px solid rgba(212,175,55,0.4); padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; }
         .mini-btn:hover { background: var(--sadarah-gold); color: var(--sadarah-dark); }
 
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 28, 51, 0.85); backdrop-filter: blur(8px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.4s ease; }
-        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; width: 100%; }
         
-        .sidebar-drawer { position: fixed; top: 0; right: -320px; width: 310px; height: 100%; background: var(--sadarah-dark); color: white; z-index: 99999; box-shadow: -15px 0 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-left: 3px solid var(--sadarah-gold); }
-        .sidebar-drawer.active { right: 0; }
+        .store-header { background: var(--sadarah-light); padding: 25px; border-radius: 22px; text-align: center; margin-bottom: 22px; box-shadow: var(--neu-shadow); border: 1px solid rgba(255,255,255,0.8); }
+        .store-header h1 { color: var(--sadarah-primary); font-size: clamp(20px, 4vw, 26px); font-weight: 900; margin-bottom: 6px; }
+        .store-header p { color: #49769F; font-size: clamp(12px, 2vw, 13px); font-weight: 700; }
 
-        .sidebar-header { padding: 22px; background: var(--sadarah-primary); border-bottom: 1px solid rgba(212, 175, 55, 0.3); display: flex; justify-content: space-between; align-items: center; }
-        .sidebar-header h3 { font-size: 15px; color: var(--sadarah-gold); display: flex; align-items: center; gap: 8px; font-weight: 900; }
-        .sidebar-close-btn { background: rgba(255,255,255,0.1); color: #ef4444; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 15px; cursor: pointer; transition: 0.3s; }
-        .sidebar-close-btn:hover { background: #ef4444; color: white; transform: rotate(90deg); }
+        /* شريط البحث والأقسام */
+        .search-filter-box { background: var(--sadarah-light); border-radius: 20px; padding: 18px; margin-bottom: 25px; box-shadow: var(--neu-shadow); border: 1px solid rgba(255,255,255,0.8); }
+        .search-input-main { width: 100%; padding: 14px 18px; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; outline: none; margin-bottom: 12px; background: var(--sadarah-light); color: var(--text-main); box-shadow: var(--neu-shadow-inset); }
 
-        .sidebar-menu { padding: 18px 12px; flex: 1; overflow-y: auto; }
-        .sidebar-section-title { font-size: 11px; color: #7BBDE8; font-weight: 900; margin: 15px 10px 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 13px 16px; color: #e2e8f0; text-decoration: none; font-size: 13px; font-weight: 800; border-radius: 14px; margin-bottom: 6px; transition: 0.3s; }
-        .sidebar-item i { width: 22px; font-size: 16px; text-align: center; color: var(--sadarah-gold); }
-        .sidebar-item:hover, .sidebar-item.active { background: rgba(123, 189, 232, 0.2); color: var(--sadarah-gold); transform: translateX(-5px); }
-        .sidebar-item .badge { background: #ef4444; color: white; font-size: 10px; padding: 3px 9px; border-radius: 12px; margin-right: auto; font-weight: 900; }
-        .sidebar-footer { padding: 18px; border-top: 1px solid rgba(255,255,255,0.1); background: var(--sadarah-dark); text-align: center; font-size: 11px; color: #6EA2B3; font-weight: 700; }
-
-        .whatsapp-float-btn { position: fixed; bottom: 75px; left: 22px; background: var(--sadarah-light); color: var(--green-wa); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: var(--neu-shadow); z-index: 950; text-decoration: none; transition: all 0.4s ease; animation: pulse-whatsapp 2s infinite; }
-        .whatsapp-float-btn:hover { box-shadow: var(--neu-shadow-inset); transform: scale(1.08); }
-        @keyframes pulse-whatsapp { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
-
-        .hero { background: var(--sadarah-light); color: var(--text-main); padding: 50px 25px 65px; text-align: center; border-radius: 30px; box-shadow: var(--neu-shadow); margin: 20px auto; max-width: 1160px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.9); }
-        .hero h1 { font-size: clamp(22px, 4vw, 30px); margin-bottom: 12px; font-weight: 900; line-height: 1.3; color: var(--sadarah-primary); }
-        .hero h1 span { color: var(--sadarah-gold); }
-        .hero p { font-size: clamp(12px, 2vw, 14px); color: #49769F; margin-bottom: 25px; max-width: 780px; margin-left: auto; margin-right: auto; line-height: 1.8; font-weight: 600; }
-        .hero-action-btns { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 15px; }
-        
-        /* أزرار الهيدر المميزة */
-        .hero-btn { text-decoration: none; padding: 13px 22px; border-radius: 14px; font-size: 13px; font-weight: 900; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
-        .hero-btn-primary { background: var(--sadarah-btn); color: #FFFFFF; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
-        .hero-btn-secondary { background: var(--sadarah-light); color: var(--sadarah-primary); box-shadow: var(--neu-shadow); border: 1px solid rgba(212,175,55,0.5); }
-        .hero-btn-app { background: var(--sadarah-primary); color: var(--sadarah-gold); box-shadow: 0 4px 12px rgba(15, 42, 74, 0.3); }
-        .hero-btn:hover { transform: translateY(-2px); opacity: 0.95; }
-
-        .main-container { max-width: 1200px; margin: 10px auto 0; padding: 0 15px; width: 100%; position: relative; z-index: 10; }
-
-        .search-filter-box { background: var(--sadarah-light); border-radius: 22px; padding: 22px; margin-bottom: 25px; box-shadow: var(--neu-shadow); border: 1px solid rgba(255,255,255,0.8); width: 100%; }
-        .search-input-main { width: 100%; padding: 15px 18px; border: none; border-radius: 14px; font-size: 13px; font-weight: 700; outline: none; margin-bottom: 14px; background: var(--sadarah-light); color: var(--text-main); box-shadow: var(--neu-shadow-inset); transition: 0.3s; }
-        
-        .categories-tags { display: flex; gap: 10px; flex-wrap: wrap; }
-        .cat-tag { background: var(--sadarah-light); color: var(--sadarah-primary); border: none; padding: 9px 16px; border-radius: 18px; font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.3s; box-shadow: var(--neu-shadow); }
+        .categories-tags { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; overflow-x: auto; padding-bottom: 5px; }
+        .categories-tags::-webkit-scrollbar { display: none; }
+        .cat-tag { background: var(--sadarah-light); color: var(--sadarah-primary); border: none; padding: 9px 18px; border-radius: 18px; font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.3s; box-shadow: var(--neu-shadow); white-space: nowrap; flex-shrink: 0; }
         .cat-tag.active, .cat-tag:hover { box-shadow: var(--neu-shadow-inset); color: var(--sadarah-gold); }
 
-        .ad-slider-box { position: relative; background: var(--sadarah-light); border-radius: 22px; overflow: hidden; margin-bottom: 25px; box-shadow: var(--neu-shadow); display: flex; justify-content: center; align-items: center; min-height: 200px; width: 100%; border: 1px solid rgba(255,255,255,0.8); }
-        .ad-slider-img { width: 100%; height: auto; max-height: 400px; object-fit: contain; display: none; opacity: 0; transition: opacity 0.6s ease-in-out; background: #070b19; }
-        .ad-slider-img.active { display: block; opacity: 1; }
-        .slider-dots { position: absolute; bottom: 12px; display: flex; gap: 8px; width: 100%; justify-content: center; z-index: 5; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: #cbced1; box-shadow: var(--neu-shadow-inset); transition: 0.3s; }
-        .dot.active { background: var(--sadarah-gold); width: 24px; border-radius: 10px; }
+        /* شبكة المنتجات (مرنة ومماثلة لتجربة شي إن) */
+        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; }
+        @media (max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
+        @media (max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 
-        .stats-bar { background: var(--sadarah-light); border-radius: 22px; padding: 22px; margin-bottom: 25px; box-shadow: var(--neu-shadow); display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; text-align: center; width: 100%; border: 1px solid rgba(255,255,255,0.8); }
-        @media (max-width: 768px) { .stats-bar { grid-template-columns: repeat(2, 1fr); } }
-        .stat-item { background: var(--sadarah-light); padding: 14px; border-radius: 14px; box-shadow: var(--neu-shadow-inset); }
-        .stat-item h4 { font-size: 20px; font-weight: 900; color: var(--sadarah-primary); }
-        .stat-item p { font-size: 11px; color: #49769F; font-weight: 800; margin-top: 4px; }
-
-        .category-section-title { font-size: 17px; font-weight: 900; color: var(--sadarah-primary); margin: 30px 5px 15px 5px; border-bottom: 3px solid var(--sadarah-gold); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; width: 100%; }
-
-        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 35px; width: 100%; }
-        @media (max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } }
-        @media (max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
-
-        .product-card { background: var(--sadarah-light); border-radius: 22px; border: 1px solid rgba(255,255,255,0.9); padding: 16px; box-shadow: var(--neu-shadow); display: flex; flex-direction: column; justify-content: space-between; gap: 12px; transition: all 0.4s ease; position: relative; width: 100%; }
+        .product-card { background: var(--sadarah-light); border-radius: 20px; border: 1px solid rgba(255,255,255,0.9); padding: 14px; box-shadow: var(--neu-shadow); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: 0.4s; width: 100%; }
         .product-card:hover { box-shadow: var(--neu-card-hover); transform: translateY(-4px); }
-        
-        .product-img-container { width: 100%; height: auto; max-height: 280px; background: var(--sadarah-light); border-radius: 14px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; box-shadow: var(--neu-shadow-inset); padding: 6px; }
-        .product-img { width: 100%; height: auto; max-height: 260px; object-fit: contain; display: block; border-radius: 10px; transition: transform 0.5s ease; }
-        .product-img-container:hover .product-img { transform: scale(1.04); }
 
-        .product-title { font-size: 13px; font-weight: 900; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; cursor: pointer; }
-        .product-title:hover { color: var(--sadarah-btn); }
+        .product-img-container { width: 100%; height: 220px; background: var(--sadarah-light); border-radius: 14px; display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: var(--neu-shadow-inset); padding: 6px; cursor: pointer; position: relative; }
+        @media (max-width: 576px) { .product-img-container { height: 160px; } }
+        .product-img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; transition: transform 0.4s; }
+        .product-img-container:hover .product-img { transform: scale(1.05); }
+
+        .product-title { font-size: 13px; font-weight: 900; color: var(--text-main); height: 38px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; cursor: pointer; }
+        .product-price { font-size: 14px; font-weight: 900; color: var(--sadarah-btn); }
         
-        /* صندوق التخصص والفرع بمواصفات الشعار */
-        .product-subtext { font-size: 11px; color: var(--spec-text); font-weight: 800; background: var(--spec-bg); border-right: 3px solid var(--spec-border); padding: 4px 10px; border-radius: 6px; display: inline-block; width: fit-content; }
-        
-        /* زر الطلب المخصص البارز */
-        .order-btn { background: var(--sadarah-btn); color: #FFFFFF; text-align: center; padding: 11px; border-radius: 12px; font-weight: 900; font-size: 12px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
+        .product-desc { font-size: 11px; color: var(--spec-text); background: var(--spec-bg); padding: 8px; border-radius: 8px; border-right: 3px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-weight: 700; line-height: 1.4; height: 50px; overflow: hidden; }
+
+        .order-btn { background: var(--sadarah-btn); color: white; text-align: center; padding: 11px; border-radius: 12px; font-weight: 900; font-size: 12px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
         .order-btn:hover { background: var(--sadarah-btn-hover); transform: translateY(-2px); }
-        .whatsapp-btn { background: var(--green-wa); box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
-        .whatsapp-btn:hover { background: #1ebe5d; }
 
-        .social-footer-box { background: var(--sadarah-dark); border-radius: 24px; padding: 30px 20px; text-align: center; margin-top: 45px; border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: 0 20px 45px rgba(10,28,51,0.3); position: relative; overflow: hidden; width: 100%; }
-        .social-footer-box h4 { color: var(--sadarah-gold); font-size: 16px; margin-bottom: 12px; font-weight: 900; }
-        .social-icons-row { display: flex; justify-content: center; gap: 14px; margin-bottom: 14px; }
-        .social-icon-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--sadarah-primary); color: white; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 18px; transition: 0.3s; border: 1px solid rgba(212,175,55,0.3); }
-        .social-icon-btn:hover { background: var(--sadarah-gold); color: var(--sadarah-dark); transform: scale(1.1); }
-
-        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: var(--sadarah-dark); padding: 8px 0; border-top: 3px solid var(--sadarah-gold); display: flex; align-items: center; z-index: 900; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); width: 100%; }
-        .ticker-label { background: var(--sadarah-gold); color: var(--sadarah-dark); font-weight: 900; font-size: 11px; padding: 6px 14px; border-radius: 0 12px 12px 0; z-index: 10; white-space: nowrap; }
-        .ticker-content { display: flex; align-items: center; gap: 14px; animation: ticker 25s linear infinite; }
-        .ticker-content img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--sadarah-gold); background: white; }
-        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-        .footer-copyright { text-align: center; color: #49769F; font-size: 11px; padding: 15px 0 60px; font-weight: 700; width: 100%; }
-
+        /* نافذة الطلب ومنتج المعاينة مع إمكانية النقر في أي مكان للإغلاق */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,28,51,0.85); backdrop-filter: blur(8px); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-        .modal-card { background: var(--sadarah-light); color: var(--text-main); padding: 25px; border-radius: 24px; width: 100%; max-width: 500px; text-align: right; box-shadow: var(--neu-shadow); border-top: 5px solid var(--sadarah-gold); position: relative; max-height: 90vh; overflow-y: auto; }
-        .modal-img-preview { width: 100%; max-height: 400px; object-fit: contain; background: var(--sadarah-light); border-radius: 12px; margin-bottom: 12px; display: block; cursor: pointer; box-shadow: var(--neu-shadow-inset); padding: 6px; }
-        .modal-card h3 { color: var(--sadarah-primary); font-size: 18px; margin-bottom: 10px; font-weight: 900; }
-        
-        .modal-card .spec-box-modal { font-size: 12px; color: var(--spec-text); line-height: 1.8; margin-bottom: 14px; background: var(--spec-bg); box-shadow: var(--neu-shadow-inset); border-right: 4px solid var(--spec-border); padding: 14px; border-radius: 12px; font-weight: 700; }
+        .modal-card { background: var(--sadarah-light); padding: 25px; border-radius: 24px; width: 100%; max-width: 480px; box-shadow: var(--neu-shadow); border-top: 5px solid var(--sadarah-gold); max-height: 90vh; overflow-y: auto; position: relative; animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes modalPop { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        .auth-card-box { background: var(--sadarah-light); color: var(--text-main); padding: 28px; border-radius: 24px; width: 100%; max-width: 440px; text-align: right; box-shadow: var(--neu-shadow); border-top: 5px solid var(--sadarah-gold); position: relative; }
-        .auth-card-box h3 { color: var(--sadarah-primary); font-size: 19px; margin-bottom: 6px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
-        .auth-card-box p { font-size: 12px; color: #49769F; margin-bottom: 18px; font-weight: 600; }
-        .auth-input-group { margin-bottom: 14px; text-align: right; }
-        .auth-input-group label { display: block; font-size: 12px; font-weight: 900; color: var(--sadarah-primary); margin-bottom: 5px; }
-        .auth-input-group input { width: 100%; padding: 12px 16px; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; outline: none; background: var(--sadarah-light); transition: 0.3s; box-shadow: var(--neu-shadow-inset); }
+        .modal-card h3 { color: var(--sadarah-primary); font-size: 17px; font-weight: 900; margin-bottom: 10px; }
+        .modal-spec-box { font-size: 12px; color: var(--spec-text); background: var(--spec-bg); padding: 12px; border-radius: 10px; border-right: 4px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-weight: 700; line-height: 1.7; margin-bottom: 14px; }
         
-        .auth-btn-primary { width: 100%; background: var(--sadarah-btn); color: #ffffff; border: none; padding: 13px; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 13px; margin-top: 10px; transition: 0.3s; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
-        .auth-btn-primary:hover { background: var(--sadarah-btn-hover); }
-        .auth-btn-switch { width: 100%; background: var(--sadarah-light); color: var(--sadarah-primary); border: none; padding: 11px; border-radius: 12px; margin-top: 10px; cursor: pointer; font-size: 11px; font-weight: 800; transition: 0.3s; box-shadow: var(--neu-shadow); }
-        .auth-btn-cancel { width: 100%; background: transparent; color: #49769F; border: none; margin-top: 6px; cursor: pointer; font-size: 11px; font-weight: 800; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 900; color: var(--sadarah-primary); margin-bottom: 4px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 11px; border: none; border-radius: 10px; font-size: 12px; font-weight: 700; outline: none; background: var(--sadarah-light); box-shadow: var(--neu-shadow-inset); color: var(--text-main); }
+        
+        .whatsapp-float-btn { position: fixed; bottom: 25px; left: 20px; background: var(--sadarah-light); color: var(--green-wa); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: var(--neu-shadow); z-index: 950; text-decoration: none; transition: all 0.4s ease; animation: pulse-whatsapp 2s infinite; }
+        @keyframes pulse-whatsapp { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
     </style>
 </head>
 <body>
 
-    <div class="global-top-bar">
-        <span><i class="fa-solid fa-shield-halved"></i> SADARAH MARKETING AGENCY</span>
-        <span><i class="fa-solid fa-circle-check"></i> نحو نجاح رقمي مستدام</span>
-    </div>
-
     <div class="top-navbar">
-        <div class="nav-left">
-            <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
-                <i class="fa-solid fa-bars"></i> الأقسام
-            </button>
-            <div style="display:flex; align-items:center; gap:8px;">
-                <!-- شعار المنصة الرسمي المرفق -->
-                <img src="٢٠٢٦٠٩٢٦_١٩٥٨٣٩.jpg" class="brand-logo-img" alt="شعار صدارة">
-                <div class="brand-title">
-                    صدارة
-                    <span>SADARAH</span>
-                </div>
-            </div>
-        </div>
-        <div id="authArea">
-            <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user-shield"></i> حساب / دخول</button>
+        <a href="affiliate.html" class="mini-btn"><i class="fa-solid fa-handshake-angle"></i> المسوقون (أفلييت)</a>
+        <a href="index.html" class="brand-logo-container">
+            <img src="٢٠٢٦٠٩٢٦_١٩٥٨٣٩.jpg" class="brand-logo-img" alt="شعار صدارة">
+            <span style="font-weight: 900; font-size: 15px; color: #FFFFFF;">متجر <span style="color:var(--sadarah-gold);">صدارة</span></span>
+        </a>
+        <div class="nav-actions">
+            <a href="blog.html" class="mini-btn"><i class="fa-solid fa-newspaper"></i> المدونة</a>
         </div>
     </div>
 
@@ -205,129 +110,59 @@
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-    <div class="sidebar-drawer" id="sidebarDrawer">
-        <div class="sidebar-header">
-            <h3><i class="fa-solid fa-compass"></i> أقسام منصة صدارة</h3>
-            <button class="sidebar-close-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="container">
+        <div class="store-header">
+            <h1>🛒 متجر صدارة الرقمي والميداني</h1>
+            <p>تصفح أحدث المنتجات والعروض، وانسخ رابط الإحالة الخاص بك لمضاعفة أرباحك فوراً</p>
         </div>
-        <div class="sidebar-menu">
-            <div class="sidebar-section-title">الأقسام الرئيسية</div>
-            <a href="index.html" class="sidebar-item active"><i class="fa-solid fa-house"></i> الرئيسية والوظائف والكفاءات</a>
-            <a href="services.html" class="sidebar-item"><i class="fa-solid fa-store"></i> متجر الخدمات والمنتجات <span class="badge" style="background:var(--sadarah-gold); color:#000;">🛒 متجر</span></a>
-            
-            <div class="sidebar-section-title">الأرباح والتسويق والمدونة</div>
-            <a href="affiliate.html" class="sidebar-item"><i class="fa-solid fa-handshake-angle"></i> التسويق بالعمولة <span class="badge">20%</span></a>
-            <a href="blog.html" class="sidebar-item"><i class="fa-solid fa-newspaper"></i> المدونة والنصائح</a>
 
-            <div class="sidebar-section-title">المعلومات والسياسات</div>
-            <a href="privacy.html" class="sidebar-item"><i class="fa-solid fa-shield-halved"></i> سياسة الخصوصية</a>
-            <a href="privacy.html#terms" class="sidebar-item"><i class="fa-solid fa-file-contract"></i> شروط الاستخدام</a>
-            <a href="privacy.html#about" class="sidebar-item"><i class="fa-solid fa-circle-info"></i> من نحن</a>
-            <a href="privacy.html#contact" class="sidebar-item"><i class="fa-solid fa-headset"></i> اتصل بنا</a>
-        </div>
-        <div class="sidebar-footer">
-            جميع الحقوق محفوظة © 2026 منصة صدارة
-        </div>
-    </div>
-
-    <div class="hero">
-        <h1>المنصة الأولى لتمكين <span>الأعمال والتوظيف الرقمي</span> في اليمن</h1>
-        <p>بوابتك المتكاملة لاستكشاف الفرص الشاغرة، طلب النخب والكفاءات المعتمدة، وتسوق أفضل المنتجات والخدمات الرقمية بمرونة فائقة عبر كافة الأجهزة</p>
-        <div class="hero-action-btns">
-            <a href="#mainContentArea" class="hero-btn hero-btn-primary"><i class="fa-solid fa-briefcase"></i> استكشف الوظائف والكفاءات</a>
-            <a href="services.html" class="hero-btn hero-btn-secondary"><i class="fa-solid fa-store"></i> متجر الخدمات والمنتجات 🛒</a>
-            <a href="https://drive.google.com/file/d/17ANhJvs2xrzFqslYOadnc60RQCFLoZgU/view?usp=drivesdk" target="_blank" class="hero-btn hero-btn-app"><i class="fa-solid fa-download"></i> تحميل تطبيق المنصة مجاناً 📱</a>
-        </div>
-    </div>
-
-    <div class="main-container" id="mainContentArea">
         <div class="search-filter-box">
-            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن وظيفة، كفاءة، أو تخصص..." oninput="filterJobsAndResumes()">
-            <div class="categories-tags">
-                <span class="cat-tag active" onclick="filterByCategory('الكل', this)">الكل 🌐</span>
-                <span class="cat-tag" onclick="filterByCategory('محاسبية', this)">🧮 محاسبية</span>
-                <span class="cat-tag" onclick="filterByCategory('تسويقية', this)">📢 تسويقية</span>
-                <span class="cat-tag" onclick="filterByCategory('تجارية', this)">🛒 تجارية</span>
-                <span class="cat-tag" onclick="filterByCategory('برمجية', this)">💻 برمجية</span>
-                <span class="cat-tag" onclick="filterByCategory('عملية', this)">⚙️ عملية</span>
+            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن منتج، خدمة، أو عرض..." oninput="filterStoreProducts()">
+            <div class="categories-tags" id="categoriesContainer">
+                <span class="cat-tag active" onclick="filterStore('الكل', this)">الكل 🌐</span>
+                <span class="cat-tag" onclick="filterStore('اشتراكات رقمية', this)">🔑 اشتراكات رقمية</span>
+                <span class="cat-tag" onclick="filterStore('خدمات', this)">🛠️ خدمات</span>
+                <span class="cat-tag" onclick="filterStore('تجميل وعناية', this)">💄 تجميل وعناية</span>
             </div>
         </div>
 
-        <div class="ad-slider-box" id="sliderBox">
-            <div id="sliderImages"></div>
-            <div class="slider-dots" id="sliderDots"></div>
-        </div>
-
-        <div class="stats-bar">
-            <div class="stat-item"><h4 id="statOnline">1</h4><p>متواجد الآن 🟢</p></div>
-            <div class="stat-item"><h4 id="statTotalViews">...</h4><p>إجمالي الزيارات 👥</p></div>
-            <div class="stat-item"><h4 id="statJobsCount">...</h4><p>الوظائف 💼</p></div>
-            <div class="stat-item"><h4 id="statResumesCount">...</h4><p>الكفاءات 📄</p></div>
-        </div>
-
-        <div class="category-section-title"><i class="fa-solid fa-briefcase"></i> الوظائف الشاغرة المتاحة 💼</div>
-        <div id="jobsBoxContainer">جاري تحميل الوظائف...</div>
-
-        <div class="category-section-title"><i class="fa-solid fa-users-viewfinder"></i> دليل الكفاءات والخبراء 👨‍💻</div>
-        <div id="resumesBoxContainer">جاري تحميل الكفاءات...</div>
-
-        <div class="social-footer-box">
-            <h4>تابع منصة صدارة على منصات التواصل الاجتماعي 🌐</h4>
-            <div class="social-icons-row">
-                <a href="https://youtube.com/@sadarah_s_d_r?si=Y0sgm7bt12Gy8GOH" target="_blank" class="social-icon-btn" title="قناة اليوتيوب"><i class="fa-brands fa-youtube"></i></a>
-                <a href="https://tiktok.com/@sadarahsdr" target="_blank" class="social-icon-btn" title="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
-                <a href="https://www.facebook.com/Sadarah2026?mibextid=ZbWKwL" target="_blank" class="social-icon-btn" title="فيسبوك"><i class="fa-brands fa-facebook"></i></a>
-            </div>
-            <p style="font-size: 12px; color: #BDD8E9; font-weight: 700;">نحو نجاح رقمي مستدام</p>
-        </div>
-
-        <div class="footer-copyright">
-            © 2026 منصة صدارة SADARAH MARKETING AGENCY - جميع الحقوق محفوظة
+        <div id="productsGridContainer" class="products-grid">
+            جاري تحميل المنتجات...
         </div>
     </div>
 
-    <div class="partners-ticker">
-        <div class="ticker-label">شركاء النجاح 🤝</div>
-        <div style="display:flex; overflow:hidden; width:100%;">
-            <div class="ticker-content" id="tickerBox"></div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="detailModal" onclick="checkOutsideModalClick(event, 'detailModalContent')">
-        <div class="modal-card" id="detailModalContent">
-            <div id="modalImageContainer"></div>
-            <h3 id="modalItemTitle">عنوان العنصر</h3>
-            <div id="modalItemDetails" class="spec-box-modal">تفاصيل المواصفات...</div>
-            <div id="modalActionBtnContainer" style="margin-top: 14px;"></div>
-            <button onclick="closeModal('detailModal')" style="width:100%; background:var(--sadarah-light); color:var(--sadarah-primary); border:none; padding:12px; border-radius:12px; margin-top:10px; cursor:pointer; font-size:12px; font-weight:900; box-shadow:var(--neu-shadow);">إغلاق النافذة</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="authModal" onclick="checkOutsideModalClick(event, 'authModalContent')">
-        <div class="auth-card-box" id="authModalContent">
-            <h3 id="modalTitle"><i class="fa-solid fa-user-astronaut" style="color:var(--sadarah-gold);"></i> تسجيل حساب جديد 🚀</h3>
-            <p id="modalSubtitle">أنشئ حسابك الآن لتنضم إلى نخبة الكفاءات وأصحاب الأعمال.</p>
+    <!-- نافذة الطلب والتفاصيل مع دعم الإغلاق بالنقر في أي مكان خارجها -->
+    <div class="modal-overlay" id="orderModal" onclick="checkOutsideModalClick(event, 'orderModalCard')">
+        <div class="modal-card" id="orderModalCard">
+            <h3><i class="fa-solid fa-cart-shopping" style="color:var(--sadarah-gold);"></i> طلب المنتج الرقمي</h3>
+            <div id="modalProductDetails" class="modal-spec-box">تفاصيل المنتج...</div>
             
-            <div class="auth-input-group">
-                <label>رقم الواتساب</label>
-                <input type="tel" id="authPhone" placeholder="مثال: 770000000">
+            <div class="form-group">
+                <label>اسمك الكريم</label>
+                <input type="text" id="orderName" placeholder="أدخل الاسم الكامل">
+            </div>
+            <div class="form-group">
+                <label>رقم الواتساب للتواصل وتفعيل الطلب</label>
+                <input type="tel" id="orderPhone" placeholder="770000000">
+            </div>
+            <div class="form-group">
+                <label>وسيلة الدفع / التحويل</label>
+                <select id="orderPaymentMethod">
+                    <option value="محفظة جيب (780568507)">محفظة جيب (780568507)</option>
+                    <option value="بنك الكريمي (2628009)">بنك الكريمي (2628009)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>رابط أو صورة سند التحويل</label>
+                <input type="text" id="orderReceipt" placeholder="رابط صورة سند التحويل أو إيصال الدفع">
+            </div>
+            <div class="form-group">
+                <label>ملاحظات إضافية (اختياري)</label>
+                <textarea id="orderNotes" rows="2" placeholder="أي تفاصيل تود إضافتها"></textarea>
             </div>
 
-            <div class="auth-input-group" id="nameFieldBox">
-                <label>الاسم الكامل / اسم الشركة</label>
-                <input type="text" id="authName" placeholder="مثال: شركة صدارة / أحمد">
-            </div>
-
-            <div class="auth-input-group">
-                <label>كلمة المرور (4 أرقام فقط)</label>
-                <input type="password" id="authPass" maxlength="4" placeholder="••••">
-            </div>
-
-            <button id="mainAuthBtn" onclick="processAuth()" class="auth-btn-primary">إنشاء وحفظ الحساب 📱</button>
-            <button onclick="switchMode()" id="switchBtnText" class="auth-btn-switch">لديك حساب مسجل؟ تسجيل الدخول</button>
-            <button onclick="closeModal('authModal')" class="auth-btn-cancel">إلغاء</button>
-            <div id="authMsg" style="font-size:12px; margin-top:10px; text-align:center; font-weight:900;"></div>
+            <button onclick="submitOrder()" class="order-btn" style="margin-top:5px;">تأكيد وإرسال الطلب عبر الواتساب 📱</button>
+            <button onclick="document.getElementById('orderModal').style.display='none'" style="width:100%; background:var(--sadarah-light); color:var(--sadarah-primary); border:none; padding:11px; border-radius:10px; margin-top:8px; font-weight:900; cursor:pointer; box-shadow:var(--neu-shadow);">إغلاق</button>
         </div>
     </div>
 
@@ -336,214 +171,86 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let isLoginMode = false;
-        let allGlobalJobs = [];
-        let allGlobalResumes = [];
-        let currentSelectedCategory = 'الكل';
+        let allProducts = [];
+        let selectedProductObj = null;
 
-        function toggleSidebar() {
-            document.getElementById('sidebarDrawer').classList.toggle('active');
-            document.getElementById('sidebarOverlay').classList.toggle('active');
+        async function loadStoreProducts() {
+            try {
+                let { data, error } = await db.from('platform_services').select('*').eq('is_active', true).order('id', {ascending: false});
+                allProducts = data || [];
+                renderStoreProducts(allProducts);
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const prodId = urlParams.get('product_id');
+                const refCode = urlParams.get('ref');
+                if(refCode) localStorage.setItem('sadara_ref', refCode);
+
+                if(prodId && allProducts.length > 0) {
+                    let matched = allProducts.find(p => p.id == prodId);
+                    if(matched) openOrderModal(matched);
+                }
+            } catch(e) {
+                document.getElementById('productsGridContainer').innerHTML = '<p style="text-align:center; color:#49769F;">عذراً، حدث خطأ في تحميل المنتجات.</p>';
+            }
         }
 
-        async function init() {
-            document.querySelectorAll('.sidebar-menu a').forEach(a => {
-                let href = a.getAttribute('href') || '';
-                if(href.includes('sdr') || a.textContent.includes('لوحة التحكم')) {
-                    a.remove();
-                }
-            });
-
-            checkActiveSession();
-            try {
-                let { data: st } = await db.from('stats').select('*').eq('id', 1).single();
-                let views = st ? (Number(st.total_views || 0) + 1) : 159;
-                
-                await db.from('stats').update({ total_views: views }).eq('id', 1);
-                document.getElementById('statTotalViews').textContent = views;
-                document.getElementById('statOnline').textContent = Math.floor(Math.random() * 8) + 3;
-
-                let { count: jobsCnt } = await db.from('jobs').select('*', { count: 'exact', head: true }).eq('approved', true);
-                let { count: resCnt } = await db.from('resumes').select('*', { count: 'exact', head: true });
-                document.getElementById('statJobsCount').textContent = jobsCnt || 0;
-                document.getElementById('statResumesCount').textContent = resCnt || 0;
-            } catch(e) {}
-
-            try {
-                let { data: banners } = await db.from('banners').select('*').order('id', {ascending: false});
-                let imgBox = document.getElementById('sliderImages'), dotsBox = document.getElementById('sliderDots');
-                if(banners && banners.length > 0) {
-                    banners.forEach((b, i) => {
-                        imgBox.innerHTML += `<img src="${b.url}" class="ad-slider-img ${i===0?'active':''}">`;
-                        if(banners.length > 1) dotsBox.innerHTML += `<div class="dot ${i===0?'active':''}"></div>`;
-                    });
-                    if(banners.length > 1) {
-                        let idx = 0;
-                        setInterval(() => {
-                            let imgs = imgBox.querySelectorAll('img'), dots = dotsBox.querySelectorAll('.dot');
-                            imgs[idx].classList.remove('active'); if(dots[idx]) dots[idx].classList.remove('active');
-                            idx = (idx + 1) % imgs.length;
-                            imgs[idx].classList.add('active'); if(dots[idx]) dots[idx].classList.add('active');
-                        }, 3500);
-                    }
-                }
-            } catch(e) {}
-
-            try {
-                let { data: partners } = await db.from('partners').select('*').order('id', {ascending: false});
-                let tBox = document.getElementById('tickerBox');
-                (partners || []).forEach(p => { tBox.innerHTML += `<img src="${p.logo}">`; });
-            } catch(e) {}
-
-            let { data: jobs } = await db.from('jobs').select('*').eq('approved', true).order('id', {ascending: false});
-            allGlobalJobs = jobs || [];
-            renderJobs(allGlobalJobs);
-
-            let { data: resumes } = await db.from('resumes').select('*').order('id', {ascending: false});
-            allGlobalResumes = resumes || [];
-            renderResumes(allGlobalResumes);
-        }
-
-        function filterByCategory(categoryName, el) {
-            currentSelectedCategory = categoryName;
+        function filterStore(category, el) {
             document.querySelectorAll('.cat-tag').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            executeFiltering();
+            if(el) el.classList.add('active');
+
+            if(category === 'الكل') {
+                renderStoreProducts(allProducts);
+            } else {
+                let filtered = allProducts.filter(p => p.category === category);
+                renderStoreProducts(filtered);
+            }
         }
 
-        function filterJobsAndResumes() { executeFiltering(); }
-
-        function executeFiltering() {
+        function filterStoreProducts() {
             let query = document.getElementById('searchInput').value.toLowerCase().trim();
-            
-            let filteredJobs = allGlobalJobs.filter(j => {
-                let matchCat = (currentSelectedCategory === 'الكل' || j.category === currentSelectedCategory);
-                let matchQuery = (!query || j.title.toLowerCase().includes(query) || (j.company && j.company.toLowerCase().includes(query)));
-                return matchCat && matchQuery;
-            });
-            renderJobs(filteredJobs);
-
-            let filteredResumes = allGlobalResumes.filter(r => {
-                let titleStr = (r.job_title || r.specialty || r.title || '').toLowerCase();
-                let nameStr = (r.name || '').toLowerCase();
-                let matchQuery = (!query || nameStr.includes(query) || titleStr.includes(query) || (r.experience && r.experience.toLowerCase().includes(query)));
-                return matchQuery;
-            });
-            renderResumes(filteredResumes);
+            let filtered = allProducts.filter(p => p.title.toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query)));
+            renderStoreProducts(filtered);
         }
 
-        function renderJobs(list) {
-            let jBox = document.getElementById('jobsBoxContainer');
-            jBox.innerHTML = '';
-            
-            if (list && list.length > 0) {
-                let gridDiv = document.createElement('div');
-                gridDiv.className = 'products-grid';
+        function renderStoreProducts(list) {
+            let container = document.getElementById('productsGridContainer');
+            container.innerHTML = '';
 
-                list.forEach(j => {
-                    let imgHTML = (j.image && j.image.trim() !== '') ? `<div class="product-img-container" onclick='openDetailsModal(${JSON.stringify(j)}, "job")'><img src="${j.image}" class="product-img"></div>` : '<div class="product-img-container" style="padding:40px 0;"><i class="fa-solid fa-briefcase" style="font-size:28px; color:#49769F;"></i></div>';
-                    let phoneNum = j.phone ? j.phone.replace(/[^0-9]/g, '') : '967780568507';
+            if(!list || list.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#49769F; grid-column:1/-1; padding:30px;">لا توجد منتجات متاحة حالياً.</p>';
+                return;
+            }
 
-                    gridDiv.innerHTML += `
-                        <div class="product-card">
-                            ${imgHTML}
-                            <div class="product-title" style="cursor:pointer;" onclick='openDetailsModal(${JSON.stringify(j)}, "job")'>${j.title}</div>
-                            <div class="product-subtext">الجهة: ${j.company || 'صدارة'}</div>
-                            <a href="https://wa.me/${phoneNum}" target="_blank" class="order-btn whatsapp-btn"><i class="fa-brands fa-whatsapp"></i> تقديم عبر الواتساب 🚀</a>
+            list.forEach(p => {
+                let imgTag = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-img">` : '<i class="fa-solid fa-store" style="font-size:32px; color:#49769F;"></i>';
+                let descText = p.description || 'منتج رقمي معتمد ومضمون من صدارة.';
+
+                container.innerHTML += `
+                    <div class="product-card">
+                        <div class="product-img-container" onclick='openOrderModal(${JSON.stringify(p)})'>
+                            ${imgTag}
                         </div>
-                    `;
-                });
-                jBox.appendChild(gridDiv);
-            } else {
-                jBox.innerHTML = '<p style="text-align:center; color:#49769F; font-size:13px; padding:25px; font-weight:750;">لا توجد وظائف مطابقة لبحثك.</p>';
-            }
-        }
-
-        function getBlueBadgeHTML() {
-            return `<span title="حساب موثق" style="display:inline-flex; align-items:center; vertical-align:middle;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#1877F2"/>
-                </svg>
-            </span>`;
-        }
-
-        function renderResumes(list) {
-            let rBox = document.getElementById('resumesBoxContainer');
-            rBox.innerHTML = '';
-            
-            if (list && list.length > 0) {
-                let gridDiv = document.createElement('div');
-                gridDiv.className = 'products-grid';
-
-                list.forEach(r => {
-                    let displayName = r.name || r.title || 'مستقل / كفاءة';
-                    let displayTitle = r.job_title || r.specialty || r.title || 'تخصص عام';
-                    let displayPhone = r.phone ? r.phone.replace(/[^0-9]/g, '') : '967780568507';
-                    let displayImg = (r.image && r.image.trim() !== '') ? r.image : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
-                    let verifiedBadge = r.is_verified ? getBlueBadgeHTML() : '';
-                    
-                    let imgHTML = `<div class="product-img-container" onclick='openDetailsModal(${JSON.stringify(r)}, "resume")'><img src="${displayImg}" class="product-img"></div>`;
-
-                    gridDiv.innerHTML += `
-                        <div class="product-card">
-                            ${imgHTML}
-                            <div class="product-title" style="cursor:pointer;" onclick='openDetailsModal(${JSON.stringify(r)}, "resume")'>${displayName} ${verifiedBadge}</div>
-                            <div class="product-subtext">${displayTitle}</div>
-                            <a href="https://wa.me/${displayPhone}?text=مرحباً،%20تواصلت%20معك%20عبر%20منصة%20صدارة" target="_blank" class="order-btn whatsapp-btn"><i class="fa-brands fa-whatsapp"></i> تواصل عبر الواتساب 📱</a>
+                        <div>
+                            <div class="product-title" onclick='openOrderModal(${JSON.stringify(p)})'>${p.title}</div>
+                            <div class="product-price" style="margin:4px 0;">السعر: ${p.price}</div>
+                            <div class="product-desc">${descText}</div>
                         </div>
-                    `;
-                });
-                rBox.appendChild(gridDiv);
-            } else {
-                rBox.innerHTML = '<p style="text-align:center; color:#49769F; font-size:13px; padding:25px; font-weight:750;">لا توجد كفاءات مطابقة لبحثك.</p>';
-            }
+                        <button class="order-btn" onclick='openOrderModal(${JSON.stringify(p)})'><i class="fa-solid fa-cart-shopping"></i> طلب المنتج 🚀</button>
+                    </div>
+                `;
+            });
         }
 
-        function openDetailsModal(item, type) {
-            let title = type === 'job' ? item.title : (item.name || item.title);
-            let imgUrl = item.image || (type === 'resume' ? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' : '');
-            let phoneNum = item.phone ? item.phone.replace(/[^0-9]/g, '') : '967780568507';
-
-            document.getElementById('modalItemTitle').textContent = title;
-            
-            let imgContainer = document.getElementById('modalImageContainer');
-            if (imgUrl) {
-                imgContainer.innerHTML = `
-                    <a href="${imgUrl}" download="sadarah_${type}_${Date.now()}.jpg" target="_blank" title="اضغط لتنزيل الصورة مباشرة">
-                        <img src="${imgUrl}" class="modal-img-preview">
-                    </a>
-                    <div style="text-align:center; font-size:11px; color:#49769F; margin-bottom:10px; font-weight:700;">💡 (اضغط على الصورة أعلاه لتنزيلها بالحجم الواقعي)</div>
-                `;
-            } else {
-                imgContainer.innerHTML = '';
-            }
-
-            let detailsBox = document.getElementById('modalItemDetails');
-            if (type === 'job') {
-                detailsBox.innerHTML = `
-                    <b>🏢 الجهة الطالبة:</b> ${item.company || 'صدارة'}<br>
-                    <b>📁 القسم / المجال:</b> ${item.category || 'عام'}<br>
-                    <b>📝 تفاصيل الوظيفة:</b> ${item.description || item.details || 'لا توجد تفاصيل إضافية مسجلة.'}<br>
-                    <b>📞 للتواصل المباشر:</b> ${item.phone || 'غير متوفر'}
-                `;
-            } else {
-                detailsBox.innerHTML = `
-                    <b>👨‍💻 الاسم / التخصص:</b> ${item.job_title || item.specialty || item.title || 'كفاءة رقمية'}<br>
-                    <b>⭐ الخبرات والمهارات:</b> ${item.experience || item.details || 'مستقل وخبير معتمد في منصة صدارة.'}<br>
-                    <b>📞 للتواصل المباشر:</b> ${item.phone || 'غير متوفر'}
-                `;
-            }
-
-            let actionContainer = document.getElementById('modalActionBtnContainer');
-            actionContainer.innerHTML = `<a href="https://wa.me/${phoneNum}" target="_blank" class="order-btn whatsapp-btn" style="display:block; text-align:center; text-decoration:none;"><i class="fa-brands fa-whatsapp"></i> التواصل والتقديم عبر الواتساب 🚀</a>`;
-
-            document.getElementById('detailModal').style.display = 'flex';
-        }
-
-        function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
-        
-        function closeModal(modalId) { 
-            document.getElementById(modalId).style.display = 'none'; 
+        function openOrderModal(product) {
+            selectedProductObj = product;
+            let currentRef = localStorage.getItem('sadara_ref') || 'مباشر';
+            document.getElementById('modalProductDetails').innerHTML = `
+                <b>📦 المنتج:</b> ${product.title}<br>
+                <b>💵 السعر:</b> ${product.price}<br>
+                <b>🔗 مسوق الإحالة:</b> ${currentRef}<br>
+                <b>📝 التفاصيل:</b> ${product.description || 'لا توجد تفاصيل إضافية'}
+            `;
+            document.getElementById('orderModal').style.display = 'flex';
         }
 
         function checkOutsideModalClick(event, cardContentId) {
@@ -554,72 +261,40 @@
             }
         }
 
-        function switchMode() {
-            isLoginMode = !isLoginMode;
-            const nameBox = document.getElementById('nameFieldBox');
-            const title = document.getElementById('modalTitle');
-            const subtitle = document.getElementById('modalSubtitle');
-            const btn = document.getElementById('mainAuthBtn');
-            const switchBtn = document.getElementById('switchBtnText');
+        async function submitOrder() {
+            let name = document.getElementById('orderName').value.trim();
+            let phone = document.getElementById('orderPhone').value.trim();
+            let payment = document.getElementById('orderPaymentMethod').value;
+            let receipt = document.getElementById('orderReceipt').value.trim();
+            let notes = document.getElementById('orderNotes').value.trim();
+            let refCode = localStorage.getItem('sadara_ref') || 'مباشر';
 
-            if (isLoginMode) {
-                nameBox.style.display = 'none';
-                title.innerHTML = '<i class="fa-solid fa-lock" style="color:var(--sadarah-primary);"></i> تسجيل الدخول 🔐';
-                subtitle.textContent = 'أدخل رقم الواتساب وكلمة المرور للوصول إلى حسابك.';
-                btn.textContent = 'تسجيل الدخول 🚀';
-                switchBtn.textContent = 'ليس لديك حساب؟ سجل حساب جديد';
-            } else {
-                nameBox.style.display = 'block';
-                title.innerHTML = '<i class="fa-solid fa-user-astronaut" style="color:var(--sadarah-gold);"></i> تسجيل حساب جديد 🚀';
-                subtitle.textContent = 'أنشئ حسابك الآن لتنضم إلى نخبة الكفاءات وأصحاب الأعمال.';
-                btn.textContent = 'إنشاء وحفظ الحساب 📱';
-                switchBtn.textContent = 'لديك حساب مسجل؟ تسجيل الدخول';
-            }
-        }
-
-        async function processAuth() {
-            const phone = document.getElementById('authPhone').value.trim();
-            const pass = document.getElementById('authPass').value.trim();
-            const msg = document.getElementById('authMsg');
-
-            if (!phone || !pass) { alert('يرجى إدخال رقم الواتساب وكلمة المرور بدقة'); return; }
-            msg.style.color = 'blue'; msg.textContent = 'جاري المعالجة الحالية...';
-
-            if (!isLoginMode) {
-                const name = document.getElementById('authName').value.trim() || phone;
-                try {
-                    await db.from('users').insert([{ full_name: name, phone: phone, password: pass }]);
-                } catch(e) {}
-                localStorage.setItem('sadara_logged_phone', phone);
-                localStorage.setItem('sadara_logged_name', name);
-            } else {
-                localStorage.setItem('sadara_logged_phone', phone);
-                localStorage.setItem('sadara_logged_name', 'مستخدم (' + phone.slice(-4) + ')');
+            if(!name || !phone) {
+                alert('يرجى إدخال الاسم ورقم الواتساب على الأقل.');
+                return;
             }
 
-            msg.style.color = 'green'; msg.textContent = 'تمت العملية بنجاح تام! 🎉';
-            setTimeout(() => { closeModal('authModal'); checkActiveSession(); }, 800);
+            try {
+                await db.from('orders').insert([{
+                    product_id: selectedProductObj.id,
+                    product_title: selectedProductObj.title,
+                    customer_name: name,
+                    customer_phone: phone,
+                    payment_method: payment,
+                    receipt_url: receipt,
+                    notes: notes,
+                    ref_code: refCode,
+                    status: 'جديد'
+                }]);
+            } catch(e) {}
+
+            let waMessage = `مرحباً، أريد طلب المنتج الرقمي التالي:\n\n📦 المنتج: ${selectedProductObj.title}\n💵 السعر: ${selectedProductObj.price}\n👤 الاسم: ${name}\n📱 الهاتف: ${phone}\n💳 الدفع: ${payment}\n📄 سند التحويل: ${receipt || 'لم يُرفق'}\n🔗 الإحالة: ${refCode}\n\nملاحظات: ${notes}`;
+            let encoded = encodeURIComponent(waMessage);
+            window.open(`https://wa.me/967780568507?text=${encoded}`, '_blank');
+            document.getElementById('orderModal').style.display = 'none';
         }
 
-        checkActiveSession();
-
-        function checkActiveSession() {
-            const loggedName = localStorage.getItem('sadara_logged_name');
-            const authArea = document.getElementById('authArea');
-            if (loggedName) {
-                authArea.innerHTML = `<span style="font-size:12px; color:var(--sadarah-gold); font-weight:900; margin-left:6px;">👤 ${loggedName}</span><button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border-color:#ef4444; color:white;">خروج</button>`;
-            } else {
-                authArea.innerHTML = `<button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user-shield"></i> حساب / دخول</button>`;
-            }
-        }
-
-        function logoutUser() {
-            localStorage.removeItem('sadara_logged_phone');
-            localStorage.removeItem('sadara_logged_name');
-            checkActiveSession();
-        }
-
-        document.addEventListener('DOMContentLoaded', init);
+        window.addEventListener('DOMContentLoaded', loadStoreProducts);
     </script>
 </body>
 </html>
