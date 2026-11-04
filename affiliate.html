@@ -29,30 +29,30 @@
         .mini-btn:hover { background: var(--sadarah-gold); color: var(--sadarah-dark); }
 
         .header { background: var(--sadarah-primary); color: white; padding: 22px; border-radius: 16px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid var(--sadarah-gold); box-shadow: var(--neu-shadow); }
-        .card { background: var(--sadarah-light); padding: 24px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.9); max-width: 750px; margin: 0 auto; box-shadow: var(--neu-shadow); }
-        label { font-size: 12px; font-weight: bold; display: block; margin-top: 10px; color: var(--sadarah-primary); }
-        input, select { width: 100%; padding: 12px; margin-top: 5px; border: none; border-radius: 12px; font-size: 13px; outline: none; background: var(--sadarah-light); box-shadow: var(--neu-shadow-inset); }
+        .card { background: var(--sadarah-light); padding: 22px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.9); max-width: 750px; margin: 0 auto; box-shadow: var(--neu-shadow); width: 100%; }
+        label { font-size: 11px; font-weight: bold; display: block; margin-top: 10px; color: var(--sadarah-primary); }
+        input, select { width: 100%; padding: 11px; margin-top: 5px; border: none; border-radius: 10px; font-size: 11px; outline: none; background: var(--sadarah-light); box-shadow: var(--neu-shadow-inset); }
         
-        button { width: 100%; background: var(--sadarah-btn); color: white; border: none; padding: 14px; margin-top: 15px; border-radius: 12px; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); transition: 0.3s; }
+        button { width: 100%; background: var(--sadarah-btn); color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); transition: 0.3s; }
         button:hover { background: var(--sadarah-btn-hover); transform: translateY(-2px); }
         
         .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 12px; background: var(--sadarah-light); border: none; border-radius: 12px; font-weight: bold; cursor: pointer; box-shadow: var(--neu-shadow); color: var(--sadarah-primary); }
+        .tab-btn { flex: 1; padding: 10px; background: var(--sadarah-light); border: none; border-radius: 10px; font-weight: bold; font-size: 11px; cursor: pointer; box-shadow: var(--neu-shadow); color: var(--sadarah-primary); }
         .tab-btn.active { background: var(--sadarah-primary); color: var(--sadarah-gold); box-shadow: var(--neu-shadow-inset); }
         .dashboard-box { display: none; }
         .dashboard-box.active { display: block; }
-        .aff-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
-        .stat-card { background: var(--sadarah-light); padding: 15px; border-radius: 14px; text-align: center; box-shadow: var(--neu-shadow-inset); }
-        .stat-card h3 { color: var(--sadarah-primary); font-size: 16px; font-weight: 900; }
+        .aff-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        .stat-card { background: var(--sadarah-light); padding: 12px; border-radius: 12px; text-align: center; box-shadow: var(--neu-shadow-inset); }
+        .stat-card h3 { color: var(--sadarah-primary); font-size: 15px; font-weight: 900; }
         
-        .product-link-card { background: var(--sadarah-light); border: 1px solid rgba(255,255,255,0.8); padding: 16px; border-radius: 14px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--neu-shadow); }
-        .product-top-row { display: flex; gap: 12px; align-items: flex-start; }
-        .product-thumb-container { width: 100px; height: 100px; background: var(--sadarah-light); border-radius: 10px; box-shadow: var(--neu-shadow-inset); display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; padding: 4px; }
+        .product-link-card { background: var(--sadarah-light); border: 1px solid rgba(255,255,255,0.8); padding: 14px; border-radius: 14px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--neu-shadow); }
+        .product-top-row { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+        .product-thumb-container { width: 90px; height: 90px; background: var(--sadarah-light); border-radius: 10px; box-shadow: var(--neu-shadow-inset); display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; padding: 4px; }
         .product-thumb { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; display: block; }
         .product-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; }
         
-        .product-desc-box { background: var(--spec-bg); padding: 12px; border-radius: 10px; border-right: 3px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-size: 11px; color: var(--spec-text); line-height: 1.5; margin-top: 4px; font-weight: 700; }
-        .btn-sm { padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; font-size: 11px; font-weight: bold; color: white; box-shadow: var(--neu-shadow); transition: 0.3s; }
+        .product-desc-box { background: var(--spec-bg); padding: 10px; border-radius: 10px; border-right: 3px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-size: 10px; color: var(--spec-text); line-height: 1.5; font-weight: 700; }
+        .btn-sm { padding: 8px 10px; border-radius: 8px; border: none; cursor: pointer; font-size: 10px; font-weight: bold; color: white; box-shadow: var(--neu-shadow); transition: 0.3s; }
         .btn-sm:hover { opacity: 0.9; transform: translateY(-1px); }
     </style>
 </head>
@@ -61,21 +61,21 @@
     <div class="top-navbar">
         <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         <div style="display:flex; align-items:center; gap:8px;">
-            <img src="٢٠٢٦٠٩٢٦_١٩٥٨٣٩.jpg" style="height:32px; object-fit:contain;" alt="شعار صدارة">
-            <span style="font-weight: 900; font-size: 14px; color: #FFFFFF;">نظام الأفلييت</span>
+            <img src="images/logo.jpg" style="height:28px; object-fit:contain;" alt="شعار صدارة">
+            <span style="font-weight: 900; font-size: 13px; color: #FFFFFF;">الأفلييت</span>
         </div>
         <a href="blog.html" class="mini-btn"><i class="fa-solid fa-newspaper"></i> المدونة</a>
     </div>
 
     <div class="header">
         <h1>برنامج التسويق بالعمولة (أفلييت) 🤝</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">كل منتج يحمل رابط إحالة مخصص لك لمتابعة الأرباح والزيارات بدقة تامة</p>
+        <p style="font-size: 11px; opacity: 0.8; margin-top: 4px;">انسخ رابط الإحالة أو حمل صور المنتجات للتسويق الميداني</p>
     </div>
 
     <div class="card">
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('register')">تسجيل مسوق جديد 📝</button>
-            <button class="tab-btn" onclick="switchTab('login')">تسجيل الدخول برقم الجوال 📱</button>
+            <button class="tab-btn" onclick="switchTab('login')">تسجيل الدخول 📱</button>
         </div>
 
         <div id="registerBox" class="dashboard-box active">
@@ -95,51 +95,51 @@
             <input type="text" id="regNumber" placeholder="رقم الحساب...">
             
             <button onclick="registerAffiliate()" style="background: var(--sadarah-gold); color: var(--sadarah-dark);">إنشاء الحساب والبدء 🚀</button>
-            <div id="regMsg" style="text-align:center; font-size:12px; margin-top:10px; font-weight:bold;"></div>
+            <div id="regMsg" style="text-align:center; font-size:11px; margin-top:10px; font-weight:bold;"></div>
         </div>
 
         <div id="loginBox" class="dashboard-box">
             <label>رقم الجوال المسجل به</label>
             <input type="text" id="logPhone" placeholder="9677xxxxxxxx">
             <button onclick="loginAffiliate()">دخول لوحة التحكم 🔐</button>
-            <div id="logMsg" style="text-align:center; font-size:12px; margin-top:10px; font-weight:bold;"></div>
+            <div id="logMsg" style="text-align:center; font-size:11px; margin-top:10px; font-weight:bold;"></div>
         </div>
 
         <div id="affDashboard" class="dashboard-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 id="welcomeMsg" style="font-size: 14px; color: var(--sadarah-primary);">مرحباً، ...</h3>
-                <button onclick="logoutAffiliate()" style="width: auto; padding: 6px 12px; background: var(--red); margin: 0; font-size: 11px;">خروج 🚪</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                <h3 id="welcomeMsg" style="font-size: 13px; color: var(--sadarah-primary);">مرحباً، ...</h3>
+                <button onclick="logoutAffiliate()" style="width: auto; padding: 5px 10px; background: var(--red); margin: 0; font-size: 10px;">خروج 🚪</button>
             </div>
 
             <div class="aff-stats-grid">
                 <div class="stat-card">
                     <h3 id="affTotalEarnings">0 YER</h3>
-                    <p>إجمالي الأرباح الكلية 📈</p>
+                    <p style="font-size: 10px; color: #49769F;">إجمالي الأرباح 📈</p>
                 </div>
                 <div class="stat-card">
                     <h3 id="affDueEarnings" style="color: green;">0 YER</h3>
-                    <p>العمولات المستحقة 💰</p>
+                    <p style="font-size: 10px; color: #49769F;">العمولات المستحقة 💰</p>
                 </div>
             </div>
 
             <div class="aff-stats-grid">
                 <div class="stat-card">
                     <h3 id="affClicks">0</h3>
-                    <p>إجمالي الزيارات 👁️</p>
+                    <p style="font-size: 10px; color: #49769F;">إجمالي الزيارات 👁️</p>
                 </div>
                 <div class="stat-card">
                     <h3 id="affSales">0</h3>
-                    <p>المبيعات الناجحة 🛒</p>
+                    <p style="font-size: 10px; color: #49769F;">المبيعات الناجحة 🛒</p>
                 </div>
             </div>
 
-            <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
+            <hr style="border:0; border-top:1px solid #cbd5e1; margin:12px 0;">
 
-            <h3 style="font-size: 14px; color: var(--sadarah-primary); margin-bottom: 4px;">📦 منتجات المتجر وروابط الإحالة الخاصة بك:</h3>
-            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">انسخ رابط المنتج الخاص بك أو حمل صورته لمشاركته ميدانياً وعبر منصات التواصل.</p>
+            <h3 style="font-size: 13px; color: var(--sadarah-primary); margin-bottom: 4px;">📦 منتجات المتجر وروابط الإحالة الخاصة بك:</h3>
+            <p style="font-size: 10px; color: #64748b; margin-bottom: 10px;">انسخ رابط الإحالة الخاص بك أو حمل صورة المنتج للمشاركة.</p>
             
-            <div id="affProductsListContainer" style="max-height: 450px; overflow-y: auto;">
-                جاري تحميل المنتجات والروابط...
+            <div id="affProductsListContainer" style="max-height: 400px; overflow-y: auto;">
+                جاري التحميل...
             </div>
         </div>
     </div>
@@ -168,10 +168,10 @@
             const payout_number = document.getElementById('regNumber').value.trim();
             const msg = document.getElementById('regMsg');
 
-            if (!full_name || !phone || !payout_number) { alert('يرجى ملء الحقول المطلوبة'); return; }
+            if (!full_name || !phone || !payout_number) { alert('يرجى ملء الحقول'); return; }
 
             let { data: existing } = await db.from('affiliates').select('*').eq('phone', phone).single();
-            if (existing) { msg.style.color = 'red'; msg.textContent = 'هذا الرقم مسجل مسبقاً.'; return; }
+            if (existing) { msg.style.color = 'red'; msg.textContent = 'الرقم مسجل مسبقاً.'; return; }
 
             let ref_code = 'sdr_' + Math.random().toString(36).substring(7);
             let { data, error } = await db.from('affiliates').insert([{
@@ -204,7 +204,7 @@
             document.querySelector('.tabs').style.display = 'none';
             document.getElementById('affDashboard').classList.add('active');
 
-            document.getElementById('welcomeMsg').textContent = `مرحباً، ${aff.full_name || aff.name || 'مسوق صدارة'}`;
+            document.getElementById('welcomeMsg').textContent = `مرحباً، ${aff.full_name || aff.name || 'مسوق'}`;
 
             let totalEarned = Number(aff.total_earnings || 0);
             let paidEarned = Number(aff.paid_earnings || 0);
@@ -223,34 +223,29 @@
             container.innerHTML = '';
 
             if (!products || products.length === 0) {
-                container.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد منتجات متاحة للتسويق حالياً.</p>';
+                container.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد منتجات حالياً.</p>';
                 return;
             }
 
             products.forEach(p => {
                 let productLink = `https://sadarah.top/index.html?product_id=${p.id}&ref=${refCode}`;
                 let imgTag = (p.image && p.image.trim() !== '') ? `<div class="product-thumb-container"><img src="${p.image}" class="product-thumb"></div>` : `<div class="product-thumb-container" style="font-size:10px; color:#64748b; text-align:center;">بدون صورة</div>`;
-                let commInfo = p.commission ? ` | 💰 عمولتك: ${p.commission}` : '';
-                let descText = p.description ? p.description : 'لا يوجد وصف تسويقي إضافي لهذا المنتج.';
+                let descText = p.description ? p.description : 'منتج رقمي معتمد.';
 
                 container.innerHTML += `
                     <div class="product-link-card">
                         <div class="product-top-row">
                             ${imgTag}
                             <div class="product-info">
-                                <div style="font-weight:900; color:var(--sadarah-primary); font-size:13px;">🔹 ${p.title}</div>
-                                <div style="font-size:12px; color:#10b981; font-weight:900;">السعر: ${p.price}${commInfo}</div>
-                                <div style="font-size:10px; color:#0284c7; word-break:break-all;"><b>رابط الإحالة الخاص:</b> ${productLink}</div>
+                                <div style="font-weight:900; color:var(--sadarah-primary); font-size:12px;">🔹 ${p.title}</div>
+                                <div style="font-size:11px; color:#10b981; font-weight:900;">السعر: ${p.price}</div>
+                                <div style="font-size:10px; color:#0284c7; word-break:break-all;"><b>رابط الإحالة:</b> ${productLink}</div>
                             </div>
                         </div>
-
-                        <div class="product-desc-box">
-                            <b>📝 الوصف التسويقي:</b><br>${descText}
-                        </div>
-
-                        <div style="display:flex; gap:8px; margin-top:2px;">
-                            <button class="btn-sm" style="background:var(--sadarah-btn); flex:1;" onclick="navigator.clipboard.writeText('${productLink}'); alert('تم نسخ رابط الإحالة الخاص بك بنجاح! 📋');">نسخ رابط الإحالة 📋</button>
-                            ${p.image ? `<a href="${p.image}" target="_blank" download class="btn-sm" style="background:#10b981; text-decoration:none; display:inline-block; text-align:center; flex:1;">تحميل صورة المنتج 🖼️</a>` : ''}
+                        <div class="product-desc-box"><b>📝 الوصف:</b> ${descText}</div>
+                        <div style="display:flex; gap:6px; margin-top:2px;">
+                            <button class="btn-sm" style="background:var(--sadarah-btn); flex:1;" onclick="navigator.clipboard.writeText('${productLink}'); alert('تم نسخ رابط الإحالة بنجاح! 📋');">نسخ الرابط 📋</button>
+                            ${p.image ? `<a href="${p.image}" target="_blank" download class="btn-sm" style="background:#10b981; text-decoration:none; display:inline-block; text-align:center; flex:1;">تحميل الصورة 🖼️</a>` : ''}
                         </div>
                     </div>
                 `;
