@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>برنامج التسويق بالعمولة | منصة صدارة</title>
+    <title>برنامج التسويق بالعمولة (أفلييت) | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -14,7 +14,6 @@
             --sadarah-gold: #D4AF37;
             --sadarah-btn: #0284C7;
             --sadarah-btn-hover: #0369A1;
-            --green-wa: #25D366;
             --spec-bg: #F0F7FF;
             --spec-border: #0284C7;
             --spec-text: #1E3A8A;
@@ -60,17 +59,17 @@
 <body>
 
     <div class="top-navbar">
-        <a href="index.html" class="mini-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
+        <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         <div style="display:flex; align-items:center; gap:8px;">
             <img src="٢٠٢٦٠٩٢٦_١٩٥٨٣٩.jpg" style="height:32px; object-fit:contain;" alt="شعار صدارة">
-            <span style="font-weight: 900; font-size: 14px; color: #FFFFFF;">التسويق بالعمولة</span>
+            <span style="font-weight: 900; font-size: 14px; color: #FFFFFF;">نظام الأفلييت</span>
         </div>
-        <a href="services.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر</a>
+        <a href="blog.html" class="mini-btn"><i class="fa-solid fa-newspaper"></i> المدونة</a>
     </div>
 
     <div class="header">
-        <h1>برنامج التسويق بالعمولة للمنتجات 🤝</h1>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">استعرض المنتجات، تفاصيلها، وصفها، صورها، ونسخ روابطك الخاصة لمضاعفة مبيعاتك</p>
+        <h1>برنامج التسويق بالعمولة (أفلييت) 🤝</h1>
+        <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">كل منتج يحمل رابط إحالة مخصص لك لمتابعة الأرباح والزيارات بدقة تامة</p>
     </div>
 
     <div class="card">
@@ -95,7 +94,7 @@
             <label>رقم الحساب / المحفظة</label>
             <input type="text" id="regNumber" placeholder="رقم الحساب...">
             
-            <button onclick="registerAffiliate()" style="background: var(--sadarah-gold); color: #0A1C33;">إنشاء الحساب والبدء 🚀</button>
+            <button onclick="registerAffiliate()" style="background: var(--sadarah-gold); color: var(--sadarah-dark);">إنشاء الحساب والبدء 🚀</button>
             <div id="regMsg" style="text-align:center; font-size:12px; margin-top:10px; font-weight:bold;"></div>
         </div>
 
@@ -136,11 +135,11 @@
 
             <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
 
-            <h3 style="font-size: 14px; color: var(--sadarah-primary); margin-bottom: 4px;">📦 منتجات المتجر وتفاصيلها للتسويق:</h3>
-            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">كل منتج يظهر معه صورته، وصفه، وسعره، ورابط الإحالة المخصص لك.</p>
+            <h3 style="font-size: 14px; color: var(--sadarah-primary); margin-bottom: 4px;">📦 منتجات المتجر وروابط الإحالة الخاصة بك:</h3>
+            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">انسخ رابط المنتج الخاص بك أو حمل صورته لمشاركته ميدانياً وعبر منصات التواصل.</p>
             
             <div id="affProductsListContainer" style="max-height: 450px; overflow-y: auto;">
-                جاري تحميل المنتجات والتفاصيل...
+                جاري تحميل المنتجات والروابط...
             </div>
         </div>
     </div>
@@ -169,7 +168,7 @@
             const payout_number = document.getElementById('regNumber').value.trim();
             const msg = document.getElementById('regMsg');
 
-            if (!full_name || !phone || !payout_number) { alert('يرجى ملء الحقول'); return; }
+            if (!full_name || !phone || !payout_number) { alert('يرجى ملء الحقول المطلوبة'); return; }
 
             let { data: existing } = await db.from('affiliates').select('*').eq('phone', phone).single();
             if (existing) { msg.style.color = 'red'; msg.textContent = 'هذا الرقم مسجل مسبقاً.'; return; }
@@ -229,7 +228,7 @@
             }
 
             products.forEach(p => {
-                let productLink = `https://sadarah.top/services.html?product_id=${p.id}&ref=${refCode}`;
+                let productLink = `https://sadarah.top/index.html?product_id=${p.id}&ref=${refCode}`;
                 let imgTag = (p.image && p.image.trim() !== '') ? `<div class="product-thumb-container"><img src="${p.image}" class="product-thumb"></div>` : `<div class="product-thumb-container" style="font-size:10px; color:#64748b; text-align:center;">بدون صورة</div>`;
                 let commInfo = p.commission ? ` | 💰 عمولتك: ${p.commission}` : '';
                 let descText = p.description ? p.description : 'لا يوجد وصف تسويقي إضافي لهذا المنتج.';
@@ -241,16 +240,16 @@
                             <div class="product-info">
                                 <div style="font-weight:900; color:var(--sadarah-primary); font-size:13px;">🔹 ${p.title}</div>
                                 <div style="font-size:12px; color:#10b981; font-weight:900;">السعر: ${p.price}${commInfo}</div>
-                                <div style="font-size:10px; color:#0284c7; word-break:break-all;"><b>رابط الإحالة:</b> ${productLink}</div>
+                                <div style="font-size:10px; color:#0284c7; word-break:break-all;"><b>رابط الإحالة الخاص:</b> ${productLink}</div>
                             </div>
                         </div>
 
                         <div class="product-desc-box">
-                            <b>📝 الوصف التسويقي للمنتج:</b><br>${descText}
+                            <b>📝 الوصف التسويقي:</b><br>${descText}
                         </div>
 
                         <div style="display:flex; gap:8px; margin-top:2px;">
-                            <button class="btn-sm" style="background:var(--sadarah-btn); flex:1;" onclick="navigator.clipboard.writeText('${productLink}'); alert('تم نسخ رابط المنتج بنجاح! 📋');">نسخ الرابط الخاص 📋</button>
+                            <button class="btn-sm" style="background:var(--sadarah-btn); flex:1;" onclick="navigator.clipboard.writeText('${productLink}'); alert('تم نسخ رابط الإحالة الخاص بك بنجاح! 📋');">نسخ رابط الإحالة 📋</button>
                             ${p.image ? `<a href="${p.image}" target="_blank" download class="btn-sm" style="background:#10b981; text-decoration:none; display:inline-block; text-align:center; flex:1;">تحميل صورة المنتج 🖼️</a>` : ''}
                         </div>
                     </div>
