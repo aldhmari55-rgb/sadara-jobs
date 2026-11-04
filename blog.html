@@ -1,71 +1,77 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- شفرة أدسنس -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096" crossorigin="anonymous"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدونة صدارة | المقالات والنصائح المهنية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>المدونة والنصائح المهنية | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --bg-light: #f8fafc; --text-dark: #0f172a; }
+        :root { 
+            --bg-main: #eef2f7;
+            --neu-surface: #eef2f7;
+            --c-darkest: #001D39;
+            --c-mid: #49769F;
+            --gold: #d4af37; 
+            --emerald-btn: #10B981;
+            --spec-bg: #F0F7FF;
+            --spec-border: #0284C7;
+            --spec-text: #1E3A8A;
+            --text-main: #0b132b;
+            --neu-shadow: 9px 9px 18px #cbced1, -9px -9px 18px #ffffff;
+            --neu-shadow-inset: inset 5px 5px 10px #cbced1, inset -5px -5px 10px #ffffff;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-light); color: var(--text-dark); padding-bottom: 50px; line-height: 1.8; }
-        header { background: #0a1324; color: #fff; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
-        header h1 { font-size: 1.1rem; color: #38bdf8; }
-        .back-btn { background: #1e293b; color: #fff; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 12px; border: 1px solid var(--gold); }
-        .container { max-width: 900px; margin: 25px auto; padding: 0 16px; }
-        .article-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        .article-card h2 { font-size: 16px; color: var(--primary); margin-bottom: 8px; border-right: 4px solid var(--gold); padding-right: 10px; }
-        .article-card .summary { font-size: 12px; font-weight: bold; color: #3b82f6; margin-bottom: 10px; }
-        .article-card .content { font-size: 13px; color: #334155; text-align: justify; white-space: pre-line; }
-        .date-label { font-size: 10px; color: #94a3b8; margin-top: 12px; text-align: left; }
+        body { background: var(--bg-main); padding-bottom: 100px; color: var(--text-main); }
+
+        .top-navbar { background: var(--neu-surface); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 8px 20px rgba(0,29,57,0.08); }
+        .mini-btn { background: var(--neu-surface); color: var(--c-darkest); border: 1px solid rgba(212,175,55,0.4); padding: 10px 18px; border-radius: 16px; font-weight: 800; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: var(--neu-shadow); }
+        .mini-btn:hover { box-shadow: var(--neu-shadow-inset); color: var(--gold); }
+
+        .container { max-width: 1000px; margin: 25px auto; padding: 0 15px; }
+        .blog-header { background: var(--neu-surface); padding: 30px; border-radius: 24px; text-align: center; margin-bottom: 30px; box-shadow: var(--neu-shadow); border: 1px solid rgba(255,255,255,0.8); }
+        .blog-header h1 { color: var(--c-darkest); font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+        .blog-header p { color: var(--c-mid); font-size: 13px; font-weight: 700; }
+
+        .article-card { background: var(--neu-surface); border-radius: 24px; border: 1px solid rgba(255,255,255,0.9); padding: 25px; margin-bottom: 25px; box-shadow: var(--neu-shadow); }
+        .article-card h2 { font-size: 18px; font-weight: 900; color: var(--c-darkest); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        
+        /* صندوق محتوى المقال والمواصفات بلون مخصص */
+        .article-content { font-size: 13px; color: var(--spec-text); background: var(--spec-bg); padding: 18px; border-radius: 14px; border-right: 4px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-weight: 700; line-height: 1.8; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>📰 مدونة منصة صدارة للمقالات والنصائح</h1>
-        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> العودة للرئيسية</a>
-    </header>
-
-    <div class="container" id="blogContainer">
-        <div style="text-align:center; padding:30px; color:#64748b; font-size:12px;">جاري تحميل مقالات المدونة... ⏳</div>
+    <div class="top-navbar">
+        <a href="index.html" class="mini-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
+        <span style="font-weight: 900; font-size: 16px; color: var(--c-darkest);">مدونة <span style="color:var(--gold);">صدارة</span></span>
+        <a href="services.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرقمي</a>
     </div>
 
-    <script>
-        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <div class="container">
+        <div class="blog-header">
+            <h1>📰 المدونة والنصائح المهنية</h1>
+            <p>أحدث المقالات، النصائح الإرشادية، وفرص التطور المهني والرقمي في اليمن وخارجه</p>
+        </div>
 
-        async function loadPublicBlog() {
-            let container = document.getElementById('blogContainer');
-            try {
-                let { data: articles, error } = await db.from('articles').select('*').order('id', { ascending: false });
+        <div class="article-card">
+            <h2><i class="fa-solid fa-lightbulb" style="color:var(--gold);"></i> كيف تبرز سيرتك الذاتية وتجذب أصحاب العمل؟</h2>
+            <div class="article-content">
+                تعتبر السيرة الذاتية بوابتك الأولى للوصول إلى الوظيفة المثالية. لضمان قبولك، احرص على أن تكون مختصرة، خالية من الأخطاء الإملائية، وتركز بشكل مباشر على إنجازاتك وخبراتك العملية السابقة بدلاً من سرد المهام فقط. استخدم منصة صدارة لعرض مهاراتك والتواصل المباشر مع أصحاب الشركات عبر الواتساب.
+            </div>
+        </div>
 
-                if (error || !articles || articles.length === 0) {
-                    container.innerHTML = `<div style="text-align:center; background:white; padding:30px; border-radius:12px; border:1px dashed #cbd5e1; color:#64748b; font-size:12px;">لا توجد مقالات منشورة حالياً. أضف مقالاتك الأولى من لوحة التحكم! 🚀</div>`;
-                    return;
-                }
+        <div class="article-card">
+            <h2><i class="fa-solid fa-chart-line" style="color:var(--emerald-btn);"></i> دليل التسويق بالعمولة: كيف تضاعف دخلك الرقمي؟</h2>
+            <div class="article-content">
+                يمنحك برنامج التسويق بالعمولة في منصة صدارة فرصة ذهبية لتحقيق أرباح متميزة تصل إلى نسب عالية عبر مشاركة روابط منتجات المتجر الرقمي مع شبكة معارفك ومتابعيك. كل عملية شراء تتم عبر رابطك الخاص تسجل تلقائياً في حسابك وتمنحك عمولتك المستحقة بكل شفافية وسهولة.
+            </div>
+        </div>
+    </div>
 
-                container.innerHTML = '';
-                articles.forEach(a => {
-                    let dateStr = a.created_at ? new Date(a.created_at).toLocaleDateString('ar-SA') : '';
-                    container.innerHTML += `
-                        <article class="article-card">
-                            <h2>${a.title}</h2>
-                            ${a.summary ? `<div class="summary">💡 ${a.summary}</div>` : ''}
-                            <div class="content">${a.content}</div>
-                            <div class="date-label">تاريخ النشر: ${dateStr}</div>
-                        </article>
-                    `;
-                });
-            } catch(e) {
-                container.innerHTML = `<div style="text-align:center; color:red; font-size:12px;">حدث خطأ أثناء تحميل المقالات.</div>`;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', loadPublicBlog);
-    </script>
 </body>
 </html>
