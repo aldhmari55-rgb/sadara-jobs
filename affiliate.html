@@ -7,30 +7,51 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --green: #25d366; --red: #ef4444; --bg: #f8fafc; }
+        :root { 
+            --primary: #001D39; 
+            --gold: #d4af37; 
+            --green: #25d366; 
+            --emerald-btn: #10B981;
+            --spec-bg: #F0F7FF;
+            --spec-border: #0284C7;
+            --spec-text: #1E3A8A;
+            --red: #ef4444; 
+            --bg: #eef2f7;
+            --neu-surface: #eef2f7;
+            --neu-shadow: 8px 8px 16px #cbced1, -8px -8px 16px #ffffff;
+            --neu-shadow-inset: inset 4px 4px 8px #cbced1, inset -4px -4px 8px #ffffff;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); padding: 15px; color: #0f172a; padding-bottom: 50px; }
-        .header { background: var(--primary); color: white; padding: 18px; border-radius: 12px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid var(--gold); }
-        .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 750px; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .header { background: var(--primary); color: white; padding: 22px; border-radius: 16px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid var(--gold); box-shadow: var(--neu-shadow); }
+        .card { background: var(--neu-surface); padding: 24px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.9); max-width: 750px; margin: 0 auto; box-shadow: var(--neu-shadow); }
         label { font-size: 12px; font-weight: bold; display: block; margin-top: 10px; color: #475569; }
-        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
-        button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; border: none; border-radius: 12px; font-size: 13px; outline: none; background: var(--neu-surface); box-shadow: var(--neu-shadow-inset); }
+        
+        /* أزرار مخصصة بلون متناسق */
+        button { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; margin-top: 15px; border-radius: 12px; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: var(--neu-shadow); transition: 0.3s; }
+        button:hover { box-shadow: var(--neu-shadow-inset); color: var(--gold); }
+        
         .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 10px; background: #e2e8f0; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .tab-btn.active { background: var(--primary); color: white; }
+        .tab-btn { flex: 1; padding: 12px; background: var(--neu-surface); border: none; border-radius: 12px; font-weight: bold; cursor: pointer; box-shadow: var(--neu-shadow); }
+        .tab-btn.active { background: var(--primary); color: white; box-shadow: var(--neu-shadow-inset); }
         .dashboard-box { display: none; }
         .dashboard-box.active { display: block; }
-        .aff-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
-        .stat-card { background: #f8fafc; padding: 12px; border-radius: 10px; text-align: center; border: 1px solid #cbd5e1; }
+        .aff-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
+        .stat-card { background: var(--neu-surface); padding: 15px; border-radius: 14px; text-align: center; box-shadow: var(--neu-shadow-inset); }
         .stat-card h3 { color: var(--primary); font-size: 16px; font-weight: 900; }
         
-        .product-link-card { background: #f8fafc; border: 1px solid #cbd5e1; padding: 14px; border-radius: 10px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .product-link-card { background: var(--neu-surface); border: 1px solid rgba(255,255,255,0.8); padding: 16px; border-radius: 14px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--neu-shadow); }
         .product-top-row { display: flex; gap: 12px; align-items: flex-start; }
-        .product-thumb-container { width: 100px; height: 100px; background: #0f172a10; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; padding: 4px; }
-        .product-thumb { width: 100%; height: 100%; object-fit: contain; border-radius: 6px; display: block; }
+        .product-thumb-container { width: 100px; height: 100px; background: var(--neu-surface); border-radius: 10px; box-shadow: var(--neu-shadow-inset); display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; padding: 4px; }
+        .product-thumb { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; display: block; }
         .product-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; }
-        .product-desc-box { background: white; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 11px; color: #475569; line-height: 1.5; margin-top: 4px; }
-        .btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: bold; color: white; }
+        
+        /* صندوق المواصفات والمميزات بلون مخصص */
+        .product-desc-box { background: var(--spec-bg); padding: 12px; border-radius: 10px; border-right: 3px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-size: 11px; color: var(--spec-text); line-height: 1.5; margin-top: 4px; font-weight: 700; }
+        
+        .btn-sm { padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; font-size: 11px; font-weight: bold; color: white; box-shadow: var(--neu-shadow); transition: 0.3s; }
+        .btn-sm:hover { opacity: 0.9; transform: translateY(-1px); }
     </style>
 </head>
 <body>
@@ -53,7 +74,7 @@
             <label>رقم الواتساب</label>
             <input type="text" id="regPhone" placeholder="9677xxxxxxxx">
             
-            <label>وسيلة استلاستلم العمولات</label>
+            <label>وسيلة استلام العمولات</label>
             <select id="regMethod">
                 <option value="محفظة جيب">محفظة جيب</option>
                 <option value="بنك الكريمي">بنك الكريمي</option>
@@ -101,7 +122,7 @@
                 </div>
             </div>
 
-            <hr style="border:0; border-top:1px solid #e2e8f0; margin:15px 0;">
+            <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
 
             <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 4px;">📦 منتجات المتجر وتفاصيلها للتسويق:</h3>
             <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">كل منتج يظهر معه صورته، وصفه، وسعره، ورابط الإحالة المخصص لك.</p>
@@ -196,7 +217,6 @@
             }
 
             products.forEach(p => {
-                // تم تعديل الرابط ليشير إلى services.html حصراً بناءً على طلبك
                 let productLink = `https://sadarah.top/services.html?product_id=${p.id}&ref=${refCode}`;
                 let imgTag = (p.image && p.image.trim() !== '') ? `<div class="product-thumb-container"><img src="${p.image}" class="product-thumb"></div>` : `<div class="product-thumb-container" style="font-size:10px; color:#64748b; text-align:center;">بدون صورة</div>`;
                 let commInfo = p.commission ? ` | 💰 عمولتك: ${p.commission}` : '';
