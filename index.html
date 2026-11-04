@@ -33,7 +33,6 @@
         html { scroll-behavior: smooth; width: 100%; height: 100%; }
         body { background: var(--sadarah-light); padding-bottom: 90px; color: var(--text-main); width: 100%; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
 
-        /* شريط علوي احترافي بستايل شي إن */
         .shein-top-bar { background: var(--sadarah-dark); color: white; padding: 8px 15px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212,175,55,0.3); }
         .shein-top-bar a { color: var(--sadarah-gold); text-decoration: none; font-weight: bold; }
 
@@ -41,7 +40,6 @@
         .brand-logo-container { display: flex; align-items: center; gap: 8px; text-decoration: none; }
         .brand-logo-img { height: 38px; object-fit: contain; border-radius: 6px; }
         
-        /* شريط البحث المدمج بستايل شي إن */
         .shein-search-container { flex-grow: 1; max-width: 500px; position: relative; }
         .shein-search-input { width: 100%; padding: 10px 38px 10px 15px; border: none; border-radius: 20px; font-size: 12px; font-weight: 700; background: #ffffff; color: var(--text-main); outline: none; box-shadow: var(--neu-shadow-inset); }
         .shein-search-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 14px; }
@@ -52,7 +50,6 @@
 
         .container { width: 100%; max-width: 1250px; margin: 15px auto; padding: 0 10px; }
 
-        /* الأقسام الدائرية المتحركة بستايل شي إن */
         .shein-categories-bar { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 18px; margin-bottom: 20px; scrollbar-width: none; }
         .shein-categories-bar::-webkit-scrollbar { display: none; }
         .shein-cat-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; transition: 0.3s; }
@@ -60,14 +57,12 @@
         .shein-cat-item:hover .shein-cat-circle, .shein-cat-item.active .shein-cat-circle { border-color: var(--sadarah-gold); box-shadow: var(--neu-shadow-inset); color: var(--sadarah-gold); transform: translateY(-3px); }
         .shein-cat-name { font-size: 11px; font-weight: 800; color: var(--text-main); text-align: center; }
 
-        /* شبكة المنتجات المرنة بستايل شي إن */
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; width: 100%; }
         @media (max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 
         .product-card { background: var(--sadarah-light); border-radius: 16px; border: 1px solid rgba(255,255,255,0.9); padding: 12px; box-shadow: var(--neu-shadow); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: 0.4s; width: 100%; position: relative; overflow: hidden; }
         .product-card:hover { box-shadow: var(--neu-card-hover); transform: translateY(-3px); }
 
-        /* شريط نسبة الخصم بستايل شي إن */
         .discount-badge { position: absolute; top: 12px; right: 12px; background: var(--discount-red); color: white; font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 8px; z-index: 5; box-shadow: 0 2px 6px rgba(225,29,72,0.3); }
 
         .product-img-container { width: 100%; height: 210px; background: var(--sadarah-light); border-radius: 12px; display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: var(--neu-shadow-inset); padding: 4px; cursor: pointer; position: relative; }
@@ -77,7 +72,6 @@
 
         .product-title { font-size: 12px; font-weight: 900; color: var(--text-main); height: 35px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; cursor: pointer; }
         
-        /* نظام الأسعار: السعر الحالي والسابقة المشطوب */
         .price-box { display: flex; align-items: center; gap: 8px; margin: 4px 0; flex-wrap: wrap; }
         .current-price { font-size: 13px; font-weight: 900; color: var(--discount-red); }
         .old-price { font-size: 11px; font-weight: 700; color: #94a3b8; text-decoration: line-through; }
@@ -103,7 +97,7 @@
 <body>
 
     <div class="shein-top-bar">
-        <span>🔥 استمتع بخصومات حصرية على كافة طلباتك الأولى</span>
+        <span>🔥 استمتع بخصومات حصرية عبر متجر صدارة الرقمي</span>
         <span><a href="affiliate.html"><i class="fa-solid fa-handshake-angle"></i> انضم لبرنامج المسوقين (الأفلييت)</a></span>
     </div>
 
@@ -125,11 +119,35 @@
     </a>
 
     <div class="container">
-        <!-- شريط الأقسام الدائرية المتحركة بستايل شي إن -->
+        <!-- شريط الأقسام الدائرية المتحركة (التصنيفات الجديدة والسابقة) -->
         <div class="shein-categories-bar" id="categoriesContainer">
             <div class="shein-cat-item active" onclick="filterStore('الكل', this)">
                 <div class="shein-cat-circle"><i class="fa-solid fa-globe"></i></div>
                 <div class="shein-cat-name">الكل</div>
+            </div>
+            <div class="shein-cat-item" onclick="filterStore('إلكترونيات', this)">
+                <div class="shein-cat-circle"><i class="fa-solid fa-tv"></i></div>
+                <div class="shein-cat-name">إلكترونيات</div>
+            </div>
+            <div class="shein-cat-item" onclick="filterStore('جوالات', this)">
+                <div class="shein-cat-circle"><i class="fa-solid fa-mobile-screen"></i></div>
+                <div class="shein-cat-name">جوالات</div>
+            </div>
+            <div class="shein-cat-item" onclick="filterStore('اكسسوارات', this)">
+                <div class="shein-cat-circle"><i class="fa-solid fa-headphones"></i></div>
+                <div class="shein-cat-name">اكسسوارات</div>
+            </div>
+            <div class="shein-cat-item" onclick="filterStore('عطور', this)">
+                <div class="shein-cat-circle"><i class="fa-solid fa-spray-can-sparkles"></i></div>
+                <div class="shein-cat-name">عطور</div>
+            </div>
+            <div class="shein-cat-item" onclick="filterStore('ملابس', this)">
+                <div class="shein-cat-circle"><i class="fa-solid fa-shirt"></i></div>
+                <div class="shein-cat-name">ملابس</div>
+            </div>
+            <div class="shein-cat-item" onclick="filterStore('ادوات تجميل', this)">
+                <div class="shein-cat-circle"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <div class="shein-cat-name">تجميل</div>
             </div>
             <div class="shein-cat-item" onclick="filterStore('اشتراكات رقمية', this)">
                 <div class="shein-cat-circle"><i class="fa-solid fa-key"></i></div>
@@ -138,10 +156,6 @@
             <div class="shein-cat-item" onclick="filterStore('خدمات', this)">
                 <div class="shein-cat-circle"><i class="fa-solid fa-screwdriver-wrench"></i></div>
                 <div class="shein-cat-name">خدمات</div>
-            </div>
-            <div class="shein-cat-item" onclick="filterStore('تجميل وعناية', this)">
-                <div class="shein-cat-circle"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-                <div class="shein-cat-name">تجميل وعناية</div>
             </div>
         </div>
 
@@ -244,7 +258,6 @@
                 let imgTag = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-img">` : '<i class="fa-solid fa-store" style="font-size:28px; color:#49769F;"></i>';
                 let descText = p.description || 'منتج رقمي معتمد من صدارة.';
                 
-                // حساب أو عرض السعر السابق والسعر الحالي ونسبة الخصم بستايل شي إن
                 let currentPrice = p.price || '0';
                 let oldPriceHTML = '';
                 let discountHTML = '';
