@@ -3,57 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة إدارة منصة صدارة</title>
+    <title>لوحة التحكم والإدارة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
-            --primary: #001D39; 
-            --gold: #d4af37; 
-            --emerald-btn: #10B981;
+            --sadarah-primary: #0F2A4A;
+            --sadarah-dark: #0A1C33;
+            --sadarah-light: #F4F7FB;
+            --sadarah-gold: #D4AF37;
+            --sadarah-btn: #0284C7;
             --spec-bg: #F0F7FF;
             --spec-border: #0284C7;
             --spec-text: #1E3A8A;
             --red: #ef4444; 
-            --bg: #eef2f7;
-            --neu-surface: #eef2f7;
             --neu-shadow: 8px 8px 16px #cbced1, -8px -8px 16px #ffffff;
             --neu-shadow-inset: inset 4px 4px 8px #cbced1, inset -4px -4px 8px #ffffff;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); padding: 20px; color: #0f172a; }
+        body { background: var(--sadarah-light); padding: 20px; color: #0f172a; }
 
-        .admin-card { background: var(--neu-surface); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.9); max-width: 900px; margin: 0 auto; box-shadow: var(--neu-shadow); }
-        .admin-header { background: var(--primary); color: white; padding: 20px; border-radius: 14px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid var(--gold); }
+        .admin-container { max-width: 1000px; margin: 0 auto; }
+        .top-navbar { background: var(--sadarah-primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sadarah-gold); border-radius: 14px; margin-bottom: 20px; box-shadow: var(--neu-shadow); }
+        .mini-btn { background: rgba(255,255,255,0.1); color: #FFFFFF; border: 1px solid rgba(212,175,55,0.4); padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; }
+        .mini-btn:hover { background: var(--sadarah-gold); color: var(--sadarah-dark); }
+
+        .admin-card { background: var(--sadarah-light); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.9); margin-bottom: 20px; box-shadow: var(--neu-shadow); }
+        .admin-header { background: var(--sadarah-primary); color: white; padding: 20px; border-radius: 14px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid var(--sadarah-gold); }
         
-        .section-box { background: var(--neu-surface); padding: 18px; border-radius: 16px; margin-bottom: 20px; box-shadow: var(--neu-shadow-inset); }
-        .section-box h3 { color: var(--primary); font-size: 15px; margin-bottom: 12px; font-weight: 900; }
+        .section-box { background: var(--sadarah-light); padding: 18px; border-radius: 16px; margin-bottom: 20px; box-shadow: var(--neu-shadow-inset); }
+        .section-box h3 { color: var(--sadarah-primary); font-size: 15px; margin-bottom: 12px; font-weight: 900; }
 
-        .data-row { background: var(--neu-surface); border-right: 4px solid var(--spec-border); padding: 12px 16px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--neu-shadow); }
-        .data-info { font-size: 12px; color: var(--spec-text); font-weight: 700; }
+        .data-row { background: var(--sadarah-light); border-right: 4px solid var(--spec-border); padding: 12px 16px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--neu-shadow); }
+        .data-info { font-size: 12px; color: var(--spec-text); font-weight: 700; line-height: 1.6; }
 
         .action-btn { border: none; padding: 8px 14px; border-radius: 8px; font-weight: 900; font-size: 11px; cursor: pointer; color: white; transition: 0.3s; }
         .btn-delete { background: var(--red); }
         .btn-delete:hover { opacity: 0.8; }
+        
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 900; color: var(--sadarah-primary); margin-bottom: 4px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 11px; border: none; border-radius: 10px; font-size: 12px; font-weight: 700; outline: none; background: var(--sadarah-light); box-shadow: var(--neu-shadow-inset); }
+        .submit-btn { background: var(--sadarah-btn); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 900; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
     </style>
 </head>
 <body>
 
-    <div class="admin-card">
-        <div class="admin-header">
-            <h2>⚙️ لوحة تحكم وإدارة منصة صدارة</h2>
-            <p style="font-size:11px; opacity:0.8; margin-top:4px;">إدارة الوظائف، الكفاءات، والطلبات الواردة مباشرة</p>
+    <div class="admin-container">
+        <div class="top-navbar">
+            <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
+            <span style="font-weight: 900; font-size: 15px; color: #FFFFFF;">لوحة تحكم <span style="color:var(--sadarah-gold);">الإدارة</span></span>
+            <a href="affiliate.html" class="mini-btn"><i class="fa-solid fa-handshake-angle"></i> صفحة الأفلييت</a>
         </div>
 
-        <div class="section-box">
-            <h3>💼 الوظائف المسجلة</h3>
-            <div id="jobsAdminList">جاري التحميل...</div>
-        </div>
+        <div class="admin-card">
+            <div class="admin-header">
+                <h2>⚙️ لوحة إدارة متجر صدارة</h2>
+                <p style="font-size:11px; opacity:0.8; margin-top:4px;">إضافة المنتجات، متابعة الطلبات، وإدارة المسوقين</p>
+            </div>
 
-        <div class="section-box">
-            <h3>👨‍💻 دليل الكفاءات والخبرات</h3>
-            <div id="resumesAdminList">جاري التحميل...</div>
+            <!-- قسم إضافة منتج جديد للمتجر -->
+            <div class="section-box">
+                <h3>➕ إضافة منتج أو خدمة جديدة للمتجر</h3>
+                <div class="form-group">
+                    <label>عنوان المنتج / الخدمة</label>
+                    <input type="text" id="pTitle" placeholder="مثال: اشتراك نتفلكس بريميوم">
+                </div>
+                <div class="form-group">
+                    <label>القسم</label>
+                    <select id="pCategory">
+                        <option value="اشتراكات رقمية">🔑 اشتراكات رقمية</option>
+                        <option value="خدمات">🛠️ خدمات</option>
+                        <option value="تجميل وعناية">💄 تجميل وعناية</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>السعر</label>
+                    <input type="text" id="pPrice" placeholder="مثال: 5000 YER">
+                </div>
+                <div class="form-group">
+                    <label>رابط صورة المنتج</label>
+                    <input type="url" id="pImg" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>الوصف التسويقي والمميزات</label>
+                    <textarea id="pDesc" rows="2" placeholder="اكتب تفاصيل المنتج..."></textarea>
+                </div>
+                <button onclick="addNewProduct()" class="submit-btn">نشر المنتج في المتجر 🚀</button>
+            </div>
+
+            <!-- قسم الطلبات الواردة -->
+            <div class="section-box">
+                <h3>🛒 طلبات الزبائن الواردة</h3>
+                <div id="ordersAdminList">جاري تحميل الطلبات...</div>
+            </div>
+
+            <!-- قسم المسوقين (الأفلييت) -->
+            <div class="section-box">
+                <h3>🤝 مسوقو المنصة المسجلين</h3>
+                <div id="affiliatesAdminList">جاري تحميل المسوقين...</div>
+            </div>
         </div>
     </div>
 
@@ -63,33 +113,71 @@
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         async function loadAdminData() {
-            let { data: jobs } = await db.from('jobs').select('*').order('id', {ascending: false});
-            let jBox = document.getElementById('jobsAdminList');
-            jBox.innerHTML = '';
-            (jobs || []).forEach(j => {
-                jBox.innerHTML += `
-                    <div class="data-row">
-                        <div class="data-info">📌 ${j.title} | ${j.company || 'صدارة'} (${j.phone || 'بدون رقم'})</div>
-                        <button class="action-btn btn-delete" onclick="deleteItem('jobs', ${j.id})">حذف 🗑️</button>
-                    </div>
-                `;
-            });
+            // تحميل الطلبات
+            let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
+            let oBox = document.getElementById('ordersAdminList');
+            oBox.innerHTML = '';
+            if(!orders || orders.length === 0) {
+                oBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد طلبات جديدة حالياً.</p>';
+            } else {
+                orders.forEach(o => {
+                    oBox.innerHTML += `
+                        <div class="data-row">
+                            <div class="data-info">📦 <b>${o.product_title}</b><br>👤 العميل: ${o.customer_name} (${o.customer_phone})<br>💳 الدفع: ${o.payment_method} | الإحالة: ${o.ref_code}</div>
+                            <button class="action-btn btn-delete" onclick="deleteItem('orders', ${o.id})">حذف 🗑️</button>
+                        </div>
+                    `;
+                });
+            }
 
-            let { data: resumes } = await db.from('resumes').select('*').order('id', {ascending: false});
-            let rBox = document.getElementById('resumesAdminList');
-            rBox.innerHTML = '';
-            (resumes || []).forEach(r => {
-                rBox.innerHTML += `
-                    <div class="data-row">
-                        <div class="data-info">👤 ${r.name || r.title} | ${r.job_title || 'تخصص عام'} (${r.phone || 'بدون رقم'})</div>
-                        <button class="action-btn btn-delete" onclick="deleteItem('resumes', ${r.id})">حذف 🗑️</button>
-                    </div>
-                `;
-            });
+            // تحميل المسوقين
+            let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
+            let aBox = document.getElementById('affiliatesAdminList');
+            aBox.innerHTML = '';
+            if(!affs || affs.length === 0) {
+                aBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد مسجلين في الأفلييت حتى الآن.</p>';
+            } else {
+                affs.forEach(a => {
+                    aBox.innerHTML += `
+                        <div class="data-row">
+                            <div class="data-info">🤝 المسوق: <b>${a.full_name || a.name}</b> (${a.phone})<br>🔗 كود الإحالة: <code>${a.ref_code}</code> | الأرباح: ${a.total_earnings || 0} YER</div>
+                            <button class="action-btn btn-delete" onclick="deleteItem('affiliates', ${a.id})">حذف 🗑️</button>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        async function addNewProduct() {
+            let title = document.getElementById('pTitle').value.trim();
+            let category = document.getElementById('pCategory').value;
+            let price = document.getElementById('pPrice').value.trim();
+            let image = document.getElementById('pImg').value.trim();
+            let description = document.getElementById('pDesc').value.trim();
+
+            if(!title || !price) {
+                alert('يرجى إدخال عنوان المنتج والسعر على الأقل.');
+                return;
+            }
+
+            let { error } = await db.from('platform_services').insert([{
+                title, category, price, image, description, is_active: true
+            }]);
+
+            if(error) {
+                alert('خطأ أثناء الإضافة: ' + error.message);
+            } else {
+                alert('تمت إضافة المنتج بنجاح إلى المتجر! 🎉');
+                document.getElementById('pTitle').value = '';
+                document.getElementById('pPrice').value = '';
+                document.getElementById('pImg').value = '';
+                document.getElementById('pDesc').value = '';
+                loadAdminData();
+            }
         }
 
         async function deleteItem(table, id) {
-            if(confirm('هل أنت تأكد من رغبتك في حذف هذا العنصر؟')) {
+            if(confirm('هل أنت متأكد من رغبتك في حذف هذا العنصر؟')) {
                 await db.from(table).delete().eq('id', id);
                 loadAdminData();
             }
