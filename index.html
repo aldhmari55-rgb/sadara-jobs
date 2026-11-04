@@ -19,115 +19,138 @@
             --sadarah-btn: #0284C7;
             --sadarah-btn-hover: #0369A1;
             --green-wa: #25D366;
+            --discount-red: #E11D48;
             --spec-bg: #F0F7FF;
             --spec-border: #0284C7;
             --spec-text: #1E3A8A;
             --text-main: #0B132B;
-            --neu-shadow: 8px 8px 16px #cbced1, -8px -8px 16px #ffffff;
-            --neu-shadow-inset: inset 4px 4px 8px #cbced1, inset -4px -4px 8px #ffffff;
-            --neu-card-hover: 12px 12px 24px #cbced1, -12px -12px 24px #ffffff;
+            --neu-shadow: 6px 6px 14px #cbced1, -6px -6px 14px #ffffff;
+            --neu-shadow-inset: inset 3px 3px 6px #cbced1, inset -3px -3px 6px #ffffff;
+            --neu-card-hover: 10px 10px 20px #cbced1, -10px -10px 20px #ffffff;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        html { scroll-behavior: smooth; }
-        body { background: var(--sadarah-light); padding-bottom: 100px; color: var(--text-main); overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+        html { scroll-behavior: smooth; width: 100%; height: 100%; }
+        body { background: var(--sadarah-light); padding-bottom: 90px; color: var(--text-main); width: 100%; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
 
-        .top-navbar { background: var(--sadarah-primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sadarah-gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 8px 20px rgba(10,28,51,0.3); width: 100%; }
+        /* شريط علوي احترافي بستايل شي إن */
+        .shein-top-bar { background: var(--sadarah-dark); color: white; padding: 8px 15px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212,175,55,0.3); }
+        .shein-top-bar a { color: var(--sadarah-gold); text-decoration: none; font-weight: bold; }
+
+        .top-navbar { background: var(--sadarah-primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sadarah-gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(10,28,51,0.3); width: 100%; gap: 10px; }
         .brand-logo-container { display: flex; align-items: center; gap: 8px; text-decoration: none; }
         .brand-logo-img { height: 38px; object-fit: contain; border-radius: 6px; }
         
-        .nav-actions { display: flex; gap: 10px; align-items: center; }
-        .mini-btn { background: rgba(255,255,255,0.1); color: #FFFFFF; border: 1px solid rgba(212,175,55,0.4); padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; }
+        /* شريط البحث المدمج بستايل شي إن */
+        .shein-search-container { flex-grow: 1; max-width: 500px; position: relative; }
+        .shein-search-input { width: 100%; padding: 10px 38px 10px 15px; border: none; border-radius: 20px; font-size: 12px; font-weight: 700; background: #ffffff; color: var(--text-main); outline: none; box-shadow: var(--neu-shadow-inset); }
+        .shein-search-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 14px; }
+
+        .nav-actions { display: flex; gap: 8px; align-items: center; }
+        .mini-btn { background: rgba(255,255,255,0.1); color: #FFFFFF; border: 1px solid rgba(212,175,55,0.4); padding: 7px 12px; border-radius: 12px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: 0.3s; white-space: nowrap; }
         .mini-btn:hover { background: var(--sadarah-gold); color: var(--sadarah-dark); }
 
-        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; width: 100%; }
-        
-        .store-header { background: var(--sadarah-light); padding: 25px; border-radius: 22px; text-align: center; margin-bottom: 22px; box-shadow: var(--neu-shadow); border: 1px solid rgba(255,255,255,0.8); }
-        .store-header h1 { color: var(--sadarah-primary); font-size: clamp(20px, 4vw, 26px); font-weight: 900; margin-bottom: 6px; }
-        .store-header p { color: #49769F; font-size: clamp(12px, 2vw, 13px); font-weight: 700; }
+        .container { width: 100%; max-width: 1250px; margin: 15px auto; padding: 0 10px; }
 
-        .search-filter-box { background: var(--sadarah-light); border-radius: 20px; padding: 18px; margin-bottom: 25px; box-shadow: var(--neu-shadow); border: 1px solid rgba(255,255,255,0.8); }
-        .search-input-main { width: 100%; padding: 14px 18px; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; outline: none; margin-bottom: 12px; background: var(--sadarah-light); color: var(--text-main); box-shadow: var(--neu-shadow-inset); }
+        /* الأقسام الدائرية المتحركة بستايل شي إن */
+        .shein-categories-bar { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 18px; margin-bottom: 20px; scrollbar-width: none; }
+        .shein-categories-bar::-webkit-scrollbar { display: none; }
+        .shein-cat-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; transition: 0.3s; }
+        .shein-cat-circle { width: 65px; height: 65px; border-radius: 50%; background: var(--sadarah-light); box-shadow: var(--neu-shadow); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--sadarah-primary); border: 2px solid transparent; transition: 0.3s; }
+        .shein-cat-item:hover .shein-cat-circle, .shein-cat-item.active .shein-cat-circle { border-color: var(--sadarah-gold); box-shadow: var(--neu-shadow-inset); color: var(--sadarah-gold); transform: translateY(-3px); }
+        .shein-cat-name { font-size: 11px; font-weight: 800; color: var(--text-main); text-align: center; }
 
-        .categories-tags { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; overflow-x: auto; padding-bottom: 5px; }
-        .categories-tags::-webkit-scrollbar { display: none; }
-        .cat-tag { background: var(--sadarah-light); color: var(--sadarah-primary); border: none; padding: 9px 18px; border-radius: 18px; font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.3s; box-shadow: var(--neu-shadow); white-space: nowrap; flex-shrink: 0; }
-        .cat-tag.active, .cat-tag:hover { box-shadow: var(--neu-shadow-inset); color: var(--sadarah-gold); }
-
-        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; }
-        @media (max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
+        /* شبكة المنتجات المرنة بستايل شي إن */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; width: 100%; }
         @media (max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 
-        .product-card { background: var(--sadarah-light); border-radius: 20px; border: 1px solid rgba(255,255,255,0.9); padding: 14px; box-shadow: var(--neu-shadow); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: 0.4s; width: 100%; }
-        .product-card:hover { box-shadow: var(--neu-card-hover); transform: translateY(-4px); }
+        .product-card { background: var(--sadarah-light); border-radius: 16px; border: 1px solid rgba(255,255,255,0.9); padding: 12px; box-shadow: var(--neu-shadow); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: 0.4s; width: 100%; position: relative; overflow: hidden; }
+        .product-card:hover { box-shadow: var(--neu-card-hover); transform: translateY(-3px); }
 
-        .product-img-container { width: 100%; height: 220px; background: var(--sadarah-light); border-radius: 14px; display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: var(--neu-shadow-inset); padding: 6px; cursor: pointer; position: relative; }
-        @media (max-width: 576px) { .product-img-container { height: 160px; } }
-        .product-img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; transition: transform 0.4s; }
-        .product-img-container:hover .product-img { transform: scale(1.05); }
+        /* شريط نسبة الخصم بستايل شي إن */
+        .discount-badge { position: absolute; top: 12px; right: 12px; background: var(--discount-red); color: white; font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 8px; z-index: 5; box-shadow: 0 2px 6px rgba(225,29,72,0.3); }
 
-        .product-title { font-size: 13px; font-weight: 900; color: var(--text-main); height: 38px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; cursor: pointer; }
-        .product-price { font-size: 14px; font-weight: 900; color: var(--sadarah-btn); }
+        .product-img-container { width: 100%; height: 210px; background: var(--sadarah-light); border-radius: 12px; display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: var(--neu-shadow-inset); padding: 4px; cursor: pointer; position: relative; }
+        @media (max-width: 576px) { .product-img-container { height: 150px; } }
+        .product-img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; transition: transform 0.4s; }
+        .product-img-container:hover .product-img { transform: scale(1.04); }
+
+        .product-title { font-size: 12px; font-weight: 900; color: var(--text-main); height: 35px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; cursor: pointer; }
         
-        .product-desc { font-size: 11px; color: var(--spec-text); background: var(--spec-bg); padding: 8px; border-radius: 8px; border-right: 3px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-weight: 700; line-height: 1.4; height: 50px; overflow: hidden; }
+        /* نظام الأسعار: السعر الحالي والسابقة المشطوب */
+        .price-box { display: flex; align-items: center; gap: 8px; margin: 4px 0; flex-wrap: wrap; }
+        .current-price { font-size: 13px; font-weight: 900; color: var(--discount-red); }
+        .old-price { font-size: 11px; font-weight: 700; color: #94a3b8; text-decoration: line-through; }
 
-        .order-btn { background: var(--sadarah-btn); color: white; text-align: center; padding: 11px; border-radius: 12px; font-weight: 900; font-size: 12px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
+        .product-desc { font-size: 10px; color: var(--spec-text); background: var(--spec-bg); padding: 7px; border-radius: 8px; border-right: 3px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-weight: 700; line-height: 1.4; height: 45px; overflow: hidden; }
+
+        .order-btn { background: var(--sadarah-btn); color: white; text-align: center; padding: 10px; border-radius: 10px; font-weight: 900; font-size: 11px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: 0.3s; box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3); }
         .order-btn:hover { background: var(--sadarah-btn-hover); transform: translateY(-2px); }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,28,51,0.85); backdrop-filter: blur(8px); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-        .modal-card { background: var(--sadarah-light); padding: 25px; border-radius: 24px; width: 100%; max-width: 480px; box-shadow: var(--neu-shadow); border-top: 5px solid var(--sadarah-gold); max-height: 90vh; overflow-y: auto; position: relative; animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes modalPop { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-
-        .modal-card h3 { color: var(--sadarah-primary); font-size: 17px; font-weight: 900; margin-bottom: 10px; }
-        .modal-spec-box { font-size: 12px; color: var(--spec-text); background: var(--spec-bg); padding: 12px; border-radius: 10px; border-right: 4px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-weight: 700; line-height: 1.7; margin-bottom: 14px; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,28,51,0.85); backdrop-filter: blur(6px); z-index: 99999; justify-content: center; align-items: center; padding: 10px; overflow-y: auto; }
+        .modal-card { background: var(--sadarah-light); padding: 20px; border-radius: 20px; width: 100%; max-width: 450px; box-shadow: var(--neu-shadow); border-top: 5px solid var(--sadarah-gold); max-height: 95vh; overflow-y: auto; position: relative; }
+        .modal-card h3 { color: var(--sadarah-primary); font-size: 16px; font-weight: 900; margin-bottom: 8px; }
+        .modal-spec-box { font-size: 11px; color: var(--spec-text); background: var(--spec-bg); padding: 10px; border-radius: 10px; border-right: 3px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-weight: 700; line-height: 1.6; margin-bottom: 12px; }
         
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 900; color: var(--sadarah-primary); margin-bottom: 4px; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 11px; border: none; border-radius: 10px; font-size: 12px; font-weight: 700; outline: none; background: var(--sadarah-light); box-shadow: var(--neu-shadow-inset); color: var(--text-main); }
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 900; color: var(--sadarah-primary); margin-bottom: 4px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; outline: none; background: var(--sadarah-light); box-shadow: var(--neu-shadow-inset); color: var(--text-main); }
         
-        .whatsapp-float-btn { position: fixed; bottom: 25px; left: 20px; background: var(--sadarah-light); color: var(--green-wa); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: var(--neu-shadow); z-index: 950; text-decoration: none; transition: all 0.4s ease; animation: pulse-whatsapp 2s infinite; }
-        @keyframes pulse-whatsapp { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
+        .whatsapp-float-btn { position: fixed; bottom: 20px; left: 15px; background: var(--sadarah-light); color: var(--green-wa); width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 26px; box-shadow: var(--neu-shadow); z-index: 950; text-decoration: none; transition: all 0.3s ease; animation: pulse-whatsapp 2s infinite; }
+        @keyframes pulse-whatsapp { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
     </style>
 </head>
 <body>
 
+    <div class="shein-top-bar">
+        <span>🔥 استمتع بخصومات حصرية على كافة طلباتك الأولى</span>
+        <span><a href="affiliate.html"><i class="fa-solid fa-handshake-angle"></i> انضم لبرنامج المسوقين (الأفلييت)</a></span>
+    </div>
+
     <div class="top-navbar">
-        <a href="affiliate.html" class="mini-btn"><i class="fa-solid fa-handshake-angle"></i> المسوقون (أفلييت)</a>
-        <a href="index.html" class="brand-logo-container">
-            <!-- الشعار المرفق من جيت هاب -->
-            <img src="images/logo.jpg" class="brand-logo-img" alt="شعار صدارة">
-            <span style="font-weight: 900; font-size: 15px; color: #FFFFFF;">متجر <span style="color:var(--sadarah-gold);">صدارة</span></span>
-        </a>
+        <a href="affiliate.html" class="mini-btn"><i class="fa-solid fa-handshake-angle"></i> المسوقون</a>
+        
+        <div class="shein-search-container">
+            <input type="text" id="searchInput" class="shein-search-input" placeholder="ابحث عن منتج، اشتراك، أو خدمة..." oninput="filterStoreProducts()">
+            <i class="fa-solid fa-magnifying-glass shein-search-icon"></i>
+        </div>
+
         <div class="nav-actions">
             <a href="blog.html" class="mini-btn"><i class="fa-solid fa-newspaper"></i> المدونة</a>
         </div>
     </div>
 
-    <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank" class="whatsapp-float-btn" title="انضم لمجتمعنا على الواتساب">
+    <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank" class="whatsapp-float-btn" title="مجتمع الواتساب">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
     <div class="container">
-        <div class="store-header">
-            <h1>🛒 متجر صدارة الرقمي والميداني</h1>
-            <p>تصفح أحدث المنتجات والعروض، وانسخ رابط الإحالة الخاص بك لمضاعفة أرباحك فوراً</p>
-        </div>
-
-        <div class="search-filter-box">
-            <input type="text" id="searchInput" class="search-input-main" placeholder="🔍 ابحث عن منتج، خدمة، أو عرض..." oninput="filterStoreProducts()">
-            <div class="categories-tags" id="categoriesContainer">
-                <span class="cat-tag active" onclick="filterStore('الكل', this)">الكل 🌐</span>
-                <span class="cat-tag" onclick="filterStore('اشتراكات رقمية', this)">🔑 اشتراكات رقمية</span>
-                <span class="cat-tag" onclick="filterStore('خدمات', this)">🛠️ خدمات</span>
-                <span class="cat-tag" onclick="filterStore('تجميل وعناية', this)">💄 تجميل وعناية</span>
+        <!-- شريط الأقسام الدائرية المتحركة بستايل شي إن -->
+        <div class="shein-categories-bar" id="categoriesContainer">
+            <div class="shein-cat-item active" onclick="filterStore('الكل', this)">
+                <div class="shein-cat-circle"><i class="fa-solid fa-globe"></i></div>
+                <div class="shein-cat-name">الكل</div>
+            </div>
+            <div class="shein-cat-item" onclick="filterStore('اشتراكات رقمية', this)">
+                <div class="shein-cat-circle"><i class="fa-solid fa-key"></i></div>
+                <div class="shein-cat-name">اشتراكات</div>
+            </div>
+            <div class="shein-cat-item" onclick="filterStore('خدمات', this)">
+                <div class="shein-cat-circle"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                <div class="shein-cat-name">خدمات</div>
+            </div>
+            <div class="shein-cat-item" onclick="filterStore('تجميل وعناية', this)">
+                <div class="shein-cat-circle"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <div class="shein-cat-name">تجميل وعناية</div>
             </div>
         </div>
 
         <div id="productsGridContainer" class="products-grid">
-            جاري تحميل المنتجات...
+            جاري تحميل المنتجات بستايل المتجر...
         </div>
     </div>
 
+    <!-- نافذة الطلب -->
     <div class="modal-overlay" id="orderModal" onclick="checkOutsideModalClick(event, 'orderModalCard')">
         <div class="modal-card" id="orderModalCard">
             <h3><i class="fa-solid fa-cart-shopping" style="color:var(--sadarah-gold);"></i> طلب المنتج الرقمي</h3>
@@ -138,19 +161,19 @@
                 <input type="text" id="orderName" placeholder="أدخل الاسم الكامل">
             </div>
             <div class="form-group">
-                <label>رقم الواتساب للتواصل وتفعيل الطلب</label>
+                <label>رقم الواتساب للتواصل</label>
                 <input type="tel" id="orderPhone" placeholder="770000000">
             </div>
             <div class="form-group">
-                <label>وسيلة الدفع / التحويل</label>
+                <label>وسيلة الدفع</label>
                 <select id="orderPaymentMethod">
                     <option value="محفظة جيب (780568507)">محفظة جيب (780568507)</option>
                     <option value="بنك الكريمي (2628009)">بنك الكريمي (2628009)</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>رابط أو صورة سند التحويل</label>
-                <input type="text" id="orderReceipt" placeholder="رابط صورة سند التحويل أو إيصال الدفع">
+                <label>رفع صورة سند التحويل من المعرض 🖼️</label>
+                <input type="file" id="orderReceiptFile" accept="image/*" style="padding: 6px;">
             </div>
             <div class="form-group">
                 <label>ملاحظات إضافية (اختياري)</label>
@@ -158,7 +181,7 @@
             </div>
 
             <button onclick="submitOrder()" class="order-btn" style="margin-top:5px;">تأكيد وإرسال الطلب عبر الواتساب 📱</button>
-            <button onclick="document.getElementById('orderModal').style.display='none'" style="width:100%; background:var(--sadarah-light); color:var(--sadarah-primary); border:none; padding:11px; border-radius:10px; margin-top:8px; font-weight:900; cursor:pointer; box-shadow:var(--neu-shadow);">إغلاق</button>
+            <button onclick="document.getElementById('orderModal').style.display='none'" style="width:100%; background:var(--sadarah-light); color:var(--sadarah-primary); border:none; padding:10px; border-radius:10px; margin-top:8px; font-weight:900; cursor:pointer; box-shadow:var(--neu-shadow);">إغلاق</button>
         </div>
     </div>
 
@@ -172,7 +195,7 @@
 
         async function loadStoreProducts() {
             try {
-                let { data, error } = await db.from('platform_services').select('*').eq('is_active', true).order('id', {ascending: false});
+                let { data } = await db.from('platform_services').select('*').eq('is_active', true).order('id', {ascending: false});
                 allProducts = data || [];
                 renderStoreProducts(allProducts);
 
@@ -191,8 +214,8 @@
         }
 
         function filterStore(category, el) {
-            document.querySelectorAll('.cat-tag').forEach(t => t.classList.remove('active'));
-            if(el) el.classList.add('active');
+            document.querySelectorAll('.shein-cat-item').forEach(t => t.classList.remove('active'));
+            if(el) el.closest('.shein-cat-item').classList.add('active');
 
             if(category === 'الكل') {
                 renderStoreProducts(allProducts);
@@ -218,17 +241,33 @@
             }
 
             list.forEach(p => {
-                let imgTag = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-img">` : '<i class="fa-solid fa-store" style="font-size:32px; color:#49769F;"></i>';
-                let descText = p.description || 'منتج رقمي معتمد ومضمون من صدارة.';
+                let imgTag = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-img">` : '<i class="fa-solid fa-store" style="font-size:28px; color:#49769F;"></i>';
+                let descText = p.description || 'منتج رقمي معتمد من صدارة.';
+                
+                // حساب أو عرض السعر السابق والسعر الحالي ونسبة الخصم بستايل شي إن
+                let currentPrice = p.price || '0';
+                let oldPriceHTML = '';
+                let discountHTML = '';
+                
+                if (p.old_price) {
+                    oldPriceHTML = `<span class="old-price">${p.old_price}</span>`;
+                }
+                if (p.discount) {
+                    discountHTML = `<div class="discount-badge">${p.discount}</div>`;
+                }
 
                 container.innerHTML += `
                     <div class="product-card">
+                        ${discountHTML}
                         <div class="product-img-container" onclick='openOrderModal(${JSON.stringify(p)})'>
                             ${imgTag}
                         </div>
                         <div>
                             <div class="product-title" onclick='openOrderModal(${JSON.stringify(p)})'>${p.title}</div>
-                            <div class="product-price" style="margin:4px 0;">السعر: ${p.price}</div>
+                            <div class="price-box">
+                                <span class="current-price">${currentPrice}</span>
+                                ${oldPriceHTML}
+                            </div>
                             <div class="product-desc">${descText}</div>
                         </div>
                         <button class="order-btn" onclick='openOrderModal(${JSON.stringify(p)})'><i class="fa-solid fa-cart-shopping"></i> طلب المنتج 🚀</button>
@@ -261,13 +300,24 @@
             let name = document.getElementById('orderName').value.trim();
             let phone = document.getElementById('orderPhone').value.trim();
             let payment = document.getElementById('orderPaymentMethod').value;
-            let receipt = document.getElementById('orderReceipt').value.trim();
+            let fileInput = document.getElementById('orderReceiptFile');
             let notes = document.getElementById('orderNotes').value.trim();
             let refCode = localStorage.getItem('sadara_ref') || 'مباشر';
 
             if(!name || !phone) {
                 alert('يرجى إدخال الاسم ورقم الواتساب على الأقل.');
                 return;
+            }
+
+            let receiptUrl = '';
+            if (fileInput.files && fileInput.files[0]) {
+                let file = fileInput.files[0];
+                let fileName = 'receipts/' + Date.now() + '_' + file.name;
+                let { data: uploadData, error: uploadErr } = await db.storage.from('products_images').upload(fileName, file);
+                if (!uploadErr) {
+                    let { data: pubUrl } = db.storage.from('products_images').getPublicUrl(fileName);
+                    receiptUrl = pubUrl.publicUrl;
+                }
             }
 
             try {
@@ -277,14 +327,14 @@
                     customer_name: name,
                     customer_phone: phone,
                     payment_method: payment,
-                    receipt_url: receipt,
+                    receipt_url: receiptUrl,
                     notes: notes,
                     ref_code: refCode,
                     status: 'جديد'
                 }]);
             } catch(e) {}
 
-            let waMessage = `مرحباً، أريد طلب المنتج الرقمي التالي:\n\n📦 المنتج: ${selectedProductObj.title}\n💵 السعر: ${selectedProductObj.price}\n👤 الاسم: ${name}\n📱 الهاتف: ${phone}\n💳 الدفع: ${payment}\n📄 سند التحويل: ${receipt || 'لم يُرفق'}\n🔗 الإحالة: ${refCode}\n\nملاحظات: ${notes}`;
+            let waMessage = `مرحباً، أريد طلب المنتج الرقمي التالي:\n\n📦 المنتج: ${selectedProductObj.title}\n💵 السعر: ${selectedProductObj.price}\n👤 الاسم: ${name}\n📱 الهاتف: ${phone}\n💳 الدفع: ${payment}\n📄 رابط سند التحويل: ${receiptUrl || 'لم يُرفق'}\n🔗 الإحالة: ${refCode}\n\nملاحظات: ${notes}`;
             let encoded = encodeURIComponent(waMessage);
             window.open(`https://wa.me/967780568507?text=${encoded}`, '_blank');
             document.getElementById('orderModal').style.display = 'none';
