@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>منصة صدارة | أفضل الوظائف والخدمات الرقمية في اليمن</title>
+    <title>منصة صدارة | SADARAH MARKETING AGENCY</title>
     <meta name="description" content="منصة صدارة الرقمية للوظائف الشاغرة، الكفاءات والخبراء، خدمات التسويق، والمتجر الرقمي المباشر في اليمن.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://sadarah.top/">
@@ -18,163 +18,168 @@
     
     <style>
         :root { 
-            --bg-main: #eef2f7;
-            --neu-surface: #eef2f7;
-            --c-darkest: #001D39;
-            --c-mid: #49769F;
-            --gold: #d4af37; 
-            --green: #25d366; 
-            --emerald-btn: #10B981;
+            --sadarah-primary: #0F2A4A;     /* أزرق الشعار الداكن */
+            --sadarah-dark: #0A1C33;        /* أزرق داكن عميق */
+            --sadarah-light: #F4F7FB;       /* خلفية النيومورفيسم الفاتحة */
+            --sadarah-gold: #D4AF37;        /* الذهبي الخاص بصدارة */
+            
+            /* ألوان الأزرار والمواصفات المخصصة للمنصة */
+            --sadarah-btn: #0284C7;         /* الأزرق الحيوي البارز للأزرار */
+            --sadarah-btn-hover: #0369A1;
+            --green-wa: #25D366; 
+            
             --spec-bg: #F0F7FF;
             --spec-border: #0284C7;
             --spec-text: #1E3A8A;
-            --text-main: #0b132b;
-            --neu-shadow: 9px 9px 18px #cbced1, -9px -9px 18px #ffffff;
-            --neu-shadow-inset: inset 5px 5px 10px #cbced1, inset -5px -5px 10px #ffffff;
+            --text-main: #0B132B;
+            
+            --neu-shadow: 8px 8px 16px #cbced1, -8px -8px 16px #ffffff;
+            --neu-shadow-inset: inset 4px 4px 8px #cbced1, inset -4px -4px 8px #ffffff;
             --neu-card-hover: 12px 12px 24px #cbced1, -12px -12px 24px #ffffff;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg-main); padding-bottom: 130px; color: var(--text-main); overflow-x: hidden; width: 100%; }
+        body { background: var(--sadarah-light); padding-bottom: 130px; color: var(--text-main); overflow-x: hidden; width: 100%; }
 
-        .global-top-bar { background: var(--c-darkest); color: #BDD8E9; font-size: 11px; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(123, 189, 232, 0.2); width: 100%; }
-        .global-top-bar span { display: inline-flex; align-items: center; gap: 6px; color: var(--gold); font-weight: 700; }
+        .global-top-bar { background: var(--sadarah-dark); color: #BDD8E9; font-size: 11px; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.2); width: 100%; }
+        .global-top-bar span { display: inline-flex; align-items: center; gap: 6px; color: var(--sadarah-gold); font-weight: 700; }
 
-        .top-navbar { background: var(--neu-surface); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 8px 20px rgba(0,29,57,0.08); width: 100%; }
-        .nav-left { display: flex; align-items: center; gap: 14px; }
+        /* شريط التنقل العلوي مع شعار منصة صدارة البارز */
+        .top-navbar { background: var(--sadarah-primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sadarah-gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 8px 20px rgba(10, 28, 51, 0.3); width: 100%; }
+        .nav-left { display: flex; align-items: center; gap: 12px; }
         
-        .sidebar-toggle-btn { background: var(--neu-surface); color: var(--c-darkest); border: none; padding: 10px 18px; border-radius: 16px; font-size: 13px; cursor: pointer; font-weight: 900; display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: var(--neu-shadow); }
-        .sidebar-toggle-btn:active, .sidebar-toggle-btn:hover { box-shadow: var(--neu-shadow-inset); color: var(--gold); }
-        
-        .mini-btn { background: var(--neu-surface); color: var(--c-darkest); border: 1px solid rgba(212,175,55,0.4); padding: 10px 18px; border-radius: 16px; font-weight: 800; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: var(--neu-shadow); }
-        .mini-btn:hover { box-shadow: var(--neu-shadow-inset); color: var(--gold); }
+        .brand-logo-img { height: 42px; object-fit: contain; border-radius: 6px; }
+        .brand-title { font-size: 17px; font-weight: 900; color: #FFFFFF; display: flex; flex-direction: column; line-height: 1.1; }
+        .brand-title span { font-size: 9px; color: var(--sadarah-gold); font-weight: 700; letter-spacing: 1px; }
 
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 29, 57, 0.8); backdrop-filter: blur(8px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.4s ease; }
+        .sidebar-toggle-btn { background: rgba(255, 255, 255, 0.1); color: #FFFFFF; border: 1px solid rgba(212, 175, 55, 0.4); padding: 8px 14px; border-radius: 12px; font-size: 12px; cursor: pointer; font-weight: 900; display: flex; align-items: center; gap: 6px; transition: 0.3s; }
+        .sidebar-toggle-btn:hover { background: var(--sadarah-gold); color: var(--sadarah-dark); }
+        
+        .mini-btn { background: rgba(255, 255, 255, 0.1); color: #FFFFFF; border: 1px solid rgba(212,175,55,0.4); padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; }
+        .mini-btn:hover { background: var(--sadarah-gold); color: var(--sadarah-dark); }
+
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 28, 51, 0.85); backdrop-filter: blur(8px); z-index: 99998; opacity: 0; visibility: hidden; transition: all 0.4s ease; }
         .sidebar-overlay.active { opacity: 1; visibility: visible; }
         
-        .sidebar-drawer { position: fixed; top: 0; right: -320px; width: 310px; height: 100%; background: var(--c-darkest); color: white; z-index: 99999; box-shadow: -15px 0 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-left: 3px solid var(--gold); }
+        .sidebar-drawer { position: fixed; top: 0; right: -320px; width: 310px; height: 100%; background: var(--sadarah-dark); color: white; z-index: 99999; box-shadow: -15px 0 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-left: 3px solid var(--sadarah-gold); }
         .sidebar-drawer.active { right: 0; }
 
-        .sidebar-header { padding: 22px; background: #0A4174; border-bottom: 1px solid rgba(212, 175, 55, 0.3); display: flex; justify-content: space-between; align-items: center; }
-        .sidebar-header h3 { font-size: 16px; color: var(--gold); display: flex; align-items: center; gap: 8px; font-weight: 900; }
-        .sidebar-close-btn { background: rgba(255,255,255,0.1); color: #ef4444; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .sidebar-header { padding: 22px; background: var(--sadarah-primary); border-bottom: 1px solid rgba(212, 175, 55, 0.3); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-header h3 { font-size: 15px; color: var(--sadarah-gold); display: flex; align-items: center; gap: 8px; font-weight: 900; }
+        .sidebar-close-btn { background: rgba(255,255,255,0.1); color: #ef4444; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 15px; cursor: pointer; transition: 0.3s; }
         .sidebar-close-btn:hover { background: #ef4444; color: white; transform: rotate(90deg); }
 
         .sidebar-menu { padding: 18px 12px; flex: 1; overflow-y: auto; }
         .sidebar-section-title { font-size: 11px; color: #7BBDE8; font-weight: 900; margin: 15px 10px 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 13px 16px; color: #e2e8f0; text-decoration: none; font-size: 13px; font-weight: 800; border-radius: 14px; margin-bottom: 6px; transition: 0.3s; }
-        .sidebar-item i { width: 22px; font-size: 16px; text-align: center; color: var(--gold); }
-        .sidebar-item:hover, .sidebar-item.active { background: rgba(123, 189, 232, 0.2); color: var(--gold); transform: translateX(-5px); }
+        .sidebar-item i { width: 22px; font-size: 16px; text-align: center; color: var(--sadarah-gold); }
+        .sidebar-item:hover, .sidebar-item.active { background: rgba(123, 189, 232, 0.2); color: var(--sadarah-gold); transform: translateX(-5px); }
         .sidebar-item .badge { background: #ef4444; color: white; font-size: 10px; padding: 3px 9px; border-radius: 12px; margin-right: auto; font-weight: 900; }
-        .sidebar-footer { padding: 18px; border-top: 1px solid rgba(255,255,255,0.1); background: var(--c-darkest); text-align: center; font-size: 11px; color: #6EA2B3; font-weight: 700; }
+        .sidebar-footer { padding: 18px; border-top: 1px solid rgba(255,255,255,0.1); background: var(--sadarah-dark); text-align: center; font-size: 11px; color: #6EA2B3; font-weight: 700; }
 
-        .whatsapp-float-btn { position: fixed; bottom: 75px; left: 22px; background: var(--neu-surface); color: var(--green); width: 64px; height: 64px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 34px; box-shadow: var(--neu-shadow); z-index: 950; text-decoration: none; transition: all 0.4s ease; animation: pulse-whatsapp 2s infinite; }
+        .whatsapp-float-btn { position: fixed; bottom: 75px; left: 22px; background: var(--sadarah-light); color: var(--green-wa); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: var(--neu-shadow); z-index: 950; text-decoration: none; transition: all 0.4s ease; animation: pulse-whatsapp 2s infinite; }
         .whatsapp-float-btn:hover { box-shadow: var(--neu-shadow-inset); transform: scale(1.08); }
         @keyframes pulse-whatsapp { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
 
-        .hero { background: var(--neu-surface); color: var(--text-main); padding: 60px 25px 75px; text-align: center; border-radius: 35px; box-shadow: var(--neu-shadow); margin: 25px auto; max-width: 1160px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.8); }
-        .hero h1 { font-size: clamp(22px, 4vw, 32px); margin-bottom: 14px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.3; color: var(--c-darkest); }
-        .hero h1 span { color: var(--gold); text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-        .hero p { font-size: clamp(12px, 2vw, 14px); color: var(--c-mid); margin-bottom: 28px; max-width: 780px; margin-left: auto; margin-right: auto; line-height: 1.8; font-weight: 600; }
-        .hero-action-btns { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 18px; }
+        .hero { background: var(--sadarah-light); color: var(--text-main); padding: 50px 25px 65px; text-align: center; border-radius: 30px; box-shadow: var(--neu-shadow); margin: 20px auto; max-width: 1160px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.9); }
+        .hero h1 { font-size: clamp(22px, 4vw, 30px); margin-bottom: 12px; font-weight: 900; line-height: 1.3; color: var(--sadarah-primary); }
+        .hero h1 span { color: var(--sadarah-gold); }
+        .hero p { font-size: clamp(12px, 2vw, 14px); color: #49769F; margin-bottom: 25px; max-width: 780px; margin-left: auto; margin-right: auto; line-height: 1.8; font-weight: 600; }
+        .hero-action-btns { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 15px; }
         
-        .hero-btn { text-decoration: none; padding: 14px 24px; border-radius: 16px; font-size: 13px; font-weight: 900; display: inline-flex; align-items: center; gap: 9px; transition: 0.3s; background: var(--neu-surface); box-shadow: var(--neu-shadow); color: var(--text-main); }
-        .hero-btn-primary { color: var(--c-darkest); border: 2px solid var(--gold); }
-        .hero-btn-secondary { color: var(--c-darkest); }
-        .hero-btn-app { color: var(--green); }
-        .hero-btn:hover { box-shadow: var(--neu-shadow-inset); transform: translateY(-2px); }
+        /* أزرار الهيدر المميزة */
+        .hero-btn { text-decoration: none; padding: 13px 22px; border-radius: 14px; font-size: 13px; font-weight: 900; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .hero-btn-primary { background: var(--sadarah-btn); color: #FFFFFF; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
+        .hero-btn-secondary { background: var(--sadarah-light); color: var(--sadarah-primary); box-shadow: var(--neu-shadow); border: 1px solid rgba(212,175,55,0.5); }
+        .hero-btn-app { background: var(--sadarah-primary); color: var(--sadarah-gold); box-shadow: 0 4px 12px rgba(15, 42, 74, 0.3); }
+        .hero-btn:hover { transform: translateY(-2px); opacity: 0.95; }
 
         .main-container { max-width: 1200px; margin: 10px auto 0; padding: 0 15px; width: 100%; position: relative; z-index: 10; }
 
-        .search-filter-box { background: var(--neu-surface); border-radius: 24px; padding: 25px; margin-bottom: 30px; box-shadow: var(--neu-shadow); border: 1px solid rgba(255,255,255,0.8); width: 100%; }
-        .search-input-main { width: 100%; padding: 16px 20px; border: none; border-radius: 16px; font-size: 14px; font-weight: 700; outline: none; margin-bottom: 16px; background: var(--neu-surface); color: var(--text-main); box-shadow: var(--neu-shadow-inset); transition: 0.3s; }
-        .search-input-main:focus { box-shadow: inset 7px 7px 14px #cbced1, inset -7px -7px 14px #ffffff; }
+        .search-filter-box { background: var(--sadarah-light); border-radius: 22px; padding: 22px; margin-bottom: 25px; box-shadow: var(--neu-shadow); border: 1px solid rgba(255,255,255,0.8); width: 100%; }
+        .search-input-main { width: 100%; padding: 15px 18px; border: none; border-radius: 14px; font-size: 13px; font-weight: 700; outline: none; margin-bottom: 14px; background: var(--sadarah-light); color: var(--text-main); box-shadow: var(--neu-shadow-inset); transition: 0.3s; }
         
         .categories-tags { display: flex; gap: 10px; flex-wrap: wrap; }
-        .cat-tag { background: var(--neu-surface); color: var(--c-darkest); border: none; padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.3s; box-shadow: var(--neu-shadow); }
-        .cat-tag.active, .cat-tag:hover { box-shadow: var(--neu-shadow-inset); color: var(--gold); transform: translateY(-2px); }
+        .cat-tag { background: var(--sadarah-light); color: var(--sadarah-primary); border: none; padding: 9px 16px; border-radius: 18px; font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.3s; box-shadow: var(--neu-shadow); }
+        .cat-tag.active, .cat-tag:hover { box-shadow: var(--neu-shadow-inset); color: var(--sadarah-gold); }
 
-        .ad-slider-box { position: relative; background: var(--neu-surface); border-radius: 24px; overflow: hidden; margin-bottom: 30px; box-shadow: var(--neu-shadow); display: flex; justify-content: center; align-items: center; min-height: 220px; width: 100%; border: 1px solid rgba(255,255,255,0.8); }
-        .ad-slider-img { width: 100%; height: auto; max-height: 420px; object-fit: contain; display: none; opacity: 0; transition: opacity 0.6s ease-in-out; background: #070b19; }
+        .ad-slider-box { position: relative; background: var(--sadarah-light); border-radius: 22px; overflow: hidden; margin-bottom: 25px; box-shadow: var(--neu-shadow); display: flex; justify-content: center; align-items: center; min-height: 200px; width: 100%; border: 1px solid rgba(255,255,255,0.8); }
+        .ad-slider-img { width: 100%; height: auto; max-height: 400px; object-fit: contain; display: none; opacity: 0; transition: opacity 0.6s ease-in-out; background: #070b19; }
         .ad-slider-img.active { display: block; opacity: 1; }
-        .slider-dots { position: absolute; bottom: 14px; display: flex; gap: 8px; width: 100%; justify-content: center; z-index: 5; }
-        .dot { width: 9px; height: 9px; border-radius: 50%; background: #cbced1; box-shadow: var(--neu-shadow-inset); transition: 0.3s; }
-        .dot.active { background: var(--gold); width: 26px; border-radius: 12px; box-shadow: 0 0 8px var(--gold); }
+        .slider-dots { position: absolute; bottom: 12px; display: flex; gap: 8px; width: 100%; justify-content: center; z-index: 5; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #cbced1; box-shadow: var(--neu-shadow-inset); transition: 0.3s; }
+        .dot.active { background: var(--sadarah-gold); width: 24px; border-radius: 10px; }
 
-        .stats-bar { background: var(--neu-surface); border-radius: 24px; padding: 25px; margin-bottom: 30px; box-shadow: var(--neu-shadow); display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center; width: 100%; border: 1px solid rgba(255,255,255,0.8); }
+        .stats-bar { background: var(--sadarah-light); border-radius: 22px; padding: 22px; margin-bottom: 25px; box-shadow: var(--neu-shadow); display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; text-align: center; width: 100%; border: 1px solid rgba(255,255,255,0.8); }
         @media (max-width: 768px) { .stats-bar { grid-template-columns: repeat(2, 1fr); } }
-        .stat-item { background: var(--neu-surface); padding: 15px; border-radius: 16px; box-shadow: var(--neu-shadow-inset); }
-        .stat-item h4 { font-size: 21px; font-weight: 900; color: var(--c-darkest); }
-        .stat-item p { font-size: 11px; color: var(--c-mid); font-weight: 800; margin-top: 5px; }
+        .stat-item { background: var(--sadarah-light); padding: 14px; border-radius: 14px; box-shadow: var(--neu-shadow-inset); }
+        .stat-item h4 { font-size: 20px; font-weight: 900; color: var(--sadarah-primary); }
+        .stat-item p { font-size: 11px; color: #49769F; font-weight: 800; margin-top: 4px; }
 
-        .category-section-title { font-size: 18px; font-weight: 900; color: var(--c-darkest); margin: 35px 5px 18px 5px; border-bottom: 3px solid var(--gold); padding-bottom: 8px; display: flex; align-items: center; gap: 10px; width: 100%; }
+        .category-section-title { font-size: 17px; font-weight: 900; color: var(--sadarah-primary); margin: 30px 5px 15px 5px; border-bottom: 3px solid var(--sadarah-gold); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; width: 100%; }
 
-        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 40px; width: 100%; }
-        @media (max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 35px; width: 100%; }
+        @media (max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } }
         @media (max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
 
-        .product-card { background: var(--neu-surface); border-radius: 24px; border: 1px solid rgba(255,255,255,0.9); padding: 18px; box-shadow: var(--neu-shadow); display: flex; flex-direction: column; justify-content: space-between; gap: 14px; transition: all 0.4s ease; position: relative; width: 100%; }
-        .product-card:hover { box-shadow: var(--neu-card-hover); transform: translateY(-5px); }
+        .product-card { background: var(--sadarah-light); border-radius: 22px; border: 1px solid rgba(255,255,255,0.9); padding: 16px; box-shadow: var(--neu-shadow); display: flex; flex-direction: column; justify-content: space-between; gap: 12px; transition: all 0.4s ease; position: relative; width: 100%; }
+        .product-card:hover { box-shadow: var(--neu-card-hover); transform: translateY(-4px); }
         
-        .product-img-container { width: 100%; height: auto; max-height: 310px; background: var(--neu-surface); border-radius: 16px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; box-shadow: var(--neu-shadow-inset); padding: 8px; }
-        .product-img { width: 100%; height: auto; max-height: 290px; object-fit: contain; display: block; border-radius: 12px; transition: transform 0.5s ease; }
-        .product-img-container:hover .product-img { transform: scale(1.05); }
+        .product-img-container { width: 100%; height: auto; max-height: 280px; background: var(--sadarah-light); border-radius: 14px; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; cursor: pointer; box-shadow: var(--neu-shadow-inset); padding: 6px; }
+        .product-img { width: 100%; height: auto; max-height: 260px; object-fit: contain; display: block; border-radius: 10px; transition: transform 0.5s ease; }
+        .product-img-container:hover .product-img { transform: scale(1.04); }
 
-        .product-title { font-size: 14px; font-weight: 900; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 38px; cursor: pointer; transition: color 0.2s; }
-        .product-title:hover { color: var(--spec-border); }
+        .product-title { font-size: 13px; font-weight: 900; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; height: 36px; cursor: pointer; }
+        .product-title:hover { color: var(--sadarah-btn); }
         
-        /* المواصفات والفرع بلون مخصص متناسق */
-        .product-subtext { font-size: 11px; color: var(--spec-text); font-weight: 800; background: var(--spec-bg); border-right: 3px solid var(--spec-border); padding: 5px 12px; border-radius: 8px; display: inline-block; width: fit-content; }
+        /* صندوق التخصص والفرع بمواصفات الشعار */
+        .product-subtext { font-size: 11px; color: var(--spec-text); font-weight: 800; background: var(--spec-bg); border-right: 3px solid var(--spec-border); padding: 4px 10px; border-radius: 6px; display: inline-block; width: fit-content; }
         
-        /* أزرار الشراء والطلب بلون أخضر زمردي بارز */
-        .order-btn { background: var(--emerald-btn); color: #ffffff; text-align: center; padding: 12px; border-radius: 14px; font-weight: 900; font-size: 12px; margin-top: 6px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
-        .order-btn:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4); }
-        .whatsapp-btn { background: var(--green); box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
-        .whatsapp-btn:hover { background: #1ebe5d; box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4); }
+        /* زر الطلب المخصص البارز */
+        .order-btn { background: var(--sadarah-btn); color: #FFFFFF; text-align: center; padding: 11px; border-radius: 12px; font-weight: 900; font-size: 12px; margin-top: 4px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: 0.3s; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
+        .order-btn:hover { background: var(--sadarah-btn-hover); transform: translateY(-2px); }
+        .whatsapp-btn { background: var(--green-wa); box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
+        .whatsapp-btn:hover { background: #1ebe5d; }
 
-        .social-footer-box { background: var(--c-darkest); border-radius: 26px; padding: 35px 20px; text-align: center; margin-top: 50px; border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: 0 20px 45px rgba(0,29,57,0.3); position: relative; overflow: hidden; width: 100%; }
-        .social-footer-box h4 { color: var(--gold); font-size: 17px; margin-bottom: 14px; font-weight: 900; text-shadow: 0 2px 8px rgba(212,175,55,0.3); }
-        .social-icons-row { display: flex; justify-content: center; gap: 16px; margin-bottom: 16px; }
-        .social-icon-btn { width: 48px; height: 48px; border-radius: 50%; background: #0a2540; color: white; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 20px; transition: 0.3s; box-shadow: 8px 8px 16px #05101f, -8px -8px 16px #0f3459; border: 1px solid rgba(212,175,55,0.3); }
-        .social-icon-btn:hover { background: var(--gold); color: var(--c-darkest); transform: scale(1.15) rotate(10deg); }
+        .social-footer-box { background: var(--sadarah-dark); border-radius: 24px; padding: 30px 20px; text-align: center; margin-top: 45px; border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: 0 20px 45px rgba(10,28,51,0.3); position: relative; overflow: hidden; width: 100%; }
+        .social-footer-box h4 { color: var(--sadarah-gold); font-size: 16px; margin-bottom: 12px; font-weight: 900; }
+        .social-icons-row { display: flex; justify-content: center; gap: 14px; margin-bottom: 14px; }
+        .social-icon-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--sadarah-primary); color: white; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 18px; transition: 0.3s; border: 1px solid rgba(212,175,55,0.3); }
+        .social-icon-btn:hover { background: var(--sadarah-gold); color: var(--sadarah-dark); transform: scale(1.1); }
 
-        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: var(--c-darkest); padding: 10px 0; border-top: 3px solid var(--gold); display: flex; align-items: center; z-index: 900; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); width: 100%; }
-        .ticker-label { background: var(--gold); color: var(--c-darkest); font-weight: 900; font-size: 11px; padding: 8px 16px; border-radius: 0 14px 14px 0; z-index: 10; white-space: nowrap; box-shadow: 3px 0 10px rgba(0,0,0,0.2); }
-        .ticker-content { display: flex; align-items: center; gap: 16px; animation: ticker 25s linear infinite; }
-        .ticker-content img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .partners-ticker { position: fixed; bottom: 0; left: 0; right: 0; background: var(--sadarah-dark); padding: 8px 0; border-top: 3px solid var(--sadarah-gold); display: flex; align-items: center; z-index: 900; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); width: 100%; }
+        .ticker-label { background: var(--sadarah-gold); color: var(--sadarah-dark); font-weight: 900; font-size: 11px; padding: 6px 14px; border-radius: 0 12px 12px 0; z-index: 10; white-space: nowrap; }
+        .ticker-content { display: flex; align-items: center; gap: 14px; animation: ticker 25s linear infinite; }
+        .ticker-content img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--sadarah-gold); background: white; }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        .footer-copyright { text-align: center; color: var(--c-mid); font-size: 11px; padding: 15px 0 60px; font-weight: 700; width: 100%; }
+        .footer-copyright { text-align: center; color: #49769F; font-size: 11px; padding: 15px 0 60px; font-weight: 700; width: 100%; }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,29,57,0.88); backdrop-filter: blur(10px); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-        .modal-card { background: var(--neu-surface); color: var(--text-main); padding: 28px; border-radius: 26px; width: 100%; max-width: 520px; text-align: right; box-shadow: var(--neu-shadow); border-top: 6px solid var(--gold); position: relative; max-height: 90vh; overflow-y: auto; }
-        .modal-img-preview { width: 100%; max-height: 420px; object-fit: contain; background: var(--neu-surface); border-radius: 14px; margin-bottom: 14px; display: block; cursor: pointer; transition: transform 0.3s; box-shadow: var(--neu-shadow-inset); padding: 6px; }
-        .modal-card h3 { color: var(--c-darkest); font-size: 19px; margin-bottom: 12px; font-weight: 900; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,28,51,0.85); backdrop-filter: blur(8px); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+        .modal-card { background: var(--sadarah-light); color: var(--text-main); padding: 25px; border-radius: 24px; width: 100%; max-width: 500px; text-align: right; box-shadow: var(--neu-shadow); border-top: 5px solid var(--sadarah-gold); position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-img-preview { width: 100%; max-height: 400px; object-fit: contain; background: var(--sadarah-light); border-radius: 12px; margin-bottom: 12px; display: block; cursor: pointer; box-shadow: var(--neu-shadow-inset); padding: 6px; }
+        .modal-card h3 { color: var(--sadarah-primary); font-size: 18px; margin-bottom: 10px; font-weight: 900; }
         
-        /* تنسيق صندوق التفاصيل والمواصفات داخل النافذة المنبثقة بلون مخصص ومريح للعين */
-        .modal-card .spec-box-modal { font-size: 12px; color: var(--spec-text); line-height: 1.8; margin-bottom: 16px; background: var(--spec-bg); box-shadow: var(--neu-shadow-inset); border-right: 4px solid var(--spec-border); padding: 16px; border-radius: 14px; font-weight: 700; }
+        .modal-card .spec-box-modal { font-size: 12px; color: var(--spec-text); line-height: 1.8; margin-bottom: 14px; background: var(--spec-bg); box-shadow: var(--neu-shadow-inset); border-right: 4px solid var(--spec-border); padding: 14px; border-radius: 12px; font-weight: 700; }
 
-        .auth-card-box { background: var(--neu-surface); color: var(--text-main); padding: 32px; border-radius: 26px; width: 100%; max-width: 460px; text-align: right; box-shadow: var(--neu-shadow); border-top: 6px solid var(--gold); position: relative; }
-        .auth-card-box h3 { color: var(--c-darkest); font-size: 20px; margin-bottom: 8px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
-        .auth-card-box p { font-size: 12px; color: var(--c-mid); margin-bottom: 20px; font-weight: 600; }
-        .auth-input-group { margin-bottom: 16px; text-align: right; }
-        .auth-input-group label { display: block; font-size: 12px; font-weight: 900; color: var(--c-darkest); margin-bottom: 6px; }
-        .auth-input-group input { width: 100%; padding: 14px 18px; border: none; border-radius: 14px; font-size: 14px; font-weight: 700; outline: none; background: var(--neu-surface); transition: 0.3s; box-shadow: var(--neu-shadow-inset); }
-        .auth-input-group input:focus { box-shadow: inset 7px 7px 14px #cbced1, inset -7px -7px 14px #ffffff; }
+        .auth-card-box { background: var(--sadarah-light); color: var(--text-main); padding: 28px; border-radius: 24px; width: 100%; max-width: 440px; text-align: right; box-shadow: var(--neu-shadow); border-top: 5px solid var(--sadarah-gold); position: relative; }
+        .auth-card-box h3 { color: var(--sadarah-primary); font-size: 19px; margin-bottom: 6px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .auth-card-box p { font-size: 12px; color: #49769F; margin-bottom: 18px; font-weight: 600; }
+        .auth-input-group { margin-bottom: 14px; text-align: right; }
+        .auth-input-group label { display: block; font-size: 12px; font-weight: 900; color: var(--sadarah-primary); margin-bottom: 5px; }
+        .auth-input-group input { width: 100%; padding: 12px 16px; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; outline: none; background: var(--sadarah-light); transition: 0.3s; box-shadow: var(--neu-shadow-inset); }
         
-        .auth-btn-primary { width: 100%; background: var(--emerald-btn); color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-weight: 900; cursor: pointer; font-size: 14px; margin-top: 12px; transition: 0.3s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
-        .auth-btn-primary:hover { background: #059669; transform: translateY(-2px); }
-        .auth-btn-switch { width: 100%; background: var(--neu-surface); color: var(--c-darkest); border: none; padding: 12px; border-radius: 14px; margin-top: 12px; cursor: pointer; font-size: 12px; font-weight: 800; transition: 0.3s; box-shadow: var(--neu-shadow); }
-        .auth-btn-switch:hover { box-shadow: var(--neu-shadow-inset); }
-        .auth-btn-cancel { width: 100%; background: transparent; color: var(--c-mid); border: none; margin-top: 8px; cursor: pointer; font-size: 12px; font-weight: 800; }
-        .auth-btn-cancel:hover { color: #ef4444; }
+        .auth-btn-primary { width: 100%; background: var(--sadarah-btn); color: #ffffff; border: none; padding: 13px; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 13px; margin-top: 10px; transition: 0.3s; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
+        .auth-btn-primary:hover { background: var(--sadarah-btn-hover); }
+        .auth-btn-switch { width: 100%; background: var(--sadarah-light); color: var(--sadarah-primary); border: none; padding: 11px; border-radius: 12px; margin-top: 10px; cursor: pointer; font-size: 11px; font-weight: 800; transition: 0.3s; box-shadow: var(--neu-shadow); }
+        .auth-btn-cancel { width: 100%; background: transparent; color: #49769F; border: none; margin-top: 6px; cursor: pointer; font-size: 11px; font-weight: 800; }
     </style>
 </head>
 <body>
 
     <div class="global-top-bar">
-        <span><i class="fa-solid fa-shield-halved"></i> المنصة الرقمية المعتمدة في اليمن</span>
-        <span><i class="fa-solid fa-circle-check"></i> توظيف، كفاءات، وخدمات رقمية متكاملة</span>
+        <span><i class="fa-solid fa-shield-halved"></i> SADARAH MARKETING AGENCY</span>
+        <span><i class="fa-solid fa-circle-check"></i> نحو نجاح رقمي مستدام</span>
     </div>
 
     <div class="top-navbar">
@@ -182,7 +187,14 @@
             <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
                 <i class="fa-solid fa-bars"></i> الأقسام
             </button>
-            <span style="font-weight: 900; font-size:17px; color: var(--c-darkest);">منصة <span style="color:var(--gold);">صدارة</span></span>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <!-- شعار المنصة الرسمي المرفق -->
+                <img src="٢٠٢٦٠٩٢٦_١٩٥٨٣٩.jpg" class="brand-logo-img" alt="شعار صدارة">
+                <div class="brand-title">
+                    صدارة
+                    <span>SADARAH</span>
+                </div>
+            </div>
         </div>
         <div id="authArea">
             <button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user-shield"></i> حساب / دخول</button>
@@ -202,7 +214,7 @@
         <div class="sidebar-menu">
             <div class="sidebar-section-title">الأقسام الرئيسية</div>
             <a href="index.html" class="sidebar-item active"><i class="fa-solid fa-house"></i> الرئيسية والوظائف والكفاءات</a>
-            <a href="services.html" class="sidebar-item"><i class="fa-solid fa-store"></i> متجر الخدمات والمنتجات <span class="badge" style="background:var(--gold); color:#000;">🛒 متجر</span></a>
+            <a href="services.html" class="sidebar-item"><i class="fa-solid fa-store"></i> متجر الخدمات والمنتجات <span class="badge" style="background:var(--sadarah-gold); color:#000;">🛒 متجر</span></a>
             
             <div class="sidebar-section-title">الأرباح والتسويق والمدونة</div>
             <a href="affiliate.html" class="sidebar-item"><i class="fa-solid fa-handshake-angle"></i> التسويق بالعمولة <span class="badge">20%</span></a>
@@ -267,11 +279,11 @@
                 <a href="https://tiktok.com/@sadarahsdr" target="_blank" class="social-icon-btn" title="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
                 <a href="https://www.facebook.com/Sadarah2026?mibextid=ZbWKwL" target="_blank" class="social-icon-btn" title="فيسبوك"><i class="fa-brands fa-facebook"></i></a>
             </div>
-            <p style="font-size: 12px; color: #BDD8E9; font-weight: 700;">كن على اطلاع دائم بأحدث الفرص والخدمات الرقمية</p>
+            <p style="font-size: 12px; color: #BDD8E9; font-weight: 700;">نحو نجاح رقمي مستدام</p>
         </div>
 
         <div class="footer-copyright">
-            © 2026 منصة صدارة للتسويق والخدمات الرقمية - جميع الحقوق محفوظة
+            © 2026 منصة صدارة SADARAH MARKETING AGENCY - جميع الحقوق محفوظة
         </div>
     </div>
 
@@ -288,13 +300,13 @@
             <h3 id="modalItemTitle">عنوان العنصر</h3>
             <div id="modalItemDetails" class="spec-box-modal">تفاصيل المواصفات...</div>
             <div id="modalActionBtnContainer" style="margin-top: 14px;"></div>
-            <button onclick="closeModal('detailModal')" style="width:100%; background:var(--neu-surface); color:var(--c-darkest); border:none; padding:13px; border-radius:14px; margin-top:12px; cursor:pointer; font-size:12px; font-weight:900; box-shadow:var(--neu-shadow); transition:0.3s;">إغلاق النافذة</button>
+            <button onclick="closeModal('detailModal')" style="width:100%; background:var(--sadarah-light); color:var(--sadarah-primary); border:none; padding:12px; border-radius:12px; margin-top:10px; cursor:pointer; font-size:12px; font-weight:900; box-shadow:var(--neu-shadow);">إغلاق النافذة</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="authModal" onclick="checkOutsideModalClick(event, 'authModalContent')">
         <div class="auth-card-box" id="authModalContent">
-            <h3 id="modalTitle"><i class="fa-solid fa-user-astronaut" style="color:var(--gold);"></i> تسجيل حساب جديد 🚀</h3>
+            <h3 id="modalTitle"><i class="fa-solid fa-user-astronaut" style="color:var(--sadarah-gold);"></i> تسجيل حساب جديد 🚀</h3>
             <p id="modalSubtitle">أنشئ حسابك الآن لتنضم إلى نخبة الكفاءات وأصحاب الأعمال.</p>
             
             <div class="auth-input-group">
@@ -315,7 +327,7 @@
             <button id="mainAuthBtn" onclick="processAuth()" class="auth-btn-primary">إنشاء وحفظ الحساب 📱</button>
             <button onclick="switchMode()" id="switchBtnText" class="auth-btn-switch">لديك حساب مسجل؟ تسجيل الدخول</button>
             <button onclick="closeModal('authModal')" class="auth-btn-cancel">إلغاء</button>
-            <div id="authMsg" style="font-size:12px; margin-top:12px; text-align:center; font-weight:900;"></div>
+            <div id="authMsg" style="font-size:12px; margin-top:10px; text-align:center; font-weight:900;"></div>
         </div>
     </div>
 
@@ -429,7 +441,7 @@
                 gridDiv.className = 'products-grid';
 
                 list.forEach(j => {
-                    let imgHTML = (j.image && j.image.trim() !== '') ? `<div class="product-img-container" onclick='openDetailsModal(${JSON.stringify(j)}, "job")'><img src="${j.image}" class="product-img"></div>` : '<div class="product-img-container" style="padding:40px 0;"><i class="fa-solid fa-briefcase" style="font-size:28px; color:var(--c-mid);"></i></div>';
+                    let imgHTML = (j.image && j.image.trim() !== '') ? `<div class="product-img-container" onclick='openDetailsModal(${JSON.stringify(j)}, "job")'><img src="${j.image}" class="product-img"></div>` : '<div class="product-img-container" style="padding:40px 0;"><i class="fa-solid fa-briefcase" style="font-size:28px; color:#49769F;"></i></div>';
                     let phoneNum = j.phone ? j.phone.replace(/[^0-9]/g, '') : '967780568507';
 
                     gridDiv.innerHTML += `
@@ -443,7 +455,7 @@
                 });
                 jBox.appendChild(gridDiv);
             } else {
-                jBox.innerHTML = '<p style="text-align:center; color:var(--c-mid); font-size:13px; padding:25px; font-weight:750;">لا توجد وظائف مطابقة لبحثك.</p>';
+                jBox.innerHTML = '<p style="text-align:center; color:#49769F; font-size:13px; padding:25px; font-weight:750;">لا توجد وظائف مطابقة لبحثك.</p>';
             }
         }
 
@@ -483,7 +495,7 @@
                 });
                 rBox.appendChild(gridDiv);
             } else {
-                rBox.innerHTML = '<p style="text-align:center; color:var(--c-mid); font-size:13px; padding:25px; font-weight:750;">لا توجد كفاءات مطابقة لبحثك.</p>';
+                rBox.innerHTML = '<p style="text-align:center; color:#49769F; font-size:13px; padding:25px; font-weight:750;">لا توجد كفاءات مطابقة لبحثك.</p>';
             }
         }
 
@@ -500,7 +512,7 @@
                     <a href="${imgUrl}" download="sadarah_${type}_${Date.now()}.jpg" target="_blank" title="اضغط لتنزيل الصورة مباشرة">
                         <img src="${imgUrl}" class="modal-img-preview">
                     </a>
-                    <div style="text-align:center; font-size:11px; color:var(--c-mid); margin-bottom:10px; font-weight:700;">💡 (اضغط على الصورة أعلاه لتنزيلها بالحجم الواقعي)</div>
+                    <div style="text-align:center; font-size:11px; color:#49769F; margin-bottom:10px; font-weight:700;">💡 (اضغط على الصورة أعلاه لتنزيلها بالحجم الواقعي)</div>
                 `;
             } else {
                 imgContainer.innerHTML = '';
@@ -552,13 +564,13 @@
 
             if (isLoginMode) {
                 nameBox.style.display = 'none';
-                title.innerHTML = '<i class="fa-solid fa-lock" style="color:var(--c-darkest);"></i> تسجيل الدخول 🔐';
+                title.innerHTML = '<i class="fa-solid fa-lock" style="color:var(--sadarah-primary);"></i> تسجيل الدخول 🔐';
                 subtitle.textContent = 'أدخل رقم الواتساب وكلمة المرور للوصول إلى حسابك.';
                 btn.textContent = 'تسجيل الدخول 🚀';
                 switchBtn.textContent = 'ليس لديك حساب؟ سجل حساب جديد';
             } else {
                 nameBox.style.display = 'block';
-                title.innerHTML = '<i class="fa-solid fa-user-astronaut" style="color:var(--gold);"></i> تسجيل حساب جديد 🚀';
+                title.innerHTML = '<i class="fa-solid fa-user-astronaut" style="color:var(--sadarah-gold);"></i> تسجيل حساب جديد 🚀';
                 subtitle.textContent = 'أنشئ حسابك الآن لتنضم إلى نخبة الكفاءات وأصحاب الأعمال.';
                 btn.textContent = 'إنشاء وحفظ الحساب 📱';
                 switchBtn.textContent = 'لديك حساب مسجل؟ تسجيل الدخول';
@@ -595,7 +607,7 @@
             const loggedName = localStorage.getItem('sadara_logged_name');
             const authArea = document.getElementById('authArea');
             if (loggedName) {
-                authArea.innerHTML = `<span style="font-size:12px; color:var(--gold); font-weight:900; margin-left:6px;">👤 ${loggedName}</span><button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border-color:#ef4444; color:white;">خروج</button>`;
+                authArea.innerHTML = `<span style="font-size:12px; color:var(--sadarah-gold); font-weight:900; margin-left:6px;">👤 ${loggedName}</span><button class="mini-btn" onclick="logoutUser()" style="background:#ef4444; border-color:#ef4444; color:white;">خروج</button>`;
             } else {
                 authArea.innerHTML = `<button class="mini-btn" onclick="openAuthModal()"><i class="fa-solid fa-user-shield"></i> حساب / دخول</button>`;
             }
