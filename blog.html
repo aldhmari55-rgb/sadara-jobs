@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- شفرة أدسنس -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096" crossorigin="anonymous"></script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المدونة والنصائح الميدانية | منصة صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <title>مدونة صدارة | النصائح والإرشادات الميدانية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root { 
@@ -19,50 +16,46 @@
             --spec-bg: #F0F7FF;
             --spec-border: #0284C7;
             --spec-text: #1E3A8A;
-            --text-main: #0B132B;
-            --neu-shadow: 9px 9px 18px #cbced1, -9px -9px 18px #ffffff;
-            --neu-shadow-inset: inset 5px 5px 10px #cbced1, inset -5px -5px 10px #ffffff;
+            --neu-shadow: 8px 8px 16px #cbced1, -8px -8px 16px #ffffff;
+            --neu-shadow-inset: inset 4px 4px 8px #cbced1, inset -4px -4px 8px #ffffff;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--sadarah-light); padding-bottom: 100px; color: var(--text-main); }
+        body { background: var(--sadarah-light); padding: 15px; color: #0f172a; padding-bottom: 50px; }
 
-        .top-navbar { background: var(--sadarah-primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sadarah-gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 8px 20px rgba(10,28,51,0.3); }
+        .container { max-width: 900px; margin: 0 auto; }
+        .top-navbar { background: var(--sadarah-primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sadarah-gold); border-radius: 14px; margin-bottom: 20px; box-shadow: var(--neu-shadow); }
         .mini-btn { background: rgba(255,255,255,0.1); color: #FFFFFF; border: 1px solid rgba(212,175,55,0.4); padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; }
         .mini-btn:hover { background: var(--sadarah-gold); color: var(--sadarah-dark); }
 
-        .container { max-width: 1000px; margin: 25px auto; padding: 0 15px; }
-        .blog-header { background: var(--sadarah-light); padding: 30px; border-radius: 24px; text-align: center; margin-bottom: 30px; box-shadow: var(--neu-shadow); border: 1px solid rgba(255,255,255,0.8); }
-        .blog-header h1 { color: var(--sadarah-primary); font-size: 24px; font-weight: 900; margin-bottom: 8px; }
-        .blog-header p { color: #49769F; font-size: 13px; font-weight: 700; }
-
-        .article-card { background: var(--sadarah-light); border-radius: 24px; border: 1px solid rgba(255,255,255,0.9); padding: 25px; margin-bottom: 25px; box-shadow: var(--neu-shadow); }
-        .article-card h2 { font-size: 18px; font-weight: 900; color: var(--sadarah-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .article-content { font-size: 13px; color: var(--spec-text); background: var(--spec-bg); padding: 18px; border-radius: 14px; border-right: 4px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-weight: 700; line-height: 1.8; }
+        .blog-header { background: var(--sadarah-primary); color: white; padding: 22px; border-radius: 16px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid var(--sadarah-gold); box-shadow: var(--neu-shadow); }
+        
+        .blog-card { background: var(--sadarah-light); padding: 20px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.9); margin-bottom: 18px; box-shadow: var(--neu-shadow); }
+        .blog-card h3 { color: var(--sadarah-primary); font-size: 15px; font-weight: 900; margin-bottom: 8px; }
+        .blog-card p { font-size: 11px; color: var(--spec-text); line-height: 1.7; font-weight: 700; background: var(--spec-bg); padding: 12px; border-radius: 10px; border-right: 4px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); }
     </style>
 </head>
 <body>
 
-    <div class="top-navbar">
-        <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
-        <div style="display:flex; align-items:center; gap:8px;">
-            <img src="٢٠٢٦٠٩٢٦_١٩٥٨٣٩.jpg" style="height:32px; object-fit:contain;" alt="شعار صدارة">
-            <span style="font-weight: 900; font-size: 15px; color: #FFFFFF;">مدونة <span style="color:var(--sadarah-gold);">صدارة</span></span>
-        </div>
-        <a href="affiliate.html" class="mini-btn"><i class="fa-solid fa-handshake-angle"></i> المسوقون</a>
-    </div>
-
     <div class="container">
-        <div class="blog-header">
-            <h1>📰 المدونة والنصائح الميدانية</h1>
-            <p>أحدث التوجيهات لتسويق المنتجات وزيادة المبيعات عبر شبكات التواصل والعمل الميداني</p>
+        <div class="top-navbar">
+            <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
+            <span style="font-weight: 900; font-size: 14px; color: #FFFFFF;">مدونة <span style="color:var(--sadarah-gold);">صدارة</span></span>
+            <a href="affiliate.html" class="mini-btn"><i class="fa-solid fa-handshake-angle"></i> الأفلييت</a>
         </div>
 
-        <div class="article-card">
-            <h2><i class="fa-solid fa-lightbulb" style="color:var(--sadarah-gold);"></i> دليل العمل الميداني والتسويق الفعال للمنتجات</h2>
-            <div class="article-content">
-                يساعدك العمل الميداني واستخدام روابط الإحالة الخاصة بك في الوصول المباشر للزبائن. احرص على حفظ صور المنتجات في هاتفك واستخدام زر النسخ السريع لرابط الأفلييت لمشاركته فوراً مع عملائك والحصول على عمولتك بكل أمان.
-            </div>
+        <div class="blog-header">
+            <h1>📖 المدونة والإرشادات الميدانية</h1>
+            <p style="font-size: 11px; opacity: 0.8; margin-top: 4px;">أحدث المقالات والنصائح لمضاعفة أرباحك في التسويق الميداني والالكتروني</p>
+        </div>
+
+        <div class="blog-card">
+            <h3>🚀 كيف تبدأ التسويق الميداني بنجاح وتحقق أرباحاً مضاعفة؟</h3>
+            <p>التسويق الميداني يعتمد على التواصل الفعال وبناء الثقة المباشرة مع الزبائن. يمكنك عبر نظام الأفلييت في صدارة نسخ رابط أي منتج أو خدمة، وعرضه على عملائك في الميدان مع مشاركة صور المنتجات عبر واتساب، وحصد عمولتك فور إتمام الطلب.</p>
+        </div>
+
+        <div class="blog-card">
+            <h3>💡 أهمية تفعيل الاشتراكات الرقمية وتجربة العميل</h3>
+            <p>نحرص في متجر صدارة على توفير أرقى الاشتراكات والخدمات الرقمية والإلكترونية المضمونة. تأكد دائماً من توضيح تفاصيل المنتج للعميل وإرفاق سند التحويل بدقة لتسريع تفعيل الطلبات وتحقيق أعلى مستويات رضا العملاء.</p>
         </div>
     </div>
 
