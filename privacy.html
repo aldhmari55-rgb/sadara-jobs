@@ -1,107 +1,81 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- شفرة أدسنس -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096" crossorigin="anonymous"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>السياسات وشروط الاستخدام | منصة صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>سياسة الخصوصية والشروط | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root { --primary: #0f2347; --gold: #d4af37; --bg: #f8fafc; --text: #334155; }
+        :root { 
+            --bg-main: #eef2f7;
+            --neu-surface: #eef2f7;
+            --c-darkest: #001D39;
+            --c-mid: #49769F;
+            --gold: #d4af37; 
+            --emerald-btn: #10B981;
+            --spec-bg: #F0F7FF;
+            --spec-border: #0284C7;
+            --spec-text: #1E3A8A;
+            --text-main: #0b132b;
+            --neu-shadow: 9px 9px 18px #cbced1, -9px -9px 18px #ffffff;
+            --neu-shadow-inset: inset 5px 5px 10px #cbced1, inset -5px -5px 10px #ffffff;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: var(--text); line-height: 1.8; padding: 20px 15px 50px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; }
-        .header { text-align: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; margin-bottom: 25px; }
-        .header h1 { color: var(--primary); font-size: 24px; font-weight: 900; }
-        .header p { color: #64748b; font-size: 13px; margin-top: 5px; }
-        .nav-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-        .tab-btn { padding: 8px 16px; border: 1px solid var(--primary); background: transparent; color: var(--primary); border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.3s; }
-        .tab-btn.active, .tab-btn:hover { background: var(--primary); color: white; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        h2 { color: var(--primary); font-size: 18px; margin: 20px 0 10px; border-right: 4px solid var(--gold); padding-right: 10px; }
-        p, li { font-size: 14px; margin-bottom: 12px; }
-        ul { margin-right: 20px; }
-        .contact-box { background: #f1f5f9; padding: 15px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 15px; }
-        .footer-back { text-align: center; margin-top: 30px; }
-        .footer-back a { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 14px; }
+        body { background: var(--bg-main); padding-bottom: 80px; color: var(--text-main); }
+
+        .top-navbar { background: var(--neu-surface); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 8px 20px rgba(0,29,57,0.08); }
+        .mini-btn { background: var(--neu-surface); color: var(--c-darkest); border: 1px solid rgba(212,175,55,0.4); padding: 10px 18px; border-radius: 16px; font-weight: 800; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: var(--neu-shadow); }
+        .mini-btn:hover { box-shadow: var(--neu-shadow-inset); color: var(--gold); }
+
+        .container { max-width: 900px; margin: 25px auto; padding: 0 15px; }
+        .policy-card { background: var(--neu-surface); padding: 30px; border-radius: 26px; box-shadow: var(--neu-shadow); margin-bottom: 25px; border-top: 5px solid var(--gold); }
+        .policy-card h2 { font-size: 18px; font-weight: 900; color: var(--c-darkest); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        
+        .policy-content { font-size: 13px; color: var(--spec-text); background: var(--spec-bg); padding: 18px; border-radius: 14px; border-right: 4px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-weight: 700; line-height: 1.8; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>منصة صدارة للتسويق والخدمات الرقمية</h1>
-        <p>sadarah.top | الشفافية، الخصوصية، وحماية بيانات المستخدم</p>
+    <div class="top-navbar">
+        <a href="index.html" class="mini-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
+        <span style="font-weight: 900; font-size: 16px; color: var(--c-darkest);">سياسات وشروط <span style="color:var(--gold);">صدارة</span></span>
+        <a href="services.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر</a>
     </div>
 
-    <!-- أزرار التنقل بين الأقسام -->
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="showTab('privacy')">سياسة الخصوصية</button>
-        <button class="tab-btn" onclick="showTab('terms')">شروط الاستخدام</button>
-        <button class="tab-btn" onclick="showTab('about')">من نحن</button>
-        <button class="tab-btn" onclick="showTab('contact')">اتصل بنا</button>
-    </div>
+    <div class="container">
+        <div class="policy-card">
+            <h2><i class="fa-solid fa-shield-halved" style="color:var(--gold);"></i> سياسة الخصوصية وحماية البيانات</h2>
+            <div class="policy-content">
+                نحن في منصة صدارة نولي أهمية قصوى لحماية خصوصيتك وبياناتك الشخصية. نجمع المعلومات اللازمة فقط لتوفير خدمات التوظيف والتسويق الرقمي وتسهيل التواصل عبر الواتساب بين أصحاب العمل والكفاءات، ولن نبيع أو نشارك بياناتك مع أي أطراف ثالثة دون إذنك.
+            </div>
+        </div>
 
-    <!-- 1. سياسة الخصوصية (Privacy Policy) -->
-    <div id="privacy" class="tab-content active">
-        <h2>سياسة الخصوصية (Privacy Policy)</h2>
-        <p>في منصة صدارة (sadarah.top)، نولي أهمية قصوى لخصوصية زوارنا ومستخدمينا. توضح هذه الوثيقة أنواع المعلومات الشخصية التي نجمعها وكيفية استخدامها لحماية حقوقكم.</p>
-        
-        <h2>ملفات التعريف (كوكيز إعلانات Google AdSense)</h2>
-        <p>تستخدم منصة صدارة ملفات تعريف الارتباط (Cookies) لتحسين تجربة المستخدم وعرض الإعلانات المناسبة. نلفت انتباهكم للبنود التالية الخاصة بشبكة إعلانات Google:</p>
-        <ul>
-            <li>تستخدم شركة Google بصفتها مورّداً ماليّاً خارجيّاً ملفات تعريف الارتباط لعرض الإعلانات على موقعنا.</li>
-            <li>يُسهم استخدام ملف تعريف الارتباط DART شركة Google في عرض الإعلانات للمستخدمين استناداً إلى زياراتهم لموقعنا ومواقع أخرى على الإنترنت.</li>
-            <li>يمكن للمستخدمين إلغاء استخدام ملف تعريف الارتباط DART عن طريق زيارة سياسة الخصوصية الخاصة بشبكة Google للإعلانات والمحتوى.</li>
-        </ul>
+        <div class="policy-card" id="terms">
+            <h2><i class="fa-solid fa-file-contract" style="color:var(--spec-border);"></i> شروط وأحكام الاستخدام</h2>
+            <div class="policy-content">
+                باستخدامك لمنصة صدارة، فإنك تتعهد بتقديم معلومات صحيحة ودقيقة سواء عند إضافة فرصة عمل أو تقديم سيرتك الذاتية. يمنع نشر أي محتوى مخالف للقوانين أو يمس حقوق الآخرين، وتستحتفظ إدارة المنصة بحق مراجعة وحذف أي طلب مخالف.
+            </div>
+        </div>
 
-        <h2>جمع البيانات والاستخدام</h2>
-        <p>عند استخدامك لمنصتنا (سواء عند التسجيل أو إضافة طلب وظيفة أو كفاءة)، قد نجمع بعض البيانات الأساسية مثل الاسم، رقم الهاتف، والبريد الإلكتروني. نلتزم بعدم بيع أو مشاركة هذه البيانات مع أي أطراف خارجية إلا بموافقة المستخدم أو لأغراض تقديم الخدمة المباشرة.</p>
-    </div>
+        <div class="policy-card" id="about">
+            <h2><i class="fa-solid fa-circle-info" style="color:var(--emerald-btn);"></i> من نحن</h2>
+            <div class="policy-content">
+                منصة صدارة هي المنصة الرقمية المعتمدة والأولى للخدمات والتوظيف الرقمي في اليمن، نهدف إلى ربط أصحاب الشركات بالنخب والكفاءات وإتاحة المتجر الرقمي والتسويق بالعمولة بمرونة ومرجعية موثوقة.
+            </div>
+        </div>
 
-    <!-- 2. شروط الاستخدام (Terms of Service) -->
-    <div id="terms" class="tab-content">
-        <h2>شروط وأحكام الاستخدام</h2>
-        <p>مرحباً بكم في منصة صدارة. باستخدامكم لهذا الموقع، فإنكم توافقون على الالتزام بالشروط والأحكام التالية:</p>
-        <ul>
-            <li><b>المحتوى المقبول:</b> يلتزم المستخدم بعدم نشر أي محتوى يرتكب مخالفة أخلاقية، دينية، أو قانونية، أو ينتهك حقوق الملكية الفكرية.</li>
-            <li><b>صحة البيانات:</b> يتحمل المستخدم المسئولية الكاملة عن صحة ودقة البيانات والمعلومات التي يقدمها في قسم الوظائف أو الكفاءات أو الشهادات.</li>
-            <li><b>إخلاء المسؤولية:</b> تسعى منصة صدارة للتحقق من جودة الوظائف والخدمات المعروضة، ولكنها غير مسؤولة عن التعاملات المالية المباشرة بين الأفراد خارج إطار المنصة الرسمي.</li>
-        </ul>
-    </div>
-
-    <!-- 3. من نحن (About Us) -->
-    <div id="about" class="tab-content">
-        <h2>عن منصة صدارة</h2>
-        <p><b>شركة صدارة للتسويق والخدمات الرقمية</b> هي منصة يمنية رقمية متكاملة تهدف إلى دعم الشباب والكفاءات وتسهيل الوصول إلى الفرص الوظيفية والدورات التدريبية المعتمدة.</p>
-        <p>نعمل على توفير بيئة رقمية آمنة وموثوقة تجمع بين أصحاب الأعمال والباحثين عن العمل، إضافة إلى إتاحة شهادات رقمية موثقة ودورات تدريبية متخصصة في مجالات التسويق، الإدارة، والتكنولوجيا.</p>
-    </div>
-
-    <!-- 4. اتصل بنا (Contact Us) -->
-    <div id="contact" class="tab-content">
-        <h2>تواصل معنا</h2>
-        <p>يسعدنا دائماً تواصلكم واستفساراتكم عبر وسائل الاتصال الرسمية التالية:</p>
-        
-        <div class="contact-box">
-            <p>📍 <b>العنوان:</b> الجمهورية اليمنية - محافظة ذمار - شارع صنعاء تعز</p>
-            <p>📱 <b>الواتساب / الهاتف:</b> 967780568507+</p>
-            <p>🌐 <b>الموقع الرسمي:</b> https://sadarah.top</p>
-            <p>💼 <b>الجهة المشرفة:</b> شركة صدارة للتسويق والخدمات الرقمية </p>
+        <div class="policy-card" id="contact">
+            <h2><i class="fa-solid fa-headset" style="color:var(--gold);"></i> اتصل بنا</h2>
+            <div class="policy-content">
+                لأي استفسار أو طلب دعم فني، يمكنك التواصل المباشر مع إدارة المنصة عبر الرقم المعتمد في اليمن: <b>967780568507</b>
+            </div>
         </div>
     </div>
 
-    <div class="footer-back">
-        <a href="index.html">⬅️ العودة للصفحة الرئيسية لمنصة صدارة</a>
-    </div>
-</div>
-
-<script>
-    function showTab(tabId) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
-</script>
 </body>
 </html>
