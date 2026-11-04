@@ -6,7 +6,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر صدارة | SADARAH STORE</title>
+    <title>منصة صدارة للوظائف والخدمات الرقمية | SADARAH STORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -50,6 +50,18 @@
 
         .container { width: 100%; max-width: 1250px; margin: 15px auto; padding: 0 10px; }
 
+        /* قسم البنرات والإحصائيات الترحيبية */
+        .store-hero-banner { background: var(--sadarah-light); padding: 22px; border-radius: 20px; text-align: center; margin-bottom: 20px; box-shadow: var(--neu-shadow); border: 1px solid rgba(255,255,255,0.8); }
+        .store-hero-banner h1 { color: var(--sadarah-primary); font-size: clamp(20px, 4vw, 26px); font-weight: 900; margin-bottom: 6px; }
+        .store-hero-banner p { color: #49769F; font-size: clamp(11px, 2vw, 13px); font-weight: 700; margin-bottom: 15px; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 700px; margin: 0 auto; }
+        @media (max-width: 576px) { .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; } }
+        .stat-box { background: var(--sadarah-light); padding: 10px; border-radius: 12px; box-shadow: var(--neu-shadow-inset); text-align: center; }
+        .stat-box h3 { color: var(--sadarah-primary); font-size: 16px; font-weight: 900; }
+        .stat-box p { font-size: 10px; color: #64748b; margin-top: 2px; }
+
+        /* شريط التصنيفات المتحركة بستايل شي إن */
         .shein-categories-bar { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 18px; margin-bottom: 20px; scrollbar-width: none; }
         .shein-categories-bar::-webkit-scrollbar { display: none; }
         .shein-cat-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; transition: 0.3s; }
@@ -97,7 +109,7 @@
 <body>
 
     <div class="shein-top-bar">
-        <span>🔥 استمتع بخصومات حصرية عبر متجر صدارة الرقمي</span>
+        <span>🔥 منصة صدارة للوظائف والخدمات الرقمية والميدانية</span>
         <span><a href="affiliate.html"><i class="fa-solid fa-handshake-angle"></i> انضم لبرنامج المسوقين (الأفلييت)</a></span>
     </div>
 
@@ -105,7 +117,7 @@
         <a href="affiliate.html" class="mini-btn"><i class="fa-solid fa-handshake-angle"></i> المسوقون</a>
         
         <div class="shein-search-container">
-            <input type="text" id="searchInput" class="shein-search-input" placeholder="ابحث عن منتج، اشتراك، أو خدمة..." oninput="filterStoreProducts()">
+            <input type="text" id="searchInput" class="shein-search-input" placeholder="ابحث عن منتج، وظيفة، أو خدمة..." oninput="filterStoreProducts()">
             <i class="fa-solid fa-magnifying-glass shein-search-icon"></i>
         </div>
 
@@ -119,7 +131,27 @@
     </a>
 
     <div class="container">
-        <!-- شريط الأقسام الدائرية المتحركة (التصنيفات الجديدة والسابقة) -->
+        <!-- البنر الترحيبي والإحصائيات -->
+        <div class="store-hero-banner">
+            <h1>🌟 منصة صدارة للوظائف والخدمات الرقمية</h1>
+            <p>تصفح أحدث المنتجات، العروض الميدانية، واشترك في نظام الأفلييت لمضاعفة أرباحك</p>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h3 id="statProducts">0</h3>
+                    <p>منتج وخدمة</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="statAffiliates">0</h3>
+                    <p>مسوق معتمد</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="statOrders">0</h3>
+                    <p>طلب ناجح</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- شريط التصنيفات الدائرية بستايل شي إن (متضمنة التصنيفات الجديدة والسابقة) -->
         <div class="shein-categories-bar" id="categoriesContainer">
             <div class="shein-cat-item active" onclick="filterStore('الكل', this)">
                 <div class="shein-cat-circle"><i class="fa-solid fa-globe"></i></div>
@@ -160,14 +192,14 @@
         </div>
 
         <div id="productsGridContainer" class="products-grid">
-            جاري تحميل المنتجات بستايل المتجر...
+            جاري تحميل المنتجات والخدمات...
         </div>
     </div>
 
     <!-- نافذة الطلب -->
     <div class="modal-overlay" id="orderModal" onclick="checkOutsideModalClick(event, 'orderModalCard')">
         <div class="modal-card" id="orderModalCard">
-            <h3><i class="fa-solid fa-cart-shopping" style="color:var(--sadarah-gold);"></i> طلب المنتج الرقمي</h3>
+            <h3><i class="fa-solid fa-cart-shopping" style="color:var(--sadarah-gold);"></i> طلب المنتج أو الخدمة</h3>
             <div id="modalProductDetails" class="modal-spec-box">تفاصيل المنتج...</div>
             
             <div class="form-group">
@@ -213,6 +245,13 @@
                 allProducts = data || [];
                 renderStoreProducts(allProducts);
 
+                // تحديث الإحصائيات الحية
+                document.getElementById('statProducts').textContent = allProducts.length;
+                let { count: affCount } = await db.from('affiliates').select('*', { count: 'exact', head: true });
+                document.getElementById('statAffiliates').textContent = affCount || 0;
+                let { count: ordCount } = await db.from('orders').select('*', { count: 'exact', head: true });
+                document.getElementById('statOrders').textContent = ordCount || 0;
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const prodId = urlParams.get('product_id');
                 const refCode = urlParams.get('ref');
@@ -250,13 +289,13 @@
             container.innerHTML = '';
 
             if(!list || list.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#49769F; grid-column:1/-1; padding:30px;">لا توجد منتجات متاحة حالياً.</p>';
+                container.innerHTML = '<p style="text-align:center; color:#49769F; grid-column:1/-1; padding:30px;">لا توجد منتجات أو خدمات متاحة حالياً.</p>';
                 return;
             }
 
             list.forEach(p => {
                 let imgTag = (p.image && p.image.trim() !== '') ? `<img src="${p.image}" class="product-img">` : '<i class="fa-solid fa-store" style="font-size:28px; color:#49769F;"></i>';
-                let descText = p.description || 'منتج رقمي معتمد من صدارة.';
+                let descText = p.description || 'خدمة أو منتج معتمد من منصة صدارة.';
                 
                 let currentPrice = p.price || '0';
                 let oldPriceHTML = '';
@@ -293,7 +332,7 @@
             selectedProductObj = product;
             let currentRef = localStorage.getItem('sadara_ref') || 'مباشر';
             document.getElementById('modalProductDetails').innerHTML = `
-                <b>📦 المنتج:</b> ${product.title}<br>
+                <b>📦 المنتج/الخدمة:</b> ${product.title}<br>
                 <b>💵 السعر:</b> ${product.price}<br>
                 <b>🔗 مسوق الإحالة:</b> ${currentRef}<br>
                 <b>📝 التفاصيل:</b> ${product.description || 'لا توجد تفاصيل إضافية'}
@@ -347,7 +386,7 @@
                 }]);
             } catch(e) {}
 
-            let waMessage = `مرحباً، أريد طلب المنتج الرقمي التالي:\n\n📦 المنتج: ${selectedProductObj.title}\n💵 السعر: ${selectedProductObj.price}\n👤 الاسم: ${name}\n📱 الهاتف: ${phone}\n💳 الدفع: ${payment}\n📄 رابط سند التحويل: ${receiptUrl || 'لم يُرفق'}\n🔗 الإحالة: ${refCode}\n\nملاحظات: ${notes}`;
+            let waMessage = `مرحباً، أريد طلب الخدمة / المنتج التالي:\n\n📦 المنتج: ${selectedProductObj.title}\n💵 السعر: ${selectedProductObj.price}\n👤 الاسم: ${name}\n📱 الهاتف: ${phone}\n💳 الدفع: ${payment}\n📄 رابط سند التحويل: ${receiptUrl || 'لم يُرفق'}\n🔗 الإحالة: ${refCode}\n\nملاحظات: ${notes}`;
             let encoded = encodeURIComponent(waMessage);
             window.open(`https://wa.me/967780568507?text=${encoded}`, '_blank');
             document.getElementById('orderModal').style.display = 'none';
