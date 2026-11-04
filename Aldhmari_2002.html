@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم والإدارة | منصة صدارة</title>
+    <title>لوحة التحكم الشاملة والأدمن | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -19,13 +19,14 @@
             --spec-border: #0284C7;
             --spec-text: #1E3A8A;
             --red: #ef4444; 
+            --green: #10b981;
             --neu-shadow: 8px 8px 16px #cbced1, -8px -8px 16px #ffffff;
             --neu-shadow-inset: inset 4px 4px 8px #cbced1, inset -4px -4px 8px #ffffff;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--sadarah-light); padding: 15px; color: #0f172a; }
 
-        .admin-container { max-width: 1000px; margin: 0 auto; width: 100%; }
+        .admin-container { max-width: 1050px; margin: 0 auto; width: 100%; }
         .top-navbar { background: var(--sadarah-primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sadarah-gold); border-radius: 14px; margin-bottom: 20px; box-shadow: var(--neu-shadow); }
         .mini-btn { background: rgba(255,255,255,0.1); color: #FFFFFF; border: 1px solid rgba(212,175,55,0.4); padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; }
         .mini-btn:hover { background: var(--sadarah-gold); color: var(--sadarah-dark); }
@@ -39,9 +40,13 @@
         .data-row { background: var(--sadarah-light); border-right: 4px solid var(--spec-border); padding: 12px 16px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--neu-shadow); gap: 10px; flex-wrap: wrap; }
         .data-info { font-size: 11px; color: var(--spec-text); font-weight: 700; line-height: 1.6; }
 
-        .action-btn { border: none; padding: 8px 14px; border-radius: 8px; font-weight: 900; font-size: 11px; cursor: pointer; color: white; transition: 0.3s; }
+        .action-btns { display: flex; gap: 6px; align-items: center; }
+        .action-btn { border: none; padding: 7px 12px; border-radius: 8px; font-weight: 900; font-size: 10px; cursor: pointer; color: white; transition: 0.3s; }
         .btn-delete { background: var(--red); }
         .btn-delete:hover { opacity: 0.8; }
+        .btn-edit { background: var(--sadarah-btn); }
+        .btn-edit:hover { background: var(--sadarah-btn-hover); }
+        .btn-pay { background: var(--green); }
         
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 11px; font-weight: 900; color: var(--sadarah-primary); margin-bottom: 4px; }
@@ -54,18 +59,20 @@
     <div class="admin-container">
         <div class="top-navbar">
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
-            <span style="font-weight: 900; font-size: 14px; color: #FFFFFF;">لوحة تحكم <span style="color:var(--sadarah-gold);">الأدمن</span></span>
+            <span style="font-weight: 900; font-size: 14px; color: #FFFFFF;">لوحة تحكم <span style="color:var(--sadarah-gold);">الأدمن الشاملة</span></span>
             <a href="affiliate.html" class="mini-btn"><i class="fa-solid fa-handshake-angle"></i> الأفلييت</a>
         </div>
 
         <div class="admin-card">
             <div class="admin-header">
-                <h2>⚙️ لوحة إدارة متجر صدارة</h2>
-                <p style="font-size:11px; opacity:0.8; margin-top:4px;">إضافة المنتجات، الأسعار، الخصومات، ومتابعة الطلبات والمسوقين</p>
+                <h2>⚙️ لوحة التحكم والتحكم المطلق بمتجر صدارة</h2>
+                <p style="font-size:11px; opacity:0.8; margin-top:4px;">إدارة المنتجات، الأسعار، الخصومات، صور الشعارات، الطلبات، وعمولات المسوقين</p>
             </div>
 
+            <!-- قسم إضافة أو تعديل منتج -->
             <div class="section-box">
-                <h3>➕ إضافة منتج جديد مع التصنيفات والخصومات</h3>
+                <h3 id="formTitle">➕ إضافة منتج أو خدمة جديدة للمتجر</h3>
+                <input type="hidden" id="editProductId">
                 <div class="form-group">
                     <label>عنوان المنتج / الخدمة</label>
                     <input type="text" id="pTitle" placeholder="مثال: آيفون 15 برو ماكس">
@@ -96,23 +103,36 @@
                     <input type="text" id="pDiscount" placeholder="مثال: -30%">
                 </div>
                 <div class="form-group">
-                    <label>اختر صورة المنتج من المعرض 🖼️</label>
+                    <label>رفع أو تغيير صورة المنتج من المعرض 🖼️</label>
                     <input type="file" id="pImageFile" accept="image/*" style="padding: 6px;">
                 </div>
                 <div class="form-group">
                     <label>الوصف التسويقي والمميزات</label>
                     <textarea id="pDesc" rows="2" placeholder="اكتب تفاصيل المنتج..."></textarea>
                 </div>
-                <button onclick="addNewProduct()" class="submit-btn">نشر المنتج في المتجر 🚀</button>
+                <button onclick="saveProduct()" id="saveProductBtn" class="submit-btn">نشر المنتج في المتجر 🚀</button>
             </div>
 
+            <!-- قسم إدارة شعار المنصة وصور الهيدر والبنرات -->
+            <div class="section-box">
+                <h3>🖼️ التحكم بشعار المنصة والبنرات الأساسية</h3>
+                <p style="font-size:10px; color:#64748b; margin-bottom:10px;">يمكنك رفع شعار جديد (سيحفظ باسم `logo.jpg` في مجلد images تلقائياً) أو تحديث الهوية.</p>
+                <div class="form-group">
+                    <label>اختر صورة الشعار الجديد للمنصة (Logo)</label>
+                    <input type="file" id="logoFile" accept="image/*" style="padding: 6px;">
+                </div>
+                <button onclick="updateStoreLogo()" class="submit-btn" style="background:var(--sadarah-primary); color:var(--sadarah-gold);">تحديث شعار المنصة فوراً 🌟</button>
+            </div>
+
+            <!-- قسم إدارة الطلبات -->
             <div class="section-box">
                 <h3>🛒 طلبات الزبائن الواردة</h3>
                 <div id="ordersAdminList">جاري تحميل الطلبات...</div>
             </div>
 
+            <!-- قسم إدارة المسوقين والعمولات والأرباح -->
             <div class="section-box">
-                <h3>🤝 مسوقو المنصة المسجلين (الأفلييت)</h3>
+                <h3>🤝 إدارة مسوقي المنصة (الأفلييت والعمولات)</h3>
                 <div id="affiliatesAdminList">جاري تحميل المسوقين...</div>
             </div>
         </div>
@@ -124,6 +144,7 @@
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         async function loadAdminData() {
+            // تحميل الطلبات
             let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
             let oBox = document.getElementById('ordersAdminList');
             oBox.innerHTML = '';
@@ -135,12 +156,15 @@
                     oBox.innerHTML += `
                         <div class="data-row">
                             <div class="data-info">📦 <b>${o.product_title}</b><br>👤 العميل: ${o.customer_name} (${o.customer_phone})<br>💳 الدفع: ${o.payment_method} | السند: ${receiptLink} | الإحالة: ${o.ref_code}</div>
-                            <button class="action-btn btn-delete" onclick="deleteItem('orders', ${o.id})">حذف 🗑️</button>
+                            <div class="action-btns">
+                                <button class="action-btn btn-delete" onclick="deleteItem('orders', ${o.id})">حذف 🗑️</button>
+                            </div>
                         </div>
                     `;
                 });
             }
 
+            // تحميل المسوقين والتحكم بأرباحهم
             let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
             let aBox = document.getElementById('affiliatesAdminList');
             aBox.innerHTML = '';
@@ -150,15 +174,19 @@
                 affs.forEach(a => {
                     aBox.innerHTML += `
                         <div class="data-row">
-                            <div class="data-info">🤝 المسوق: <b>${a.full_name || a.name}</b> (${a.phone})<br>🔗 كود الإحالة: <code>${a.ref_code}</code> | الأرباح: ${a.total_earnings || 0} YER</div>
-                            <button class="action-btn btn-delete" onclick="deleteItem('affiliates', ${a.id})">حذف 🗑️</button>
+                            <div class="data-info">🤝 المسوق: <b>${a.full_name || a.name}</b> (${a.phone})<br>🔗 كود الإحالة: <code>${a.ref_code}</code> | الأرباح: <b>${a.total_earnings || 0} YER</b></div>
+                            <div class="action-btns">
+                                <button class="action-btn btn-pay" onclick="payAffiliate(${a.id}, ${a.total_earnings || 0})">تصفية الأرباح 💰</button>
+                                <button class="action-btn btn-delete" onclick="deleteItem('affiliates', ${a.id})">حذف 🗑️</button>
+                            </div>
                         </div>
                     `;
                 });
             }
         }
 
-        async function addNewProduct() {
+        async function saveProduct() {
+            let editId = document.getElementById('editProductId').value;
             let title = document.getElementById('pTitle').value.trim();
             let category = document.getElementById('pCategory').value;
             let price = document.getElementById('pPrice').value.trim();
@@ -177,34 +205,79 @@
                 let file = fileInput.files[0];
                 let fileName = 'products/' + Date.now() + '_' + file.name;
                 let { data: uploadData, error: uploadErr } = await db.storage.from('products_images').upload(fileName, file);
-                if (uploadErr) {
-                    alert('خطأ في رفع الصورة: ' + uploadErr.message);
-                    return;
+                if (!uploadErr) {
+                    let { data: pubUrl } = db.storage.from('products_images').getPublicUrl(fileName);
+                    imageUrl = pubUrl.publicUrl;
                 }
-                let { data: pubUrl } = db.storage.from('products_images').getPublicUrl(fileName);
-                imageUrl = pubUrl.publicUrl;
             }
 
-            let { error } = await db.from('platform_services').insert([{
-                title, category, price, old_price, discount, image: imageUrl, description, is_active: true
-            }]);
+            let productData = { title, category, price, old_price, discount, description, is_active: true };
+            if(imageUrl) productData.image = imageUrl;
 
-            if(error) {
-                alert('خطأ أثناء النشر: ' + error.message);
+            if(editId) {
+                // تعديل منتج موجود
+                let { error } = await db.from('platform_services').update(productData).eq('id', editId);
+                if(error) alert('خطأ في التعديل: ' + error.message);
+                else {
+                    alert('تم تعديل المنتج بنجاح! ✅');
+                    resetForm();
+                    loadAdminData();
+                }
             } else {
-                alert('تمت إضافة المنتج بنجاح إلى المتجر! 🎉');
-                document.getElementById('pTitle').value = '';
-                document.getElementById('pPrice').value = '';
-                document.getElementById('pOldPrice').value = '';
-                document.getElementById('pDiscount').value = '';
-                document.getElementById('pImageFile').value = '';
-                document.getElementById('pDesc').value = '';
-                loadAdminData();
+                // إضافة منتج جديد
+                let { error } = await db.from('platform_services').insert([productData]);
+                if(error) alert('خطأ أثناء النشر: ' + error.message);
+                else {
+                    alert('تمت إضافة المنتج بنجاح إلى المتجر! 🎉');
+                    resetForm();
+                    loadAdminData();
+                }
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('editProductId').value = '';
+            document.getElementById('pTitle').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('pOldPrice').value = '';
+            document.getElementById('pDiscount').value = '';
+            document.getElementById('pImageFile').value = '';
+            document.getElementById('pDesc').value = '';
+            document.getElementById('formTitle').textContent = '➕ إضافة منتج أو خدمة جديدة للمتجر';
+            document.getElementById('saveProductBtn').textContent = 'نشر المنتج في المتجر 🚀';
+        }
+
+        async function payAffiliate(affId, currentEarnings) {
+            let amount = prompt('أدخل المبلغ المراد تسليمه للمسوق (تصفية الأرباح):', currentEarnings);
+            if(amount !== null) {
+                let { error } = await db.from('affiliates').update({ total_earnings: Number(currentEarnings) - Number(amount) }).eq('id', affId);
+                if(error) alert('حدث خطأ: ' + error.message);
+                else {
+                    alert('تمت تسوية أرباح المسوق بنجاح! 💵');
+                    loadAdminData();
+                }
+            }
+        }
+
+        async function updateStoreLogo() {
+            let fileInput = document.getElementById('logoFile');
+            if(!fileInput.files || !fileInput.files[0]) {
+                alert('يرجى اختيار صورة الشعار أولاً.');
+                return;
+            }
+            let file = fileInput.files[0];
+            let fileName = 'logo.jpg'; // حفظ الشعار بالاسم المطلوب
+            let { error } = await db.storage.from('products_images').upload(fileName, file, { upsert: true });
+            if(error) {
+                alert('خطأ أثناء رفع الشعار: ' + error.message);
+            } else {
+                alert('تم تحديث شعار المنصة بنجاح! 🌟');
+                document.getElementById('logoFile').value = '';
             }
         }
 
         async function deleteItem(table, id) {
-            if(confirm('هل أنت متأكد من رغبتك في حذف هذا العنصر؟')) {
+            if(confirm('هل أنت متأكد من رغبتك في حذف هذا العنصر نهائياً؟')) {
                 await db.from(table).delete().eq('id', id);
                 loadAdminData();
             }
