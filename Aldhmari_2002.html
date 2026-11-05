@@ -44,13 +44,22 @@
             <a href="index.html" class="mini-btn">المتجر الرئيسي 🏪</a>
         </div>
 
-        <!-- مربع إدارة وتغيير البنرات الإعلانية -->
+        <!-- مربع إدارة ورفع البنرات الإعلانية الثلاثة من المعرض -->
         <div class="section-box">
-            <h3>🖼️ إدارة وتغيير البنرات الإعلانية في المتجر</h3>
-            <div class="form-group"><label>رابط أو مسار صورة البنر العلوي (Top Banner)</label><input type="text" id="topBannerUrl" placeholder="أدخل رابط الصورة"></div>
-            <div class="form-group"><label>رابط أو مسار صورة البنر الأوسط (Middle Banner)</label><input type="text" id="midBannerUrl" placeholder="أدخل رابط الصورة"></div>
-            <div class="form-group"><label>رابط أو مسار صورة البنر السفلي (Bottom Banner)</label><input type="text" id="botBannerUrl" placeholder="أدخل رابط الصورة"></div>
-            <button onclick="saveBanners()" class="submit-btn" style="background:var(--primary); color:var(--gold);">حفظ وتحديث البنرات فوراً 🌟</button>
+            <h3>🖼️ إدارة ورفع البنرات الإعلانية الثلاثة من المعرض</h3>
+            <div class="form-group">
+                <label>اختر صورة البنر العلوي (Top Banner)</label>
+                <input type="file" id="topBannerFile" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label>اختر صورة البنر الأوسط (Middle Banner)</label>
+                <input type="file" id="midBannerFile" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label>اختر صورة البنر السفلي (Bottom Banner)</label>
+                <input type="file" id="botBannerFile" accept="image/*">
+            </div>
+            <button onclick="uploadBanners()" class="submit-btn" style="background:var(--primary); color:var(--gold);">رفع وتحديث البنرات سحابياً 🌟</button>
         </div>
 
         <!-- إضافة / تعديل منتج وتخفيض -->
@@ -131,16 +140,39 @@
             }
         }
 
-        async function saveBanners() {
-            let topB = document.getElementById('topBannerUrl').value.trim();
-            let midB = document.getElementById('midBannerUrl').value.trim();
-            let botB = document.getElementById('botBannerUrl').value.trim();
+        async function uploadBanners() {
+            let topFile = document.getElementById('topBannerFile').files[0];
+            let midFile = document.getElementById('midBannerFile').files[0];
+            let botFile = document.getElementById('botBannerFile').files[0];
 
-            if(topB) await db.from('store_settings').upsert({ key: 'top_banner', value: topB });
-            if(midB) await db.from('store_settings').upsert({ key: 'middle_banner', value: midB });
-            if(botB) await db.from('store_settings').upsert({ key: 'bottom_banner', value: botB });
+            if(topFile) {
+                let fileName = 'banners/top_' + Date.now() + '_' + topFile.name;
+                let { data } = await db.storage.from('products_images').upload(fileName, topFile);
+                if(data) {
+                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                    await db.from('store_settings').upsert({ key: 'top_banner', value: pub.publicUrl });
+                }
+            }
 
-            alert('تم تحديث البنرات بنجاح! 🌟');
+            if(midFile) {
+                let fileName = 'banners/mid_' + Date.now() + '_' + midFile.name;
+                let { data } = await db.storage.from('products_images').upload(fileName, midFile);
+                if(data) {
+                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                    await db.from('store_settings').upsert({ key: 'middle_banner', value: pub.publicUrl });
+                }
+            }
+
+            if(botFile) {
+                let fileName = 'banners/bot_' + Date.now() + '_' + botFile.name;
+                let { data } = await db.storage.from('products_images').upload(fileName, botFile);
+                if(data) {
+                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                    await db.from('store_settings').upsert({ key: 'bottom_banner', value: pub.publicUrl });
+                }
+            }
+
+            alert('تم رفع وتحديث البنرات بنجاح وعرضها في المتجر! 🌟');
         }
 
         async function saveProductData() {
