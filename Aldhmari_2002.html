@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم والإدارة الشاملة | منصة صدارة</title>
+    <title>لوحة التحكم والإدارة المطلقة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -18,7 +18,7 @@
             --border: #E5E7EB;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--light); padding: 15px; color: var(--primary); padding-bottom: 60px; }
+        body { background: var(--light); padding: 15px; color: var(--primary); padding-bottom: 70px; }
 
         .container { max-width: 950px; margin: 0 auto; }
         .top-nav { background: var(--primary); padding: 14px 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
@@ -47,30 +47,39 @@
 
     <div class="container">
         <div class="top-nav">
-            <span style="font-weight:900; font-size:14px;">⚙️ لوحة التحكم والإدارة الشاملة</span>
+            <span style="font-weight:900; font-size:14px;">⚙️ لوحة التحكم والإدارة الشاملة (التحكم المطلق)</span>
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. مربع إدارة ورفع البنرات الإعلانية الثلاثة من المعرض -->
+        <!-- 1. إدارة ورفع البنرات الإعلانية الثلاثة -->
         <div class="section-box">
             <h3>🖼️ إدارة ورفع البنرات الإعلانية الثلاثة من المعرض</h3>
-            <p style="font-size:10.5px; color:#6B7280; margin-bottom:10px;">اختر صور البنرات من جهازك لتتحدث وتظهر فوراً في الواجهة الرئيسية للمتجر.</p>
-            <div class="form-group">
-                <label>اختر صورة البنر العلوي (Top Banner)</label>
-                <input type="file" id="topBannerFile" accept="image/*">
-            </div>
-            <div class="form-group">
-                <label>اختر صورة البنر الأوسط (Middle Banner)</label>
-                <input type="file" id="midBannerFile" accept="image/*">
-            </div>
-            <div class="form-group">
-                <label>اختر صورة البنر السفلي (Bottom Banner)</label>
-                <input type="file" id="botBannerFile" accept="image/*">
-            </div>
+            <div class="form-group"><label>صورة البنر العلوي (Top Banner)</label><input type="file" id="topBannerFile" accept="image/*"></div>
+            <div class="form-group"><label>صورة البنر الأوسط (Middle Banner)</label><input type="file" id="midBannerFile" accept="image/*"></div>
+            <div class="form-group"><label>صورة البنر السفلي (Bottom Banner)</label><input type="file" id="botBannerFile" accept="image/*"></div>
             <button onclick="uploadBanners()" class="submit-btn" style="background:var(--primary); color:var(--gold);">رفع وتحديث البنرات سحابياً 🌟</button>
         </div>
 
-        <!-- 2. نموذج إضافة / تعديل المنتجات والتخفيضات -->
+        <!-- 2. إدارة السياسات والشروط والأحكام -->
+        <div class="section-box">
+            <h3>📜 تعديل وإدارة سياسات وشروط المتجر</h3>
+            <div class="form-group">
+                <label>اختر السياسة المراد تعديلها</label>
+                <select id="policyKey" onchange="loadPolicyContent()">
+                    <option value="privacy">سياسة الخصوصية</option>
+                    <option value="exchange">سياسة الاستبدال والاسترجاع</option>
+                    <option value="shipping">شروط وسياسة الشحن والتوصيل</option>
+                    <option value="warranty">الضمان وشروط الخدمة</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>محتوى السياسة والشروط والأحكام</label>
+                <textarea id="policyText" rows="5" placeholder="اكتب نص السياسة هنا..."></textarea>
+            </div>
+            <button onclick="savePolicy()" class="submit-btn" style="background:var(--green);">حفظ وتحديث السياسة 📝</button>
+        </div>
+
+        <!-- 3. إضافة / تعديل المنتجات والتخفيضات -->
         <div class="section-box">
             <h3 id="formTitle">➕ إضافة / تعديل منتج أو عرض تخفيض</h3>
             <input type="hidden" id="editProductId">
@@ -88,7 +97,7 @@
                 </select>
             </div>
             <div class="form-group"><label>السعر الحالي (اللاحق)</label><input type="text" id="pPrice" placeholder="3500 YER"></div>
-            <div class="form-group"><label>السعر السابق المشطوب (اختياري لتفعيل العرض في الشريط المتحرك)</label><input type="text" id="pOldPrice" placeholder="5000 YER"></div>
+            <div class="form-group"><label>السعر السابق المشطوب (اختياري لتفعيل العرض)</label><input type="text" id="pOldPrice" placeholder="5000 YER"></div>
             <div class="form-group"><label>نسبة أو شارة الخصم (مثل: -30%)</label><input type="text" id="pDiscount" placeholder="-30%"></div>
             <div class="form-group"><label>صورة المنتج (من المعرض)</label><input type="file" id="pImage" accept="image/*"></div>
             <div class="form-group"><label>الوصف والتفاصيل</label><textarea id="pDesc" rows="2" placeholder="اكتب تفاصيل المنتج..."></textarea></div>
@@ -96,19 +105,19 @@
             <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:#F3F4F6; color:var(--primary); border:none; padding:8px; border-radius:8px; margin-top:6px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
         </div>
 
-        <!-- 3. قائمة المنتجات والتخفيضات (تعديل وحذف) -->
+        <!-- 4. قائمة المنتجات والتخفيضات (تعديل وحذف) -->
         <div class="section-box">
             <h3>📦 قائمة المنتجات والتخفيضات المعروضة (تعديل وحذف)</h3>
             <div id="productsAdminList">جاري تحميل المنتجات...</div>
         </div>
 
-        <!-- 4. إدارة المسوقين والعمولات -->
+        <!-- 5. إدارة المسوقين والعمولات -->
         <div class="section-box">
             <h3>🤝 إدارة مسوقي المتجر (الأفلييت) وتصفية العمولات</h3>
             <div id="affiliatesAdminList">جاري تحميل المسوقين...</div>
         </div>
 
-        <!-- 5. طلبات الشراء الواردة -->
+        <!-- 6. طلبات الشراء الواردة -->
         <div class="section-box">
             <h3>🛒 طلبات الشراء الواردة والتحكم بها</h3>
             <div id="ordersAdminList">جاري تحميل الطلبات...</div>
@@ -123,7 +132,7 @@
         let globalProducts = [];
 
         async function loadAdminPanel() {
-            // تحميل المنتجات والتخفيضات
+            // تحميل المنتجات
             let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
             globalProducts = prods || [];
             let pBox = document.getElementById('productsAdminList');
@@ -154,13 +163,11 @@
                 });
             }
 
-            // تحميل المسوقين والعمولات
+            // تحميل المسوقين
             let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
             let aBox = document.getElementById('affiliatesAdminList');
             aBox.innerHTML = '';
-            if(!affs || affs.length === 0) {
-                aBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد مسوقين مسجلين.</p>';
-            } else {
+            if(affs) {
                 affs.forEach(a => {
                     aBox.innerHTML += `
                         <div class="data-row">
@@ -181,9 +188,7 @@
             let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
             let oBox = document.getElementById('ordersAdminList');
             oBox.innerHTML = '';
-            if(!orders || orders.length === 0) {
-                oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات شراء واردة.</p>';
-            } else {
+            if(orders) {
                 orders.forEach(o => {
                     let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn);">[عرض السند]</a>` : 'بدون سند';
                     oBox.innerHTML += `
@@ -197,6 +202,21 @@
                     `;
                 });
             }
+
+            loadPolicyContent();
+        }
+
+        async function loadPolicyContent() {
+            let key = document.getElementById('policyKey').value;
+            let { data } = await db.from('store_settings').select('value').eq('key', 'policy_' + key).single();
+            document.getElementById('policyText').value = data ? data.value : '';
+        }
+
+        async function savePolicy() {
+            let key = 'policy_' + document.getElementById('policyKey').value;
+            let value = document.getElementById('policyText').value.trim();
+            await db.from('store_settings').upsert({ key, value });
+            alert('تم حفظ وتحديث السياسة بنجاح! 📝');
         }
 
         async function uploadBanners() {
