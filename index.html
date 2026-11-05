@@ -60,7 +60,7 @@
         
         .discount-badge { position: absolute; top: 10px; left: 10px; background: var(--discount-red); color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; z-index: 5; }
         
-        .product-img-box { width: 100%; height: 150px; display: flex; justify-content: center; align-items: center; cursor: pointer; margin-bottom: 8px; }
+        .product-img-box { width: 100%; height: 150px; display: flex; justify-content: center; align-items: center; cursor: pointer; margin-bottom: 8px; position: relative; }
         .product-img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .product-title { font-size: 11px; font-weight: 800; color: var(--text-main); height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; cursor: pointer; line-height: 1.3; margin-bottom: 6px; }
 
@@ -108,12 +108,13 @@
         <input type="text" id="searchInput" class="search-input-box" placeholder="ابحث عن منتج أو خدمة..." oninput="filterStoreProducts()">
     </div>
 
+    <!-- خدمة العملاء مباشرة على رقمك 780568507 -->
     <a href="https://wa.me/967780568507" target="_blank" class="whatsapp-float" title="خدمة العملاء واتساب">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
     <div class="container">
-        <!-- البنر العلوي (قابل للتغيير من لوحة التحكم) -->
+        <!-- البنر العلوي -->
         <div class="promo-banner-card" id="topBannerBox">
             <img id="topBannerImg" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b7da?w=800&auto=format&fit=crop" alt="بنر العلوي">
         </div>
@@ -137,7 +138,7 @@
             <div class="cat-box" onclick="filterStore('ملابس', this)"><div class="cat-icon-circle"><i class="fa-solid fa-shirt"></i></div><div class="cat-txt">ملابس</div></div>
         </div>
 
-        <!-- أفضل العروض والتخفيضات (السلايدر المتحرك أفقياً) -->
+        <!-- أفضل العروض والتخفيضات المميزة (السلايدر المتحرك أفقياً) -->
         <div class="section-title-row">
             <h2>🔥 أفضل العروض والتخفيضات المميزة</h2>
         </div>
@@ -145,7 +146,7 @@
             جاري تحميل العروض...
         </div>
 
-        <!-- البنر الأوسط (قابل للتغيير من لوحة التحكم) -->
+        <!-- البنر الأوسط -->
         <div class="promo-banner-card" id="middleBannerBox" style="margin:20px 0;">
             <img id="middleBannerImg" src="https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=800&auto=format&fit=crop" alt="بنر الأوسط">
         </div>
@@ -157,7 +158,7 @@
             جاري تحميل المنتجات...
         </div>
 
-        <!-- البنر السفلي (قابل للتغيير من لوحة التحكم) -->
+        <!-- البنر السفلي -->
         <div class="promo-banner-card" id="bottomBannerBox" style="margin-top:20px;">
             <img id="bottomBannerImg" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop" alt="بنر السفلي">
         </div>
@@ -207,7 +208,7 @@
 
         async function loadStoreData() {
             try {
-                // جلب البنرات المحدثة سحابياً
+                // جلب البنرات المحدثة سحابياً من جدول store_settings
                 let { data: settings } = await db.from('store_settings').select('*');
                 if(settings && settings.length > 0) {
                     settings.forEach(s => {
