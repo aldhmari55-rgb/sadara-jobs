@@ -47,7 +47,7 @@
 
     <div class="container">
         <div class="top-nav">
-            <span style="font-weight:900; font-size:14px;">⚙️ لوحة التحكم والإدارة الشاملة (التحكم المطلق)</span>
+            <span style="font-weight:900; font-size:14px;">⚙️ لوحة التحكم والإدارة المطلقة</span>
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
@@ -105,9 +105,9 @@
             <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:#F3F4F6; color:var(--primary); border:none; padding:8px; border-radius:8px; margin-top:6px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
         </div>
 
-        <!-- 4. قائمة المنتجات والتخفيضات (تعديل وحذف) -->
+        <!-- 4. قائمة المنتجات والتخفيضات -->
         <div class="section-box">
-            <h3>📦 قائمة المنتجات والتخفيضات المعروضة (تعديل وحذف)</h3>
+            <h3>📦 قائمة المنتجات والتخفيضات المعروضة</h3>
             <div id="productsAdminList">جاري تحميل المنتجات...</div>
         </div>
 
@@ -132,91 +132,99 @@
         let globalProducts = [];
 
         async function loadAdminPanel() {
-            // تحميل المنتجات
-            let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
-            globalProducts = prods || [];
-            let pBox = document.getElementById('productsAdminList');
-            pBox.innerHTML = '';
+            try {
+                let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
+                globalProducts = prods || [];
+                let pBox = document.getElementById('productsAdminList');
+                pBox.innerHTML = '';
 
-            if(!globalProducts || globalProducts.length === 0) {
-                pBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد منتجات حالياً.</p>';
-            } else {
-                globalProducts.forEach(p => {
-                    let img = p.image || 'images/logo.jpg';
-                    let offerTag = (p.old_price || p.discount) ? '<span style="color:var(--red); font-weight:900;"> [عرض وتخفيض 🔥]</span>' : '';
-                    
-                    pBox.innerHTML += `
-                        <div class="data-row">
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <img src="${img}" class="product-thumb">
-                                <div style="font-size:11px;">
-                                    <b>${p.title}</b> ${offerTag}<br>
-                                    السعر: <span style="color:var(--red);">${p.price}</span> ${p.old_price ? `(السابق: <span style="text-decoration:line-through;">${p.old_price}</span>)` : ''}
+                if(!globalProducts || globalProducts.length === 0) {
+                    pBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد منتجات حالياً.</p>';
+                } else {
+                    globalProducts.forEach(p => {
+                        let img = p.image || 'images/logo.jpg';
+                        let offerTag = (p.old_price || p.discount) ? '<span style="color:var(--red); font-weight:900;"> [عرض وتخفيض 🔥]</span>' : '';
+                        
+                        pBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <img src="${img}" class="product-thumb">
+                                    <div style="font-size:11px;">
+                                        <b>${p.title}</b> ${offerTag}<br>
+                                        السعر: <span style="color:var(--red);">${p.price}</span> ${p.old_price ? `(السابق: <span style="text-decoration:line-through;">${p.old_price}</span>)` : ''}
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:6px;">
+                                    <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل ✏️</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
                                 </div>
                             </div>
-                            <div style="display:flex; gap:6px;">
-                                <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل ✏️</button>
-                                <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
+                        `;
+                    });
+                }
 
-            // تحميل المسوقين
-            let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
-            let aBox = document.getElementById('affiliatesAdminList');
-            aBox.innerHTML = '';
-            if(affs) {
-                affs.forEach(a => {
-                    aBox.innerHTML += `
-                        <div class="data-row">
-                            <div style="font-size:11px;">
-                                👤 <b>${a.full_name || a.name || 'بدون اسم'}</b> (${a.phone})<br>
-                                🔗 كود الإحالة: <code>${a.ref_code}</code> | العمولات المستحقة: <b style="color:var(--green);">${a.total_earnings || 0} YER</b>
+                let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
+                let aBox = document.getElementById('affiliatesAdminList');
+                aBox.innerHTML = '';
+                if(affs && affs.length > 0) {
+                    affs.forEach(a => {
+                        aBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="font-size:11px;">
+                                    👤 <b>${a.full_name || a.name || 'بدون اسم'}</b> (${a.phone})<br>
+                                    🔗 كود الإحالة: <code>${a.ref_code}</code> | العمولات المستحقة: <b style="color:var(--green);">${a.total_earnings || 0} YER</b>
+                                </div>
+                                <div style="display:flex; gap:6px;">
+                                    <button class="action-btn btn-pay" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية العمولة 💰</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
+                                </div>
                             </div>
-                            <div style="display:flex; gap:6px;">
-                                <button class="action-btn btn-pay" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية العمولة 💰</button>
-                                <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
+                        `;
+                    });
+                } else {
+                    aBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد مسوقين مسجلين.</p>';
+                }
 
-            // تحميل الطلبات
-            let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
-            let oBox = document.getElementById('ordersAdminList');
-            oBox.innerHTML = '';
-            if(orders) {
-                orders.forEach(o => {
-                    let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn);">[عرض السند]</a>` : 'بدون سند';
-                    oBox.innerHTML += `
-                        <div class="data-row">
-                            <div style="font-size:11px;">
-                                📦 <b>${o.product_title}</b><br>
-                                👤 العميل: ${o.customer_name} (${o.customer_phone}) | السند: ${receiptLink} | الإحالة: ${o.ref_code}
+                let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
+                let oBox = document.getElementById('ordersAdminList');
+                oBox.innerHTML = '';
+                if(orders && orders.length > 0) {
+                    orders.forEach(o => {
+                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn);">[عرض السند]</a>` : 'بدون سند';
+                        oBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="font-size:11px;">
+                                    📦 <b>${o.product_title}</b><br>
+                                    👤 العميل: ${o.customer_name} (${o.customer_phone}) | السند: ${receiptLink} | الإحالة: ${o.ref_code || 'بدون'}
+                                </div>
+                                <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
                             </div>
-                            <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
-                        </div>
-                    `;
-                });
-            }
+                        `;
+                    });
+                } else {
+                    oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات شراء واردة.</p>';
+                }
 
-            loadPolicyContent();
+                loadPolicyContent();
+            } catch(err) {
+                console.log('يرجى التأكد من تجهيز الجداول في سوبابيس:', err);
+            }
         }
 
         async function loadPolicyContent() {
-            let key = document.getElementById('policyKey').value;
-            let { data } = await db.from('store_settings').select('value').eq('key', 'policy_' + key).single();
-            document.getElementById('policyText').value = data ? data.value : '';
+            try {
+                let key = document.getElementById('policyKey').value;
+                let { data } = await db.from('store_settings').select('value').eq('key', 'policy_' + key).maybeSingle();
+                document.getElementById('policyText').value = data ? data.value : '';
+            } catch(e) {}
         }
 
         async function savePolicy() {
             let key = 'policy_' + document.getElementById('policyKey').value;
             let value = document.getElementById('policyText').value.trim();
-            await db.from('store_settings').upsert({ key, value });
-            alert('تم حفظ وتحديث السياسة بنجاح! 📝');
+            let { error } = await db.from('store_settings').upsert({ key, value });
+            if(!error) alert('تم حفظ وتحديث السياسة بنجاح! 📝');
+            else alert('حدث خطأ أثناء الحفظ، تأكد من جدول store_settings في سوبابيس.');
         }
 
         async function uploadBanners() {
@@ -224,34 +232,38 @@
             let midFile = document.getElementById('midBannerFile').files[0];
             let botFile = document.getElementById('botBannerFile').files[0];
 
-            if(topFile) {
-                let fileName = 'banners/top_' + Date.now() + '_' + topFile.name;
-                let { data } = await db.storage.from('products_images').upload(fileName, topFile);
-                if(data) {
-                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
-                    await db.from('store_settings').upsert({ key: 'top_banner', value: pub.publicUrl });
+            try {
+                if(topFile) {
+                    let fileName = 'banners/top_' + Date.now() + '_' + topFile.name;
+                    let { data } = await db.storage.from('products_images').upload(fileName, topFile);
+                    if(data) {
+                        let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                        await db.from('store_settings').upsert({ key: 'top_banner', value: pub.publicUrl });
+                    }
                 }
-            }
 
-            if(midFile) {
-                let fileName = 'banners/mid_' + Date.now() + '_' + midFile.name;
-                let { data } = await db.storage.from('products_images').upload(fileName, midFile);
-                if(data) {
-                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
-                    await db.from('store_settings').upsert({ key: 'middle_banner', value: pub.publicUrl });
+                if(midFile) {
+                    let fileName = 'banners/mid_' + Date.now() + '_' + midFile.name;
+                    let { data } = await db.storage.from('products_images').upload(fileName, midFile);
+                    if(data) {
+                        let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                        await db.from('store_settings').upsert({ key: 'middle_banner', value: pub.publicUrl });
+                    }
                 }
-            }
 
-            if(botFile) {
-                let fileName = 'banners/bot_' + Date.now() + '_' + botFile.name;
-                let { data } = await db.storage.from('products_images').upload(fileName, botFile);
-                if(data) {
-                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
-                    await db.from('store_settings').upsert({ key: 'bottom_banner', value: pub.publicUrl });
+                if(botFile) {
+                    let fileName = 'banners/bot_' + Date.now() + '_' + botFile.name;
+                    let { data } = await db.storage.from('products_images').upload(fileName, botFile);
+                    if(data) {
+                        let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                        await db.from('store_settings').upsert({ key: 'bottom_banner', value: pub.publicUrl });
+                    }
                 }
-            }
 
-            alert('تم رفع وتحديث البنرات بنجاح وعرضها في الواجهة! 🌟');
+                alert('تم رفع وتحديث البنرات بنجاح وعرضها في الواجهة! 🌟');
+            } catch(e) {
+                alert('تأكد من إنشاء Storage Bucket باسم products_images في سوبابيس.');
+            }
         }
 
         async function saveProductData() {
