@@ -37,11 +37,11 @@
         .stat-item h3 { font-size: 15px; font-weight: 900; color: var(--aj-primary); }
         .stat-item p { font-size: 10px; color: #6B7280; font-weight: 700; margin-top: 2px; }
 
-        /* السلايدر المتحرك الديناميكي الجديد */
+        /* السلايدر المتحرك الديناميكي الخالص لما يضاف من لوحة التحكم */
         .hero-slider-container { width: 100%; border-radius: 12px; overflow: hidden; margin: 15px 0; background: #ffffff; border: 1px solid var(--aj-border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; }
         .hero-slides-track { display: flex; transition: transform 0.5s ease-in-out; width: 100%; }
-        .hero-slide-item { min-width: 100%; box-sizing: border-box; display: flex; justify-content: center; align-items: center; background: #f3f4f6; }
-        .hero-slide-item img { width: 100%; height: auto; max-height: 220px; object-fit: contain; display: block; }
+        .hero-slide-item { min-width: 100%; box-sizing: border-box; display: flex; justify-content: center; align-items: center; background: #111827; }
+        .hero-slide-item img { width: 100%; height: 180px; object-fit: cover; display: block; }
         .slider-dots { position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; z-index: 10; }
         .slider-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.6); cursor: pointer; transition: 0.3s; }
         .slider-dot.active { background: var(--aj-gold); width: 20px; border-radius: 4px; }
@@ -123,15 +123,13 @@
             <div class="stat-item"><h3 id="statAffiliates">0</h3><p>🤝 المسوقين</p></div>
         </div>
 
-        <!-- السلايدر المتحرك الديناميكي (بديل البنرات الثلاثة) -->
-        <div class="hero-slider-container">
-            <div class="hero-slides-track" id="heroSlidesTrack">
-                <!-- يتم تحميل الصور ديناميكياً من قاعدة البيانات -->
-            </div>
+        <!-- السلايدر المتحرك (يسحب حصرياً ما يتم إضافته من لوحة التحكم) -->
+        <div class="hero-slider-container" id="heroSliderWrapper" style="display: none;">
+            <div class="hero-slides-track" id="heroSlidesTrack"></div>
             <div class="slider-dots" id="sliderDots"></div>
         </div>
 
-        <!-- التصنيفات المعتمدة بدقة -->
+        <!-- التصنيفات -->
         <div class="categories-slider">
             <div class="cat-box active" onclick="filterStore('الكل', this)"><div class="cat-icon-circle"><i class="fa-solid fa-globe"></i></div><div class="cat-txt">الكل</div></div>
             <div class="cat-box" onclick="filterStore('جوالات', this)"><div class="cat-icon-circle"><i class="fa-solid fa-mobile-screen"></i></div><div class="cat-txt">جوالات</div></div>
@@ -142,7 +140,7 @@
             <div class="cat-box" onclick="filterStore('ملابس', this)"><div class="cat-icon-circle"><i class="fa-solid fa-shirt"></i></div><div class="cat-txt">ملابس</div></div>
         </div>
 
-        <!-- مربع العروض الخاصة -->
+        <!-- العروض الخاصة -->
         <div class="section-title-row">
             <h2>🔥 عروض خاصة والتخفيضات الكبرى</h2>
         </div>
@@ -204,28 +202,26 @@
 
         async function loadStoreData() {
             try {
-                // جلب البنرات الثلاثة القديمة لتشكيل السلايدر المتحرك الديناميكي منها
+                // جلب صور السلايدر حصرياً من لوحة التحكم (hero_slider_images)
                 let { data: settings } = await db.from('store_settings').select('*');
+                let sliderSetting = settings ? settings.find(s => s.key === 'hero_slider_images') : null;
                 let bannerImages = [];
-                if(settings && settings.length > 0) {
-                    settings.forEach(s => {
-                        if((s.key === 'top_banner' || s.key === 'middle_banner' || s.key === 'bottom_banner') && s.value && s.value.trim() !== '') {
-                            bannerImages.push(s.value);
-                        }
-                    });
-                }
                 
-                // إذا لم تتوفر بنرات، نضع صور افتراضية متحركة رائعة
-                if(bannerImages.length === 0) {
-                    bannerImages = [
-                        'https://images.unsplash.com/photo-1607082348824-0a96f2a4b7da?w=800&auto=format&fit=crop',
-                        'https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=800&auto=format&fit=crop',
-                        'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop'
-                    ];
-                }
-                renderHeroSlider(bannerImages);
+                try {
+                    if(sliderSetting && sliderSetting.value) {
+                        bannerImages = JSON.parse(sliderSetting.value);
+                    }
+                } catch(e) { bannerImages = []; }
 
-                // جلب المنتجات والخدمات
+                // إذا لم يتم إضافة صور من لوحة التحكم، يبقى السلايدر مخفياً تماماً
+                if(bannerImages && bannerImages.length > 0) {
+                    document.getElementById('heroSliderWrapper').style.display = 'block';
+                    renderHeroSlider(bannerImages);
+                } else {
+                    document.getElementById('heroSliderWrapper').style.display = 'none';
+                }
+
+                // جلب المنتجات
                 let { data, error } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 if(error) throw error;
                 allProducts = data || [];
@@ -256,7 +252,6 @@
             }
         }
 
-        // دالة عرض السلايدر المتحرك الديناميكي
         function renderHeroSlider(images) {
             let track = document.getElementById('heroSlidesTrack');
             let dots = document.getElementById('sliderDots');
@@ -286,7 +281,7 @@
             if(currentSlide >= slides.length) currentSlide = 0;
             if(currentSlide < 0) currentSlide = slides.length - 1;
 
-            track.style.transform = `translateX(${currentSlide * 100}%)`; // بالاتجاه العربي RTL
+            track.style.transform = `translateX(${currentSlide * 100}%)`;
 
             for(let i=0; i<dots.length; i++) {
                 dots[i].classList.remove('active');
@@ -301,7 +296,7 @@
                 let slides = document.getElementById('heroSlidesTrack').getElementsByClassName('hero-slide-item');
                 if(currentSlide >= slides.length) currentSlide = 0;
                 updateSlider();
-            }, 3500); // الانتقال تلقائياً كل 3.5 ثانية
+            }, 3500);
         }
 
         function resetTimer() {
