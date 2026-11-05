@@ -3,104 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الشاملة والأدمن | منصة صدارة</title>
+    <title>لوحة الإدارة الشاملة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
-            --sadarah-primary: #0F2A4A;
-            --sadarah-light: #F4F7FB;
-            --sadarah-gold: #D4AF37;
-            --sadarah-btn: #0284C7;
-            --sadarah-btn-hover: #0369A1;
-            --red: #ef4444; 
-            --green: #10b981;
-            --spec-bg: #F0F7FF;
-            --spec-border: #0284C7;
-            --spec-text: #1E3A8A;
-            --neu-shadow: 6px 6px 14px #cbced1, -6px -6px 14px #ffffff;
-            --neu-shadow-inset: inset 3px 3px 6px #cbced1, inset -3px -3px 6px #ffffff;
+            --primary: #111827;
+            --light: #F9FAFB;
+            --gold: #D4AF37;
+            --btn: #0284C7;
+            --red: #EF4444; 
+            --green: #10B981;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--sadarah-light); padding: 15px; color: #0f172a; padding-bottom: 60px; }
+        body { background: var(--light); padding: 15px; color: var(--primary); padding-bottom: 60px; }
 
-        .container { max-width: 950px; margin: 0 auto; }
-        .top-navbar { background: var(--sadarah-primary); padding: 14px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 20px; box-shadow: var(--neu-shadow); }
-        .mini-btn { background: rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: bold; border: 1px solid rgba(212,175,55,0.4); }
+        .container { max-width: 900px; margin: 0 auto; }
+        .top-nav { background: var(--primary); padding: 12px 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 20px; }
+        .mini-btn { background: rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; }
 
-        .section-box { background: var(--sadarah-light); padding: 18px; border-radius: 16px; margin-bottom: 20px; box-shadow: var(--neu-shadow-inset); }
-        .section-box h3 { color: var(--sadarah-primary); font-size: 14px; margin-bottom: 12px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .section-box { background: #ffffff; padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #E5E7EB; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .section-box h3 { font-size: 14px; margin-bottom: 12px; font-weight: 900; color: var(--primary); }
 
         .form-group { margin-bottom: 10px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 900; color: var(--sadarah-primary); margin-bottom: 4px; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: none; border-radius: 8px; font-size: 11px; font-weight: 700; outline: none; background: #ffffff; box-shadow: var(--neu-shadow-inset); color: #0f172a; }
+        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 4px; color: #374151; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 9px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 11px; outline: none; background: #F9FAFB; }
 
-        .submit-btn { background: var(--sadarah-btn); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 900; width: 100%; cursor: pointer; font-size: 12px; box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3); transition: 0.3s; }
-        .submit-btn:hover { background: var(--sadarah-btn-hover); }
+        .submit-btn { background: var(--btn); color: white; border: none; padding: 11px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; font-size: 12px; }
         
-        .data-row { background: #ffffff; padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--neu-shadow); flex-wrap: wrap; gap: 10px; }
-        .data-info { font-size: 11px; color: var(--spec-text); line-height: 1.6; font-weight: 700; flex-grow: 1; }
-        .action-btns { display: flex; gap: 6px; align-items: center; }
-        .action-btn { border: none; padding: 7px 12px; border-radius: 8px; font-weight: 900; font-size: 10px; cursor: pointer; color: white; transition: 0.3s; }
-        .btn-edit { background: var(--sadarah-btn); }
-        .btn-delete { background: var(--red); }
-        .btn-pay { background: var(--green); }
-        
-        .product-thumb-small { width: 45px; height: 45px; border-radius: 8px; object-fit: contain; background: var(--sadarah-light); box-shadow: var(--neu-shadow-inset); padding: 2px; }
+        .data-row { background: #F9FAFB; border: 1px solid #E5E7EB; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .action-btn { border: none; padding: 6px 10px; border-radius: 6px; font-weight: 900; font-size: 10px; cursor: pointer; color: white; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="top-navbar">
-            <span style="font-weight: 900; font-size: 14px;">⚙️ لوحة الإدارة الشاملة والتحكم المطلق</span>
-            <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
+        <div class="top-nav">
+            <span>⚙️ لوحة التحكم والإدارة</span>
+            <a href="index.html" class="mini-btn">المتجر الرئيسي 🏪</a>
         </div>
 
-        <!-- نموذج إضافة أو تعديل المنتجات والتخفيضات (نفس النموذج الموحد) -->
+        <!-- مربع إدارة وتغيير البنرات الإعلانية -->
+        <div class="section-box">
+            <h3>🖼️ إدارة وتغيير البنرات الإعلانية في المتجر</h3>
+            <div class="form-group"><label>رابط أو مسار صورة البنر العلوي (Top Banner)</label><input type="text" id="topBannerUrl" placeholder="أدخل رابط الصورة"></div>
+            <div class="form-group"><label>رابط أو مسار صورة البنر الأوسط (Middle Banner)</label><input type="text" id="midBannerUrl" placeholder="أدخل رابط الصورة"></div>
+            <div class="form-group"><label>رابط أو مسار صورة البنر السفلي (Bottom Banner)</label><input type="text" id="botBannerUrl" placeholder="أدخل رابط الصورة"></div>
+            <button onclick="saveBanners()" class="submit-btn" style="background:var(--primary); color:var(--gold);">حفظ وتحديث البنرات فوراً 🌟</button>
+        </div>
+
+        <!-- إضافة / تعديل منتج وتخفيض -->
         <div class="section-box">
             <h3 id="formTitle">➕ إضافة / تعديل منتج أو عرض تخفيض</h3>
             <input type="hidden" id="editProductId">
-            <div class="form-group"><label>عنوان المنتج/الخدمة</label><input type="text" id="pTitle" placeholder="مثال: تاب لينوفو M8"></div>
+            <div class="form-group"><label>عنوان المنتج</label><input type="text" id="pTitle"></div>
             <div class="form-group">
-                <label>القسم / التصنيف</label>
+                <label>القسم</label>
                 <select id="pCategory">
                     <option value="إلكترونيات">إلكترونيات</option>
                     <option value="جوالات">جوالات</option>
                     <option value="اكسسوارات">اكسسوارات</option>
+                    <option value="ساعات واساور">ساعات وأساور</option>
+                    <option value="بطاريات متنقلة">باوربانك</option>
                     <option value="عطور">عطور</option>
                     <option value="ملابس">ملابس</option>
-                    <option value="ادوات تجميل">أدوات تجميل</option>
-                    <option value="اشتراكات رقمية">اشتراكات رقمية</option>
-                    <option value="خدمات">خدمات</option>
                 </select>
             </div>
-            <div class="form-group"><label>السعر الحالي (اللاحق)</label><input type="text" id="pPrice" placeholder="15000 YER"></div>
-            <div class="form-group"><label>السعر السابق (المشطوب - اختياري لتفعيل العرض في الشريط المتحرك)</label><input type="text" id="pOldPrice" placeholder="18000 YER"></div>
-            <div class="form-group"><label>نسبة أو شارة الخصم (اختياري)</label><input type="text" id="pDiscount" placeholder="خصم 15%"></div>
-            <div class="form-group"><label>صورة المنتج (اختر من المعرض)</label><input type="file" id="pImage" accept="image/*"></div>
-            <div class="form-group"><label>الوصف والمميزات</label><textarea id="pDesc" rows="2" placeholder="تفاصيل المنتج..."></textarea></div>
-            <button onclick="saveProductData()" id="saveBtn" class="submit-btn">حفظ ونشر المنتج 🚀</button>
-            <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:var(--sadarah-light); color:var(--sadarah-primary); border:none; padding:8px; border-radius:8px; margin-top:6px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
+            <div class="form-group"><label>السعر الحالي</label><input type="text" id="pPrice" placeholder="1500 ريال"></div>
+            <div class="form-group"><label>السعر السابق المشطوب (اختياري لتفعيل التخفيض والعرض)</label><input type="text" id="pOldPrice" placeholder="2000 ريال"></div>
+            <div class="form-group"><label>نسبة الخصم (مثل: 25%)</label><input type="text" id="pDiscount" placeholder="25%"></div>
+            <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage" accept="image/*"></div>
+            <div class="form-group"><label>الوصف</label><textarea id="pDesc" rows="2"></textarea></div>
+            <button onclick="saveProductData()" id="saveBtn" class="submit-btn">نشر المنتج في المتجر 🚀</button>
         </div>
 
-        <!-- قائمة المنتجات والتحكم بها (تعديل وحذف) -->
+        <!-- قائمة المنتجات -->
         <div class="section-box">
-            <h3>📦 قائمة المنتجات والتخفيضات المعروضة (تعديل وحذف)</h3>
-            <div id="productsAdminList">جاري تحميل المنتجات...</div>
+            <h3>📦 قائمة المنتجات والتخفيضات (تعديل وحذف)</h3>
+            <div id="productsAdminList">جاري التحميل...</div>
         </div>
 
-        <!-- مربع المسوقين وتصفية العمولات -->
+        <!-- إدارة المسوقين والعمولات -->
         <div class="section-box">
-            <h3>🤝 مربع المسوقين (الأفلييت) والتفاصيل الشاملة</h3>
-            <div id="affiliatesAdminList">جاري تحميل المسوقين...</div>
-        </div>
-
-        <!-- مربع الطلبات الواردة المباشرة -->
-        <div class="section-box">
-            <h3>🛒 طلبات الشراء الواردة والتحكم بها</h3>
-            <div id="ordersAdminList">جاري تحميل الطلبات...</div>
+            <h3>🤝 مسوقي المتجر (الأفلييت) والعمولات</h3>
+            <div id="affiliatesAdminList">جاري التحميل...</div>
         </div>
     </div>
 
@@ -117,102 +104,43 @@
             let pBox = document.getElementById('productsAdminList');
             pBox.innerHTML = '';
 
-            if(!globalProducts || globalProducts.length === 0) {
-                pBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد منتجات حالياً.</p>';
-            } else {
-                globalProducts.forEach(p => {
-                    let img = p.image || 'images/logo.jpg';
-                    let isOffer = p.old_price || p.discount ? '<span style="color:var(--red); font-weight:950;"> [يظهر في شريط العروض 🔥]</span>' : '';
-                    
-                    pBox.innerHTML += `
-                        <div class="data-row">
-                            <img src="${img}" class="product-thumb-small">
-                            <div class="data-info">
-                                <b>${p.title}</b> [${p.category}] ${isOffer}<br>
-                                السعر: <span style="color:var(--red);">${p.price}</span> ${p.old_price ? `|<span style="text-decoration:line-through; color:#64748b;"> ${p.old_price}</span>` : ''}
-                            </div>
-                            <div class="action-btns">
-                                <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل ✏️</button>
-                                <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
-                            </div>
+            globalProducts.forEach(p => {
+                pBox.innerHTML += `
+                    <div class="data-row">
+                        <div style="font-size:11px;"><b>${p.title}</b> - السعر: <span style="color:var(--red);">${p.price}</span> ${p.old_price ? `(السابق: ${p.old_price})` : ''}</div>
+                        <div>
+                            <button class="action-btn" style="background:var(--btn);" onclick="editProduct(${p.id})">تعديل ✏️</button>
+                            <button class="action-btn" style="background:var(--red);" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
                         </div>
-                    `;
-                });
-            }
+                    </div>
+                `;
+            });
 
-            let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
-            let affBox = document.getElementById('affiliatesAdminList');
-            affBox.innerHTML = '';
+            let { data: affs } = await db.from('affiliates').select('*');
+            let aBox = document.getElementById('affiliatesAdminList');
+            aBox.innerHTML = '';
             if(affs) {
                 affs.forEach(a => {
-                    affBox.innerHTML += `
+                    aBox.innerHTML += `
                         <div class="data-row">
-                            <div class="data-info">
-                                👤 المسوق: <b>${a.full_name || a.name || 'بدون اسم'}</b> (${a.phone})<br>
-                                🔗 كود الإحالة: <code>${a.ref_code}</code> | الدفع: ${a.payout_method || 'غير محدد'} (${a.payout_number || 'بدون رقم'})<br>
-                                👁️ الزيارات: ${a.clicks || 0} | 🛒 المبيعات: ${a.total_sales || 0} | 💰 العمولات المستحقة: <b style="color:var(--green);">${a.total_earnings || 0} YER</b>
-                            </div>
-                            <div class="action-btns">
-                                <button class="action-btn btn-pay" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية العمولة 💰</button>
-                                <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
-            let ordBox = document.getElementById('ordersAdminList');
-            ordBox.innerHTML = '';
-            if(orders) {
-                orders.forEach(o => {
-                    let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--sadarah-btn);">[عرض السند]</a>` : 'بدون سند';
-                    ordBox.innerHTML += `
-                        <div class="data-row">
-                            <div class="data-info">
-                                📦 <b>${o.product_title}</b><br>
-                                👤 العميل: ${o.customer_name} (${o.customer_phone})<br>
-                                💳 الدفع: ${o.payment_method} | السند: ${receiptLink} | 🔗 المسوق: ${o.ref_code}<br>
-                                📝 ملاحظات: ${o.notes || 'لا توجد'}
-                            </div>
-                            <div class="action-btns">
-                                <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
-                            </div>
+                            <div style="font-size:11px;">👤 ${a.full_name || a.name} (${a.phone}) | كود: <code>${a.ref_code}</code> | العمولات: <b style="color:var(--green);">${a.total_earnings || 0} YER</b></div>
+                            <button class="action-btn" style="background:var(--red);" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
                         </div>
                     `;
                 });
             }
         }
 
-        function editProduct(id) {
-            let p = globalProducts.find(item => item.id === id);
-            if(p) {
-                document.getElementById('editProductId').value = p.id;
-                document.getElementById('pTitle').value = p.title || '';
-                document.getElementById('pCategory').value = p.category || 'إلكترونيات';
-                document.getElementById('pPrice').value = p.price || '';
-                document.getElementById('pOldPrice').value = p.old_price || '';
-                document.getElementById('pDiscount').value = p.discount || '';
-                document.getElementById('pDesc').value = p.description || '';
-                
-                document.getElementById('formTitle').textContent = '✏️ تعديل المنتج أو العرض: ' + p.title;
-                document.getElementById('saveBtn').textContent = 'تحديث المنتج الآن 🔄';
-                document.getElementById('cancelEditBtn').style.display = 'block';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
+        async function saveBanners() {
+            let topB = document.getElementById('topBannerUrl').value.trim();
+            let midB = document.getElementById('midBannerUrl').value.trim();
+            let botB = document.getElementById('botBannerUrl').value.trim();
 
-        function resetForm() {
-            document.getElementById('editProductId').value = '';
-            document.getElementById('pTitle').value = '';
-            document.getElementById('pPrice').value = '';
-            document.getElementById('pOldPrice').value = '';
-            document.getElementById('pDiscount').value = '';
-            document.getElementById('pImage').value = '';
-            document.getElementById('pDesc').value = '';
-            document.getElementById('formTitle').textContent = '➕ إضافة / تعديل منتج أو عرض تخفيض';
-            document.getElementById('saveBtn').textContent = 'حفظ ونشر المنتج 🚀';
-            document.getElementById('cancelEditBtn').style.display = 'none';
+            if(topB) await db.from('store_settings').upsert({ key: 'top_banner', value: topB });
+            if(midB) await db.from('store_settings').upsert({ key: 'middle_banner', value: midB });
+            if(botB) await db.from('store_settings').upsert({ key: 'bottom_banner', value: botB });
+
+            alert('تم تحديث البنرات بنجاح! 🌟');
         }
 
         async function saveProductData() {
@@ -225,7 +153,7 @@
             let fileInput = document.getElementById('pImage');
             let description = document.getElementById('pDesc').value.trim();
 
-            if(!title || !price) { alert('يرجى إدخال عنوان المنتج والسعر على الأقل.'); return; }
+            if(!title || !price) { alert('أدخل العنوان والسعر'); return; }
 
             let imageUrl = '';
             if(fileInput.files[0]) {
@@ -243,23 +171,25 @@
 
             if(editId) {
                 await db.from('platform_services').update(payload).eq('id', editId);
-                alert('تم تحديث البيانات بنجاح! ✅');
+                alert('تم التعديل بنجاح!');
             } else {
                 await db.from('platform_services').insert([payload]);
-                alert('تم النشر بنجاح! 🎉');
+                alert('تمت الإضافة بنجاح!');
             }
-
-            resetForm();
-            loadAdminPanel();
+            location.reload();
         }
 
-        async function settleCommission(affId, current) {
-            let paid = prompt('أدخل المبلغ المراد تسويته مع المسوق:', current);
-            if(paid !== null) {
-                let remaining = Math.max(0, current - Number(paid));
-                await db.from('affiliates').update({ total_earnings: remaining }).eq('id', affId);
-                alert('تمت التسوية بنجاح! 💵');
-                loadAdminPanel();
+        function editProduct(id) {
+            let p = globalProducts.find(x => x.id === id);
+            if(p) {
+                document.getElementById('editProductId').value = p.id;
+                document.getElementById('pTitle').value = p.title;
+                document.getElementById('pCategory').value = p.category;
+                document.getElementById('pPrice').value = p.price;
+                document.getElementById('pOldPrice').value = p.old_price || '';
+                document.getElementById('pDiscount').value = p.discount || '';
+                document.getElementById('pDesc').value = p.description || '';
+                window.scrollTo({top:0, behavior:'smooth'});
             }
         }
 
