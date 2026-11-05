@@ -50,11 +50,19 @@
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. إدارة ورفع البنرات مباشرة من معرض الجوال -->
+        <!-- 1. إدارة ورفع بانرات السلايدر المتحرك (أكثر من صورة) -->
         <div class="section-box">
-            <h3>🖼️ إدارة ورفع البنرات الإعلانية من معرض الجوال</h3>
-            <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">اختر الصورة من معرض جوالك وسيتم رفعها وحفظها للمنصة فوراً:</p>
-            <div id="bannersAdminList">جاري التحميل...</div>
+            <h3>🎞️ إدارة بانرات السلايدر المتحرك (صور متعددة للمتجر)</h3>
+            <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">قم برفع صور جديدة لتظهر تباعاً في السلايدر المتحرك بالمتجر:</p>
+            
+            <div class="form-group">
+                <label>اختر صورة جديدة من معرض الجوال لإضافتها للسلايدر</label>
+                <input type="file" id="sliderFileInput" accept="image/*">
+            </div>
+            <button onclick="uploadSliderImage()" class="submit-btn" style="background:var(--primary); color:var(--gold); margin-bottom: 15px;">إضافة الصورة للسلايدر المتحرك 🌟</button>
+
+            <div style="font-weight: 900; font-size: 12px; margin-bottom: 8px; color: var(--primary);">البنرات الحالية في السلايدر:</div>
+            <div id="sliderAdminList">جاري التحميل...</div>
         </div>
 
         <!-- 2. إدارة سياسات المتجر والضمان -->
@@ -129,37 +137,39 @@
 
         async function loadAdminPanel() {
             try {
+                // جلب وعرض صور السلايدر المتحرك من جدول store_settings
                 let { data: settings } = await db.from('store_settings').select('*');
-                let bBox = document.getElementById('bannersAdminList');
-                bBox.innerHTML = '';
+                let sBox = document.getElementById('sliderAdminList');
+                sBox.innerHTML = '';
                 
-                const bannerInfo = [
-                    { key: 'top_banner', name: 'البنر العلوي (Top Banner)' },
-                    { key: 'middle_banner', name: 'البنر الأوسط (Middle Banner)' },
-                    { key: 'bottom_banner', name: 'البنر السفلي (Bottom Banner)' }
-                ];
+                let sliderSetting = settings ? settings.find(s => s.key === 'hero_slider_images') : null;
+                let sliderImages = [];
+                try {
+                    if(sliderSetting && sliderSetting.value) {
+                        sliderImages = JSON.parse(sliderSetting.value);
+                    }
+                } catch(e) { sliderImages = []; }
 
-                bannerInfo.forEach(b => {
-                    let found = settings ? settings.find(s => s.key === b.key) : null;
-                    let imgUrl = (found && found.value) ? found.value : 'https://via.placeholder.com/150x50?text=No+Banner';
-                    
-                    bBox.innerHTML += `
-                        <div class="data-row">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <img src="${imgUrl}" class="product-thumb">
-                                <div style="font-size:11px;">
-                                    <b>${b.name}</b><br>
-                                    <span style="color:#10B981; font-weight:bold;">جاهز للتحديث</span>
+                if(!sliderImages || sliderImages.length === 0) {
+                    sBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد صور مضافة للسلايدر حالياً.</p>';
+                } else {
+                    sliderImages.forEach((imgUrl, idx) => {
+                        sBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <img src="${imgUrl}" class="product-thumb">
+                                    <div style="font-size:11px;">
+                                        <b>صورة سلايدر رقم (${idx + 1})</b><br>
+                                        <span style="color:#10B981; font-weight:bold;">تظهر في واجهة المتجر</span>
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:6px; align-items:center;">
+                                    <button class="action-btn btn-delete" onclick="removeSliderImage(${idx})">حذف 🗑️</button>
                                 </div>
                             </div>
-                            <div style="display:flex; gap:6px; align-items:center;">
-                                <input type="file" id="file_${b.key}" accept="image/*" style="display:none;" onchange="uploadBannerFromGallery('${b.key}')">
-                                <button class="action-btn btn-edit" onclick="document.getElementById('file_${b.key}').click()">من المعرض 📱</button>
-                                <button class="action-btn btn-delete" onclick="removeBanner('${b.key}')">حذف 🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                });
+                        `;
+                    });
+                }
 
                 let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 globalProducts = prods || [];
@@ -239,13 +249,13 @@
             }
         }
 
-        async function uploadBannerFromGallery(key) {
-            let fileInput = document.getElementById('file_' + key);
+        async function uploadSliderImage() {
+            let fileInput = document.getElementById('sliderFileInput');
             let file = fileInput.files[0];
-            if(!file) return;
+            if(!file) { alert('يرجى اختيار صورة من المعرض أولاً.'); return; }
 
             try {
-                let fileName = 'banners/' + key + '_' + Date.now() + '_' + file.name;
+                let fileName = 'slider/slide_' + Date.now() + '_' + file.name;
                 let { data, error } = await db.storage.from('products_images').upload(fileName, file);
                 if(error) throw error;
 
@@ -253,10 +263,20 @@
                     let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
                     let pubUrl = pub.publicUrl;
 
-                    let { error: upsertErr } = await db.from('store_settings').upsert({ key: key, value: pubUrl });
-                    if(upsertErr) throw upsertErr;
+                    // جلب الصور الحالية للسلايدر
+                    let { data: currentSet } = await db.from('store_settings').select('*').eq('key', 'hero_slider_images').maybeSingle();
+                    let currentImgs = [];
+                    try {
+                        if(currentSet && currentSet.value) currentImgs = JSON.parse(currentSet.value);
+                    } catch(e) { currentImgs = []; }
 
-                    alert('تم رفع وحفظ البنر للمنصة بنجاح تام! 🌟');
+                    currentImgs.push(pubUrl);
+
+                    // حفظ القائمة المحدثة
+                    await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(currentImgs) });
+
+                    fileInput.value = '';
+                    alert('تمت إضافة الصورة بنجاح إلى السلايدر المتحرك في المتجر! 🌟');
                     loadAdminPanel();
                 }
             } catch(err) {
@@ -264,10 +284,18 @@
             }
         }
 
-        async function removeBanner(key) {
-            if(confirm('هل أنت متأكد من رغبتك في حذف هذا البنر؟')) {
-                await db.from('store_settings').upsert({ key: key, value: '' });
-                alert('تم حذف البنر بنجاح!');
+        async function removeSliderImage(index) {
+            if(confirm('هل أنت متأكد من رغبتك في حذف هذه الصورة من السلايدر؟')) {
+                let { data: currentSet } = await db.from('store_settings').select('*').eq('key', 'hero_slider_images').maybeSingle();
+                let currentImgs = [];
+                try {
+                    if(currentSet && currentSet.value) currentImgs = JSON.parse(currentSet.value);
+                } catch(e) { currentImgs = []; }
+
+                currentImgs.splice(index, 1);
+                await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(currentImgs) });
+
+                alert('تم حذف الصورة بنجاح!');
                 loadAdminPanel();
             }
         }
