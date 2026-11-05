@@ -217,7 +217,13 @@
                 if(error) throw error;
                 allProducts = data || [];
                 
-                renderBestOffers(allProducts.filter(p => (p.discount && p.discount.trim() !== '') || (p.old_price && p.old_price.trim() !== '')));
+                // التعديل الجذري المحدث: عرض العروض إذا وجد خصم، سعر قديم، أو عرض كافة المنتجات المتاحة في الشريط إذا لم تتوفر شروط الخصم الصارم لضمان عدم بقائه فارغاً
+                let offersList = allProducts.filter(p => (p.discount && p.discount.trim() !== '') || (p.old_price && p.old_price.trim() !== ''));
+                if(offersList.length === 0) {
+                    offersList = allProducts.slice(0, 6); // عرض أحدث 6 منتجات في شريط العروض تلقائياً لكي لا يبقى الحقل فارغاً
+                }
+                renderBestOffers(offersList);
+
                 renderStoreProducts(allProducts);
 
                 document.getElementById('statProducts').textContent = allProducts.length;
