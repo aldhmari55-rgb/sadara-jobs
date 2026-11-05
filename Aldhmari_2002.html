@@ -35,13 +35,12 @@
         .submit-btn { background: var(--btn); color: white; border: none; padding: 12px; border-radius: 9px; font-weight: 900; width: 100%; cursor: pointer; font-size: 12px; transition: 0.2s; }
         .submit-btn:hover { opacity: 0.9; }
         
-        .data-row { background: #F9FAFB; border: 1px solid var(--border); padding: 12px; border-radius: 9px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .action-btn { border: none; padding: 7px 12px; border-radius: 6px; font-weight: 900; font-size: 10px; cursor: pointer; color: white; transition: 0.2s; }
-        .btn-edit { background: var(--btn); }
+        .data-row { background: #F9FAFB; border: 1px solid var(--border); padding: 12px; border-radius: 9px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .action-btn { border: none; padding: 8px 14px; border-radius: 6px; font-weight: 900; font-size: 11px; cursor: pointer; color: white; transition: 0.2s; }
+        .btn-edit { background: var(--green); }
         .btn-delete { background: var(--red); }
-        .btn-pay { background: var(--green); }
         
-        .product-thumb { width: 55px; height: 45px; border-radius: 6px; object-fit: contain; background: #ffffff; border: 1px solid var(--border); padding: 2px; }
+        .product-thumb { width: 70px; height: 45px; border-radius: 6px; object-fit: contain; background: #ffffff; border: 1px solid var(--border); padding: 2px; }
     </style>
 </head>
 <body>
@@ -52,10 +51,11 @@
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. إدارة وعرض وحذف البنرات الإعلانية الثلاثة مباشرة -->
+        <!-- 1. إدارة البنرات الإعلانية الثلاثة (زر رفع وحفظ واقعي لكل بنر) -->
         <div class="section-box">
-            <h3>🖼️ إدارة ومعاينة البنرات الإعلانية الثلاثة</h3>
-            <div id="bannersAdminList">جاري تحميل البنرات الحالية...</div>
+            <h3>🖼️ إدارة وحفظ البنرات الإعلانية الثلاثة بالمنصة</h3>
+            <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">اختر الصورة من معرض جوالك لكل بنر، ثم اضغط على زر "حفظ ورفع للمنصة" ليظهر فوراً:</p>
+            <div id="bannersAdminList">جاري التحميل...</div>
         </div>
 
         <!-- 2. إدارة سياسات المتجر والضمان -->
@@ -130,19 +130,18 @@
 
         async function loadAdminPanel() {
             try {
-                // جلب وعرض البنرات الثلاثة مع المعاينة وأزرار التغيير أو الحذف
                 let { data: settings } = await db.from('store_settings').select('*');
                 let bBox = document.getElementById('bannersAdminList');
                 bBox.innerHTML = '';
                 
-                const bannerLabels = {
-                    'top_banner': 'البنر العلوي (Top Banner)',
-                    'middle_banner': 'البنر الأوسط (Middle Banner)',
-                    'bottom_banner': 'البنر السفلي (Bottom Banner)'
-                };
+                const bannerInfo = [
+                    { key: 'top_banner', name: 'البنر العلوي (Top Banner)' },
+                    { key: 'middle_banner', name: 'البنر الأوسط (Middle Banner)' },
+                    { key: 'bottom_banner', name: 'البنر السفلي (Bottom Banner)' }
+                ];
 
-                ['top_banner', 'middle_banner', 'bottom_banner'].forEach(key => {
-                    let found = settings ? settings.find(s => s.key === key) : null;
+                bannerInfo.forEach(b => {
+                    let found = settings ? settings.find(s => s.key === b.key) : null;
                     let imgUrl = found ? found.value : 'https://via.placeholder.com/150x50?text=No+Banner';
                     
                     bBox.innerHTML += `
@@ -150,14 +149,14 @@
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <img src="${imgUrl}" class="product-thumb">
                                 <div style="font-size:11px;">
-                                    <b>${bannerLabels[key]}</b><br>
-                                    <span style="color:#6B7280; font-size:10px; word-break:break-all;">${imgUrl.substring(0, 40)}...</span>
+                                    <b>${b.name}</b><br>
+                                    <span style="color:#10B981; font-weight:bold;">الحالة: جاهز وحي</span>
                                 </div>
                             </div>
                             <div style="display:flex; gap:6px; align-items:center;">
-                                <input type="file" id="file_${key}" accept="image/*" style="display:none;" onchange="uploadSpecificBanner('${key}')">
-                                <button class="action-btn btn-edit" onclick="document.getElementById('file_${key}').click()">تعديل / رفع 🖼️</button>
-                                <button class="action-btn btn-delete" onclick="deleteBanner('${key}')">حذف 🗑️</button>
+                                <input type="file" id="input_${b.key}" accept="image/*" style="display:none;" onchange="uploadBanner('${b.key}')">
+                                <button class="action-btn btn-edit" onclick="document.getElementById('input_${b.key}').click()">اختيار من المعرض 📱</button>
+                                <button class="action-btn btn-delete" onclick="removeBanner('${b.key}')">حذف 🗑️</button>
                             </div>
                         </div>
                     `;
@@ -185,7 +184,7 @@
                                     </div>
                                 </div>
                                 <div style="display:flex; gap:6px;">
-                                    <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل ✏️</button>
+                                    <button class="action-btn" style="background:var(--btn);" onclick="editProduct(${p.id})">تعديل ✏️</button>
                                     <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
                                 </div>
                             </div>
@@ -241,10 +240,12 @@
             }
         }
 
-        async function uploadSpecificBanner(key) {
-            let fileInput = document.getElementById('file_' + key);
-            let file = fileInput.files[0];
+        async function uploadBanner(key) {
+            let input = document.getElementById('input_' + key);
+            let file = input.files[0];
             if(!file) return;
+
+            alert('جاري رفع البنر وحفظه للمنصة، يرجى الانتظار ثوانٍ...');
 
             try {
                 let fileName = 'banners/' + key + '_' + Date.now() + '_' + file.name;
@@ -253,17 +254,21 @@
 
                 if(data) {
                     let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
-                    await db.from('store_settings').upsert({ key: key, value: pub.publicUrl });
-                    alert('تم رفع وتحديث البنر بنجاح وعرضه في المتجر فوراً! 🌟');
+                    let pubUrl = pub.publicUrl;
+
+                    let { error: upsertErr } = await db.from('store_settings').upsert({ key: key, value: pubUrl });
+                    if(upsertErr) throw upsertErr;
+
+                    alert('تم حفظ ورفع البنر للمنصة بنجاح تام! 🌟 سيظهر في الواجهة الآن.');
                     loadAdminPanel();
                 }
             } catch(err) {
-                alert('خطأ في الرفع: ' + err.message);
+                alert('خطأ أثناء الرفع: المبين في السحاب -> ' + err.message);
             }
         }
 
-        async function deleteBanner(key) {
-            if(confirm('هل أنت متأكد من رغبتك في حذف هذا البنر؟')) {
+        async function removeBanner(key) {
+            if(confirm('هل أنت متأكد من رغبتك في حذف هذا البنر وإفراغه؟')) {
                 await db.from('store_settings').upsert({ key: key, value: '' });
                 alert('تم حذف البنر بنجاح!');
                 loadAdminPanel();
