@@ -44,8 +44,27 @@
         .cat-box:hover .cat-icon-circle, .cat-box.active .cat-icon-circle { border-color: var(--aj-primary); background: var(--aj-primary); color: #ffffff; }
         .cat-txt { font-size: 10.5px; font-weight: 800; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
-        .promo-banner-card { width: 100%; border-radius: 12px; overflow: hidden; margin: 15px 0; background: #ffffff; border: 1px solid var(--aj-border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .promo-banner-card img { width: 100%; height: auto; display: block; max-height: 180px; object-fit: cover; }
+        /* مرونة كاملة للبنرات لتظهر كاملة مهما كانت مقاساتها دون قص */
+        .promo-banner-card { 
+            width: 100%; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            margin: 15px 0; 
+            background: #ffffff; 
+            border: 1px solid var(--aj-border); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .promo-banner-card img { 
+            width: 100%; 
+            height: auto; 
+            max-height: 250px; 
+            display: block; 
+            object-fit: contain; 
+            background: #f3f4f6; 
+        }
 
         .section-title-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 5px 10px; }
         .section-title-row h2 { font-size: 15px; font-weight: 900; color: var(--aj-primary); display: flex; align-items: center; gap: 6px; }
@@ -202,7 +221,6 @@
 
         async function loadStoreData() {
             try {
-                // جلب الإعدادات والبنرات المحدثة مباشرة باستخدام المفتاح الصحيح
                 let { data: settings } = await db.from('store_settings').select('*');
                 if(settings && settings.length > 0) {
                     settings.forEach(s => {
@@ -212,18 +230,15 @@
                     });
                 }
 
-                // جلب المنتجات والخدمات
                 let { data, error } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 if(error) throw error;
                 allProducts = data || [];
                 
-                // التعديل الجذري المحدث: عرض العروض إذا وجد خصم، سعر قديم، أو عرض كافة المنتجات المتاحة في الشريط إذا لم تتوفر شروط الخصم الصارم لضمان عدم بقائه فارغاً
                 let offersList = allProducts.filter(p => (p.discount && p.discount.trim() !== '') || (p.old_price && p.old_price.trim() !== ''));
                 if(offersList.length === 0) {
-                    offersList = allProducts.slice(0, 6); // عرض أحدث 6 منتجات في شريط العروض تلقائياً لكي لا يبقى الحقل فارغاً
+                    offersList = allProducts.slice(0, 6);
                 }
                 renderBestOffers(offersList);
-
                 renderStoreProducts(allProducts);
 
                 document.getElementById('statProducts').textContent = allProducts.length;
@@ -231,7 +246,6 @@
                 let { count: affCount } = await db.from('affiliates').select('*', { count: 'exact', head: true });
                 document.getElementById('statAffiliates').textContent = affCount || 0;
 
-                // نظام الزيارات المفتوح بلا حدود (تزايدي تصاعدي دائم لا ينقص أبداً)
                 let visitsKey = 'sadara_unlimited_total_visits';
                 let currentVisits = parseInt(localStorage.getItem(visitsKey) || '1550');
                 currentVisits += 1;
