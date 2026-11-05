@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج والطلب | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400,700,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: #F9FAFB; padding: 15px; color: #1F2937; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #E5E7EB; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .prod-img { width: 100%; height: 250px; object-fit: contain; background: #F3F4F6; border-radius: 8px; margin-bottom: 15px; padding: 5px; }
+        h1 { font-size: 16px; font-weight: 900; color: #111827; margin-bottom: 10px; }
+        .price-box { font-size: 16px; font-weight: 900; color: #EF4444; margin-bottom: 12px; }
+        .desc { font-size: 11.5px; color: #4B5563; line-height: 1.6; margin-bottom: 20px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 5px; color: #374151; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 11px; outline: none; background: #F9FAFB; }
+        .submit-btn { background: #111827; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; font-size: 12px; margin-top: 10px; }
+        .back-btn { display: block; text-align: center; margin-top: 15px; color: #6B7280; text-decoration: none; font-size: 11px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container" id="productContainer">
+        جاري تحميل تفاصيل المنتج...
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function loadProduct() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const prodId = urlParams.get('id');
+            const container = document.getElementById('productContainer');
+
+            if(!prodId) {
+                container.innerHTML = '<p>المنتج غير موجود.</p><a href="index.html" class="back-btn">العودة للرئيسية</a>';
+                return;
+            }
+
+            try {
+                let { data: p, error } = await db.from('platform_services').select('*').eq('id', prodId).single();
+                if(error || !p) throw error;
+
+                container.innerHTML = `
+                    <img src="${p.image || 'images/logo.jpg'}" class="prod-img">
+                    <h1>${p.title}</h1>
+                    <div class="price-box">${p.price} ${p.old_price ? `<span style="text-decoration:line-through; color:#9CA3AF; font-size:12px; margin-right:8px;">${p.old_price}</span>` : ''}</div>
+                    <div class="desc">${p.description || 'لا توجد تفاصيل إضافية لهذا المنتج.'}</div>
+                    
+                    <hr style="border:0; border-top:1px solid #E5E7EB; margin:15px 0;">
+                    
+                    <h3 style="font-size:13px; font-weight:900; margin-bottom:10px;">🛒 إتمام طلب الشراء</h3>
+                    <div class="form-group">
+                        <label>الاسم الكامل</label>
+                        <input type="text" id="custName" placeholder="أدخل اسمك الكريم">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الهاتف / واتساب</label>
+                        <input type="text" id="custPhone" placeholder="07xxxxxxx أو 71xxxxxxx">
+                    </div>
+                    <button onclick="submitOrder('${p.title}', '${p.price}')" class="submit-btn">تأكيد وإرسال الطلب 🚀</button>
+                    <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> العودة للمتجر الرئيسي</a>
+                `;
+            } catch(e) {
+                container.innerHTML = '<p>عذراً، حدث خطأ أثناء جلب تفاصيل المنتج.</p><a href="index.html" class="back-btn">العودة للرئيسية</a>';
+            }
+        }
+
+        async function submitOrder(prodTitle, prodPrice) {
+            let name = document.getElementById('custName').value.trim();
+            let phone = document.getElementById('custPhone').value.trim();
+
+            if(!name || !phone) {
+                alert('يرجى إدخال الاسم ورقم الهاتف.');
+                return;
+            }
+
+            try {
+                let { error } = await db.from('orders').insert([{
+                    product_title: prodTitle,
+                    customer_name: name,
+                    customer_phone: phone,
+                    total_price: prodPrice,
+                    status: 'جديد'
+                }]);
+
+                if(error) throw error;
+                alert('تم إرسال طلبك بنجاح! سنتواصل معك قريباً جداً. 🎉');
+                window.location.href = 'index.html';
+            } catch(err) {
+                alert('حدث خطأ أثناء إرسال الطلب: ' + err.message);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', loadProduct);
+    </script>
+</body>
+</html>
