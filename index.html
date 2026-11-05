@@ -4,18 +4,18 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>منصة صدارة للوظائف والخدمات الرقمية | SADARAH STORE</title>
+    <title>متجر صدارة | SADARAH STORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
-            --sadarah-primary: #0F2A4A;
-            --sadarah-dark: #0A1C33;
-            --sadarah-light: #F4F7FB;
-            --sadarah-gold: #D4AF37;
-            --sadarah-btn: #0284C7;
-            --sadarah-btn-hover: #0369A1;
+            --store-primary: #0F2A4A;
+            --store-dark: #0A1C33;
+            --store-light: #F4F7FB;
+            --store-gold: #D4AF37;
+            --store-btn: #0284C7;
+            --store-btn-hover: #0369A1;
             --green-wa: #25D366;
             --discount-red: #E11D48;
             --spec-bg: #F0F7FF;
@@ -27,102 +27,171 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--sadarah-light); padding-bottom: 80px; color: var(--text-main); width: 100%; overflow-x: hidden; }
+        html { scroll-behavior: smooth; width: 100%; }
+        body { background: var(--store-light); padding-bottom: 80px; color: var(--text-main); width: 100%; overflow-x: hidden; }
 
-        .shein-top-bar { background: var(--sadarah-dark); color: white; padding: 7px 12px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212,175,55,0.3); }
-        .shein-top-bar a { color: var(--sadarah-gold); text-decoration: none; font-weight: bold; }
+        .top-bar { background: var(--store-dark); color: white; padding: 7px 12px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212,175,55,0.3); }
+        .top-bar a { color: var(--store-gold); text-decoration: none; font-weight: bold; }
 
-        .top-navbar { background: var(--sadarah-primary); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sadarah-gold); position: sticky; top: 0; z-index: 1000; gap: 8px; }
+        .main-navbar { background: var(--store-primary); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--store-gold); position: sticky; top: 0; z-index: 1000; gap: 8px; box-shadow: 0 4px 15px rgba(10,28,51,0.25); }
         .brand-logo-img { height: 36px; object-fit: contain; border-radius: 6px; }
         
-        .shein-search-container { flex-grow: 1; max-width: 480px; position: relative; }
-        .shein-search-input { width: 100%; padding: 8px 36px 8px 12px; border: none; border-radius: 20px; font-size: 12px; font-weight: 700; background: #ffffff; outline: none; box-shadow: var(--neu-shadow-inset); }
-        .shein-search-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px; }
+        .search-container { flex-grow: 1; max-width: 480px; position: relative; }
+        .search-input { width: 100%; padding: 8px 36px 8px 12px; border: none; border-radius: 20px; font-size: 12px; font-weight: 700; background: #ffffff; color: var(--text-main); outline: none; box-shadow: var(--neu-shadow-inset); }
+        .search-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px; }
 
+        .nav-actions { display: flex; gap: 6px; align-items: center; }
         .mini-btn { background: rgba(255,255,255,0.1); color: #FFFFFF; border: 1px solid rgba(212,175,55,0.4); padding: 6px 10px; border-radius: 10px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .mini-btn:hover { background: var(--store-gold); color: var(--store-dark); }
 
         .container { width: 100%; max-width: 1200px; margin: 12px auto; padding: 0 10px; }
 
-        .store-hero-banner { background: var(--sadarah-light); padding: 16px; border-radius: 18px; text-align: center; margin-bottom: 16px; box-shadow: var(--neu-shadow); }
+        /* إحصائيات المتجر الفورية */
+        .store-hero-banner { background: var(--store-light); padding: 16px; border-radius: 18px; text-align: center; margin-bottom: 16px; box-shadow: var(--neu-shadow); border: 1px solid rgba(255,255,255,0.8); }
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 850px; margin: 10px auto 0; }
         @media (max-width: 576px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-        .stat-box { background: var(--sadarah-light); padding: 8px; border-radius: 12px; box-shadow: var(--neu-shadow-inset); text-align: center; }
+        .stat-box { background: var(--store-light); padding: 8px; border-radius: 12px; box-shadow: var(--neu-shadow-inset); text-align: center; }
+        .stat-box h3 { color: var(--store-primary); font-size: clamp(14px, 3vw, 18px); font-weight: 900; }
+        .stat-box p { font-size: 10px; color: #475569; font-weight: 800; margin-top: 2px; }
 
-        /* التصنيفات الدائرية */
-        .shein-categories-bar { display: flex; gap: 12px; overflow-x: auto; padding: 8px 4px 14px; margin-bottom: 16px; scrollbar-width: none; }
-        .shein-categories-bar::-webkit-scrollbar { display: none; }
-        .shein-cat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex-shrink: 0; width: 62px; }
-        .shein-cat-circle { width: 52px; height: 52px; border-radius: 50%; background: var(--sadarah-light); box-shadow: var(--neu-shadow); display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--sadarah-primary); }
-        .shein-cat-item.active .shein-cat-circle { border: 2px solid var(--sadarah-gold); color: var(--sadarah-gold); box-shadow: var(--neu-shadow-inset); }
+        /* أقسام المتجر الدائرية الأفقية */
+        .categories-bar { display: flex; gap: 12px; overflow-x: auto; padding: 8px 4px 14px; margin-bottom: 16px; scrollbar-width: none; }
+        .categories-bar::-webkit-scrollbar { display: none; }
+        .cat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex-shrink: 0; width: 65px; }
+        .cat-circle { width: 52px; height: 52px; border-radius: 50%; background: var(--store-light); box-shadow: var(--neu-shadow); display: flex; justify-content: center; align-items: center; font-size: 18px; color: var(--store-primary); border: 2px solid transparent; transition: 0.3s; }
+        .cat-item:hover .cat-circle, .cat-item.active .cat-circle { border-color: var(--store-gold); box-shadow: var(--neu-shadow-inset); color: var(--store-gold); }
+        .cat-name { font-size: 10px; font-weight: 800; color: var(--text-main); text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* شريط أفضل العروض المتحرك ديناميكياً أفقياً (Carousel Slider) */
-        .best-offers-section { margin-bottom: 20px; background: var(--sadarah-light); padding: 14px; border-radius: 16px; box-shadow: var(--neu-shadow); border-right: 4px solid var(--discount-red); }
-        .section-header-title { font-size: 14px; font-weight: 900; color: var(--discount-red); display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+        /* شريط أفضل العروض المتحرك أفقياً */
+        .best-offers-section { margin-bottom: 20px; background: var(--store-light); padding: 14px; border-radius: 16px; box-shadow: var(--neu-shadow); border-right: 4px solid var(--discount-red); }
+        .section-header-title { font-size: 13px; font-weight: 900; color: var(--discount-red); display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
         .offers-horizontal-track { display: flex; gap: 12px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 8px; scrollbar-width: none; }
         .offers-horizontal-track::-webkit-scrollbar { display: none; }
 
-        .offer-card-item { flex: 0 0 160px; background: #ffffff; border-radius: 12px; padding: 8px; box-shadow: var(--neu-shadow-inset); position: relative; cursor: pointer; transition: 0.3s; text-decoration: none; color: inherit; }
+        .offer-card-item { flex: 0 0 160px; background: #ffffff; border-radius: 12px; padding: 8px; box-shadow: var(--neu-shadow-inset); position: relative; cursor: pointer; text-decoration: none; color: inherit; transition: 0.3s; }
         .offer-card-item:hover { transform: translateY(-3px); }
-        .offer-img-box { width: 100%; height: 110px; border-radius: 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; background: var(--sadarah-light); }
+        .offer-img-box { width: 100%; height: 110px; border-radius: 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; background: var(--store-light); }
         .offer-img-box img { width: 100%; height: 100%; object-fit: contain; }
         .offer-badge { position: absolute; top: 6px; right: 6px; background: var(--discount-red); color: white; font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 6px; }
 
-        /* شبكة المنتجات العادية */
+        /* شبكة المنتجات المرنة */
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; width: 100%; }
-        @media (min-width: 768px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); } }
-        .product-card { background: var(--sadarah-light); border-radius: 14px; padding: 10px; box-shadow: var(--neu-shadow); display: flex; flex-direction: column; justify-content: space-between; gap: 8px; position: relative; }
-        .product-img-container { width: 100%; height: 140px; background: #ffffff; border-radius: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: var(--neu-shadow-inset); cursor: pointer; }
-        .product-img { width: 100%; height: 100%; object-fit: contain; }
-        .order-btn { background: var(--sadarah-btn); color: white; text-align: center; padding: 8px; border-radius: 8px; font-weight: 900; font-size: 10.5px; cursor: pointer; border: none; width: 100%; text-decoration: none; }
+        @media (min-width: 768px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; } }
+
+        .product-card { background: var(--store-light); border-radius: 14px; border: 1px solid rgba(255,255,255,0.9); padding: 10px; box-shadow: var(--neu-shadow); display: flex; flex-direction: column; justify-content: space-between; gap: 8px; transition: 0.3s; width: 100%; position: relative; overflow: hidden; }
+        .product-card:hover { transform: translateY(-2px); }
+
+        .discount-badge { position: absolute; top: 10px; right: 10px; background: var(--discount-red); color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 6px; z-index: 5; }
+
+        .product-img-container { width: 100%; height: 140px; background: #ffffff; border-radius: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: var(--neu-shadow-inset); padding: 4px; cursor: pointer; position: relative; }
+        @media (min-width: 768px) { .product-img-container { height: 180px; } }
+        .product-img { width: 100%; height: 100%; object-fit: contain; border-radius: 6px; }
+
+        .product-title { font-size: 11px; font-weight: 900; color: var(--text-main); height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; cursor: pointer; line-height: 1.3; }
+        
+        .price-box { display: flex; align-items: center; gap: 6px; margin: 2px 0; flex-wrap: wrap; }
+        .current-price { font-size: 12px; font-weight: 900; color: var(--discount-red); }
+        .old-price { font-size: 10px; font-weight: 700; color: #94a3b8; text-decoration: line-through; }
+
+        .product-desc { font-size: 9.5px; color: var(--spec-text); background: var(--spec-bg); padding: 6px; border-radius: 6px; border-right: 3px solid var(--spec-border); box-shadow: var(--neu-shadow-inset); font-weight: 700; line-height: 1.3; height: 38px; overflow: hidden; }
+
+        .order-btn { background: var(--store-btn); color: white; text-align: center; padding: 8px; border-radius: 8px; font-weight: 900; font-size: 10.5px; cursor: pointer; border: none; width: 100%; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: 0.3s; }
+        .order-btn:hover { background: var(--store-btn-hover); }
+
+        .whatsapp-float { position: fixed; bottom: 20px; left: 15px; background: var(--store-light); color: var(--green-wa); width: 46px; height: 46px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: var(--neu-shadow); z-index: 950; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <div class="shein-top-bar">
-        <span>🔥 منصة صدارة للوظائف والخدمات الرقمية والميدانية</span>
+    <div class="top-bar">
+        <span>🔥 منصة صدارة للوظائف والخدمات الرقمية والتقنية</span>
         <span><a href="affiliate.html"><i class="fa-solid fa-handshake-angle"></i> برنامج الأفلييت</a></span>
     </div>
 
-    <div class="top-navbar">
-        <a href="index.html" class="brand-logo-container">
-            <img src="images/logo.jpg" id="storeLogoHeader" class="brand-logo-img" alt="صدارة" onerror="this.style.display='none'">
-        </a>
+    <div class="main-navbar">
+        <a href="affiliate.html" class="mini-btn"><i class="fa-solid fa-handshake-angle"></i> المسوقون</a>
         
-        <div class="shein-search-container">
-            <input type="text" id="searchInput" class="shein-search-input" placeholder="ابحث عن منتج، وظيفة، أو خدمة..." oninput="filterStoreProducts()">
-            <i class="fa-solid fa-magnifying-glass shein-search-icon"></i>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن منتج، جوال، أو إكسسوار..." oninput="filterStoreProducts()">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
         </div>
 
         <div class="nav-actions">
-            <a href="affiliate.html" class="mini-btn"><i class="fa-solid fa-handshake-angle"></i> الأفلييت</a>
             <a href="blog.html" class="mini-btn"><i class="fa-solid fa-newspaper"></i> المدونة</a>
         </div>
     </div>
 
+    <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank" class="whatsapp-float" title="مجتمع الواتساب">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
     <div class="container">
-        <!-- الإحصائيات الفورية -->
+        <!-- الإحصائيات الفورية المحدثة -->
         <div class="store-hero-banner">
-            <h1 style="font-size:18px; color:var(--sadarah-primary);">🌟 منصة صدارة التفاعلية</h1>
+            <h1 style="font-size:18px; color:var(--store-primary);">🌟 متجر صدارة التقني</h1>
+            <p style="font-size:11px; color:#49769F; font-weight:700; margin-top:4px;">أقوى العروض والمنتجات الأصلية والخدمات الرقمية المعتمدة</p>
+            
             <div class="stats-grid">
-                <div class="stat-box"><h3 id="statLiveVisitors" style="color:#25D366;">1</h3><p style="font-size:9px;">🟢 زوار متواجدون</p></div>
-                <div class="stat-box"><h3 id="statTotalVisits">150</h3><p style="font-size:9px;">👁️ إجمالي الزيارات</p></div>
-                <div class="stat-box"><h3 id="statProducts">0</h3><p style="font-size:9px;">📦 المنتجات</p></div>
-                <div class="stat-box"><h3 id="statAffiliates">0</h3><p style="font-size:9px;">🤝 المسوقين</p></div>
+                <div class="stat-box">
+                    <h3 id="statLiveVisitors" style="color: #25D366;">1</h3>
+                    <p>🟢 زوار متواجدون</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="statTotalVisits">150</h3>
+                    <p>👁️ إجمالي الزيارات</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="statProducts">0</h3>
+                    <p>📦 المنتجات المعروضة</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="statAffiliates">0</h3>
+                    <p>🤝 المسوقين المعتمدين</p>
+                </div>
             </div>
         </div>
 
-        <!-- التصنيفات -->
-        <div class="shein-categories-bar" id="categoriesContainer">
-            <div class="shein-cat-item active" onclick="filterStore('الكل', this)"><div class="shein-cat-circle"><i class="fa-solid fa-globe"></i></div><div class="shein-cat-name">الكل</div></div>
-            <div class="shein-cat-item" onclick="filterStore('إلكترونيات', this)"><div class="shein-cat-circle"><i class="fa-solid fa-tv"></i></div><div class="shein-cat-name">إلكترونيات</div></div>
-            <div class="shein-cat-item" onclick="filterStore('جوالات', this)"><div class="shein-cat-circle"><i class="fa-solid fa-mobile-screen"></i></div><div class="shein-cat-name">جوالات</div></div>
-            <div class="shein-cat-item" onclick="filterStore('اكسسوارات', this)"><div class="shein-cat-circle"><i class="fa-solid fa-headphones"></i></div><div class="shein-cat-name">اكسسوارات</div></div>
-            <div class="shein-cat-item" onclick="filterStore('عطور', this)"><div class="shein-cat-circle"><i class="fa-solid fa-spray-can-sparkles"></i></div><div class="shein-cat-name">عطور</div></div>
-            <div class="shein-cat-item" onclick="filterStore('ملابس', this)"><div class="shein-cat-circle"><i class="fa-solid fa-shirt"></i></div><div class="shein-cat-name">ملابس</div></div>
-            <div class="shein-cat-item" onclick="filterStore('ادوات تجميل', this)"><div class="shein-cat-circle"><i class="fa-solid fa-wand-magic-sparkles"></i></div><div class="shein-cat-name">تجميل</div></div>
+        <!-- التصنيفات الشاملة (مطابقة لمتجر إي جي ستور) -->
+        <div class="categories-bar" id="categoriesContainer">
+            <div class="cat-item active" onclick="filterStore('الكل', this)">
+                <div class="cat-circle"><i class="fa-solid fa-globe"></i></div>
+                <div class="cat-name">الكل</div>
+            </div>
+            <div class="cat-item" onclick="filterStore('إلكترونيات', this)">
+                <div class="cat-circle"><i class="fa-solid fa-tv"></i></div>
+                <div class="cat-name">إلكترونيات</div>
+            </div>
+            <div class="cat-item" onclick="filterStore('جوالات', this)">
+                <div class="cat-circle"><i class="fa-solid fa-mobile-screen"></i></div>
+                <div class="cat-name">جوالات</div>
+            </div>
+            <div class="cat-item" onclick="filterStore('اكسسوارات', this)">
+                <div class="cat-circle"><i class="fa-solid fa-headphones"></i></div>
+                <div class="cat-name">اكسسوارات</div>
+            </div>
+            <div class="cat-item" onclick="filterStore('ساعات واساور', this)">
+                <div class="cat-circle"><i class="fa-solid fa-clock"></i></div>
+                <div class="cat-name">ساعات وأساور</div>
+            </div>
+            <div class="cat-item" onclick="filterStore('بطاريات متنقلة', this)">
+                <div class="cat-circle"><i class="fa-solid fa-battery-full"></i></div>
+                <div class="cat-name">باوربانك</div>
+            </div>
+            <div class="cat-item" onclick="filterStore('عطور', this)">
+                <div class="cat-circle"><i class="fa-solid fa-spray-can-sparkles"></i></div>
+                <div class="cat-name">عطور</div>
+            </div>
+            <div class="cat-item" onclick="filterStore('ملابس', this)">
+                <div class="cat-circle"><i class="fa-solid fa-shirt"></i></div>
+                <div class="cat-name">ملابس</div>
+            </div>
+            <div class="cat-item" onclick="filterStore('اشتراكات رقمية', this)">
+                <div class="cat-circle"><i class="fa-solid fa-key"></i></div>
+                <div class="cat-name">اشتراكات</div>
+            </div>
         </div>
 
-        <!-- قسم أفضل العروض (سلايدر أفقي متطوّر ومتحرك) -->
+        <!-- قسم أفضل العروض (سلايدر متحرك أفقياً ديناميكياً) -->
         <div class="best-offers-section">
             <div class="section-header-title"><i class="fa-solid fa-fire"></i> أفضل العروض والتخفيضات المميزة</div>
             <div class="offers-horizontal-track" id="offersTrack">
@@ -130,7 +199,7 @@
             </div>
         </div>
 
-        <!-- باقي المنتجات -->
+        <!-- شبكة المنتجات العادية -->
         <div id="productsGridContainer" class="products-grid">
             جاري تحميل المنتجات...
         </div>
@@ -143,18 +212,47 @@
 
         let allProducts = [];
 
-        async function loadStoreData() {
-            let { data } = await db.from('platform_services').select('*').eq('is_active', true).order('id', {ascending: false});
-            allProducts = data || [];
-            
-            renderBestOffers(allProducts.filter(p => p.discount || p.old_price));
-            renderProducts(allProducts);
+        async function setupVisitorTracking() {
+            try {
+                let currentTotal = parseInt(localStorage.getItem('sadarah_total_visits') || '0') + 1;
+                localStorage.setItem('sadarah_total_visits', currentTotal);
+                document.getElementById('statTotalVisits').textContent = currentTotal + 150;
 
-            document.getElementById('statProducts').textContent = allProducts.length;
-            let { count: affCount } = await db.from('affiliates').select('*', { count: 'exact', head: true });
-            document.getElementById('statAffiliates').textContent = affCount || 0;
-            
-            startOffersAutoplay();
+                const channel = db.channel('online-visitors', {
+                    config: { presence: { key: 'user_' + Math.random().toString(36).substring(7) } }
+                });
+
+                channel.on('presence', { event: 'sync' }, () => {
+                    const state = channel.presenceState();
+                    const liveCount = Object.keys(state).length;
+                    document.getElementById('statLiveVisitors').textContent = Math.max(1, liveCount);
+                }).subscribe(async (status) => {
+                    if (status === 'SUBSCRIBED') {
+                        await channel.track({ online_at: new Date().toISOString() });
+                    }
+                });
+            } catch(e) {}
+        }
+
+        async function loadStoreProducts() {
+            try {
+                let { data } = await db.from('platform_services').select('*').eq('is_active', true).order('id', {ascending: false});
+                allProducts = data || [];
+                
+                renderBestOffers(allProducts.filter(p => p.discount || p.old_price));
+                renderStoreProducts(allProducts);
+
+                document.getElementById('statProducts').textContent = allProducts.length;
+
+                let { count: affCount } = await db.from('affiliates').select('*', { count: 'exact', head: true });
+                document.getElementById('statAffiliates').textContent = affCount || 0;
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const refCode = urlParams.get('ref');
+                if(refCode) localStorage.setItem('sadara_ref', refCode);
+            } catch(e) {
+                document.getElementById('productsGridContainer').innerHTML = '<p style="text-align:center; color:#49769F; grid-column:1/-1;">عذراً، حدث خطأ في تحميل المنتجات.</p>';
+            }
         }
 
         function renderBestOffers(offers) {
@@ -178,37 +276,65 @@
             });
         }
 
-        function startOffersAutoplay() {
-            let track = document.getElementById('offersTrack');
-            setInterval(() => {
-                if (track.scrollLeft <= -(track.scrollWidth - track.clientWidth)) {
-                    track.scrollLeft = 0;
-                } else {
-                    track.scrollBy({ left: -180, behavior: 'smooth' });
-                }
-            }, 3000);
+        function filterStore(category, el) {
+            document.querySelectorAll('.cat-item').forEach(t => t.classList.remove('active'));
+            if(el) el.closest('.cat-item').classList.add('active');
+
+            if(category === 'الكل') {
+                renderStoreProducts(allProducts);
+            } else {
+                let filtered = allProducts.filter(p => p.category === category);
+                renderStoreProducts(filtered);
+            }
         }
 
-        function renderProducts(list) {
+        function filterStoreProducts() {
+            let query = document.getElementById('searchInput').value.toLowerCase().trim();
+            let filtered = allProducts.filter(p => p.title.toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query)));
+            renderStoreProducts(filtered);
+        }
+
+        function renderStoreProducts(list) {
             let container = document.getElementById('productsGridContainer');
             container.innerHTML = '';
+
+            if(!list || list.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#49769F; grid-column:1/-1; padding:30px;">لا توجد منتجات متاحة حالياً.</p>';
+                return;
+            }
+
             list.forEach(p => {
                 let img = p.image || 'images/logo.jpg';
+                let descText = p.description || 'منتج أصلي معتمد بجودة عالية.';
                 let ref = localStorage.getItem('sadara_ref') ? `&ref=${localStorage.getItem('sadara_ref')}` : '';
+                
+                let oldPriceHTML = p.old_price ? `<span class="old-price">${p.old_price}</span>` : '';
+                let discountHTML = p.discount ? `<div class="discount-badge">${p.discount}</div>` : '';
+
                 container.innerHTML += `
                     <div class="product-card">
+                        ${discountHTML}
                         <div class="product-img-container" onclick="window.location.href='product.html?id=${p.id}${ref}'">
                             <img src="${img}" class="product-img">
                         </div>
-                        <div style="font-size:11px; font-weight:900;">${p.title}</div>
-                        <div style="font-size:12px; color:var(--discount-red); font-weight:900;">${p.price}</div>
-                        <a href="product.html?id=${p.id}${ref}" class="order-btn">شراء الآن 🚀</a>
+                        <div>
+                            <div class="product-title" onclick="window.location.href='product.html?id=${p.id}${ref}'">${p.title}</div>
+                            <div class="price-box">
+                                <span class="current-price">${p.price}</span>
+                                ${oldPriceHTML}
+                            </div>
+                            <div class="product-desc">${descText}</div>
+                        </div>
+                        <a href="product.html?id=${p.id}${ref}" class="order-btn"><i class="fa-solid fa-cart-shopping"></i> طلب المنتج 🚀</a>
                     </div>
                 `;
             });
         }
 
-        window.addEventListener('DOMContentLoaded', loadStoreData);
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStoreProducts();
+            setupVisitorTracking();
+        });
     </script>
 </body>
 </html>
