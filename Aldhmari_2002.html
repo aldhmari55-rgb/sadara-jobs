@@ -50,10 +50,10 @@
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. إدارة وحفظ البنرات برابط مباشر سريع وآمن -->
+        <!-- 1. إدارة ورفع البنرات مباشرة من معرض الجوال -->
         <div class="section-box">
-            <h3>🖼️ إدارة وحفظ البنرات الإعلانية بالمنصة</h3>
-            <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">قم بتحديث رابط أي بنر وسيحفظ فوراً ويظهر في الواجهة:</p>
+            <h3>🖼️ إدارة ورفع البنرات الإعلانية من معرض الجوال</h3>
+            <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">اختر الصورة من معرض جوالك وسيتم رفعها وحفظها للمنصة فوراً:</p>
             <div id="bannersAdminList">جاري التحميل...</div>
         </div>
 
@@ -95,7 +95,7 @@
             <div class="form-group"><label>السعر الحالي</label><input type="text" id="pPrice" placeholder="3500 YER"></div>
             <div class="form-group"><label>السعر السابق المشطوب (لتفعيل العرض الخاص)</label><input type="text" id="pOldPrice" placeholder="5000 YER"></div>
             <div class="form-group"><label>نسبة أو شارة الخصم (مثل: -30%)</label><input type="text" id="pDiscount" placeholder="-30%"></div>
-            <div class="form-group"><label>صورة المنتج (رابط مباشر)</label><input type="text" id="pImage" placeholder="https://..."></div>
+            <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage" accept="image/*"></div>
             <div class="form-group"><label>الوصف والتفاصيل</label><textarea id="pDesc" rows="2" placeholder="تفاصيل المنتج..."></textarea></div>
             <button onclick="saveProductData()" id="saveBtn" class="submit-btn">نشر / حفظ المنتج في المتجر 🚀</button>
             <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:#F3F4F6; color:var(--primary); border:none; padding:9px; border-radius:9px; margin-top:8px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
@@ -141,16 +141,20 @@
 
                 bannerInfo.forEach(b => {
                     let found = settings ? settings.find(s => s.key === b.key) : null;
-                    let imgUrl = found ? found.value : '';
+                    let imgUrl = (found && found.value) ? found.value : 'https://via.placeholder.com/150x50?text=No+Banner';
                     
                     bBox.innerHTML += `
                         <div class="data-row">
-                            <div style="flex:1; min-width:200px;">
-                                <b>${b.name}</b><br>
-                                <input type="text" id="url_${b.key}" value="${imgUrl}" placeholder="ضع رابط الصورة هنا..." style="width:100%; padding:8px; margin-top:5px; border:1px solid var(--border); border-radius:6px; font-size:10px;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <img src="${imgUrl}" class="product-thumb">
+                                <div style="font-size:11px;">
+                                    <b>${b.name}</b><br>
+                                    <span style="color:#10B981; font-weight:bold;">جاهز للتحديث</span>
+                                </div>
                             </div>
-                            <div style="display:flex; gap:6px; align-items:center; margin-top:10px;">
-                                <button class="action-btn btn-edit" onclick="updateBannerUrl('${b.key}')">حفظ البنر 💾</button>
+                            <div style="display:flex; gap:6px; align-items:center;">
+                                <input type="file" id="file_${b.key}" accept="image/*" style="display:none;" onchange="uploadBannerFromGallery('${b.key}')">
+                                <button class="action-btn btn-edit" onclick="document.getElementById('file_${b.key}').click()">من المعرض 📱</button>
                                 <button class="action-btn btn-delete" onclick="removeBanner('${b.key}')">حذف 🗑️</button>
                             </div>
                         </div>
@@ -235,16 +239,28 @@
             }
         }
 
-        async function updateBannerUrl(key) {
-            let urlInput = document.getElementById('url_' + key).value.trim();
-            if(!urlInput) { alert('يرجى وضع رابط الصورة أولاً.'); return; }
+        async function uploadBannerFromGallery(key) {
+            let fileInput = document.getElementById('file_' + key);
+            let file = fileInput.files[0];
+            if(!file) return;
 
-            let { error } = await db.from('store_settings').upsert({ key: key, value: urlInput });
-            if(!error) {
-                alert('تم حفظ وتحديث البنر بنجاح وسيظهر في الواجهة فوراً! 🌟');
-                loadAdminPanel();
-            } else {
-                alert('خطأ أثناء الحفظ: ' + error.message);
+            try {
+                let fileName = 'banners/' + key + '_' + Date.now() + '_' + file.name;
+                let { data, error } = await db.storage.from('products_images').upload(fileName, file);
+                if(error) throw error;
+
+                if(data) {
+                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                    let pubUrl = pub.publicUrl;
+
+                    let { error: upsertErr } = await db.from('store_settings').upsert({ key: key, value: pubUrl });
+                    if(upsertErr) throw upsertErr;
+
+                    alert('تم رفع وحفظ البنر للمنصة بنجاح تام! 🌟');
+                    loadAdminPanel();
+                }
+            } catch(err) {
+                alert('خطأ أثناء الرفع: ' + err.message);
             }
         }
 
@@ -279,10 +295,21 @@
             let price = document.getElementById('pPrice').value.trim();
             let old_price = document.getElementById('pOldPrice').value.trim();
             let discount = document.getElementById('pDiscount').value.trim();
-            let imageUrl = document.getElementById('pImage').value.trim();
+            let fileInput = document.getElementById('pImage');
             let description = document.getElementById('pDesc').value.trim();
 
             if(!title || !price) { alert('يرجى إدخال عنوان المنتج والسعر على الأقل.'); return; }
+
+            let imageUrl = '';
+            if(fileInput.files[0]) {
+                let file = fileInput.files[0];
+                let fileName = 'products/' + Date.now() + '_' + file.name;
+                let { data } = await db.storage.from('products_images').upload(fileName, file);
+                if(data) {
+                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                    imageUrl = pub.publicUrl;
+                }
+            }
 
             let payload = { 
                 title, 
@@ -319,7 +346,6 @@
                 document.getElementById('pPrice').value = p.price || '';
                 document.getElementById('pOldPrice').value = p.old_price || '';
                 document.getElementById('pDiscount').value = p.discount || '';
-                document.getElementById('pImage').value = p.image || '';
                 document.getElementById('pDesc').value = p.description || '';
                 
                 document.getElementById('formTitle').textContent = '✏️ تعديل المنتج: ' + p.title;
