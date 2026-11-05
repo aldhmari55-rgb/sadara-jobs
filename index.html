@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>متجر صدارة | SADARAH STORE</title>
+    <title>منصة صدارة للوظائف والخدمات الرقمية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -92,7 +92,7 @@
         </div>
         <div class="aj-logo-container">
             <a href="index.html">
-                <img src="images/logo.jpg" class="aj-logo-img" alt="متجر صدارة" onerror="this.src='https://via.placeholder.com/100x32?text=SADARAH'">
+                <img src="images/logo.jpg" class="aj-logo-img" alt="منصة صدارة" onerror="this.src='https://via.placeholder.com/100x32?text=SADARAH'">
             </a>
         </div>
         <div class="aj-header-right">
@@ -101,7 +101,7 @@
     </header>
 
     <div class="search-bar-container" id="searchBarBox">
-        <input type="text" id="searchInput" class="search-input-box" placeholder="ابحث عما ترغب به..." oninput="filterStoreProducts()">
+        <input type="text" id="searchInput" class="search-input-box" placeholder="ابحث عن منتج أو خدمة..." oninput="filterStoreProducts()">
     </div>
 
     <a href="https://wa.me/967780568507" target="_blank" class="whatsapp-float" title="خدمة العملاء واتساب">
@@ -109,8 +109,8 @@
     </a>
 
     <div class="container">
-        <!-- 1. البنر العلوي الديناميكي -->
-        <div class="promo-banner-card" id="topBannerBox">
+        <!-- 1. البنر العلوي -->
+        <div class="promo-banner-card">
             <img id="topBannerImg" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b7da?w=800&auto=format&fit=crop" alt="بنر العلوي">
         </div>
 
@@ -121,8 +121,8 @@
             <div class="stat-item"><h3 id="statAffiliates">0</h3><p>🤝 المسوقين</p></div>
         </div>
 
-        <!-- التصنيفات المطلوبة بدقة -->
-        <div class="categories-slider" id="categoriesContainer">
+        <!-- التصنيفات المعتمدة بدقة -->
+        <div class="categories-slider">
             <div class="cat-box active" onclick="filterStore('الكل', this)"><div class="cat-icon-circle"><i class="fa-solid fa-globe"></i></div><div class="cat-txt">الكل</div></div>
             <div class="cat-box" onclick="filterStore('جوالات', this)"><div class="cat-icon-circle"><i class="fa-solid fa-mobile-screen"></i></div><div class="cat-txt">جوالات</div></div>
             <div class="cat-box" onclick="filterStore('اكسسوارات', this)"><div class="cat-icon-circle"><i class="fa-solid fa-headphones"></i></div><div class="cat-txt">اكسسوارات</div></div>
@@ -140,8 +140,8 @@
             جاري تحميل العروض...
         </div>
 
-        <!-- 2. البنر الأوسط الديناميكي -->
-        <div class="promo-banner-card" id="middleBannerBox" style="margin:20px 0;">
+        <!-- 2. البنر الأوسط -->
+        <div class="promo-banner-card" style="margin:20px 0;">
             <img id="middleBannerImg" src="https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=800&auto=format&fit=crop" alt="بنر الأوسط">
         </div>
 
@@ -152,8 +152,8 @@
             جاري تحميل المنتجات...
         </div>
 
-        <!-- 3. البنر السفلي الديناميكي -->
-        <div class="promo-banner-card" id="bottomBannerBox" style="margin-top:20px;">
+        <!-- 3. البنر السفلي -->
+        <div class="promo-banner-card" style="margin-top:20px;">
             <img id="bottomBannerImg" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop" alt="بنر السفلي">
         </div>
     </div>
@@ -161,8 +161,8 @@
     <footer class="store-footer">
         <div class="footer-content">
             <div class="footer-col">
-                <h4>عن متجر صدارة</h4>
-                <p style="line-height:1.6; font-size:10.5px;">متجر صدارة وجهتك الأولى للأجهزة الإلكترونية والمنتجات الأصلية والخدمات الرقمية بجودة عالية وأسعار منافسة.</p>
+                <h4>عن منصة صدارة</h4>
+                <p style="line-height:1.6; font-size:10.5px;">منصة صدارة وجهتك الأولى للوظائف والخدمات الرقمية والأجهزة الأصلية بجودة عالية وأسعار منافسة.</p>
                 <div style="margin-top:12px;">
                     <a href="affiliate.html" style="color:var(--aj-gold); font-weight:900; text-decoration:none;"><i class="fa-solid fa-handshake-angle"></i> انضم لبرنامج التسويق بالعمولة (الأفلييت)</a>
                 </div>
@@ -202,7 +202,7 @@
 
         async function loadStoreData() {
             try {
-                // جلب إعدادات المتجر والبنرات بدقة من جدول store_settings
+                // جلب الإعدادات والبنرات المحدثة مباشرة باستخدام المفتاح الصحيح
                 let { data: settings } = await db.from('store_settings').select('*');
                 if(settings && settings.length > 0) {
                     settings.forEach(s => {
@@ -212,7 +212,9 @@
                     });
                 }
 
-                let { data } = await db.from('platform_services').select('*').order('id', {ascending: false});
+                // جلب المنتجات والخدمات
+                let { data, error } = await db.from('platform_services').select('*').order('id', {ascending: false});
+                if(error) throw error;
                 allProducts = data || [];
                 
                 renderBestOffers(allProducts.filter(p => (p.discount && p.discount.trim() !== '') || (p.old_price && p.old_price.trim() !== '')));
@@ -223,8 +225,8 @@
                 let { count: affCount } = await db.from('affiliates').select('*', { count: 'exact', head: true });
                 document.getElementById('statAffiliates').textContent = affCount || 0;
 
-                // نظام عداد الزيارات التراكمي المفتوح بلا حدود (لا ينقص أبداً)
-                let visitsKey = 'sadara_unlimited_visits';
+                // نظام الزيارات المفتوح بلا حدود (تزايدي تصاعدي دائم لا ينقص أبداً)
+                let visitsKey = 'sadara_unlimited_total_visits';
                 let currentVisits = parseInt(localStorage.getItem(visitsKey) || '1550');
                 currentVisits += 1;
                 localStorage.setItem(visitsKey, currentVisits);
@@ -233,19 +235,21 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const refCode = urlParams.get('ref');
                 if(refCode) localStorage.setItem('sadara_ref', refCode);
-            } catch(e) {}
+            } catch(e) {
+                console.error("Error loading store:", e);
+            }
         }
 
         function renderBestOffers(offers) {
             let track = document.getElementById('offersTrack');
             track.innerHTML = '';
             if(!offers || offers.length === 0) {
-                track.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد عروض خاصة حالياً.</p>';
+                track.innerHTML = '<p style="font-size:11px; color:#6B7280; padding:10px;">لا توجد عروض خاصة حالياً.</p>';
                 return;
             }
             offers.forEach(p => {
                 let img = p.image || 'images/logo.jpg';
-                let ref = localStorage.getItem('sadara_ref') ? `&ref=${localStorage.getItem('sadara_ref']}` : '';
+                let ref = localStorage.getItem('sadara_ref') ? `&ref=${localStorage.getItem('sadara_ref')}` : '';
                 track.innerHTML += `
                     <a href="product.html?id=${p.id}${ref}" class="offer-item">
                         ${p.discount ? `<div class="discount-badge">${p.discount}</div>` : ''}
@@ -289,7 +293,7 @@
 
             list.forEach(p => {
                 let img = p.image || 'images/logo.jpg';
-                let ref = localStorage.getItem('sadara_ref') ? `&ref=${localStorage.getItem('sadara_ref']}` : '';
+                let ref = localStorage.getItem('sadara_ref') ? `&ref=${localStorage.getItem('sadara_ref')}` : '';
                 
                 let oldPriceHTML = p.old_price ? `<span class="old-price">${p.old_price}</span>` : '';
                 let discountHTML = p.discount ? `<div class="discount-badge">${p.discount}</div>` : '';
