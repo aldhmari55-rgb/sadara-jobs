@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الشاملة والإدارة المطلقة | منصة صدارة</title>
+    <title>لوحة التحكم الشاملة والأدمن | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -58,9 +58,9 @@
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. نموذج إضافة أو تعديل المنتجات والعروض -->
+        <!-- نموذج إضافة أو تعديل المنتجات والتخفيضات (نفس النموذج الموحد) -->
         <div class="section-box">
-            <h3 id="formTitle">➕ إضافة / تعديل منتج أو خدمة جديدة</h3>
+            <h3 id="formTitle">➕ إضافة / تعديل منتج أو عرض تخفيض</h3>
             <input type="hidden" id="editProductId">
             <div class="form-group"><label>عنوان المنتج/الخدمة</label><input type="text" id="pTitle" placeholder="مثال: تاب لينوفو M8"></div>
             <div class="form-group">
@@ -76,48 +76,31 @@
                     <option value="خدمات">خدمات</option>
                 </select>
             </div>
-            <div class="form-group"><label>السعر الحالي</label><input type="text" id="pPrice" placeholder="15000 YER"></div>
-            <div class="form-group"><label>السعر السابق (المشطوب - للتخفيضات والعروض)</label><input type="text" id="pOldPrice" placeholder="18000 YER"></div>
-            <div class="form-group"><label>نسبة أو شارة الخصم</label><input type="text" id="pDiscount" placeholder="خصم 15%"></div>
+            <div class="form-group"><label>السعر الحالي (اللاحق)</label><input type="text" id="pPrice" placeholder="15000 YER"></div>
+            <div class="form-group"><label>السعر السابق (المشطوب - اختياري لتفعيل العرض في الشريط المتحرك)</label><input type="text" id="pOldPrice" placeholder="18000 YER"></div>
+            <div class="form-group"><label>نسبة أو شارة الخصم (اختياري)</label><input type="text" id="pDiscount" placeholder="خصم 15%"></div>
             <div class="form-group"><label>صورة المنتج (اختر من المعرض)</label><input type="file" id="pImage" accept="image/*"></div>
             <div class="form-group"><label>الوصف والمميزات</label><textarea id="pDesc" rows="2" placeholder="تفاصيل المنتج..."></textarea></div>
             <button onclick="saveProductData()" id="saveBtn" class="submit-btn">حفظ ونشر المنتج 🚀</button>
             <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:var(--sadarah-light); color:var(--sadarah-primary); border:none; padding:8px; border-radius:8px; margin-top:6px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
         </div>
 
-        <!-- 2. مربع عرض المنتجات السابقة والتحكم الكامل بها (تعديل وحذف) -->
+        <!-- قائمة المنتجات والتحكم بها (تعديل وحذف) -->
         <div class="section-box">
-            <h3>📦 قائمة المنتجات المعروضة في المتجر (تعديل وحذف)</h3>
+            <h3>📦 قائمة المنتجات والتخفيضات المعروضة (تعديل وحذف)</h3>
             <div id="productsAdminList">جاري تحميل المنتجات...</div>
         </div>
 
-        <!-- 3. مربع إدارة العروض والتخفيضات المميزة (الشريط المتحرك) -->
-        <div class="section-box">
-            <h3>🔥 إدارة العروض والتخفيضات المميزة (الشريط المتحرك)</h3>
-            <p style="font-size:10.5px; color:#64748b; margin-bottom:10px;">جميع المنتجات التي يحتوي سعرها على (سعر سابق) أو (نسبة خصم) تظهر تلقائياً في شريط أفضل العروض المتحرك أفقياً في الصفحة الرئيسية.</p>
-            <div id="offersAdminList">جاري تحميل العروض والتخفيضات...</div>
-        </div>
-
-        <!-- 4. مربع المسوقين وتصفية العمولات بالشكل التفصيلي الشامل -->
+        <!-- مربع المسوقين وتصفية العمولات -->
         <div class="section-box">
             <h3>🤝 مربع المسوقين (الأفلييت) والتفاصيل الشاملة</h3>
             <div id="affiliatesAdminList">جاري تحميل المسوقين...</div>
         </div>
 
-        <!-- 5. مربع الطلبات الواردة المباشرة -->
+        <!-- مربع الطلبات الواردة المباشرة -->
         <div class="section-box">
             <h3>🛒 طلبات الشراء الواردة والتحكم بها</h3>
             <div id="ordersAdminList">جاري تحميل الطلبات...</div>
-        </div>
-
-        <!-- 6. قسم إدارة الشعار (موجود في أسفل اللوحة) -->
-        <div class="section-box">
-            <h3>🖼️ إدارة وتحديث شعار المنصة والمتجر</h3>
-            <div class="form-group">
-                <label>تحديث الشعار الأساسي (اختر صورة الشعار من المعرض)</label>
-                <input type="file" id="logoFile" accept="image/*">
-            </div>
-            <button onclick="uploadStoreLogo()" class="submit-btn" style="background:var(--sadarah-primary); color:var(--sadarah-gold);">تحديث شعار المتجر فوراً 🌟</button>
         </div>
     </div>
 
@@ -129,29 +112,24 @@
         let globalProducts = [];
 
         async function loadAdminPanel() {
-            // 1. تحميل المنتجات وإظهار زر التعديل والحذف لكل منتج
             let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
             globalProducts = prods || [];
             let pBox = document.getElementById('productsAdminList');
-            let oBox = document.getElementById('offersAdminList');
-            
             pBox.innerHTML = '';
-            oBox.innerHTML = '';
 
             if(!globalProducts || globalProducts.length === 0) {
                 pBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد منتجات حالياً.</p>';
-                oBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد تخفيضات مفعلة.</p>';
             } else {
                 globalProducts.forEach(p => {
                     let img = p.image || 'images/logo.jpg';
+                    let isOffer = p.old_price || p.discount ? '<span style="color:var(--red); font-weight:950;"> [يظهر في شريط العروض 🔥]</span>' : '';
                     
-                    // قائمة المنتجات الكلية
                     pBox.innerHTML += `
                         <div class="data-row">
                             <img src="${img}" class="product-thumb-small">
                             <div class="data-info">
-                                <b>${p.title}</b> [${p.category}]<br>
-                                הסعر: <span style="color:var(--red);">${p.price}</span> ${p.old_price ? `|<span style="text-decoration:line-through; color:#64748b;"> ${p.old_price}</span>` : ''}
+                                <b>${p.title}</b> [${p.category}] ${isOffer}<br>
+                                السعر: <span style="color:var(--red);">${p.price}</span> ${p.old_price ? `|<span style="text-decoration:line-through; color:#64748b;"> ${p.old_price}</span>` : ''}
                             </div>
                             <div class="action-btns">
                                 <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل ✏️</button>
@@ -159,33 +137,13 @@
                             </div>
                         </div>
                     `;
-
-                    // قائمة العروض والتخفيضات المميزة
-                    if(p.old_price || p.discount) {
-                        oBox.innerHTML += `
-                            <div class="data-row" style="border-right:3px solid var(--red);">
-                                <img src="${img}" class="product-thumb-small">
-                                <div class="data-info">
-                                    <b>${p.title}</b><br>
-                                    خصم: <span style="color:var(--red);">${p.discount || 'عرض خاص'}</span> | السعر الحالي: ${p.price} (السابق: ${p.old_price || 'لا يوجد'})
-                                </div>
-                                <div class="action-btns">
-                                    <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل العرض ✏️</button>
-                                </div>
-                            </div>
-                        `;
-                    }
                 });
-                if(oBox.innerHTML === '') oBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد منتجات عليها خصم حالياً.</p>';
             }
 
-            // 2. تحميل المسوقين والبيانات الشاملة بكل مسوق
             let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
             let affBox = document.getElementById('affiliatesAdminList');
             affBox.innerHTML = '';
-            if(!affs || affs.length === 0) {
-                affBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا يوجد مسوقين مسجلين.</p>';
-            } else {
+            if(affs) {
                 affs.forEach(a => {
                     affBox.innerHTML += `
                         <div class="data-row">
@@ -203,13 +161,10 @@
                 });
             }
 
-            // 3. تحميل الطلبات المباشرة
             let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
             let ordBox = document.getElementById('ordersAdminList');
             ordBox.innerHTML = '';
-            if(!orders || orders.length === 0) {
-                ordBox.innerHTML = '<p style="font-size:11px; color:#64748b;">لا توجد طلبات شراء واردة.</p>';
-            } else {
+            if(orders) {
                 orders.forEach(o => {
                     let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--sadarah-btn);">[عرض السند]</a>` : 'بدون سند';
                     ordBox.innerHTML += `
@@ -240,7 +195,7 @@
                 document.getElementById('pDiscount').value = p.discount || '';
                 document.getElementById('pDesc').value = p.description || '';
                 
-                document.getElementById('formTitle').textContent = '✏️ تعديل بيانات المنتج: ' + p.title;
+                document.getElementById('formTitle').textContent = '✏️ تعديل المنتج أو العرض: ' + p.title;
                 document.getElementById('saveBtn').textContent = 'تحديث المنتج الآن 🔄';
                 document.getElementById('cancelEditBtn').style.display = 'block';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -255,7 +210,7 @@
             document.getElementById('pDiscount').value = '';
             document.getElementById('pImage').value = '';
             document.getElementById('pDesc').value = '';
-            document.getElementById('formTitle').textContent = '➕ إضافة / تعديل منتج أو خدمة جديدة';
+            document.getElementById('formTitle').textContent = '➕ إضافة / تعديل منتج أو عرض تخفيض';
             document.getElementById('saveBtn').textContent = 'حفظ ونشر المنتج 🚀';
             document.getElementById('cancelEditBtn').style.display = 'none';
         }
@@ -288,10 +243,10 @@
 
             if(editId) {
                 await db.from('platform_services').update(payload).eq('id', editId);
-                alert('تم تحديث بيانات المنتج بنجاح! ✅');
+                alert('تم تحديث البيانات بنجاح! ✅');
             } else {
                 await db.from('platform_services').insert([payload]);
-                alert('تمت إضافة المنتج بنجاح إلى المتجر! 🎉');
+                alert('تم النشر بنجاح! 🎉');
             }
 
             resetForm();
@@ -299,28 +254,17 @@
         }
 
         async function settleCommission(affId, current) {
-            let paid = prompt('أدخل المبلغ المراد تسويته مع المسوق (خصم من العمولات):', current);
+            let paid = prompt('أدخل المبلغ المراد تسويته مع المسوق:', current);
             if(paid !== null) {
                 let remaining = Math.max(0, current - Number(paid));
                 await db.from('affiliates').update({ total_earnings: remaining }).eq('id', affId);
-                alert('تمت تسوية العمولة بنجاح! 💵');
+                alert('تمت التسوية بنجاح! 💵');
                 loadAdminPanel();
             }
         }
 
-        async function uploadStoreLogo() {
-            let fileInput = document.getElementById('logoFile');
-            if(fileInput.files[0]) {
-                let file = fileInput.files[0];
-                await db.storage.from('products_images').upload('logo.jpg', file, { upsert: true });
-                alert('تم تحديث شعار المتجر بنجاح! 🌟');
-            } else {
-                alert('يرجى اختيار صورة الشعار أولاً.');
-            }
-        }
-
         async function deleteRecord(table, id) {
-            if(confirm('هل أنت متأكد من رغبتك في الحذف؟')) {
+            if(confirm('تأكيد الحذف؟')) {
                 await db.from(table).delete().eq('id', id);
                 loadAdminPanel();
             }
