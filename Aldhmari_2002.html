@@ -30,11 +30,10 @@
 
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 6px; color: #374151; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 9px; font-size: 11px; outline: none; background: #F9FAFB; color: #1F2937; font-weight: 700; transition: 0.2s; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--btn); background: #ffffff; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 9px; font-size: 11px; outline: none; background: #F9FAFB; color: #1F2937; font-weight: 700; }
 
         .submit-btn { background: var(--btn); color: white; border: none; padding: 12px; border-radius: 9px; font-weight: 900; width: 100%; cursor: pointer; font-size: 12px; transition: 0.2s; }
-        .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .submit-btn:hover { opacity: 0.9; }
         
         .data-row { background: #F9FAFB; border: 1px solid var(--border); padding: 12px; border-radius: 9px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
         .action-btn { border: none; padding: 7px 12px; border-radius: 6px; font-weight: 900; font-size: 10px; cursor: pointer; color: white; transition: 0.2s; }
@@ -42,7 +41,7 @@
         .btn-delete { background: var(--red); }
         .btn-pay { background: var(--green); }
         
-        .product-thumb { width: 45px; height: 45px; border-radius: 6px; object-fit: contain; background: #ffffff; border: 1px solid var(--border); padding: 2px; }
+        .product-thumb { width: 55px; height: 45px; border-radius: 6px; object-fit: contain; background: #ffffff; border: 1px solid var(--border); padding: 2px; }
     </style>
 </head>
 <body>
@@ -53,13 +52,10 @@
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. إدارة البنرات الإعلانية الثلاثة -->
+        <!-- 1. إدارة وعرض وحذف البنرات الإعلانية الثلاثة مباشرة -->
         <div class="section-box">
-            <h3>🖼️ إدارة ورفع البنرات الإعلانية الثلاثة</h3>
-            <div class="form-group"><label>صورة البنر العلوي (Top Banner)</label><input type="file" id="topBannerFile" accept="image/*"></div>
-            <div class="form-group"><label>صورة البنر الأوسط (Middle Banner)</label><input type="file" id="midBannerFile" accept="image/*"></div>
-            <div class="form-group"><label>صورة البنر السفلي (Bottom Banner)</label><input type="file" id="botBannerFile" accept="image/*"></div>
-            <button onclick="uploadBanners()" class="submit-btn" style="background:var(--primary); color:var(--gold);">رفع وتحديث البنرات سحابياً 🌟</button>
+            <h3>🖼️ إدارة ومعاينة البنرات الإعلانية الثلاثة</h3>
+            <div id="bannersAdminList">جاري تحميل البنرات الحالية...</div>
         </div>
 
         <!-- 2. إدارة سياسات المتجر والضمان -->
@@ -134,6 +130,39 @@
 
         async function loadAdminPanel() {
             try {
+                // جلب وعرض البنرات الثلاثة مع المعاينة وأزرار التغيير أو الحذف
+                let { data: settings } = await db.from('store_settings').select('*');
+                let bBox = document.getElementById('bannersAdminList');
+                bBox.innerHTML = '';
+                
+                const bannerLabels = {
+                    'top_banner': 'البنر العلوي (Top Banner)',
+                    'middle_banner': 'البنر الأوسط (Middle Banner)',
+                    'bottom_banner': 'البنر السفلي (Bottom Banner)'
+                };
+
+                ['top_banner', 'middle_banner', 'bottom_banner'].forEach(key => {
+                    let found = settings ? settings.find(s => s.key === key) : null;
+                    let imgUrl = found ? found.value : 'https://via.placeholder.com/150x50?text=No+Banner';
+                    
+                    bBox.innerHTML += `
+                        <div class="data-row">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <img src="${imgUrl}" class="product-thumb">
+                                <div style="font-size:11px;">
+                                    <b>${bannerLabels[key]}</b><br>
+                                    <span style="color:#6B7280; font-size:10px; word-break:break-all;">${imgUrl.substring(0, 40)}...</span>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:6px; align-items:center;">
+                                <input type="file" id="file_${key}" accept="image/*" style="display:none;" onchange="uploadSpecificBanner('${key}')">
+                                <button class="action-btn btn-edit" onclick="document.getElementById('file_${key}').click()">تعديل / رفع 🖼️</button>
+                                <button class="action-btn btn-delete" onclick="deleteBanner('${key}')">حذف 🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
                 let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 globalProducts = prods || [];
                 let pBox = document.getElementById('productsAdminList');
@@ -212,6 +241,35 @@
             }
         }
 
+        async function uploadSpecificBanner(key) {
+            let fileInput = document.getElementById('file_' + key);
+            let file = fileInput.files[0];
+            if(!file) return;
+
+            try {
+                let fileName = 'banners/' + key + '_' + Date.now() + '_' + file.name;
+                let { data, error } = await db.storage.from('products_images').upload(fileName, file);
+                if(error) throw error;
+
+                if(data) {
+                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                    await db.from('store_settings').upsert({ key: key, value: pub.publicUrl });
+                    alert('تم رفع وتحديث البنر بنجاح وعرضه في المتجر فوراً! 🌟');
+                    loadAdminPanel();
+                }
+            } catch(err) {
+                alert('خطأ في الرفع: ' + err.message);
+            }
+        }
+
+        async function deleteBanner(key) {
+            if(confirm('هل أنت متأكد من رغبتك في حذف هذا البنر؟')) {
+                await db.from('store_settings').upsert({ key: key, value: '' });
+                alert('تم حذف البنر بنجاح!');
+                loadAdminPanel();
+            }
+        }
+
         async function loadPolicyContent() {
             try {
                 let key = document.getElementById('policyKey').value;
@@ -226,45 +284,6 @@
             let { error } = await db.from('store_settings').upsert({ key, value });
             if(!error) alert('تم حفظ وتحديث المحتوى بنجاح! 📝');
             else alert('حدث خطأ أثناء الحفظ.');
-        }
-
-        async function uploadBanners() {
-            let topFile = document.getElementById('topBannerFile').files[0];
-            let midFile = document.getElementById('midBannerFile').files[0];
-            let botFile = document.getElementById('botBannerFile').files[0];
-
-            try {
-                if(topFile) {
-                    let fileName = 'banners/top_' + Date.now() + '_' + topFile.name;
-                    let { data } = await db.storage.from('products_images').upload(fileName, topFile);
-                    if(data) {
-                        let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
-                        await db.from('store_settings').upsert({ key: 'top_banner', value: pub.publicUrl });
-                    }
-                }
-
-                if(midFile) {
-                    let fileName = 'banners/mid_' + Date.now() + '_' + midFile.name;
-                    let { data } = await db.storage.from('products_images').upload(fileName, midFile);
-                    if(data) {
-                        let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
-                        await db.from('store_settings').upsert({ key: 'middle_banner', value: pub.publicUrl });
-                    }
-                }
-
-                if(botFile) {
-                    let fileName = 'banners/bot_' + Date.now() + '_' + botFile.name;
-                    let { data } = await db.storage.from('products_images').upload(fileName, botFile);
-                    if(data) {
-                        let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
-                        await db.from('store_settings').upsert({ key: 'bottom_banner', value: pub.publicUrl });
-                    }
-                }
-
-                alert('تم رفع وتحديث البنرات بنجاح وعرضها في الواجهة! 🌟');
-            } catch(err) {
-                alert('حدث خطأ أثناء رفع البنرات، تأكد من إعدادات سوبابيس و Storage Bucket.');
-            }
         }
 
         async function saveProductData() {
