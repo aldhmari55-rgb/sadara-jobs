@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم والإدارة المطلقة | متجر صدارة</title>
+    <title>لوحة التحكم والإدارة المطلقة | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -205,7 +205,9 @@
                 }
 
                 loadPolicyContent();
-            } catch(err) {}
+            } catch(err) {
+                console.error("Admin load error:", err);
+            }
         }
 
         async function loadPolicyContent() {
@@ -219,8 +221,9 @@
         async function savePolicy() {
             let key = 'policy_' + document.getElementById('policyKey').value;
             let value = document.getElementById('policyText').value.trim();
-            await db.from('store_settings').upsert({ key, value });
-            alert('تم حفظ وتحديث المحتوى بنجاح! 📝');
+            let { error } = await db.from('store_settings').upsert({ key, value });
+            if(!error) alert('تم حفظ وتحديث المحتوى بنجاح! 📝');
+            else alert('حدث خطأ أثناء الحفظ.');
         }
 
         async function uploadBanners() {
@@ -258,7 +261,7 @@
 
                 alert('تم رفع وتحديث البنرات بنجاح وعرضها في الواجهة! 🌟');
             } catch(err) {
-                alert('حدث خطأ أثناء رفع البنرات، تأكد من إعدادات سوبابيس.');
+                alert('حدث خطأ أثناء رفع البنرات، تأكد من إعدادات سوبابيس و Storage Bucket.');
             }
         }
 
