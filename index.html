@@ -34,7 +34,7 @@
 
         .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 10px; }
 
-        .stats-banner { background: #ffffff; border: 1px solid var(--aj-border); border-radius: 12px; padding: 12px; margin-bottom: 15px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; }
+        .stats-banner { background: #ffffff; border: 1px solid var(--aj-border); border-radius: 12px; padding: 12px; margin-bottom: 15px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
         @media(max-width: 576px) { .stats-banner { grid-template-columns: repeat(2, 1fr); } }
         .stat-item h3 { font-size: 15px; font-weight: 900; color: var(--aj-primary); }
         .stat-item p { font-size: 10px; color: #6B7280; font-weight: 700; margin-top: 2px; }
@@ -50,12 +50,14 @@
         .promo-banner-card img { width: 100%; height: auto; display: block; max-height: 180px; object-fit: cover; }
 
         .section-title-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 5px 10px; }
-        .section-title-row h2 { font-size: 15px; font-weight: 900; color: var(--aj-primary); }
+        .section-title-row h2 { font-size: 15px; font-weight: 900; color: var(--aj-primary); display: flex; align-items: center; gap: 6px; }
 
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; }
         @media (min-width: 768px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; } }
 
-        .product-card { background: #ffffff; border: 1px solid var(--aj-border); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .product-card { background: #ffffff; border: 1px solid var(--aj-border); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: 0.2s; }
+        .product-card:hover { border-color: #9CA3AF; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
         .discount-badge { position: absolute; top: 10px; left: 10px; background: var(--discount-red); color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; z-index: 5; }
         
         .product-img-box { width: 100%; height: 150px; display: flex; justify-content: center; align-items: center; cursor: pointer; margin-bottom: 8px; }
@@ -66,7 +68,8 @@
         .current-price { font-size: 13px; font-weight: 900; color: var(--discount-red); }
         .old-price { font-size: 10px; font-weight: 700; color: #9CA3AF; text-decoration: line-through; }
 
-        .add-to-cart-btn { background: var(--aj-btn); color: white; border: none; width: 100%; padding: 8px; border-radius: 8px; font-weight: 900; font-size: 11px; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; }
+        .add-to-cart-btn { background: var(--aj-btn); color: white; border: none; width: 100%; padding: 8px; border-radius: 8px; font-weight: 900; font-size: 11px; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .add-to-cart-btn:hover { background: var(--aj-btn-hover); }
 
         .offers-track { display: flex; gap: 12px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 5px; scrollbar-width: none; }
         .offers-track::-webkit-scrollbar { display: none; }
@@ -78,6 +81,7 @@
         .footer-col ul { list-style: none; }
         .footer-col ul li { margin-bottom: 6px; }
         .footer-col ul li a { color: #9CA3AF; text-decoration: none; }
+        .footer-col ul li a:hover { color: #ffffff; }
 
         .whatsapp-float { position: fixed; bottom: 20px; left: 15px; background: #ffffff; color: #25D366; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 950; text-decoration: none; }
     </style>
@@ -101,7 +105,7 @@
     </header>
 
     <div class="search-bar-container" id="searchBarBox">
-        <input type="text" id="searchInput" class="search-input-box" placeholder="ابحث عما ترغب به..." oninput="filterStoreProducts()">
+        <input type="text" id="searchInput" class="search-input-box" placeholder="ابحث عن منتج أو خدمة..." oninput="filterStoreProducts()">
     </div>
 
     <a href="https://wa.me/967780568507" target="_blank" class="whatsapp-float" title="خدمة العملاء واتساب">
@@ -109,9 +113,9 @@
     </a>
 
     <div class="container">
-        <!-- البنر العلوي -->
+        <!-- البنر العلوي (قابل للتغيير من لوحة التحكم) -->
         <div class="promo-banner-card" id="topBannerBox">
-            <img id="topBannerImg" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b7da?w=800&auto=format&fit=crop" alt="بنر إعلاني">
+            <img id="topBannerImg" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b7da?w=800&auto=format&fit=crop" alt="بنر العلوي">
         </div>
 
         <div class="stats-banner">
@@ -121,6 +125,7 @@
             <div class="stat-item"><h3 id="statAffiliates">0</h3><p>🤝 المسوقين</p></div>
         </div>
 
+        <!-- الأقسام الدائرية المتحركة -->
         <div class="categories-slider" id="categoriesContainer">
             <div class="cat-box active" onclick="filterStore('الكل', this)"><div class="cat-icon-circle"><i class="fa-solid fa-globe"></i></div><div class="cat-txt">الكل</div></div>
             <div class="cat-box" onclick="filterStore('إلكترونيات', this)"><div class="cat-icon-circle"><i class="fa-solid fa-tv"></i></div><div class="cat-txt">إلكترونيات</div></div>
@@ -132,29 +137,29 @@
             <div class="cat-box" onclick="filterStore('ملابس', this)"><div class="cat-icon-circle"><i class="fa-solid fa-shirt"></i></div><div class="cat-txt">ملابس</div></div>
         </div>
 
-        <!-- أفضل العروض والتخفيضات -->
+        <!-- أفضل العروض والتخفيضات (السلايدر المتحرك أفقياً) -->
         <div class="section-title-row">
-            <h2>🔥 أفضل العروض والتخفيضات</h2>
+            <h2>🔥 أفضل العروض والتخفيضات المميزة</h2>
         </div>
         <div class="offers-track" id="offersTrack">
-            جاري التحميل...
+            جاري تحميل العروض...
         </div>
 
-        <!-- البنر الأوسط -->
+        <!-- البنر الأوسط (قابل للتغيير من لوحة التحكم) -->
         <div class="promo-banner-card" id="middleBannerBox" style="margin:20px 0;">
-            <img id="middleBannerImg" src="https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=800&auto=format&fit=crop" alt="بنر وسط">
+            <img id="middleBannerImg" src="https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=800&auto=format&fit=crop" alt="بنر الأوسط">
         </div>
 
         <div class="section-title-row" style="margin-top:20px;">
-            <h2>📦 أحدث المنتجات والخدمات</h2>
+            <h2>📦 أحدث المنتجات والخدمات المعروضة</h2>
         </div>
         <div id="productsGridContainer" class="products-grid">
             جاري تحميل المنتجات...
         </div>
 
-        <!-- البنر السفلي -->
+        <!-- البنر السفلي (قابل للتغيير من لوحة التحكم) -->
         <div class="promo-banner-card" id="bottomBannerBox" style="margin-top:20px;">
-            <img id="bottomBannerImg" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop" alt="بنر أسفل">
+            <img id="bottomBannerImg" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop" alt="بنر السفلي">
         </div>
     </div>
 
@@ -162,7 +167,7 @@
         <div class="footer-content">
             <div class="footer-col">
                 <h4>عن متجر صدارة</h4>
-                <p style="line-height:1.6; font-size:10.5px;">متجر صدارة وجهتك الأولى للأجهزة الإلكترونية والمنتجات الأصلية والخدمات الرقمية بجودة عالية.</p>
+                <p style="line-height:1.6; font-size:10.5px;">متجر صدارة وجهتك الأولى للأجهزة الإلكترونية والمنتجات الأصلية والخدمات الرقمية بجودة عالية وأسعار منافسة.</p>
                 <div style="margin-top:12px;">
                     <a href="affiliate.html" style="color:var(--aj-gold); font-weight:900; text-decoration:none;"><i class="fa-solid fa-handshake-angle"></i> انضم لبرنامج التسويق بالعمولة (الأفلييت)</a>
                 </div>
@@ -179,7 +184,7 @@
             <div class="footer-col">
                 <h4>خدمة العملاء</h4>
                 <p>📞 هاتف / واتساب: <a href="https://wa.me/967780568507" target="_blank" style="color:#25D366; font-weight:bold;">780568507</a></p>
-                <p>✉️ aldhmari55@gmail.com</p>
+                <p>✉️ support@sadarah.top</p>
                 <p style="margin-top:8px; color:#10B981; font-weight:bold;">موثّق في منصة صدارة الرقمية</p>
             </div>
         </div>
@@ -202,7 +207,7 @@
 
         async function loadStoreData() {
             try {
-                // جلب البنرات الإعلانية المحدثة من جدول store_settings
+                // جلب البنرات المحدثة سحابياً
                 let { data: settings } = await db.from('store_settings').select('*');
                 if(settings && settings.length > 0) {
                     settings.forEach(s => {
@@ -215,7 +220,6 @@
                 let { data } = await db.from('platform_services').select('*').eq('is_active', true).order('id', {ascending: false});
                 allProducts = data || [];
                 
-                // تصفية وعرض العروض والتخفيضات (التي تحتوي على old_price أو discount)
                 renderBestOffers(allProducts.filter(p => (p.discount && p.discount.trim() !== '') || (p.old_price && p.old_price.trim() !== '')));
                 renderStoreProducts(allProducts);
 
@@ -297,7 +301,7 @@
                         <div>
                             <div class="product-title" onclick="window.location.href='product.html?id=${p.id}${ref}'">${p.title}</div>
                             <div class="price-row">
-                                <span class="current-price" style="color:var(--discount-red);">${p.price}</span>
+                                <span class="current-price">${p.price}</span>
                                 ${oldPriceHTML}
                             </div>
                         </div>
