@@ -22,8 +22,7 @@
 
         .container { max-width: 950px; margin: 0 auto; }
         .top-nav { background: var(--primary); padding: 16px 20px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .mini-btn { background: rgba(255,255,255,0.12); color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 1px solid rgba(212,175,55,0.4); transition: 0.2s; }
-        .mini-btn:hover { background: rgba(255,255,255,0.2); }
+        .mini-btn { background: rgba(255,255,255,0.12); color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 1px solid rgba(212,175,55,0.4); }
 
         .section-box { background: #ffffff; padding: 20px; border-radius: 14px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
         .section-box h3 { font-size: 14px; margin-bottom: 14px; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--light); padding-bottom: 8px; }
@@ -51,10 +50,10 @@
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. إدارة البنرات الإعلانية الثلاثة (زر رفع وحفظ واقعي لكل بنر) -->
+        <!-- 1. إدارة وحفظ البنرات برابط مباشر سريع وآمن -->
         <div class="section-box">
-            <h3>🖼️ إدارة وحفظ البنرات الإعلانية الثلاثة بالمنصة</h3>
-            <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">اختر الصورة من معرض جوالك لكل بنر، ثم اضغط على زر "حفظ ورفع للمنصة" ليظهر فوراً:</p>
+            <h3>🖼️ إدارة وحفظ البنرات الإعلانية بالمنصة</h3>
+            <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">قم بتحديث رابط أي بنر وسيحفظ فوراً ويظهر في الواجهة:</p>
             <div id="bannersAdminList">جاري التحميل...</div>
         </div>
 
@@ -96,7 +95,7 @@
             <div class="form-group"><label>السعر الحالي</label><input type="text" id="pPrice" placeholder="3500 YER"></div>
             <div class="form-group"><label>السعر السابق المشطوب (لتفعيل العرض الخاص)</label><input type="text" id="pOldPrice" placeholder="5000 YER"></div>
             <div class="form-group"><label>نسبة أو شارة الخصم (مثل: -30%)</label><input type="text" id="pDiscount" placeholder="-30%"></div>
-            <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage" accept="image/*"></div>
+            <div class="form-group"><label>صورة المنتج (رابط مباشر)</label><input type="text" id="pImage" placeholder="https://..."></div>
             <div class="form-group"><label>الوصف والتفاصيل</label><textarea id="pDesc" rows="2" placeholder="تفاصيل المنتج..."></textarea></div>
             <button onclick="saveProductData()" id="saveBtn" class="submit-btn">نشر / حفظ المنتج في المتجر 🚀</button>
             <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:#F3F4F6; color:var(--primary); border:none; padding:9px; border-radius:9px; margin-top:8px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
@@ -142,20 +141,16 @@
 
                 bannerInfo.forEach(b => {
                     let found = settings ? settings.find(s => s.key === b.key) : null;
-                    let imgUrl = found ? found.value : 'https://via.placeholder.com/150x50?text=No+Banner';
+                    let imgUrl = found ? found.value : '';
                     
                     bBox.innerHTML += `
                         <div class="data-row">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <img src="${imgUrl}" class="product-thumb">
-                                <div style="font-size:11px;">
-                                    <b>${b.name}</b><br>
-                                    <span style="color:#10B981; font-weight:bold;">الحالة: جاهز وحي</span>
-                                </div>
+                            <div style="flex:1; min-width:200px;">
+                                <b>${b.name}</b><br>
+                                <input type="text" id="url_${b.key}" value="${imgUrl}" placeholder="ضع رابط الصورة هنا..." style="width:100%; padding:8px; margin-top:5px; border:1px solid var(--border); border-radius:6px; font-size:10px;">
                             </div>
-                            <div style="display:flex; gap:6px; align-items:center;">
-                                <input type="file" id="input_${b.key}" accept="image/*" style="display:none;" onchange="uploadBanner('${b.key}')">
-                                <button class="action-btn btn-edit" onclick="document.getElementById('input_${b.key}').click()">اختيار من المعرض 📱</button>
+                            <div style="display:flex; gap:6px; align-items:center; margin-top:10px;">
+                                <button class="action-btn btn-edit" onclick="updateBannerUrl('${b.key}')">حفظ البنر 💾</button>
                                 <button class="action-btn btn-delete" onclick="removeBanner('${b.key}')">حذف 🗑️</button>
                             </div>
                         </div>
@@ -240,35 +235,21 @@
             }
         }
 
-        async function uploadBanner(key) {
-            let input = document.getElementById('input_' + key);
-            let file = input.files[0];
-            if(!file) return;
+        async function updateBannerUrl(key) {
+            let urlInput = document.getElementById('url_' + key).value.trim();
+            if(!urlInput) { alert('يرجى وضع رابط الصورة أولاً.'); return; }
 
-            alert('جاري رفع البنر وحفظه للمنصة، يرجى الانتظار ثوانٍ...');
-
-            try {
-                let fileName = 'banners/' + key + '_' + Date.now() + '_' + file.name;
-                let { data, error } = await db.storage.from('products_images').upload(fileName, file);
-                if(error) throw error;
-
-                if(data) {
-                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
-                    let pubUrl = pub.publicUrl;
-
-                    let { error: upsertErr } = await db.from('store_settings').upsert({ key: key, value: pubUrl });
-                    if(upsertErr) throw upsertErr;
-
-                    alert('تم حفظ ورفع البنر للمنصة بنجاح تام! 🌟 سيظهر في الواجهة الآن.');
-                    loadAdminPanel();
-                }
-            } catch(err) {
-                alert('خطأ أثناء الرفع: المبين في السحاب -> ' + err.message);
+            let { error } = await db.from('store_settings').upsert({ key: key, value: urlInput });
+            if(!error) {
+                alert('تم حفظ وتحديث البنر بنجاح وسيظهر في الواجهة فوراً! 🌟');
+                loadAdminPanel();
+            } else {
+                alert('خطأ أثناء الحفظ: ' + error.message);
             }
         }
 
         async function removeBanner(key) {
-            if(confirm('هل أنت متأكد من رغبتك في حذف هذا البنر وإفراغه؟')) {
+            if(confirm('هل أنت متأكد من رغبتك في حذف هذا البنر؟')) {
                 await db.from('store_settings').upsert({ key: key, value: '' });
                 alert('تم حذف البنر بنجاح!');
                 loadAdminPanel();
@@ -298,21 +279,10 @@
             let price = document.getElementById('pPrice').value.trim();
             let old_price = document.getElementById('pOldPrice').value.trim();
             let discount = document.getElementById('pDiscount').value.trim();
-            let fileInput = document.getElementById('pImage');
+            let imageUrl = document.getElementById('pImage').value.trim();
             let description = document.getElementById('pDesc').value.trim();
 
             if(!title || !price) { alert('يرجى إدخال عنوان المنتج والسعر على الأقل.'); return; }
-
-            let imageUrl = '';
-            if(fileInput.files[0]) {
-                let file = fileInput.files[0];
-                let fileName = 'products/' + Date.now() + '_' + file.name;
-                let { data } = await db.storage.from('products_images').upload(fileName, file);
-                if(data) {
-                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
-                    imageUrl = pub.publicUrl;
-                }
-            }
 
             let payload = { 
                 title, 
@@ -349,6 +319,7 @@
                 document.getElementById('pPrice').value = p.price || '';
                 document.getElementById('pOldPrice').value = p.old_price || '';
                 document.getElementById('pDiscount').value = p.discount || '';
+                document.getElementById('pImage').value = p.image || '';
                 document.getElementById('pDesc').value = p.description || '';
                 
                 document.getElementById('formTitle').textContent = '✏️ تعديل المنتج: ' + p.title;
