@@ -23,15 +23,15 @@
         html { scroll-behavior: smooth; width: 100%; }
         body { background: var(--aj-light); padding-bottom: 70px; color: var(--text-main); width: 100%; overflow-x: hidden; }
 
-        .aj-header { background: #ffffff; border-bottom: 1px solid var(--aj-border); position: sticky; top: 0; z-index: 1000; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+        .aj-header { background: #ffffff; border-bottom: 1px solid var(--aj-border); position: sticky; top: 0; z-index: 1000; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .aj-header-left, .aj-header-right { display: flex; align-items: center; gap: 14px; font-size: 18px; color: var(--aj-primary); cursor: pointer; }
         .aj-logo-container { text-align: center; }
-        .aj-logo-img { height: 32px; object-fit: contain; }
+        .aj-logo-img { height: 34px; object-fit: contain; }
 
-        .search-bar-container { background: #ffffff; padding: 8px 16px; border-bottom: 1px solid var(--aj-border); display: none; }
-        .search-input-box { width: 100%; padding: 8px 14px; border: 1px solid var(--aj-border); border-radius: 8px; font-size: 12px; outline: none; background: #F3F4F6; }
+        .search-bar-container { background: #ffffff; padding: 10px 16px; border-bottom: 1px solid var(--aj-border); display: none; }
+        .search-input-box { width: 100%; padding: 10px 14px; border: 1px solid var(--aj-border); border-radius: 8px; font-size: 12px; outline: none; background: #F3F4F6; }
 
-        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 10px; }
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 12px; }
 
         .stats-banner { background: #ffffff; border: 1px solid var(--aj-border); border-radius: 12px; padding: 12px; margin-bottom: 15px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
         @media(max-width: 576px) { .stats-banner { grid-template-columns: repeat(2, 1fr); } }
@@ -40,10 +40,10 @@
 
         .categories-slider { display: flex; gap: 14px; overflow-x: auto; padding: 10px 4px 15px; margin-bottom: 10px; scrollbar-width: none; }
         .categories-slider::-webkit-scrollbar { display: none; }
-        .cat-box { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; width: 70px; }
-        .cat-icon-circle { width: 56px; height: 56px; border-radius: 50%; background: #ffffff; border: 1px solid var(--aj-border); display: flex; justify-content: center; align-items: center; font-size: 20px; color: var(--aj-primary); transition: 0.3s; }
+        .cat-box { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; width: 75px; }
+        .cat-icon-circle { width: 56px; height: 56px; border-radius: 50%; background: #ffffff; border: 1px solid var(--aj-border); display: flex; justify-content: center; align-items: center; font-size: 20px; color: var(--aj-primary); transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .cat-box:hover .cat-icon-circle, .cat-box.active .cat-icon-circle { border-color: var(--aj-primary); background: var(--aj-primary); color: #ffffff; }
-        .cat-txt { font-size: 10px; font-weight: 800; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+        .cat-txt { font-size: 10.5px; font-weight: 800; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
         .promo-banner-card { width: 100%; border-radius: 12px; overflow: hidden; margin: 15px 0; background: #ffffff; border: 1px solid var(--aj-border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .promo-banner-card img { width: 100%; height: auto; display: block; max-height: 180px; object-fit: cover; }
@@ -104,7 +104,7 @@
     </header>
 
     <div class="search-bar-container" id="searchBarBox">
-        <input type="text" id="searchInput" class="search-input-box" placeholder="ابحث عن منتج أو خدمة..." oninput="filterStoreProducts()">
+        <input type="text" id="searchInput" class="search-input-box" placeholder="ابحث عما ترغب به..." oninput="filterStoreProducts()">
     </div>
 
     <!-- خدمة العملاء مباشرة على رقمك 780568507 -->
@@ -113,7 +113,7 @@
     </a>
 
     <div class="container">
-        <!-- البنر العلوي (يتم تحديثه تلقائياً من لوحة التحكم) -->
+        <!-- 1. البنر العلوي -->
         <div class="promo-banner-card" id="topBannerBox">
             <img id="topBannerImg" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b7da?w=800&auto=format&fit=crop" alt="بنر العلوي">
         </div>
@@ -125,27 +125,26 @@
             <div class="stat-item"><h3 id="statAffiliates">0</h3><p>🤝 المسوقين</p></div>
         </div>
 
-        <!-- الأقسام الدائرية المتحركة -->
+        <!-- التصنيفات المحددة المطلوبة -->
         <div class="categories-slider" id="categoriesContainer">
             <div class="cat-box active" onclick="filterStore('الكل', this)"><div class="cat-icon-circle"><i class="fa-solid fa-globe"></i></div><div class="cat-txt">الكل</div></div>
-            <div class="cat-box" onclick="filterStore('إلكترونيات', this)"><div class="cat-icon-circle"><i class="fa-solid fa-tv"></i></div><div class="cat-txt">إلكترونيات</div></div>
             <div class="cat-box" onclick="filterStore('جوالات', this)"><div class="cat-icon-circle"><i class="fa-solid fa-mobile-screen"></i></div><div class="cat-txt">جوالات</div></div>
             <div class="cat-box" onclick="filterStore('اكسسوارات', this)"><div class="cat-icon-circle"><i class="fa-solid fa-headphones"></i></div><div class="cat-txt">اكسسوارات</div></div>
-            <div class="cat-box" onclick="filterStore('ساعات واساور', this)"><div class="cat-icon-circle"><i class="fa-solid fa-clock"></i></div><div class="cat-txt">ساعات وأساور</div></div>
-            <div class="cat-box" onclick="filterStore('بطاريات متنقلة', this)"><div class="cat-icon-circle"><i class="fa-solid fa-battery-full"></i></div><div class="cat-txt">باوربانك</div></div>
+            <div class="cat-box" onclick="filterStore('إلكترونيات', this)"><div class="cat-icon-circle"><i class="fa-solid fa-tv"></i></div><div class="cat-txt">إلكترونيات</div></div>
+            <div class="cat-box" onclick="filterStore('حقائب', this)"><div class="cat-icon-circle"><i class="fa-solid fa-bag-shopping"></i></div><div class="cat-txt">حقائب</div></div>
             <div class="cat-box" onclick="filterStore('عطور', this)"><div class="cat-icon-circle"><i class="fa-solid fa-spray-can-sparkles"></i></div><div class="cat-txt">عطور</div></div>
             <div class="cat-box" onclick="filterStore('ملابس', this)"><div class="cat-icon-circle"><i class="fa-solid fa-shirt"></i></div><div class="cat-txt">ملابس</div></div>
         </div>
 
-        <!-- أفضل العروض والتخفيضات المميزة (السلايدر المتحرك أفقياً) -->
+        <!-- مربع العروض الخاصة والتخفيضات المميزة -->
         <div class="section-title-row">
-            <h2>🔥 أفضل العروض والتخفيضات المميزة</h2>
+            <h2>🔥 عروض خاصة والتخفيضات الكبرى</h2>
         </div>
         <div class="offers-track" id="offersTrack">
             جاري تحميل العروض...
         </div>
 
-        <!-- البنر الأوسط (يتم تحديثه تلقائياً من لوحة التحكم) -->
+        <!-- 2. البنر الأوسط -->
         <div class="promo-banner-card" id="middleBannerBox" style="margin:20px 0;">
             <img id="middleBannerImg" src="https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=800&auto=format&fit=crop" alt="بنر الأوسط">
         </div>
@@ -157,7 +156,7 @@
             جاري تحميل المنتجات...
         </div>
 
-        <!-- البنر السفلي (يتم تحديثه تلقائياً من لوحة التحكم) -->
+        <!-- 3. البنر السفلي -->
         <div class="promo-banner-card" id="bottomBannerBox" style="margin-top:20px;">
             <img id="bottomBannerImg" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop" alt="بنر السفلي">
         </div>
@@ -173,16 +172,16 @@
                 </div>
             </div>
             <div class="footer-col">
-                <h4>روابط وسياسات المتجر</h4>
+                <h4>سياسات المتجر والشروط</h4>
                 <ul>
                     <li><a href="privacy.html">سياسة الخصوصية</a></li>
                     <li><a href="exchange.html">سياسة الاستبدال والاسترجاع</a></li>
-                    <li><a href="shipping.html">شروط وسياسة الشحن</a></li>
+                    <li><a href="shipping.html">شروط وسياسة الشحن والتوصيل</a></li>
                     <li><a href="warranty.html">الضمان وشروط الخدمة</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>خدمة العملاء</h4>
+                <h4>معلومات التواصل</h4>
                 <p>📞 هاتف / واتساب: <a href="https://wa.me/967780568507" target="_blank" style="color:#25D366; font-weight:bold;">780568507</a></p>
                 <p>✉️ support@sadarah.top</p>
                 <p style="margin-top:8px; color:#10B981; font-weight:bold;">موثّق في منصة صدارة الرقمية</p>
@@ -207,7 +206,6 @@
 
         async function loadStoreData() {
             try {
-                // جلب البنرات المحدثة سحابياً من جدول store_settings بناءً على ما يتم رفعه في لوحة التحكم
                 let { data: settings } = await db.from('store_settings').select('*');
                 if(settings && settings.length > 0) {
                     settings.forEach(s => {
@@ -217,7 +215,6 @@
                     });
                 }
 
-                // جلب المنتجات والخدمات والتخفيضات المحدثة من لوحة التحكم
                 let { data } = await db.from('platform_services').select('*').eq('is_active', true).order('id', {ascending: false});
                 allProducts = data || [];
                 
