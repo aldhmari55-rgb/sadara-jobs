@@ -37,34 +37,21 @@
         .stat-item h3 { font-size: 15px; font-weight: 900; color: var(--aj-primary); }
         .stat-item p { font-size: 10px; color: #6B7280; font-weight: 700; margin-top: 2px; }
 
+        /* السلايدر المتحرك الديناميكي الجديد */
+        .hero-slider-container { width: 100%; border-radius: 12px; overflow: hidden; margin: 15px 0; background: #ffffff; border: 1px solid var(--aj-border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; }
+        .hero-slides-track { display: flex; transition: transform 0.5s ease-in-out; width: 100%; }
+        .hero-slide-item { min-width: 100%; box-sizing: border-box; display: flex; justify-content: center; align-items: center; background: #f3f4f6; }
+        .hero-slide-item img { width: 100%; height: auto; max-height: 220px; object-fit: contain; display: block; }
+        .slider-dots { position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; z-index: 10; }
+        .slider-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.6); cursor: pointer; transition: 0.3s; }
+        .slider-dot.active { background: var(--aj-gold); width: 20px; border-radius: 4px; }
+
         .categories-slider { display: flex; gap: 14px; overflow-x: auto; padding: 10px 4px 15px; margin-bottom: 10px; scrollbar-width: none; }
         .categories-slider::-webkit-scrollbar { display: none; }
         .cat-box { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; width: 75px; }
         .cat-icon-circle { width: 56px; height: 56px; border-radius: 50%; background: #ffffff; border: 1px solid var(--aj-border); display: flex; justify-content: center; align-items: center; font-size: 20px; color: var(--aj-primary); transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .cat-box:hover .cat-icon-circle, .cat-box.active .cat-icon-circle { border-color: var(--aj-primary); background: var(--aj-primary); color: #ffffff; }
         .cat-txt { font-size: 10.5px; font-weight: 800; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-
-        /* مرونة كاملة للبنرات لتظهر كاملة مهما كانت مقاساتها دون قص */
-        .promo-banner-card { 
-            width: 100%; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            margin: 15px 0; 
-            background: #ffffff; 
-            border: 1px solid var(--aj-border); 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .promo-banner-card img { 
-            width: 100%; 
-            height: auto; 
-            max-height: 250px; 
-            display: block; 
-            object-fit: contain; 
-            background: #f3f4f6; 
-        }
 
         .section-title-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 5px 10px; }
         .section-title-row h2 { font-size: 15px; font-weight: 900; color: var(--aj-primary); display: flex; align-items: center; gap: 6px; }
@@ -128,16 +115,20 @@
     </a>
 
     <div class="container">
-        <!-- 1. البنر العلوي -->
-        <div class="promo-banner-card">
-            <img id="topBannerImg" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b7da?w=800&auto=format&fit=crop" alt="بنر العلوي">
-        </div>
-
+        <!-- شريط الإحصائيات -->
         <div class="stats-banner">
             <div class="stat-item"><h3 id="statLiveVisitors" style="color:#10B981;">1</h3><p>🟢 زوار متواجدون</p></div>
             <div class="stat-item"><h3 id="statTotalVisits">150</h3><p>👁️ إجمالي الزيارات</p></div>
             <div class="stat-item"><h3 id="statProducts">0</h3><p>📦 المنتجات</p></div>
             <div class="stat-item"><h3 id="statAffiliates">0</h3><p>🤝 المسوقين</p></div>
+        </div>
+
+        <!-- السلايدر المتحرك الديناميكي (بديل البنرات الثلاثة) -->
+        <div class="hero-slider-container">
+            <div class="hero-slides-track" id="heroSlidesTrack">
+                <!-- يتم تحميل الصور ديناميكياً من قاعدة البيانات -->
+            </div>
+            <div class="slider-dots" id="sliderDots"></div>
         </div>
 
         <!-- التصنيفات المعتمدة بدقة -->
@@ -159,21 +150,11 @@
             جاري تحميل العروض...
         </div>
 
-        <!-- 2. البنر الأوسط -->
-        <div class="promo-banner-card" style="margin:20px 0;">
-            <img id="middleBannerImg" src="https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=800&auto=format&fit=crop" alt="بنر الأوسط">
-        </div>
-
         <div class="section-title-row" style="margin-top:20px;">
             <h2>📦 أحدث المنتجات والخدمات المعروضة</h2>
         </div>
         <div id="productsGridContainer" class="products-grid">
             جاري تحميل المنتجات...
-        </div>
-
-        <!-- 3. البنر السفلي -->
-        <div class="promo-banner-card" style="margin-top:20px;">
-            <img id="bottomBannerImg" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop" alt="بنر السفلي">
         </div>
     </div>
 
@@ -213,6 +194,8 @@
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let allProducts = [];
+        let currentSlide = 0;
+        let slideInterval;
 
         function toggleSearch() {
             let box = document.getElementById('searchBarBox');
@@ -221,15 +204,28 @@
 
         async function loadStoreData() {
             try {
+                // جلب البنرات الثلاثة القديمة لتشكيل السلايدر المتحرك الديناميكي منها
                 let { data: settings } = await db.from('store_settings').select('*');
+                let bannerImages = [];
                 if(settings && settings.length > 0) {
                     settings.forEach(s => {
-                        if(s.key === 'top_banner' && s.value) document.getElementById('topBannerImg').src = s.value;
-                        if(s.key === 'middle_banner' && s.value) document.getElementById('middleBannerImg').src = s.value;
-                        if(s.key === 'bottom_banner' && s.value) document.getElementById('bottomBannerImg').src = s.value;
+                        if((s.key === 'top_banner' || s.key === 'middle_banner' || s.key === 'bottom_banner') && s.value && s.value.trim() !== '') {
+                            bannerImages.push(s.value);
+                        }
                     });
                 }
+                
+                // إذا لم تتوفر بنرات، نضع صور افتراضية متحركة رائعة
+                if(bannerImages.length === 0) {
+                    bannerImages = [
+                        'https://images.unsplash.com/photo-1607082348824-0a96f2a4b7da?w=800&auto=format&fit=crop',
+                        'https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=800&auto=format&fit=crop',
+                        'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop'
+                    ];
+                }
+                renderHeroSlider(bannerImages);
 
+                // جلب المنتجات والخدمات
                 let { data, error } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 if(error) throw error;
                 allProducts = data || [];
@@ -258,6 +254,58 @@
             } catch(e) {
                 console.error("Error loading store:", e);
             }
+        }
+
+        // دالة عرض السلايدر المتحرك الديناميكي
+        function renderHeroSlider(images) {
+            let track = document.getElementById('heroSlidesTrack');
+            let dots = document.getElementById('sliderDots');
+            track.innerHTML = '';
+            dots.innerHTML = '';
+
+            images.forEach((img, idx) => {
+                track.innerHTML += `
+                    <div class="hero-slide-item">
+                        <img src="${img}" alt="بانر الإعلان ${idx + 1}">
+                    </div>
+                `;
+                dots.innerHTML += `
+                    <div class="slider-dot ${idx === 0 ? 'active' : ''}" onclick="currentSlide = ${idx}; updateSlider(); resetTimer();"></div>
+                `;
+            });
+
+            startSliderTimer();
+        }
+
+        function updateSlider() {
+            let track = document.getElementById('heroSlidesTrack');
+            let slides = track.getElementsByClassName('hero-slide-item');
+            let dots = document.getElementById('sliderDots').getElementsByClassName('slider-dot');
+            
+            if(slides.length === 0) return;
+            if(currentSlide >= slides.length) currentSlide = 0;
+            if(currentSlide < 0) currentSlide = slides.length - 1;
+
+            track.style.transform = `translateX(${currentSlide * 100}%)`; // بالاتجاه العربي RTL
+
+            for(let i=0; i<dots.length; i++) {
+                dots[i].classList.remove('active');
+            }
+            if(dots[currentSlide]) dots[currentSlide].classList.add('active');
+        }
+
+        function startSliderTimer() {
+            if(slideInterval) clearInterval(slideInterval);
+            slideInterval = setInterval(() => {
+                currentSlide++;
+                let slides = document.getElementById('heroSlidesTrack').getElementsByClassName('hero-slide-item');
+                if(currentSlide >= slides.length) currentSlide = 0;
+                updateSlider();
+            }, 3500); // الانتقال تلقائياً كل 3.5 ثانية
+        }
+
+        function resetTimer() {
+            startSliderTimer();
         }
 
         function renderBestOffers(offers) {
