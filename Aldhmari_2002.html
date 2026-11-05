@@ -150,7 +150,7 @@
                                     <img src="${img}" class="product-thumb">
                                     <div style="font-size:11px;">
                                         <b>${p.title}</b> (${p.category}) ${offerTag}<br>
-                                        السعر: <span style="color:var(--red);">${p.price}</span>
+                                        السعر: <span style="color:var(--red);">${p.price}</span> ${p.old_price ? `(السابق: ${p.old_price})` : ''}
                                     </div>
                                 </div>
                                 <div style="display:flex; gap:6px;">
@@ -288,15 +288,26 @@
                 }
             }
 
-            let payload = { title, category, price, old_price, discount, description, is_active: true };
+            let payload = { 
+                title, 
+                category, 
+                price, 
+                old_price: old_price || null, 
+                discount: discount || null, 
+                description, 
+                is_active: true 
+            };
+            
             if(imageUrl) payload.image = imageUrl;
 
             if(editId) {
-                await db.from('platform_services').update(payload).eq('id', editId);
-                alert('تم تحديث المنتج بنجاح! ✅');
+                let { error } = await db.from('platform_services').update(payload).eq('id', editId);
+                if(error) alert('خطأ في التحديث: ' + error.message);
+                else alert('تم تحديث المنتج بنجاح! ✅');
             } else {
-                await db.from('platform_services').insert([payload]);
-                alert('تمت إضافة المنتج بنجاح! 🎉');
+                let { error } = await db.from('platform_services').insert([payload]);
+                if(error) alert('خطأ في الإضافة: ' + error.message);
+                else alert('تمت إضافة المنتج بنجاح! 🎉');
             }
 
             resetForm();
