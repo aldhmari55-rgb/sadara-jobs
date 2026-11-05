@@ -36,10 +36,9 @@
         
         .data-row { background: #F9FAFB; border: 1px solid var(--border); padding: 12px; border-radius: 9px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
         .action-btn { border: none; padding: 8px 14px; border-radius: 6px; font-weight: 900; font-size: 11px; cursor: pointer; color: white; transition: 0.2s; }
-        .btn-edit { background: var(--green); }
         .btn-delete { background: var(--red); }
         
-        .product-thumb { width: 70px; height: 45px; border-radius: 6px; object-fit: contain; background: #ffffff; border: 1px solid var(--border); padding: 2px; }
+        .product-thumb { width: 80px; height: 50px; border-radius: 6px; object-fit: cover; background: #ffffff; border: 1px solid var(--border); padding: 2px; }
     </style>
 </head>
 <body>
@@ -50,18 +49,17 @@
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. إدارة ورفع بانرات السلايدر المتحرك (أكثر من صورة) -->
+        <!-- 1. إدارة ورفع بانرات السلايدر المتحرك (صور متعددة تظهر تحت بعضها) -->
         <div class="section-box">
-            <h3>🎞️ إدارة بانرات السلايدر المتحرك (صور متعددة للمتجر)</h3>
-            <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">قم برفع صور جديدة لتظهر تباعاً في السلايدر المتحرك بالمتجر:</p>
+            <h3>🎞️ إدارة بانرات السلايدر المتحرك (صور متعددة تظهر تحت بعضها)</h3>
+            <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">اختر صورة من معرض الجوال وأضفها للسلايدر:</p>
             
             <div class="form-group">
-                <label>اختر صورة جديدة من معرض الجوال لإضافتها للسلايدر</label>
                 <input type="file" id="sliderFileInput" accept="image/*">
             </div>
-            <button onclick="uploadSliderImage()" class="submit-btn" style="background:var(--primary); color:var(--gold); margin-bottom: 15px;">إضافة الصورة للسلايدر المتحرك 🌟</button>
+            <button onclick="uploadSliderImage()" class="submit-btn" style="background:var(--primary); color:var(--gold); margin-bottom: 15px;">رفع وإضافة الصورة للسلايدر 🌟</button>
 
-            <div style="font-weight: 900; font-size: 12px; margin-bottom: 8px; color: var(--primary);">البنرات الحالية في السلايدر:</div>
+            <div style="font-weight: 900; font-size: 12px; margin-bottom: 10px; color: var(--primary);">الصور المضافة حالياً (تحت بعضها):</div>
             <div id="sliderAdminList">جاري التحميل...</div>
         </div>
 
@@ -132,12 +130,12 @@
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const STORAGE_BUCKET = "platform-files"; // تم التحديث ليتطابق مع الـ Bucket لديك
 
         let globalProducts = [];
 
         async function loadAdminPanel() {
             try {
-                // جلب وعرض صور السلايدر المتحرك من جدول store_settings
                 let { data: settings } = await db.from('store_settings').select('*');
                 let sBox = document.getElementById('sliderAdminList');
                 sBox.innerHTML = '';
@@ -160,7 +158,7 @@
                                     <img src="${imgUrl}" class="product-thumb">
                                     <div style="font-size:11px;">
                                         <b>صورة سلايدر رقم (${idx + 1})</b><br>
-                                        <span style="color:#10B981; font-weight:bold;">تظهر في واجهة المتجر</span>
+                                        <span style="color:#10B981; font-weight:bold;">نشطة في المتجر</span>
                                     </div>
                                 </div>
                                 <div style="display:flex; gap:6px; align-items:center;">
@@ -256,14 +254,13 @@
 
             try {
                 let fileName = 'slider/slide_' + Date.now() + '_' + file.name;
-                let { data, error } = await db.storage.from('products_images').upload(fileName, file);
+                let { data, error } = await db.storage.from(STORAGE_BUCKET).upload(fileName, file);
                 if(error) throw error;
 
                 if(data) {
-                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                    let { data: pub } = db.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
                     let pubUrl = pub.publicUrl;
 
-                    // جلب الصور الحالية للسلايدر
                     let { data: currentSet } = await db.from('store_settings').select('*').eq('key', 'hero_slider_images').maybeSingle();
                     let currentImgs = [];
                     try {
@@ -272,11 +269,10 @@
 
                     currentImgs.push(pubUrl);
 
-                    // حفظ القائمة المحدثة
                     await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(currentImgs) });
 
                     fileInput.value = '';
-                    alert('تمت إضافة الصورة بنجاح إلى السلايدر المتحرك في المتجر! 🌟');
+                    alert('تمت إضافة الصورة بنجاح إلى السلايدر المتحرك! 🌟');
                     loadAdminPanel();
                 }
             } catch(err) {
@@ -285,7 +281,7 @@
         }
 
         async function removeSliderImage(index) {
-            if(confirm('هل أنت متأكد من رغبتك في حذف هذه الصورة من السلايدر؟')) {
+            if(confirm('هل أنت متأكد من رغبتك في حذف هذه الصورة؟')) {
                 let { data: currentSet } = await db.from('store_settings').select('*').eq('key', 'hero_slider_images').maybeSingle();
                 let currentImgs = [];
                 try {
@@ -332,9 +328,9 @@
             if(fileInput.files[0]) {
                 let file = fileInput.files[0];
                 let fileName = 'products/' + Date.now() + '_' + file.name;
-                let { data } = await db.storage.from('products_images').upload(fileName, file);
+                let { data } = await db.storage.from(STORAGE_BUCKET).upload(fileName, file);
                 if(data) {
-                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                    let { data: pub } = db.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
                     imageUrl = pub.publicUrl;
                 }
             }
