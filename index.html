@@ -34,10 +34,10 @@
 
         .stats-banner { background: #ffffff; border: 1px solid var(--aj-border); border-radius: 12px; padding: 12px; margin-bottom: 15px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
         @media(max-width: 576px) { .stats-banner { grid-template-columns: repeat(2, 1fr); } }
-        .stat-item h3 { font-size: 15px; font-weight: 900; color: var(--aj-primary); }
+        .stat-item h3 { font-size: 15px; font-weight: 900; color: var(--aj-primary); min-height: 22px; }
         .stat-item p { font-size: 10px; color: #6B7280; font-weight: 700; margin-top: 2px; }
 
-        /* تنسيق السلايدر الديناميكي بمرونة 100% للجوال والكمبيوتر دون قص */
+        /* السلايدر المتحرك بدقة وتنسيق تام */
         .hero-slider-container { width: 100% !important; border-radius: 12px; overflow: hidden; margin: 15px 0; background: #ffffff; border: 1px solid var(--aj-border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; }
         .hero-slides-track { display: flex; transition: transform 0.5s ease-in-out; width: 100%; }
         .hero-slide-item { min-width: 100%; box-sizing: border-box; display: flex; justify-content: center; align-items: center; background: #f3f4f6; }
@@ -115,15 +115,15 @@
     </a>
 
     <div class="container">
-        <!-- شريط الإحصائيات -->
+        <!-- شريط الإحصائيات (تم تصحيح العداد ليبدأ فارغاً ثم يعرض القيمة الحقيقية لمنع الوميض) -->
         <div class="stats-banner">
             <div class="stat-item"><h3 id="statLiveVisitors" style="color:#10B981;">1</h3><p>🟢 زوار متواجدون</p></div>
-            <div class="stat-item"><h3 id="statTotalVisits">150</h3><p>👁️ إجمالي الزيارات</p></div>
-            <div class="stat-item"><h3 id="statProducts">0</h3><p>📦 المنتجات</p></div>
-            <div class="stat-item"><h3 id="statAffiliates">0</h3><p>🤝 المسوقين</p></div>
+            <div class="stat-item"><h3 id="statTotalVisits">...</h3><p>👁️ إجمالي الزيارات</p></div>
+            <div class="stat-item"><h3 id="statProducts">...</h3><p>📦 المنتجات</p></div>
+            <div class="stat-item"><h3 id="statAffiliates">...</h3><p>🤝 المسوقين</p></div>
         </div>
 
-        <!-- السلايدر المتحرك (يظهر فقط ما يرفع من لوحة التحكم بمرونة كاملة) -->
+        <!-- السلايدر المتحرك -->
         <div class="hero-slider-container" id="heroSliderWrapper" style="display: none;">
             <div class="hero-slides-track" id="heroSlidesTrack"></div>
             <div class="slider-dots" id="sliderDots"></div>
@@ -168,10 +168,10 @@
             <div class="footer-col">
                 <h4>سياسات المتجر والشروط</h4>
                 <ul>
-                    <li><a href="privacy.html">سياسة الخصوصية</a></li>
-                    <li><a href="exchange.html">سياسة الاستبدال والاسترجاع</a></li>
-                    <li><a href="shipping.html">شروط وسياسة الشحن والتوصيل</a></li>
-                    <li><a href="warranty.html">الضمان وشروط الخدمة</a></li>
+                    <li><a href="page.html?type=privacy">سياسة الخصوصية</a></li>
+                    <li><a href="page.html?type=exchange">سياسة الاستبدال والاسترجاع</a></li>
+                    <li><a href="page.html?type=shipping">شروط وسياسة الشحن والتوصيل</a></li>
+                    <li><a href="page.html?type=warranty">الضمان وشروط الخدمة</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -202,7 +202,6 @@
 
         async function loadStoreData() {
             try {
-                // جلب صور السلايدر حصرياً من لوحة التحكم (hero_slider_images)
                 let { data: settings } = await db.from('store_settings').select('*');
                 let sliderSetting = settings ? settings.find(s => s.key === 'hero_slider_images') : null;
                 let bannerImages = [];
@@ -213,7 +212,6 @@
                     }
                 } catch(e) { bannerImages = []; }
 
-                // عند وجود صور مضافة من لوحة التحكم، يظهر السلايدر ويعرضها كاملة
                 if(bannerImages && bannerImages.length > 0) {
                     document.getElementById('heroSliderWrapper').style.display = 'block';
                     renderHeroSlider(bannerImages);
@@ -221,7 +219,6 @@
                     document.getElementById('heroSliderWrapper').style.display = 'none';
                 }
 
-                // جلب المنتجات والخدمات
                 let { data, error } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 if(error) throw error;
                 allProducts = data || [];
