@@ -8,7 +8,375 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        :root { <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم والإدارة المطلقة | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
         :root { 
+            --primary: #111827;
+            --light: #F9FAFB;
+            --gold: #D4AF37;
+            --btn: #0284C7;
+            --red: #EF4444; 
+            --green: #10B981;
+            --border: #E5E7EB;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--light); padding: 15px; color: var(--primary); padding-bottom: 70px; }
+
+        .container { max-width: 950px; margin: 0 auto; }
+        .top-nav { background: var(--primary); padding: 14px 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .mini-btn { background: rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 1px solid rgba(212,175,55,0.3); }
+
+        .section-box { background: #ffffff; padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .section-box h3 { font-size: 14px; margin-bottom: 12px; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 4px; color: #374151; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 11px; outline: none; background: #F9FAFB; color: #1F2937; font-weight: 700; }
+
+        .submit-btn { background: var(--btn); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; font-size: 12px; transition: 0.2s; }
+        .submit-btn:hover { opacity: 0.9; }
+        
+        .data-row { background: #F9FAFB; border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .action-btn { border: none; padding: 7px 12px; border-radius: 6px; font-weight: 900; font-size: 10px; cursor: pointer; color: white; transition: 0.2s; }
+        .btn-edit { background: var(--btn); }
+        .btn-delete { background: var(--red); }
+        .btn-pay { background: var(--green); }
+        
+        .product-thumb { width: 45px; height: 45px; border-radius: 6px; object-fit: contain; background: #ffffff; border: 1px solid var(--border); padding: 2px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="top-nav">
+            <span style="font-weight:900; font-size:14px;">⚙️ لوحة التحكم والإدارة المطلقة</span>
+            <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
+        </div>
+
+        <!-- 1. إدارة البنرات الإعلانية الثلاثة -->
+        <div class="section-box">
+            <h3>🖼️ إدارة ورفع البنرات الإعلانية الثلاثة</h3>
+            <div class="form-group"><label>صورة البنر العلوي (Top Banner)</label><input type="file" id="topBannerFile" accept="image/*"></div>
+            <div class="form-group"><label>صورة البنر الأوسط (Middle Banner)</label><input type="file" id="midBannerFile" accept="image/*"></div>
+            <div class="form-group"><label>صورة البنر السفلي (Bottom Banner)</label><input type="file" id="botBannerFile" accept="image/*"></div>
+            <button onclick="uploadBanners()" class="submit-btn" style="background:var(--primary); color:var(--gold);">رفع وتحديث البنرات سحابياً 🌟</button>
+        </div>
+
+        <!-- 2. إدارة سياسات المتجر والضمان -->
+        <div class="section-box">
+            <h3>📜 إدارة سياسات وشروط وضمانات المتجر</h3>
+            <div class="form-group">
+                <label>اختر القسم المراد تعديله</label>
+                <select id="policyKey" onchange="loadPolicyContent()">
+                    <option value="privacy">سياسة الخصوصية</option>
+                    <option value="exchange">سياسة الاستبدال والاسترجاع</option>
+                    <option value="shipping">شروط وسياسة الشحن والتوصيل</option>
+                    <option value="warranty">الضمان وشروط الخدمة</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>محتوى السياسة أو الشروط</label>
+                <textarea id="policyText" rows="5" placeholder="اكتب النص هنا..."></textarea>
+            </div>
+            <button onclick="savePolicy()" class="submit-btn" style="background:var(--green);">حفظ وتحديث المحتوى 📝</button>
+        </div>
+
+        <!-- 3. إضافة / تعديل المنتجات والتخفيضات -->
+        <div class="section-box">
+            <h3 id="formTitle">➕ إضافة / تعديل منتج أو عرض تخفيض</h3>
+            <input type="hidden" id="editProductId">
+            <div class="form-group"><label>عنوان المنتج / الخدمة</label><input type="text" id="pTitle" placeholder="مثال: آيفون 15 برو ماكس"></div>
+            <div class="form-group">
+                <label>التصنيف</label>
+                <select id="pCategory">
+                    <option value="جوالات">جوالات</option>
+                    <option value="اكسسوارات">اكسسوارات</option>
+                    <option value="إلكترونيات">إلكترونيات</option>
+                    <option value="حقائب">حقائب</option>
+                    <option value="عطور">عطور</option>
+                    <option value="ملابس">ملابس</option>
+                </select>
+            </div>
+            <div class="form-group"><label>السعر الحالي</label><input type="text" id="pPrice" placeholder="3500 YER"></div>
+            <div class="form-group"><label>السعر السابق المشطوب (لتفعيل العرض الخاص)</label><input type="text" id="pOldPrice" placeholder="5000 YER"></div>
+            <div class="form-group"><label>نسبة أو شارة الخصم (مثل: -30%)</label><input type="text" id="pDiscount" placeholder="-30%"></div>
+            <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage" accept="image/*"></div>
+            <div class="form-group"><label>الوصف والتفاصيل</label><textarea id="pDesc" rows="2" placeholder="تفاصيل المنتج..."></textarea></div>
+            <button onclick="saveProductData()" id="saveBtn" class="submit-btn">نشر / حفظ المنتج في المتجر 🚀</button>
+            <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:#F3F4F6; color:var(--primary); border:none; padding:8px; border-radius:8px; margin-top:6px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
+        </div>
+
+        <!-- 4. قائمة المنتجات -->
+        <div class="section-box">
+            <h3>📦 قائمة المنتجات والتخفيضات (تعديل وحذف)</h3>
+            <div id="productsAdminList">جاري التحميل...</div>
+        </div>
+
+        <!-- 5. إدارة المسوقين والعمولات -->
+        <div class="section-box">
+            <h3>🤝 إدارة المسوقين والعمولات والروابط</h3>
+            <div id="affiliatesAdminList">جاري التحميل...</div>
+        </div>
+
+        <!-- 6. طلبات الشراء -->
+        <div class="section-box">
+            <h3>🛒 طلبات الشراء الواردة</h3>
+            <div id="ordersAdminList">جاري التحميل...</div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let globalProducts = [];
+
+        async function loadAdminPanel() {
+            try {
+                let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
+                globalProducts = prods || [];
+                let pBox = document.getElementById('productsAdminList');
+                pBox.innerHTML = '';
+
+                if(!globalProducts || globalProducts.length === 0) {
+                    pBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد منتجات حالياً.</p>';
+                } else {
+                    globalProducts.forEach(p => {
+                        let img = p.image || 'images/logo.jpg';
+                        let offerTag = (p.old_price || p.discount) ? '<span style="color:var(--red); font-weight:900;"> [عرض وتخفيض 🔥]</span>' : '';
+                        
+                        pBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <img src="${img}" class="product-thumb">
+                                    <div style="font-size:11px;">
+                                        <b>${p.title}</b> (${p.category}) ${offerTag}<br>
+                                        السعر: <span style="color:var(--red);">${p.price}</span> ${p.old_price ? `(السابق: ${p.old_price})` : ''}
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:6px;">
+                                    <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل ✏️</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
+                let aBox = document.getElementById('affiliatesAdminList');
+                aBox.innerHTML = '';
+                if(affs && affs.length > 0) {
+                    affs.forEach(a => {
+                        aBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="font-size:11px;">
+                                    👤 <b>${a.full_name || a.name || 'مسوق'}</b> (${a.phone})<br>
+                                    🔗 كود: <code>${a.ref_code}</code> | زيارات: ${a.clicks || 0} | مبيعات: ${a.total_sales || 0} | أرباح مستحقة: <b style="color:var(--green);">${a.total_earnings || 0} YER</b>
+                                </div>
+                                <div style="display:flex; gap:6px;">
+                                    <button class="action-btn btn-pay" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية 💰</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    aBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد مسوقين مسجلين.</p>';
+                }
+
+                let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
+                let oBox = document.getElementById('ordersAdminList');
+                oBox.innerHTML = '';
+                if(orders && orders.length > 0) {
+                    orders.forEach(o => {
+                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn);">[عرض السند]</a>` : 'بدون سند';
+                        oBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="font-size:11px;">
+                                    📦 <b>${o.product_title}</b><br>
+                                    👤 العميل: ${o.customer_name} (${o.customer_phone}) | السند: ${receiptLink}
+                                </div>
+                                <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
+                            </div>
+                        `;
+                    });
+                } else {
+                    oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات شراء واردة.</p>';
+                }
+
+                loadPolicyContent();
+            } catch(err) {
+                console.error("Admin load error:", err);
+            }
+        }
+
+        async function loadPolicyContent() {
+            try {
+                let key = document.getElementById('policyKey').value;
+                let { data } = await db.from('store_settings').select('value').eq('key', 'policy_' + key).maybeSingle();
+                document.getElementById('policyText').value = data ? data.value : '';
+            } catch(e) {}
+        }
+
+        async function savePolicy() {
+            let key = 'policy_' + document.getElementById('policyKey').value;
+            let value = document.getElementById('policyText').value.trim();
+            let { error } = await db.from('store_settings').upsert({ key, value });
+            if(!error) alert('تم حفظ وتحديث المحتوى بنجاح! 📝');
+            else alert('حدث خطأ أثناء الحفظ.');
+        }
+
+        async function uploadBanners() {
+            let topFile = document.getElementById('topBannerFile').files[0];
+            let midFile = document.getElementById('midBannerFile').files[0];
+            let botFile = document.getElementById('botBannerFile').files[0];
+
+            try {
+                if(topFile) {
+                    let fileName = 'banners/top_' + Date.now() + '_' + topFile.name;
+                    let { data } = await db.storage.from('products_images').upload(fileName, topFile);
+                    if(data) {
+                        let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                        await db.from('store_settings').upsert({ key: 'top_banner', value: pub.publicUrl });
+                    }
+                }
+
+                if(midFile) {
+                    let fileName = 'banners/mid_' + Date.now() + '_' + midFile.name;
+                    let { data } = await db.storage.from('products_images').upload(fileName, midFile);
+                    if(data) {
+                        let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                        await db.from('store_settings').upsert({ key: 'middle_banner', value: pub.publicUrl });
+                    }
+                }
+
+                if(botFile) {
+                    let fileName = 'banners/bot_' + Date.now() + '_' + botFile.name;
+                    let { data } = await db.storage.from('products_images').upload(fileName, botFile);
+                    if(data) {
+                        let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                        await db.from('store_settings').upsert({ key: 'bottom_banner', value: pub.publicUrl });
+                    }
+                }
+
+                alert('تم رفع وتحديث البنرات بنجاح وعرضها في الواجهة! 🌟');
+            } catch(err) {
+                alert('حدث خطأ أثناء رفع البنرات، تأكد من إعدادات سوبابيس و Storage Bucket.');
+            }
+        }
+
+        async function saveProductData() {
+            let editId = document.getElementById('editProductId').value;
+            let title = document.getElementById('pTitle').value.trim();
+            let category = document.getElementById('pCategory').value;
+            let price = document.getElementById('pPrice').value.trim();
+            let old_price = document.getElementById('pOldPrice').value.trim();
+            let discount = document.getElementById('pDiscount').value.trim();
+            let fileInput = document.getElementById('pImage');
+            let description = document.getElementById('pDesc').value.trim();
+
+            if(!title || !price) { alert('يرجى إدخال عنوان المنتج والسعر على الأقل.'); return; }
+
+            let imageUrl = '';
+            if(fileInput.files[0]) {
+                let file = fileInput.files[0];
+                let fileName = 'products/' + Date.now() + '_' + file.name;
+                let { data } = await db.storage.from('products_images').upload(fileName, file);
+                if(data) {
+                    let { data: pub } = db.storage.from('products_images').getPublicUrl(fileName);
+                    imageUrl = pub.publicUrl;
+                }
+            }
+
+            let payload = { 
+                title, 
+                category, 
+                price, 
+                old_price: old_price || null, 
+                discount: discount || null, 
+                description, 
+                is_active: true 
+            };
+            
+            if(imageUrl) payload.image = imageUrl;
+
+            if(editId) {
+                let { error } = await db.from('platform_services').update(payload).eq('id', editId);
+                if(error) alert('خطأ في التحديث: ' + error.message);
+                else alert('تم تحديث المنتج بنجاح! ✅');
+            } else {
+                let { error } = await db.from('platform_services').insert([payload]);
+                if(error) alert('خطأ في الإضافة: ' + error.message);
+                else alert('تمت إضافة المنتج بنجاح! 🎉');
+            }
+
+            resetForm();
+            loadAdminPanel();
+        }
+
+        function editProduct(id) {
+            let p = globalProducts.find(x => x.id === id);
+            if(p) {
+                document.getElementById('editProductId').value = p.id;
+                document.getElementById('pTitle').value = p.title || '';
+                document.getElementById('pCategory').value = p.category || 'جوالات';
+                document.getElementById('pPrice').value = p.price || '';
+                document.getElementById('pOldPrice').value = p.old_price || '';
+                document.getElementById('pDiscount').value = p.discount || '';
+                document.getElementById('pDesc').value = p.description || '';
+                
+                document.getElementById('formTitle').textContent = '✏️ تعديل المنتج: ' + p.title;
+                document.getElementById('saveBtn').textContent = 'تحديث المنتج الآن 🔄';
+                document.getElementById('cancelEditBtn').style.display = 'block';
+                window.scrollTo({top:0, behavior:'smooth'});
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('editProductId').value = '';
+            document.getElementById('pTitle').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('pOldPrice').value = '';
+            document.getElementById('pDiscount').value = '';
+            document.getElementById('pImage').value = '';
+            document.getElementById('pDesc').value = '';
+            document.getElementById('formTitle').textContent = '➕ إضافة / تعديل منتج أو عرض تخفيض';
+            document.getElementById('saveBtn').textContent = 'نشر / حفظ المنتج في المتجر 🚀';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
+        async function settleCommission(affId, current) {
+            let paid = prompt('أدخل المبلغ المراد تسويته مع المسوق:', current);
+            if(paid !== null) {
+                let remaining = Math.max(0, current - Number(paid));
+                await db.from('affiliates').update({ total_earnings: remaining }).eq('id', affId);
+                alert('تمت تسوية العمولة بنجاح! 💵');
+                loadAdminPanel();
+            }
+        }
+
+        async function deleteRecord(table, id) {
+            if(confirm('هل أنت متأكد من رغبتك في الحذف؟')) {
+                await db.from(table).delete().eq('id', id);
+                loadAdminPanel();
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', loadAdminPanel);
+    </script>
+</body>
+</html>
+
             --primary: #111827;
             --light: #F9FAFB;
             --gold: #D4AF37;
