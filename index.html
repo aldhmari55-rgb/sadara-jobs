@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>متجر صدارة | SADARAH STORE</title>
@@ -114,7 +113,7 @@
     </a>
 
     <div class="container">
-        <!-- البنر العلوي -->
+        <!-- البنر العلوي (يتم تحديثه تلقائياً من لوحة التحكم) -->
         <div class="promo-banner-card" id="topBannerBox">
             <img id="topBannerImg" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b7da?w=800&auto=format&fit=crop" alt="بنر العلوي">
         </div>
@@ -146,7 +145,7 @@
             جاري تحميل العروض...
         </div>
 
-        <!-- البنر الأوسط -->
+        <!-- البنر الأوسط (يتم تحديثه تلقائياً من لوحة التحكم) -->
         <div class="promo-banner-card" id="middleBannerBox" style="margin:20px 0;">
             <img id="middleBannerImg" src="https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=800&auto=format&fit=crop" alt="بنر الأوسط">
         </div>
@@ -158,7 +157,7 @@
             جاري تحميل المنتجات...
         </div>
 
-        <!-- البنر السفلي -->
+        <!-- البنر السفلي (يتم تحديثه تلقائياً من لوحة التحكم) -->
         <div class="promo-banner-card" id="bottomBannerBox" style="margin-top:20px;">
             <img id="bottomBannerImg" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop" alt="بنر السفلي">
         </div>
@@ -208,7 +207,7 @@
 
         async function loadStoreData() {
             try {
-                // جلب البنرات المحدثة سحابياً من جدول store_settings
+                // جلب البنرات المحدثة سحابياً من جدول store_settings بناءً على ما يتم رفعه في لوحة التحكم
                 let { data: settings } = await db.from('store_settings').select('*');
                 if(settings && settings.length > 0) {
                     settings.forEach(s => {
@@ -218,6 +217,7 @@
                     });
                 }
 
+                // جلب المنتجات والخدمات والتخفيضات المحدثة من لوحة التحكم
                 let { data } = await db.from('platform_services').select('*').eq('is_active', true).order('id', {ascending: false});
                 allProducts = data || [];
                 
