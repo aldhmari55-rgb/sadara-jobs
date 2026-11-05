@@ -24,25 +24,21 @@
         html { scroll-behavior: smooth; width: 100%; }
         body { background: var(--aj-light); padding-bottom: 70px; color: var(--text-main); width: 100%; overflow-x: hidden; }
 
-        /* شريط الترويسة العلوي */
         .aj-header { background: #ffffff; border-bottom: 1px solid var(--aj-border); position: sticky; top: 0; z-index: 1000; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
         .aj-header-left, .aj-header-right { display: flex; align-items: center; gap: 14px; font-size: 18px; color: var(--aj-primary); cursor: pointer; }
         .aj-logo-container { text-align: center; }
         .aj-logo-img { height: 32px; object-fit: contain; }
 
-        /* شريط البحث المنسدل */
         .search-bar-container { background: #ffffff; padding: 8px 16px; border-bottom: 1px solid var(--aj-border); display: none; }
         .search-input-box { width: 100%; padding: 8px 14px; border: 1px solid var(--aj-border); border-radius: 8px; font-size: 12px; outline: none; background: #F3F4F6; }
 
         .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 10px; }
 
-        /* الإحصائيات السريعة للمتجر */
         .stats-banner { background: #ffffff; border: 1px solid var(--aj-border); border-radius: 12px; padding: 12px; margin-bottom: 15px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; }
         @media(max-width: 576px) { .stats-banner { grid-template-columns: repeat(2, 1fr); } }
         .stat-item h3 { font-size: 15px; font-weight: 900; color: var(--aj-primary); }
         .stat-item p { font-size: 10px; color: #6B7280; font-weight: 700; margin-top: 2px; }
 
-        /* أقسام المتجر الدائرية الأفقية */
         .categories-slider { display: flex; gap: 14px; overflow-x: auto; padding: 10px 4px 15px; margin-bottom: 10px; scrollbar-width: none; }
         .categories-slider::-webkit-scrollbar { display: none; }
         .cat-box { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; width: 70px; }
@@ -50,61 +46,48 @@
         .cat-box:hover .cat-icon-circle, .cat-box.active .cat-icon-circle { border-color: var(--aj-primary); background: var(--aj-primary); color: #ffffff; }
         .cat-txt { font-size: 10px; font-weight: 800; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
-        /* البنرات الإعلانية الاحترافية الفاصلة */
-        .promo-banner-card { width: 100%; border-radius: 12px; overflow: hidden; margin: 15px 0; background: #ffffff; border: 1px solid var(--aj-border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer; }
+        .promo-banner-card { width: 100%; border-radius: 12px; overflow: hidden; margin: 15px 0; background: #ffffff; border: 1px solid var(--aj-border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .promo-banner-card img { width: 100%; height: auto; display: block; max-height: 180px; object-fit: cover; }
 
-        /* عناوين الأقسام وزر "عرض الكل" */
         .section-title-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 5px 10px; }
         .section-title-row h2 { font-size: 15px; font-weight: 900; color: var(--aj-primary); }
-        .section-title-row a { font-size: 11px; font-weight: 800; color: #4B5563; text-decoration: none; border-bottom: 1px solid #4B5563; padding-bottom: 1px; }
 
-        /* شبكة المنتجات (مطابقة لتصميم إي جي ستور) */
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; }
         @media (min-width: 768px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; } }
 
-        .product-card { background: #ffffff; border: 1px solid var(--aj-border); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: 0.3s; }
-        .product-card:hover { border-color: #9CA3AF; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-
+        .product-card { background: #ffffff; border: 1px solid var(--aj-border); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
         .discount-badge { position: absolute; top: 10px; left: 10px; background: var(--discount-red); color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; z-index: 5; }
         
-        .product-img-box { width: 100%; height: 150px; background: #ffffff; display: flex; justify-content: center; align-items: center; position: relative; cursor: pointer; margin-bottom: 8px; }
+        .product-img-box { width: 100%; height: 150px; display: flex; justify-content: center; align-items: center; cursor: pointer; margin-bottom: 8px; }
         .product-img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
         .product-title { font-size: 11px; font-weight: 800; color: var(--text-main); height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; cursor: pointer; line-height: 1.3; margin-bottom: 6px; }
 
         .price-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
         .current-price { font-size: 13px; font-weight: 900; color: var(--text-main); }
         .old-price { font-size: 10px; font-weight: 700; color: #9CA3AF; text-decoration: line-through; }
 
-        .add-to-cart-btn { background: var(--aj-btn); color: white; border: none; width: 100%; padding: 8px; border-radius: 8px; font-weight: 900; font-size: 11px; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; transition: 0.2s; }
-        .add-to-cart-btn:hover { background: var(--aj-btn-hover); }
+        .add-to-cart-btn { background: var(--aj-btn); color: white; border: none; width: 100%; padding: 8px; border-radius: 8px; font-weight: 900; font-size: 11px; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; }
 
-        /* شريط أفضل العروض المتحرك أفقياً */
         .offers-track { display: flex; gap: 12px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 5px; scrollbar-width: none; }
         .offers-track::-webkit-scrollbar { display: none; }
         .offer-item { flex: 0 0 150px; background: #ffffff; border: 1px solid var(--aj-border); border-radius: 10px; padding: 8px; position: relative; text-decoration: none; color: inherit; }
-        
-        /* تذييل المتجر (Footer مطابق تماماً) */
+
         .store-footer { background: #111827; color: #9CA3AF; padding: 30px 15px 20px; margin-top: 30px; font-size: 11px; }
         .footer-content { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
         .footer-col h4 { color: #ffffff; font-size: 13px; font-weight: 900; margin-bottom: 10px; border-bottom: 1px solid #374151; padding-bottom: 6px; }
         .footer-col ul { list-style: none; }
         .footer-col ul li { margin-bottom: 6px; }
         .footer-col ul li a { color: #9CA3AF; text-decoration: none; }
-        .footer-col ul li a:hover { color: #ffffff; }
-        .social-icons { display: flex; gap: 10px; font-size: 16px; margin-top: 10px; color: #ffffff; }
 
         .whatsapp-float { position: fixed; bottom: 20px; left: 15px; background: #ffffff; color: #25D366; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 950; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <!-- الترويسة الرئيسية (Header) مطابقة تماماً -->
+    <!-- ترويسة المتجر (بدون أي أزرار تخص الأفلييت) -->
     <header class="aj-header">
         <div class="aj-header-left">
             <i class="fa-solid fa-magnifying-glass" onclick="toggleSearch()" title="بحث"></i>
-            <a href="affiliate.html" style="color:inherit; font-size:16px;" title="المسوقين"><i class="fa-solid fa-handshake-angle"></i></a>
         </div>
         
         <div class="aj-logo-container">
@@ -115,21 +98,24 @@
 
         <div class="aj-header-right">
             <a href="blog.html" style="color:inherit; font-size:16px;" title="المدونة"><i class="fa-solid fa-newspaper"></i></a>
-            <i class="fa-solid fa-bars" onclick="alert('قائمة الأقسام متاحة في الصفحة الرئيسية')" title="القائمة"></i>
         </div>
     </header>
 
-    <!-- شريط البحث المنسدل -->
     <div class="search-bar-container" id="searchBarBox">
         <input type="text" id="searchInput" class="search-input-box" placeholder="ابحث عما ترغب به..." oninput="filterStoreProducts()">
     </div>
 
-    <a href="https://chat.whatsapp.com/HyBM7PNxwuOJCIB5WijyVk" target="_blank" class="whatsapp-float" title="مجتمع الواتساب">
+    <!-- زر الواتساب متصل برقمك المباشر 780568507 -->
+    <a href="https://wa.me/967780568507" target="_blank" class="whatsapp-float" title="خدمة العملاء واتساب">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
     <div class="container">
-        <!-- إحصائيات المتجر -->
+        <!-- بنر ترويجي علوي -->
+        <div class="promo-banner-card" id="topBannerBox">
+            <img id="topBannerImg" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b7da?w=800&auto=format&fit=crop" alt="بنر إعلاني">
+        </div>
+
         <div class="stats-banner">
             <div class="stat-item"><h3 id="statLiveVisitors" style="color:#10B981;">1</h3><p>🟢 زوار متواجدون</p></div>
             <div class="stat-item"><h3 id="statTotalVisits">150</h3><p>👁️ إجمالي الزيارات</p></div>
@@ -137,7 +123,6 @@
             <div class="stat-item"><h3 id="statAffiliates">0</h3><p>🤝 المسوقين</p></div>
         </div>
 
-        <!-- الأقسام الدائرية الأفقية (مطابقة لمتجر إي جي ستور) -->
         <div class="categories-slider" id="categoriesContainer">
             <div class="cat-box active" onclick="filterStore('الكل', this)"><div class="cat-icon-circle"><i class="fa-solid fa-globe"></i></div><div class="cat-txt">الكل</div></div>
             <div class="cat-box" onclick="filterStore('إلكترونيات', this)"><div class="cat-icon-circle"><i class="fa-solid fa-tv"></i></div><div class="cat-txt">إلكترونيات</div></div>
@@ -147,18 +132,9 @@
             <div class="cat-box" onclick="filterStore('بطاريات متنقلة', this)"><div class="cat-icon-circle"><i class="fa-solid fa-battery-full"></i></div><div class="cat-txt">باوربانك</div></div>
             <div class="cat-box" onclick="filterStore('عطور', this)"><div class="cat-icon-circle"><i class="fa-solid fa-spray-can-sparkles"></i></div><div class="cat-txt">عطور</div></div>
             <div class="cat-box" onclick="filterStore('ملابس', this)"><div class="cat-icon-circle"><i class="fa-solid fa-shirt"></i></div><div class="cat-txt">ملابس</div></div>
-            <div class="cat-box" onclick="filterStore('اشتراكات رقميةة', this)"><div class="cat-icon-circle"><i class="fa-solid fa-key"></i></div><div class="cat-txt">اشتراكات</div></div>
         </div>
 
-        <!-- بنر ترويجي فاصل (مطابق لستايل إي جي ستور) -->
-        <div class="promo-banner-card" onclick="window.location.href='affiliate.html'">
-            <div style="padding:15px; background:linear-gradient(135deg, #0F2A4A, #1F2937); color:white; text-align:center; border-radius:12px;">
-                <h3 style="font-size:14px; font-weight:900; margin-bottom:4px;">✨ انضم لبرنامج المسوقين (الأفلييت)</h3>
-                <p style="font-size:10px; opacity:0.8;">سوق لمنتجات المتجر واربح عمولات فورية عن كل عملية بيع ناجحة</p>
-            </div>
-        </div>
-
-        <!-- قسم أفضل العروض (سلايدر متحرك أفقياً) -->
+        <!-- أفضل العروض -->
         <div class="section-title-row">
             <h2>🔥 أفضل العروض والتخفيضات</h2>
         </div>
@@ -166,41 +142,46 @@
             جاري التحميل...
         </div>
 
-        <!-- شبكة المنتجات الرئيسية -->
+        <!-- بنر ترويجي بين المنتجات -->
+        <div class="promo-banner-card" id="middleBannerBox" style="margin:20px 0;">
+            <img id="middleBannerImg" src="https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=800&auto=format&fit=crop" alt="بنر وسط">
+        </div>
+
         <div class="section-title-row" style="margin-top:20px;">
             <h2>📦 أحدث المنتجات والخدمات</h2>
-            <a href="index.html">عرض الكل</a>
         </div>
         <div id="productsGridContainer" class="products-grid">
             جاري تحميل المنتجات...
         </div>
+
+        <!-- بنر ترويجي في الأسفل -->
+        <div class="promo-banner-card" id="bottomBannerBox" style="margin-top:20px;">
+            <img id="bottomBannerImg" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop" alt="بنر أسفل">
+        </div>
     </div>
 
-    <!-- تذييل المتجر (Footer مطابق تماماً لمتجر إي جي ستور) -->
+    <!-- تذييل المتجر (يحتوي على السياسات وبرنامج التسويق بالعمولة حصرياً في الأسفل) -->
     <footer class="store-footer">
         <div class="footer-content">
             <div class="footer-col">
                 <h4>عن متجر صدارة</h4>
-                <p style="line-height:1.6; font-size:10.5px;">متجر صدارة هو وجهتك الأولى لبيع المنتجات الأصلية، الأجهزة الإلكترونية، اكسسوارات الجوال والخدمات الرقمية بجودة عالية وأسعار منافسة.</p>
-                <div class="social-icons">
-                    <i class="fa-brands fa-tiktok"></i>
-                    <i class="fa-brands fa-snapchat"></i>
-                    <i class="fa-brands fa-instagram"></i>
-                    <i class="fa-brands fa-whatsapp"></i>
+                <p style="line-height:1.6; font-size:10.5px;">متجر صدارة وجهتك الأولى للأجهزة الإلكترونية والمنتجات الأصلية والخدمات الرقمية بجودة عالية.</p>
+                <div style="margin-top:12px;">
+                    <a href="affiliate.html" style="color:var(--aj-gold); font-weight:900; text-decoration:none;"><i class="fa-solid fa-handshake-angle"></i> انضم لبرنامج التسويق بالعمولة (الأفلييت)</a>
                 </div>
             </div>
             <div class="footer-col">
-                <h4>روابط تهمك</h4>
+                <h4>روابط وسياسات المتجر</h4>
                 <ul>
-                    <li><a href="#">سياسة الخصوصية</a></li>
-                    <li><a href="#">سياسة الاستبدال والاسترجاع</a></li>
-                    <li><a href="#">سياسة الشحن والتوصيل</a></li>
-                    <li><a href="#">الضمان والشروط</a></li>
+                    <li><a href="privacy.html">سياسة الخصوصية</a></li>
+                    <li><a href="exchange.html">سياسة الاستبدال والاسترجاع</a></li>
+                    <li><a href="shipping.html">شروط وسياسة الشحن</a></li>
+                    <li><a href="warranty.html">الضمان وشروط الخدمة</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>خدمة العملاء</h4>
-                <p>📞 +967 780 568 507</p>
+                <p>📞 هاتف / واتساب: <a href="https://wa.me/967780568507" target="_blank" style="color:#25D366; font-weight:bold;">780568507</a></p>
                 <p>✉️ support@sadarah.top</p>
                 <p style="margin-top:8px; color:#10B981; font-weight:bold;">موثّق في منصة صدارة الرقمية</p>
             </div>
@@ -222,30 +203,18 @@
             box.style.display = box.style.display === 'block' ? 'none' : 'block';
         }
 
-        async function setupVisitorTracking() {
+        async function loadStoreData() {
             try {
-                let currentTotal = parseInt(localStorage.getItem('sadarah_total_visits') || '0') + 1;
-                localStorage.setItem('sadarah_total_visits', currentTotal);
-                document.getElementById('statTotalVisits').textContent = currentTotal + 150;
+                // تحميل البنرات المخصصة من السحابة إن وجدت
+                let { data: settings } = await db.from('store_settings').select('*');
+                if(settings && settings.length > 0) {
+                    settings.forEach(s => {
+                        if(s.key === 'top_banner' && s.value) document.getElementById('topBannerImg').src = s.value;
+                        if(s.key === 'middle_banner' && s.value) document.getElementById('middleBannerImg').src = s.value;
+                        if(s.key === 'bottom_banner' && s.value) document.getElementById('bottomBannerImg').src = s.value;
+                    });
+                }
 
-                const channel = db.channel('online-visitors', {
-                    config: { presence: { key: 'user_' + Math.random().toString(36).substring(7) } }
-                });
-
-                channel.on('presence', { event: 'sync' }, () => {
-                    const state = channel.presenceState();
-                    const liveCount = Object.keys(state).length;
-                    document.getElementById('statLiveVisitors').textContent = Math.max(1, liveCount);
-                }).subscribe(async (status) => {
-                    if (status === 'SUBSCRIBED') {
-                        await channel.track({ online_at: new Date().toISOString() });
-                    }
-                });
-            } catch(e) {}
-        }
-
-        async function loadStoreProducts() {
-            try {
                 let { data } = await db.from('platform_services').select('*').eq('is_active', true).order('id', {ascending: false});
                 allProducts = data || [];
                 
@@ -260,9 +229,7 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const refCode = urlParams.get('ref');
                 if(refCode) localStorage.setItem('sadara_ref', refCode);
-            } catch(e) {
-                document.getElementById('productsGridContainer').innerHTML = '<p style="text-align:center; color:#6B7280; grid-column:1/-1;">عذراً، حدث خطأ في تحميل المنتجات.</p>';
-            }
+            } catch(e) {}
         }
 
         function renderBestOffers(offers) {
@@ -335,16 +302,13 @@
                                 ${oldPriceHTML}
                             </div>
                         </div>
-                        <a href="product.html?id=${p.id}${ref}" class="add-to-cart-btn"><i class="fa-solid fa-cart-shopping"></i> أضف للسلة 🛒</a>
+                        <a href="product.html?id=${p.id}${ref}" class="add-to-cart-btn"><i class="fa-solid fa-cart-shopping"></i> طلب المنتج 🛒</a>
                     </div>
                 `;
             });
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadStoreProducts();
-            setupVisitorTracking();
-        });
+        window.addEventListener('DOMContentLoaded', loadStoreData);
     </script>
 </body>
 </html>
