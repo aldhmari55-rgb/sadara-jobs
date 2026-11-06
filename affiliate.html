@@ -13,6 +13,11 @@
         .container { max-width: 800px; margin: 0 auto; }
         .box { background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
         h2 { font-size: 15px; font-weight: 900; margin-bottom: 12px; color: #111827; display: flex; align-items: center; gap: 6px; }
+        
+        .tabs { display: flex; gap: 8px; margin-bottom: 15px; background: #F3F4F6; padding: 4px; border-radius: 8px; }
+        .tab-btn { flex: 1; padding: 9px; border: none; background: transparent; font-weight: 900; font-size: 11px; cursor: pointer; border-radius: 6px; transition: 0.2s; color: #4B5563; }
+        .tab-btn.active { background: #111827; color: #ffffff; }
+
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 4px; color: #374151; }
         .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 11px; background: #F9FAFB; outline: none; }
@@ -36,26 +41,50 @@
     <div class="container">
         <a href="index.html" class="back-store"><i class="fa-solid fa-store"></i> العودة للمتجر الرئيسي</a>
 
+        <!-- قسم تسجيل الدخول / التسجيل -->
         <div class="box" id="authBox">
             <h2>🤝 بوابة المسوقين (الأفلييت)</h2>
-            <p style="font-size: 11px; color: #6B7280; margin-bottom: 14px;">سجل دخولك برقم جوالك، أو أنشئ حساباً جديداً بالاسم ورقم الجوال وطريقة الدفع.</p>
             
-            <div class="form-group"><label>رقم الهاتف / الواتساب (للدخول أو التسجيل)</label><input type="text" id="affPhone" placeholder="مثال: 770000000"></div>
-            <div class="form-group"><label>الاسم الكامل (مطلوب عند إنشاء حساب جديد فقط)</label><input type="text" id="affName" placeholder="اسمك الكريم"></div>
-            
-            <div class="form-group">
-                <label>طريقة الاستلام المفضلة</label>
-                <select id="payMethod">
-                    <option value="جيب">محفظة جيب (Jeeb)</option>
-                    <option value="الكريمي">بنك الكريمي (نقطة حاسب)</option>
-                </select>
+            <div class="tabs">
+                <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">تسجيل الدخول (للحسابات السابقة)</button>
+                <button class="tab-btn" id="tabRegister" onclick="switchTab('register')">إنشاء حساب جديد</button>
             </div>
-            
-            <div class="form-group"><label>رقم حساب طريقة الدفع (رقم المحفظة أو الحساب)</label><input type="text" id="payAccount" placeholder="رقم حسابك لاستلام الأرباح"></div>
-            
-            <button onclick="loginOrRegister()" class="btn">دخول / تسجيل الحساب 🚀</button>
+
+            <!-- نموذج تسجيل الدخول -->
+            <div id="loginFormSection">
+                <div class="form-group">
+                    <label>رقم الهاتف / الواتساب المسجل</label>
+                    <input type="text" id="loginPhone" placeholder="مثال: 770000000">
+                </div>
+                <button onclick="handleLogin()" class="btn">تسجيل الدخول إلى حسابي 🚀</button>
+            </div>
+
+            <!-- نموذج إنشاء حساب جديد -->
+            <div id="registerFormSection" style="display:none;">
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="regName" placeholder="اسمك الكريم">
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف / الواتساب</label>
+                    <input type="text" id="regPhone" placeholder="مثال: 770000000">
+                </div>
+                <div class="form-group">
+                    <label>طريقة الاستلام المفضلة</label>
+                    <select id="regPayMethod">
+                        <option value="جيب">محفظة جيب (Jeeb)</option>
+                        <option value="الكريمي">بنك الكريمي (نقطة حاسب)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>رقم حساب طريقة الدفع (رقم المحفظة أو الحساب)</label>
+                    <input type="text" id="regPayAccount" placeholder="رقم حسابك لاستلام الأرباح">
+                </div>
+                <button onclick="handleRegister()" class="btn">إتمام إنشاء الحساب والانطلاق 🌟</button>
+            </div>
         </div>
 
+        <!-- لوحة تحكم المسوق -->
         <div id="dashBox" style="display:none;">
             <div class="box">
                 <button onclick="logoutAffiliate()" class="logout-btn">تسجيل الخروج 🚪</button>
@@ -87,6 +116,20 @@
             return String(str).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
         }
 
+        function switchTab(tab) {
+            if(tab === 'login') {
+                document.getElementById('tabLogin').classList.add('active');
+                document.getElementById('tabRegister').classList.remove('active');
+                document.getElementById('loginFormSection').style.display = 'block';
+                document.getElementById('registerFormSection').style.display = 'none';
+            } else {
+                document.getElementById('tabRegister').classList.add('active');
+                document.getElementById('tabLogin').classList.remove('active');
+                document.getElementById('registerFormSection').style.display = 'block';
+                document.getElementById('loginFormSection').style.display = 'none';
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             let savedPhone = localStorage.getItem('sadara_aff_phone');
             if(savedPhone) {
@@ -94,45 +137,62 @@
             }
         });
 
-        async function loginOrRegister() {
-            let phone = toEnglishDigits(document.getElementById('affPhone').value.trim());
-            let name = document.getElementById('affName').value.trim();
-            let method = document.getElementById('payMethod').value;
-            let account = toEnglishDigits(document.getElementById('payAccount').value.trim());
-
+        async function handleLogin() {
+            let phone = toEnglishDigits(document.getElementById('loginPhone').value.trim());
             if(!phone) { alert('يرجى إدخال رقم الهاتف.'); return; }
 
             try {
+                let { data: existing, error } = await db.from('affiliates').select('*').eq('phone', phone).maybeSingle();
+                if(error || !existing) {
+                    alert('رقم الجوال غير مسجل مسبقاً. يرجى الانتقال إلى تبويب "إنشاء حساب جديد".');
+                    return;
+                }
+                localStorage.setItem('sadara_aff_phone', phone);
+                showDashboard(existing);
+            } catch(e) {
+                alert('حدث خطأ أثناء تسجيل الدخول.');
+            }
+        }
+
+        async function handleRegister() {
+            let name = document.getElementById('regName').value.trim();
+            let phone = toEnglishDigits(document.getElementById('regPhone').value.trim());
+            let method = document.getElementById('regPayMethod').value;
+            let account = toEnglishDigits(document.getElementById('regPayAccount').value.trim());
+
+            if(!name || !phone || !account) {
+                alert('يرجى تعبئة جميع الحقول (الاسم، رقم الجوال، ورقم الحساب).');
+                return;
+            }
+
+            try {
                 let { data: existing } = await db.from('affiliates').select('*').eq('phone', phone).maybeSingle();
-
                 if(existing) {
-                    localStorage.setItem('sadara_aff_phone', phone);
-                    showDashboard(existing);
-                } else {
-                    if(!name || !account) { 
-                        alert('يبدو أن هذا الرقم غير مسجل. يرجى إدخال (الاسم الكامل، طريقة الدفع، ورقم الحساب) لإنشاء حساب جديد.'); 
-                        return; 
-                    }
-                    let refCode = 'SADARA_' + Math.floor(1000 + Math.random() * 9000);
-                    let { data: created, error } = await db.from('affiliates').insert([{
-                        full_name: name,
-                        phone: phone,
-                        ref_code: refCode,
-                        payment_method: method,
-                        payment_account: account,
-                        clicks: 0,
-                        total_sales: 0,
-                        total_earnings: 0
-                    }]).select().single();
+                    alert('رقم الجوال مسجل مسبقاً! قم بتسجيل الدخول مباشرة.');
+                    switchTab('login');
+                    document.getElementById('loginPhone').value = phone;
+                    return;
+                }
 
-                    if(error) throw error;
-                    if(created) {
-                        localStorage.setItem('sadara_aff_phone', phone);
-                        showDashboard(created);
-                    }
+                let refCode = 'SADARA_' + Math.floor(1000 + Math.random() * 9000);
+                let { data: created, error } = await db.from('affiliates').insert([{
+                    full_name: name,
+                    phone: phone,
+                    ref_code: refCode,
+                    payment_method: method,
+                    payment_account: account,
+                    clicks: 0,
+                    total_sales: 0,
+                    total_earnings: 0
+                }]).select().single();
+
+                if(error) throw error;
+                if(created) {
+                    localStorage.setItem('sadara_aff_phone', phone);
+                    showDashboard(created);
                 }
             } catch(e) {
-                alert('حدث خطأ أثناء تسجيل الدخول: ' + e.message);
+                alert('حدث خطأ أثناء التسجيل: ' + e.message);
             }
         }
 
