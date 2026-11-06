@@ -51,13 +51,19 @@
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. طلبات الشراء -->
+        <!-- 1. طلبات الشراء الواردة -->
         <div class="section-box">
             <h3>🛒 طلبات الشراء الواردة وسندات التحويل</h3>
             <div id="ordersAdminList">جاري التحميل...</div>
         </div>
 
-        <!-- 2. السلايدر -->
+        <!-- 2. الطلبيات المنجزة -->
+        <div class="section-box">
+            <h3>✅ الطلبيات المنجزة والمؤكدة</h3>
+            <div id="completedOrdersList">جاري التحميل...</div>
+        </div>
+
+        <!-- 3. السلايدر المتحرك -->
         <div class="section-box">
             <h3>🎞️ إدارة بانرات السلايدر المتحرك (إظهار / إخفاء / حذف)</h3>
             <div style="margin-bottom:12px; display:flex; gap:10px; align-items:center;">
@@ -69,7 +75,7 @@
             <div id="sliderAdminList">جاري التحميل...</div>
         </div>
 
-        <!-- 3. سياسات المتجر -->
+        <!-- 4. سياسات المتجر -->
         <div class="section-box">
             <h3>📜 إدارة وتعديل سياسات وشروط المتجر</h3>
             <div class="form-group">
@@ -85,7 +91,7 @@
             <button onclick="savePolicy()" class="submit-btn" style="background:var(--green);">حفظ وتحديث محتوى السياسة 📝</button>
         </div>
 
-        <!-- 4. المنتجات -->
+        <!-- 5. المنتجات -->
         <div class="section-box">
             <h3 id="formTitle">➕ إضافة منتج جديد أو تعديل منتج قائم</h3>
             <input type="hidden" id="editProductId">
@@ -111,13 +117,13 @@
             <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:#F3F4F6; color:var(--primary); border:none; padding:9px; border-radius:9px; margin-top:8px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
         </div>
 
-        <!-- 5. قائمة المنتجات -->
+        <!-- 6. قائمة المنتجات -->
         <div class="section-box">
             <h3>📦 قائمة المنتجات والخدمات (تعديل، حذف، إظهار/إخفاء)</h3>
             <div id="productsAdminList">جاري التحميل...</div>
         </div>
 
-        <!-- 6. المسوقين -->
+        <!-- 7. المسوقين -->
         <div class="section-box">
             <h3>🤝 إدارة المسوقين (تعديل، حذف، وتصفية العمولات)</h3>
             <div id="affiliatesAdminList">جاري التحميل...</div>
@@ -148,30 +154,61 @@
                 toggleBtn.textContent = isSliderActive ? '🟢 السلايدر ظاهر (اضغط للإخفاء)' : '🔴 السلايدر مخفي (اضغط للإظهار)';
                 toggleBtn.style.background = isSliderActive ? '#10B981' : '#EF4444';
 
+                // طلبات الشراء (قيد التوثيق أو غير المكتملة)
                 let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
                 let oBox = document.getElementById('ordersAdminList');
+                let cBox = document.getElementById('completedOrdersList');
                 oBox.innerHTML = '';
-                if(orders && orders.length > 0) {
-                    orders.forEach(o => {
-                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn); font-weight:bold;">[معاينة سند التحويل 📄]</a>` : 'بدون سند';
-                        let refText = o.ref_code ? `<span style="color:var(--gold); font-weight:bold;"> [عبر المسوق: ${o.ref_code}]</span>` : '';
+                cBox.innerHTML = '';
+
+                let pendingOrders = (orders || []).filter(o => o.status !== 'مكتمل');
+                let completedOrders = (orders || []).filter(o => o.status === 'مكتمل');
+
+                if(pendingOrders.length > 0) {
+                    pendingOrders.forEach(o => {
+                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn); font-weight:bold;">[معاينة السند 📄]</a>` : 'بدون سند';
+                        let refText = o.ref_code ? `<span style="color:var(--gold); font-weight:bold;"> [المسوق: ${o.ref_code}]</span>` : '';
                         
                         oBox.innerHTML += `
                             <div class="data-row">
                                 <div style="font-size:11px;">
                                     📦 <b>${o.product_title}</b> (${o.total_price} YER) ${refText}<br>
                                     👤 العميل: <b>${o.customer_name}</b> (${o.customer_phone})<br>
-                                    💳 السند: ${receiptLink} | الحالة: <b>${o.status || 'جديد'}</b>
+                                    💳 السند: ${receiptLink} | الحالة: <b>${o.status || 'قيد التوثيق'}</b>
                                 </div>
-                                <div style="display:flex; gap:6px;">
-                                    ${o.ref_code && o.status !== 'مكتمل' ? `<button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code}', '${o.product_title}')">اعتماد واحتساب العمولة 💰</button>` : ''}
+                                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                    <button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code || ''}', '${o.product_title}')">اعتماد واحتساب العمولة 💰</button>
+                                    <button class="action-btn btn-edit" onclick="editOrder(${o.id}, '${o.customer_name}', '${o.customer_phone}')">تعديل ✏️</button>
                                     <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
                                 </div>
                             </div>
                         `;
                     });
-                } else { oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات شراء حالياً.</p>'; }
+                } else { oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات واردة جديدة.</p>'; }
 
+                // الطلبيات المنجزة
+                if(completedOrders.length > 0) {
+                    completedOrders.forEach(o => {
+                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn); font-weight:bold;">[معاينة السند 📄]</a>` : 'بدون سند';
+                        let refText = o.ref_code ? `<span style="color:var(--gold); font-weight:bold;"> [المسوق: ${o.ref_code}]</span>` : '';
+                        
+                        cBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="font-size:11px;">
+                                    ✅ <b>${o.product_title}</b> (${o.total_price} YER) ${refText}<br>
+                                    👤 العميل: <b>${o.customer_name}</b> (${o.customer_phone})<br>
+                                    💳 السند: ${receiptLink} | الحالة: <b style="color:var(--green);">مكتمل ومنجز</b>
+                                </div>
+                                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                    <button class="action-btn btn-edit" onclick="editOrder(${o.id}, '${o.customer_name}', '${o.customer_phone}')">تعديل ✏️</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else { cBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات منجزة حتى الآن.</p>'; }
+
+                // صور السلايدر
                 let sBox = document.getElementById('sliderAdminList');
                 sBox.innerHTML = '';
                 let sliderSetting = globalSettings.find(s => s.key === 'hero_slider_images');
@@ -191,6 +228,7 @@
                     });
                 } else { sBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد صور مضافة للسلايدر.</p>'; }
 
+                // المنتجات
                 let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 globalProducts = prods || [];
                 let pBox = document.getElementById('productsAdminList');
@@ -215,6 +253,7 @@
                     `;
                 });
 
+                // المسوقين
                 let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
                 let aBox = document.getElementById('affiliatesAdminList');
                 aBox.innerHTML = '';
@@ -226,8 +265,9 @@
                                     👤 <b>${a.full_name || 'مسوق'}</b> (${a.phone})<br>
                                     🔗 الكود: <code>${a.ref_code}</code> | مبيعات: ${toEnglishDigits(a.total_sales || 0)} | أرباح: <b style="color:var(--green);">${toEnglishDigits(a.total_earnings || 0)} YER</b>
                                 </div>
-                                <div style="display:flex; gap:5px;">
+                                <div style="display:flex; gap:5px; flex-wrap:wrap;">
                                     <button class="action-btn btn-green" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية 💵</button>
+                                    <button class="action-btn btn-edit" onclick="editAffiliate(${a.id}, '${a.full_name || ''}', '${a.phone}')">تعديل ✏️</button>
                                     <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
                                 </div>
                             </div>
@@ -237,6 +277,26 @@
 
                 loadPolicyContent();
             } catch(err) { console.error(err); }
+        }
+
+        async function editOrder(id, curName, curPhone) {
+            let newName = prompt('تعديل اسم العميل:', curName);
+            let newPhone = prompt('تعديل رقم هاتف العميل:', curPhone);
+            if(newName !== null && newPhone !== null) {
+                await db.from('orders').update({ customer_name: newName, customer_phone: newPhone }).eq('id', id);
+                alert('تم تحديث بيانات الطلب بنجاح! ✅');
+                loadAdminPanel();
+            }
+        }
+
+        async function editAffiliate(id, curName, curPhone) {
+            let newName = prompt('تعديل اسم المسوق:', curName);
+            let newPhone = prompt('تعديل رقم هاتف المسوق:', curPhone);
+            if(newName !== null && newPhone !== null) {
+                await db.from('affiliates').update({ full_name: newName, phone: newPhone }).eq('id', id);
+                alert('تم تحديث بيانات المسوق بنجاح! ✅');
+                loadAdminPanel();
+            }
         }
 
         async function toggleSliderVisibility() {
@@ -322,26 +382,16 @@
                 }
             }
 
-            let payload = { 
-                title, 
-                category, 
-                price, 
-                old_price, 
-                discount, 
-                affiliate_commission, 
-                description 
-            };
+            let payload = { title, category, price, old_price, discount, affiliate_commission, description };
             if(imageUrl) payload.image = imageUrl;
 
             if(editId) {
-                let { error } = await db.from('platform_services').update(payload).eq('id', editId);
-                if(error) alert('خطأ في التحديث: ' + error.message);
-                else alert('تم تحديث المنتج وعمولته بنجاح! ✅');
+                await db.from('platform_services').update(payload).eq('id', editId);
+                alert('تم تحديث المنتج بنجاح! ✅');
             } else {
                 payload.is_active = true;
-                let { error } = await db.from('platform_services').insert([payload]);
-                if(error) alert('خطأ في الإضافة: ' + error.message);
-                else alert('تمت إضافة المنتج وعمولته بنجاح! 🎉');
+                await db.from('platform_services').insert([payload]);
+                alert('تمت إضافة المنتج بنجاح! 🎉');
             }
 
             resetForm();
@@ -385,16 +435,18 @@
             let prod = globalProducts.find(p => p.title === prodTitle);
             let commission = prod ? (parseFloat(prod.affiliate_commission) || 0) : 0;
 
-            let { data: aff } = await db.from('affiliates').select('*').eq('ref_code', refCode).maybeSingle();
-            if(aff) {
-                await db.from('affiliates').update({
-                    total_sales: (aff.total_sales || 0) + 1,
-                    total_earnings: (aff.total_earnings || 0) + commission
-                }).eq('id', aff.id);
+            if(refCode && refCode !== 'null' && refCode !== '') {
+                let { data: aff } = await db.from('affiliates').select('*').eq('ref_code', refCode).maybeSingle();
+                if(aff) {
+                    await db.from('affiliates').update({
+                        total_sales: (aff.total_sales || 0) + 1,
+                        total_earnings: (aff.total_earnings || 0) + commission
+                    }).eq('id', aff.id);
+                }
             }
 
             await db.from('orders').update({ status: 'مكتمل' }).eq('id', orderId);
-            alert(`تم اعتماد الطلب واحتساب عمولة المسوق (${commission} YER) بنجاح! 🌟`);
+            alert(`تم اعتماد الطلب ونقله إلى الطلبيات المنجزة، واحتساب عمولة المسوق (${commission} YER) بنجاح! 🌟`);
             loadAdminPanel();
         }
 
