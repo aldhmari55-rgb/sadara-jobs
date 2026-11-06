@@ -34,10 +34,9 @@
 
         .stats-banner { background: #ffffff; border: 1px solid var(--aj-border); border-radius: 12px; padding: 12px; margin-bottom: 15px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
         @media(max-width: 576px) { .stats-banner { grid-template-columns: repeat(2, 1fr); } }
-        .stat-item h3 { font-size: 15px; font-weight: 900; color: var(--aj-primary); min-height: 22px; }
+        .stat-item h3 { font-size: 15px; font-weight: 900; color: var(--aj-primary); min-height: 22px; font-family: sans-serif; }
         .stat-item p { font-size: 10px; color: #6B7280; font-weight: 700; margin-top: 2px; }
 
-        /* السلايدر المتحرك بدقة وتنسيق تام */
         .hero-slider-container { width: 100% !important; border-radius: 12px; overflow: hidden; margin: 15px 0; background: #ffffff; border: 1px solid var(--aj-border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; }
         .hero-slides-track { display: flex; transition: transform 0.5s ease-in-out; width: 100%; }
         .hero-slide-item { min-width: 100%; box-sizing: border-box; display: flex; justify-content: center; align-items: center; background: #f3f4f6; }
@@ -62,13 +61,13 @@
         .product-card { background: #ffffff; border: 1px solid var(--aj-border); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: 0.2s; }
         .product-card:hover { border-color: #9CA3AF; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         
-        .discount-badge { position: absolute; top: 10px; left: 10px; background: var(--discount-red); color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; z-index: 5; }
+        .discount-badge { position: absolute; top: 10px; left: 10px; background: var(--discount-red); color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; z-index: 5; font-family: sans-serif; }
         
         .product-img-box { width: 100%; height: 150px; display: flex; justify-content: center; align-items: center; cursor: pointer; margin-bottom: 8px; position: relative; }
         .product-img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .product-title { font-size: 11px; font-weight: 800; color: var(--text-main); height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; cursor: pointer; line-height: 1.3; margin-bottom: 6px; }
 
-        .price-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+        .price-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; font-family: sans-serif; }
         .current-price { font-size: 13px; font-weight: 900; color: var(--discount-red); }
         .old-price { font-size: 10px; font-weight: 700; color: #9CA3AF; text-decoration: line-through; }
 
@@ -102,7 +101,7 @@
             </a>
         </div>
         <div class="aj-header-right">
-            <a href="blog.html" style="color:inherit; font-size:16px;" title="المدونة"><i class="fa-solid fa-newspaper"></i></a>
+            <a href="affiliate.html" style="color:inherit; font-size:16px;" title="حساب المسوق (الأفلييت)"><i class="fa-solid fa-user-gear"></i></a>
         </div>
     </header>
 
@@ -115,7 +114,7 @@
     </a>
 
     <div class="container">
-        <!-- شريط الإحصائيات (تم تصحيح العداد ليبدأ فارغاً ثم يعرض القيمة الحقيقية لمنع الوميض) -->
+        <!-- شريط الإحصائيات بأرقام إنجليزية -->
         <div class="stats-banner">
             <div class="stat-item"><h3 id="statLiveVisitors" style="color:#10B981;">1</h3><p>🟢 زوار متواجدون</p></div>
             <div class="stat-item"><h3 id="statTotalVisits">...</h3><p>👁️ إجمالي الزيارات</p></div>
@@ -123,13 +122,11 @@
             <div class="stat-item"><h3 id="statAffiliates">...</h3><p>🤝 المسوقين</p></div>
         </div>
 
-        <!-- السلايدر المتحرك -->
         <div class="hero-slider-container" id="heroSliderWrapper" style="display: none;">
             <div class="hero-slides-track" id="heroSlidesTrack"></div>
             <div class="slider-dots" id="sliderDots"></div>
         </div>
 
-        <!-- التصنيفات -->
         <div class="categories-slider">
             <div class="cat-box active" onclick="filterStore('الكل', this)"><div class="cat-icon-circle"><i class="fa-solid fa-globe"></i></div><div class="cat-txt">الكل</div></div>
             <div class="cat-box" onclick="filterStore('جوالات', this)"><div class="cat-icon-circle"><i class="fa-solid fa-mobile-screen"></i></div><div class="cat-txt">جوالات</div></div>
@@ -140,20 +137,15 @@
             <div class="cat-box" onclick="filterStore('ملابس', this)"><div class="cat-icon-circle"><i class="fa-solid fa-shirt"></i></div><div class="cat-txt">ملابس</div></div>
         </div>
 
-        <!-- العروض الخاصة -->
         <div class="section-title-row">
             <h2>🔥 عروض خاصة والتخفيضات الكبرى</h2>
         </div>
-        <div class="offers-track" id="offersTrack">
-            جاري تحميل العروض...
-        </div>
+        <div class="offers-track" id="offersTrack">جاري التحميل...</div>
 
         <div class="section-title-row" style="margin-top:20px;">
             <h2>📦 أحدث المنتجات والخدمات المعروضة</h2>
         </div>
-        <div id="productsGridContainer" class="products-grid">
-            جاري تحميل المنتجات...
-        </div>
+        <div id="productsGridContainer" class="products-grid">جاري التحميل...</div>
     </div>
 
     <footer class="store-footer">
@@ -176,13 +168,13 @@
             </div>
             <div class="footer-col">
                 <h4>معلومات التواصل</h4>
-                <p>📞 هاتف / واتساب: <a href="https://wa.me/967780568507" target="_blank" style="color:#25D366; font-weight:bold;">780568507</a></p>
+                <p>📞 هاتف / واتساب: <a href="https://wa.me/967780568507" target="_blank" style="color:#25D366; font-weight:bold; font-family:sans-serif;">780568507</a></p>
                 <p>✉️ support@sadarah.top</p>
                 <p style="margin-top:8px; color:#10B981; font-weight:bold;">موثّق في منصة صدارة الرقمية</p>
             </div>
         </div>
-        <div style="text-align:center; border-top:1px solid #374151; margin-top:25px; padding-top:15px; font-size:10px;">
-            الحقوق محفوظة | 2026 منصة صدارة الرقمية
+        <div style="text-align:center; border-top:1px solid #374151; margin-top:25px; padding-top:15px; font-size:10px; font-family:sans-serif;">
+            Copyrights © 2026 Sadarah Platform
         </div>
     </footer>
 
@@ -195,6 +187,10 @@
         let currentSlide = 0;
         let slideInterval;
 
+        function toEnglishDigits(str) {
+            return String(str).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+        }
+
         function toggleSearch() {
             let box = document.getElementById('searchBarBox');
             box.style.display = box.style.display === 'block' ? 'none' : 'block';
@@ -202,14 +198,25 @@
 
         async function loadStoreData() {
             try {
+                // تتبع الإحالة من رابط الأفلييت وتسجيل الزيارة
+                const urlParams = new URLSearchParams(window.location.search);
+                const refCode = urlParams.get('ref');
+                if(refCode) {
+                    localStorage.setItem('sadara_ref', refCode);
+                    // تسجيل زيادة النقرات للمسوق
+                    try {
+                        let { data: affData } = await db.from('affiliates').select('clicks').eq('ref_code', refCode).single();
+                        if(affData) {
+                            await db.from('affiliates').update({ clicks: (affData.clicks || 0) + 1 }).eq('ref_code', refCode);
+                        }
+                    } catch(e) {}
+                }
+
                 let { data: settings } = await db.from('store_settings').select('*');
                 let sliderSetting = settings ? settings.find(s => s.key === 'hero_slider_images') : null;
                 let bannerImages = [];
-                
                 try {
-                    if(sliderSetting && sliderSetting.value) {
-                        bannerImages = JSON.parse(sliderSetting.value);
-                    }
+                    if(sliderSetting && sliderSetting.value) bannerImages = JSON.parse(sliderSetting.value);
                 } catch(e) { bannerImages = []; }
 
                 if(bannerImages && bannerImages.length > 0) {
@@ -224,48 +231,32 @@
                 allProducts = data || [];
                 
                 let offersList = allProducts.filter(p => (p.discount && p.discount.trim() !== '') || (p.old_price && p.old_price.trim() !== ''));
-                if(offersList.length === 0) {
-                    offersList = allProducts.slice(0, 6);
-                }
+                if(offersList.length === 0) offersList = allProducts.slice(0, 6);
+
                 renderBestOffers(offersList);
                 renderStoreProducts(allProducts);
 
-                document.getElementById('statProducts').textContent = allProducts.length;
+                document.getElementById('statProducts').textContent = toEnglishDigits(allProducts.length);
 
                 let { count: affCount } = await db.from('affiliates').select('*', { count: 'exact', head: true });
-                document.getElementById('statAffiliates').textContent = affCount || 0;
+                document.getElementById('statAffiliates').textContent = toEnglishDigits(affCount || 0);
 
                 let visitsKey = 'sadara_unlimited_total_visits';
-                let currentVisits = parseInt(localStorage.getItem(visitsKey) || '1550');
+                let currentVisits = parseInt(localStorage.getItem(visitsKey) || '1591');
                 currentVisits += 1;
                 localStorage.setItem(visitsKey, currentVisits);
-                document.getElementById('statTotalVisits').textContent = currentVisits.toLocaleString();
-
-                const urlParams = new URLSearchParams(window.location.search);
-                const refCode = urlParams.get('ref');
-                if(refCode) localStorage.setItem('sadara_ref', refCode);
-            } catch(e) {
-                console.error("Error loading store:", e);
-            }
+                document.getElementById('statTotalVisits').textContent = toEnglishDigits(currentVisits.toLocaleString());
+            } catch(e) { console.error("Error:", e); }
         }
 
         function renderHeroSlider(images) {
             let track = document.getElementById('heroSlidesTrack');
             let dots = document.getElementById('sliderDots');
-            track.innerHTML = '';
-            dots.innerHTML = '';
-
+            track.innerHTML = ''; dots.innerHTML = '';
             images.forEach((img, idx) => {
-                track.innerHTML += `
-                    <div class="hero-slide-item">
-                        <img src="${img}" alt="بانر الإعلان ${idx + 1}">
-                    </div>
-                `;
-                dots.innerHTML += `
-                    <div class="slider-dot ${idx === 0 ? 'active' : ''}" onclick="currentSlide = ${idx}; updateSlider(); resetTimer();"></div>
-                `;
+                track.innerHTML += `<div class="hero-slide-item"><img src="${img}"></div>`;
+                dots.innerHTML += `<div class="slider-dot ${idx === 0 ? 'active' : ''}" onclick="currentSlide = ${idx}; updateSlider();"></div>`;
             });
-
             startSliderTimer();
         }
 
@@ -273,52 +264,33 @@
             let track = document.getElementById('heroSlidesTrack');
             let slides = track.getElementsByClassName('hero-slide-item');
             let dots = document.getElementById('sliderDots').getElementsByClassName('slider-dot');
-            
             if(slides.length === 0) return;
             if(currentSlide >= slides.length) currentSlide = 0;
-            if(currentSlide < 0) currentSlide = slides.length - 1;
-
             track.style.transform = `translateX(${currentSlide * 100}%)`;
-
-            for(let i=0; i<dots.length; i++) {
-                dots[i].classList.remove('active');
-            }
+            for(let i=0; i<dots.length; i++) dots[i].classList.remove('active');
             if(dots[currentSlide]) dots[currentSlide].classList.add('active');
         }
 
         function startSliderTimer() {
             if(slideInterval) clearInterval(slideInterval);
-            slideInterval = setInterval(() => {
-                currentSlide++;
-                let slides = document.getElementById('heroSlidesTrack').getElementsByClassName('hero-slide-item');
-                if(currentSlide >= slides.length) currentSlide = 0;
-                updateSlider();
-            }, 3500);
-        }
-
-        function resetTimer() {
-            startSliderTimer();
+            slideInterval = setInterval(() => { currentSlide++; updateSlider(); }, 3500);
         }
 
         function renderBestOffers(offers) {
             let track = document.getElementById('offersTrack');
             track.innerHTML = '';
-            if(!offers || offers.length === 0) {
-                track.innerHTML = '<p style="font-size:11px; color:#6B7280; padding:10px;">لا توجد عروض خاصة حالياً.</p>';
-                return;
-            }
             offers.forEach(p => {
                 let img = p.image || 'images/logo.jpg';
                 let ref = localStorage.getItem('sadara_ref') ? `&ref=${localStorage.getItem('sadara_ref')}` : '';
                 track.innerHTML += `
                     <a href="product.html?id=${p.id}${ref}" class="offer-item">
-                        ${p.discount ? `<div class="discount-badge">${p.discount}</div>` : ''}
+                        ${p.discount ? `<div class="discount-badge">${toEnglishDigits(p.discount)}</div>` : ''}
                         <div style="width:100%; height:100px; display:flex; justify-content:center; align-items:center; margin-bottom:4px;">
                             <img src="${img}" style="max-width:100%; max-height:100%; object-fit:contain;">
                         </div>
                         <div style="font-size:10px; font-weight:800; height:28px; overflow:hidden;">${p.title}</div>
-                        <div style="font-size:12px; color:var(--discount-red); font-weight:900;">${p.price}</div>
-                        ${p.old_price ? `<div style="font-size:9px; color:#9CA3AF; text-decoration:line-through;">${p.old_price}</div>` : ''}
+                        <div style="font-size:12px; color:var(--discount-red); font-weight:900; font-family:sans-serif;">${toEnglishDigits(p.price)} YER</div>
+                        ${p.old_price ? `<div style="font-size:9px; color:#9CA3AF; text-decoration:line-through; font-family:sans-serif;">${toEnglishDigits(p.old_price)} YER</div>` : ''}
                     </a>
                 `;
             });
@@ -327,48 +299,32 @@
         function filterStore(category, el) {
             document.querySelectorAll('.cat-box').forEach(t => t.classList.remove('active'));
             if(el) el.closest('.cat-box').classList.add('active');
-
-            if(category === 'الكل') {
-                renderStoreProducts(allProducts);
-            } else {
-                let filtered = allProducts.filter(p => p.category === category);
-                renderStoreProducts(filtered);
-            }
+            if(category === 'الكل') renderStoreProducts(allProducts);
+            else renderStoreProducts(allProducts.filter(p => p.category === category));
         }
 
         function filterStoreProducts() {
             let query = document.getElementById('searchInput').value.toLowerCase().trim();
-            let filtered = allProducts.filter(p => p.title.toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query)));
-            renderStoreProducts(filtered);
+            renderStoreProducts(allProducts.filter(p => p.title.toLowerCase().includes(query)));
         }
 
         function renderStoreProducts(list) {
             let container = document.getElementById('productsGridContainer');
             container.innerHTML = '';
-
-            if(!list || list.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#6B7280; grid-column:1/-1; padding:30px;">لا توجد منتجات متاحة حالياً.</p>';
-                return;
-            }
-
             list.forEach(p => {
                 let img = p.image || 'images/logo.jpg';
                 let ref = localStorage.getItem('sadara_ref') ? `&ref=${localStorage.getItem('sadara_ref')}` : '';
-                
-                let oldPriceHTML = p.old_price ? `<span class="old-price">${p.old_price}</span>` : '';
-                let discountHTML = p.discount ? `<div class="discount-badge">${p.discount}</div>` : '';
-
                 container.innerHTML += `
                     <div class="product-card">
-                        ${discountHTML}
+                        ${p.discount ? `<div class="discount-badge">${toEnglishDigits(p.discount)}</div>` : ''}
                         <div class="product-img-box" onclick="window.location.href='product.html?id=${p.id}${ref}'">
                             <img src="${img}" class="product-img">
                         </div>
                         <div>
                             <div class="product-title" onclick="window.location.href='product.html?id=${p.id}${ref}'">${p.title}</div>
                             <div class="price-row">
-                                <span class="current-price">${p.price}</span>
-                                ${oldPriceHTML}
+                                <span class="current-price">${toEnglishDigits(p.price)} YER</span>
+                                ${p.old_price ? `<span class="old-price">${toEnglishDigits(p.old_price)} YER</span>` : ''}
                             </div>
                         </div>
                         <a href="product.html?id=${p.id}${ref}" class="add-to-cart-btn"><i class="fa-solid fa-cart-shopping"></i> طلب المنتج 🛒</a>
