@@ -9,45 +9,71 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: #F3F4F6; padding: 15px; color: #111827; }
-        .container { max-width: 650px; margin: 0 auto; }
-        .box { background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 15px; box-shadow:0 2px 6px rgba(0,0,0,0.02); }
-        h2 { font-size: 15px; font-weight: 900; margin-bottom: 12px; color: #111827; }
-        .form-group { margin-bottom: 10px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 4px; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 11px; background: #F9FAFB; }
-        .btn { background: #111827; color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; font-weight: 900; cursor: pointer; font-size: 11px; }
-        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; margin-bottom: 15px; }
-        .stat-card { background: #F9FAFB; border: 1px solid #E5E7EB; padding: 10px; border-radius: 8px; }
-        .stat-card h3 { font-size: 14px; color: #10B981; font-family: sans-serif; }
-        .stat-card p { font-size: 10px; color: #6B7280; }
-        .link-item { background: #F9FAFB; border: 1px solid #E5E7EB; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-        .copy-btn { background: #0284C7; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 10px; }
+        body { background: #F3F4F6; padding: 15px; color: #111827; padding-bottom: 50px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .box { background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        h2 { font-size: 15px; font-weight: 900; margin-bottom: 12px; color: #111827; display: flex; align-items: center; gap: 6px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 4px; color: #374151; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 11px; background: #F9FAFB; outline: none; }
+        .btn { background: #111827; color: white; border: none; padding: 11px; border-radius: 8px; width: 100%; font-weight: 900; cursor: pointer; font-size: 11.5px; transition: 0.2s; }
+        .btn:hover { background: #1F2937; }
+        
+        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        @media(min-width: 576px) { .stat-grid { grid-template-columns: repeat(4, 1fr); } }
+        .stat-card { background: #F9FAFB; border: 1px solid #E5E7EB; padding: 12px; border-radius: 8px; text-align: center; }
+        .stat-card h3 { font-size: 15px; color: #10B981; font-family: sans-serif; font-weight: 900; }
+        .stat-card p { font-size: 10px; color: #6B7280; font-weight: bold; margin-top: 3px; }
+
+        .product-item-row { background: #F9FAFB; border: 1px solid #E5E7EB; padding: 12px; border-radius: 9px; margin-bottom: 12px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .prod-thumb { width: 70px; height: 70px; object-fit: contain; background: #ffffff; border: 1px solid #E5E7EB; border-radius: 6px; padding: 3px; }
+        .copy-btn { background: #0284C7; color: white; border: none; padding: 7px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 10px; }
+        .logout-btn { background: #EF4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; float: left; }
+        .back-store { display: inline-block; margin-bottom: 15px; color: #4B5563; text-decoration: none; font-size: 11px; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
+        <a href="index.html" class="back-store"><i class="fa-solid fa-store"></i> العودة للمتجر الرئيسي</a>
+
         <div class="box" id="authBox">
-            <h2>🤝 انضم أو سجل دخولك في نظام الأفلييت (التسويق بالعمولة)</h2>
-            <div class="form-group"><label>الاسم الكامل</label><input type="text" id="affName" placeholder="اسمك الكريم"></div>
-            <div class="form-group"><label>رقم الهاتف / الواتساب</label><input type="text" id="affPhone" placeholder="07xxxxxxx"></div>
-            <button onclick="loginOrRegisterAffiliate()" class="btn">دخول لوحة تسويقك 🚀</button>
+            <h2>🤝 بوابة المسوقين (الأفلييت)</h2>
+            <p style="font-size: 11px; color: #6B7280; margin-bottom: 14px;">سجل دخولك برقم جوالك، أو أنشئ حساباً جديداً بالاسم ورقم الجوال وطريقة الدفع.</p>
+            
+            <div class="form-group"><label>رقم الهاتف / الواتساب (للدخول أو التسجيل)</label><input type="text" id="affPhone" placeholder="مثال: 770000000"></div>
+            <div class="form-group"><label>الاسم الكامل (مطلوب عند إنشاء حساب جديد فقط)</label><input type="text" id="affName" placeholder="اسمك الكريم"></div>
+            
+            <div class="form-group">
+                <label>طريقة الاستلام المفضلة</label>
+                <select id="payMethod">
+                    <option value="جيب">محفظة جيب (Jeeb)</option>
+                    <option value="الكريمي">بنك الكريمي (نقطة حاسب)</option>
+                </select>
+            </div>
+            
+            <div class="form-group"><label>رقم حساب طريقة الدفع (رقم المحفظة أو الحساب)</label><input type="text" id="payAccount" placeholder="رقم حسابك لاستلام الأرباح"></div>
+            
+            <button onclick="loginOrRegister()" class="btn">دخول / تسجيل الحساب 🚀</button>
         </div>
 
         <div id="dashBox" style="display:none;">
             <div class="box">
-                <h2>📊 إحصائيات الأرباح والزيارات (<span id="affNameDisp"></span>)</h2>
-                <div style="font-size:11px; margin-bottom:10px;">كودك الخاص: <code id="affCodeDisp" style="background:#FEF3C7; padding:2px 6px; border-radius:4px; font-weight:bold;"></code></div>
+                <button onclick="logoutAffiliate()" class="logout-btn">تسجيل الخروج 🚪</button>
+                <h2>📊 لوحة تحكم المسوق: <span id="affNameDisp" style="color:#D4AF37;"></span></h2>
+                <div style="font-size: 11px; margin-bottom: 15px;">كود التسويق الخاص بك: <code id="affCodeDisp" style="background:#FEF3C7; padding:3px 8px; border-radius:4px; font-weight:bold; font-family:sans-serif;"></code></div>
+                
                 <div class="stat-grid">
                     <div class="stat-card"><h3 id="affClicks">0</h3><p>🔗 الزيارات</p></div>
                     <div class="stat-card"><h3 id="affSales">0</h3><p>📦 المبيعات</p></div>
-                    <div class="stat-card"><h3 id="affEarnings">0 YER</h3><p>💰 العمولات المستحقة</p></div>
+                    <div class="stat-card"><h3 id="affTotalEarn">0 YER</h3><p>💰 الأرباح الكلية</p></div>
+                    <div class="stat-card"><h3 id="affDueEarn" style="color:#EF4444;">0 YER</h3><p>💵 الأرباح المستحقة</p></div>
                 </div>
             </div>
 
             <div class="box">
-                <h2>🔗 روابط التسويق الخاصة بك (انسخ وشاركه)</h2>
-                <div id="linksList">جاري جلب روابط المنتجات...</div>
+                <h2>📦 منتجات المتجر وعمولات التسويق الخاصة بك</h2>
+                <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">انسخ رابط أي منتج وشاركه، وكل عميل يدخل ويشتري من رابطك ستحتسب مبيعته وعمولته بالريال اليمني تلقائياً.</p>
+                <div id="affProductsList">جاري جلب المنتجات...</div>
             </div>
         </div>
     </div>
@@ -57,23 +83,68 @@
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function loginOrRegisterAffiliate() {
-            let name = document.getElementById('affName').value.trim();
-            let phone = document.getElementById('affPhone').value.trim();
+        function toEnglishDigits(str) {
+            return String(str).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+        }
 
-            if(!phone) { alert('يرجى كتابة رقم الهاتف.'); return; }
-
-            let { data: existing } = await db.from('affiliates').select('*').eq('phone', phone).maybeSingle();
-
-            if(existing) {
-                showDashboard(existing);
-            } else {
-                if(!name) { alert('يرجى كتابة اسمك الكامل للتسجيل جديداً.'); return; }
-                let refCode = 'SADARA_' + Math.floor(1000 + Math.random() * 9000);
-                let { data: created, error } = await db.from('affiliates').insert([{ full_name: name, phone: phone, ref_code: refCode, clicks: 0, total_sales: 0, total_earnings: 0 }]).select().single();
-                if(!error && created) showDashboard(created);
-                else alert('خطأ في التسجيل.');
+        window.addEventListener('DOMContentLoaded', () => {
+            let savedPhone = localStorage.getItem('sadara_aff_phone');
+            if(savedPhone) {
+                fetchAffiliateData(savedPhone);
             }
+        });
+
+        async function loginOrRegister() {
+            let phone = toEnglishDigits(document.getElementById('affPhone').value.trim());
+            let name = document.getElementById('affName').value.trim();
+            let method = document.getElementById('payMethod').value;
+            let account = toEnglishDigits(document.getElementById('payAccount').value.trim());
+
+            if(!phone) { alert('يرجى إدخال رقم الهاتف.'); return; }
+
+            try {
+                let { data: existing } = await db.from('affiliates').select('*').eq('phone', phone).maybeSingle();
+
+                if(existing) {
+                    localStorage.setItem('sadara_aff_phone', phone);
+                    showDashboard(existing);
+                } else {
+                    if(!name || !account) { 
+                        alert('يبدو أن هذا الرقم غير مسجل. يرجى إدخال (الاسم الكامل، طريقة الدفع، ورقم الحساب) لإنشاء حساب جديد.'); 
+                        return; 
+                    }
+                    let refCode = 'SADARA_' + Math.floor(1000 + Math.random() * 9000);
+                    let { data: created, error } = await db.from('affiliates').insert([{
+                        full_name: name,
+                        phone: phone,
+                        ref_code: refCode,
+                        payment_method: method,
+                        payment_account: account,
+                        clicks: 0,
+                        total_sales: 0,
+                        total_earnings: 0
+                    }]).select().single();
+
+                    if(error) throw error;
+                    if(created) {
+                        localStorage.setItem('sadara_aff_phone', phone);
+                        showDashboard(created);
+                    }
+                }
+            } catch(e) {
+                alert('حدث خطأ أثناء تسجيل الدخول: ' + e.message);
+            }
+        }
+
+        async function fetchAffiliateData(phone) {
+            try {
+                let { data: aff, error } = await db.from('affiliates').select('*').eq('phone', phone).single();
+                if(error || !aff) {
+                    localStorage.removeItem('sadara_aff_phone');
+                    return;
+                }
+                showDashboard(aff);
+            } catch(e) { console.error(e); }
         }
 
         async function showDashboard(aff) {
@@ -81,30 +152,42 @@
             document.getElementById('dashBox').style.display = 'block';
             document.getElementById('affNameDisp').textContent = aff.full_name || aff.phone;
             document.getElementById('affCodeDisp').textContent = aff.ref_code;
-            document.getElementById('affClicks').textContent = aff.clicks || 0;
-            document.getElementById('affSales').textContent = aff.total_sales || 0;
-            document.getElementById('affEarnings').textContent = (aff.total_earnings || 0) + ' YER';
+            document.getElementById('affClicks').textContent = toEnglishDigits(aff.clicks || 0);
+            document.getElementById('affSales').textContent = toEnglishDigits(aff.total_sales || 0);
+            document.getElementById('affTotalEarn').textContent = toEnglishDigits(aff.total_earnings || 0) + ' YER';
+            document.getElementById('affDueEarn').textContent = toEnglishDigits(aff.total_earnings || 0) + ' YER';
 
-            let { data: products } = await db.from('platform_services').select('*');
-            let linksContainer = document.getElementById('linksList');
-            linksContainer.innerHTML = '';
+            let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
+            let listContainer = document.getElementById('affProductsList');
+            listContainer.innerHTML = '';
 
             let baseUrl = window.location.origin + window.location.pathname.replace('affiliate.html', '');
 
-            if(products && products.length > 0) {
-                products.forEach(p => {
+            if(prods && prods.length > 0) {
+                prods.forEach(p => {
                     let fullUrl = `${baseUrl}product.html?id=${p.id}&ref=${aff.ref_code}`;
-                    linksContainer.innerHTML += `
-                        <div class="link-item">
-                            <div style="font-size:11px;">
-                                <b>${p.title}</b><br>
-                                <span style="font-size:9.5px; color:#6B7280; font-family:sans-serif;">${fullUrl}</span>
+                    let comm = p.affiliate_commission || 0;
+                    listContainer.innerHTML += `
+                        <div class="product-item-row">
+                            <img src="${p.image || 'images/logo.jpg'}" class="prod-thumb">
+                            <div style="flex:1; min-width:180px;">
+                                <b style="font-size:11.5px; color:#111827;">${p.title}</b><br>
+                                <span style="font-size:11px; color:#EF4444; font-weight:900; font-family:sans-serif;">السعر: ${toEnglishDigits(p.price)} YER</span><br>
+                                <span style="font-size:11px; color:#10B981; font-weight:900; font-family:sans-serif;">🎁 عمولتك من هذا المنتج: ${toEnglishDigits(comm)} YER</span><br>
+                                <span style="font-size:10px; color:#6B7280; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;">${p.description || ''}</span>
                             </div>
-                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${fullUrl}'); alert('تم نسخ رابط المنتج بنجاح! 🎉');">نسخ الرابط 📋</button>
+                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${fullUrl}'); alert('تم نسخ رابط التسويق لهذا المنتج بنجاح! 🎉');">نسخ رابط التسويق 📋</button>
                         </div>
                     `;
                 });
+            } else {
+                listContainer.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد منتجات مضافة حالياً في المتجر.</p>';
             }
+        }
+
+        function logoutAffiliate() {
+            localStorage.removeItem('sadara_aff_phone');
+            window.location.reload();
         }
     </script>
 </body>
