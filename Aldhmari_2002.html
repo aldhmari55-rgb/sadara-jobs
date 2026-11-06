@@ -49,7 +49,7 @@
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. إدارة طلبات الشراء وسندات التحويل وحساب العمولات -->
+        <!-- 1. إدارة طلبات الشراء وسندات التحويل -->
         <div class="section-box">
             <h3>🛒 طلبات الشراء الواردة وسندات التحويل</h3>
             <div id="ordersAdminList">جاري التحميل...</div>
@@ -57,7 +57,7 @@
 
         <!-- 2. السلايدر المتحرك -->
         <div class="section-box">
-            <h3>🎞️ إدارة بانرات السلايدر المتحرك (صور متعددة)</h3>
+            <h3>🎞️ إدارة بانرات السلايدر المتحرك</h3>
             <div class="form-group"><input type="file" id="sliderFileInput" accept="image/*"></div>
             <button onclick="uploadSliderImage()" class="submit-btn" style="background:var(--primary); color:var(--gold); margin-bottom: 12px;">رفع وإضافة الصورة للسلايدر 🌟</button>
             <div id="sliderAdminList">جاري التحميل...</div>
@@ -79,9 +79,9 @@
             <button onclick="savePolicy()" class="submit-btn" style="background:var(--green);">حفظ وتحديث المحتوى 📝</button>
         </div>
 
-        <!-- 4. المنتجات -->
+        <!-- 4. المنتجات وعمولة المسوق -->
         <div class="section-box">
-            <h3 id="formTitle">➕ إضافة / تعديل منتج</h3>
+            <h3 id="formTitle">➕ إضافة منتج أو خدمة جديدة</h3>
             <input type="hidden" id="editProductId">
             <div class="form-group"><label>العنوان</label><input type="text" id="pTitle"></div>
             <div class="form-group">
@@ -95,9 +95,10 @@
                     <option value="ملابس">ملابس</option>
                 </select>
             </div>
-            <div class="form-group"><label>السعر (YER)</label><input type="text" id="pPrice"></div>
-            <div class="form-group"><label>السعر المشطوب (YER)</label><input type="text" id="pOldPrice"></div>
+            <div class="form-group"><label>السعر الحالي (YER)</label><input type="text" id="pPrice"></div>
+            <div class="form-group"><label>السعر السابق المشطوب (YER)</label><input type="text" id="pOldPrice"></div>
             <div class="form-group"><label>شارة الخصم (مثل -20%)</label><input type="text" id="pDiscount"></div>
+            <div class="form-group"><label>عمولة المسوق المحددة للمنتج (بالريال اليمني - مثال: 100, 500, 1000, 5000)</label><input type="number" id="pAffCommission" placeholder="أدخل مبلغ العمولة بالريال اليمني" value="0"></div>
             <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage" accept="image/*"></div>
             <div class="form-group"><label>الوصف</label><textarea id="pDesc" rows="2"></textarea></div>
             <button onclick="saveProductData()" id="saveBtn" class="submit-btn">نشر / حفظ المنتج 🚀</button>
@@ -105,7 +106,7 @@
 
         <!-- 5. قائمة المنتجات -->
         <div class="section-box">
-            <h3>📦 قائمة المنتجات والتخفيضات</h3>
+            <h3>📦 قائمة المنتجات والخدمات</h3>
             <div id="productsAdminList">جاري التحميل...</div>
         </div>
 
@@ -124,9 +125,12 @@
 
         let globalProducts = [];
 
+        function toEnglishDigits(str) {
+            return String(str).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+        }
+
         async function loadAdminPanel() {
             try {
-                // عرض الطلبات وسندات التحويل
                 let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
                 let oBox = document.getElementById('ordersAdminList');
                 oBox.innerHTML = '';
@@ -138,12 +142,12 @@
                         oBox.innerHTML += `
                             <div class="data-row">
                                 <div style="font-size:11px;">
-                                    📦 <b>${o.product_title}</b> (${o.total_price}) ${refText}<br>
+                                    📦 <b>${o.product_title}</b> (${o.total_price} YER) ${refText}<br>
                                     👤 العميل: <b>${o.customer_name}</b> (${o.customer_phone})<br>
                                     💳 السند: ${receiptLink} | الحالة: <b>${o.status || 'جديد'}</b>
                                 </div>
                                 <div style="display:flex; gap:6px;">
-                                    ${o.ref_code && o.status !== 'مكتمل' ? `<button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code}', '${o.total_price}')">تأكيد واحتساب عمولة 💰</button>` : ''}
+                                    ${o.ref_code && o.status !== 'مكتمل' ? `<button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code}', '${o.product_title}')">تأكيد واحتساب العمولة 💰</button>` : ''}
                                     <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
                                 </div>
                             </div>
@@ -151,7 +155,6 @@
                     });
                 } else { oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات شراء حالياً.</p>'; }
 
-                // البنرات والسلايدر
                 let { data: settings } = await db.from('store_settings').select('*');
                 let sBox = document.getElementById('sliderAdminList');
                 sBox.innerHTML = '';
@@ -172,7 +175,6 @@
                     });
                 } else { sBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد صور في السلايدر.</p>'; }
 
-                // المنتجات
                 let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 globalProducts = prods || [];
                 let pBox = document.getElementById('productsAdminList');
@@ -182,14 +184,16 @@
                         <div class="data-row">
                             <div style="display:flex; align-items:center; gap:10px;">
                                 <img src="${p.image || 'images/logo.jpg'}" class="product-thumb">
-                                <div style="font-size:11px;"><b>${p.title}</b><br>السعر: ${p.price}</div>
+                                <div style="font-size:11px;">
+                                    <b>${p.title}</b><br>
+                                    السعر: ${toEnglishDigits(p.price)} YER | <span style="color:var(--green); font-weight:bold;">عمولة المسوق: ${toEnglishDigits(p.affiliate_commission || 0)} YER</span>
+                                </div>
                             </div>
                             <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
                         </div>
                     `;
                 });
 
-                // المسوقين
                 let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
                 let aBox = document.getElementById('affiliatesAdminList');
                 aBox.innerHTML = '';
@@ -199,7 +203,7 @@
                             <div class="data-row">
                                 <div style="font-size:11px;">
                                     👤 <b>${a.full_name || 'مسوق'}</b> (${a.phone})<br>
-                                    🔗 الكود: <code>${a.ref_code}</code> | مبيعات: ${a.total_sales || 0} | الأرباح: <b style="color:var(--green);">${a.total_earnings || 0} YER</b>
+                                    🔗 الكود: <code>${a.ref_code}</code> | مبيعات: ${toEnglishDigits(a.total_sales || 0)} | الأرباح: <b style="color:var(--green);">${toEnglishDigits(a.total_earnings || 0)} YER</b>
                                 </div>
                                 <button class="action-btn btn-green" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية العمولات 💵</button>
                             </div>
@@ -211,9 +215,10 @@
             } catch(err) { console.error(err); }
         }
 
-        async function approveOrderWithCommission(orderId, refCode, priceStr) {
-            let numPrice = parseFloat(priceStr) || 0;
-            let commission = Math.round(numPrice * 0.05); // احتساب 5% عمولة تلقائياً للمسوق
+        async function approveOrderWithCommission(orderId, refCode, prodTitle) {
+            // البحث عن المنتج لجلب عمولته المحددة بالريال اليمني
+            let prod = globalProducts.find(p => p.title === prodTitle);
+            let commission = prod ? (parseFloat(prod.affiliate_commission) || 0) : 0;
 
             let { data: aff } = await db.from('affiliates').select('*').eq('ref_code', refCode).maybeSingle();
             if(aff) {
@@ -224,7 +229,7 @@
             }
 
             await db.from('orders').update({ status: 'مكتمل' }).eq('id', orderId);
-            alert(`تم اعتماد الطلب واحتساب عمولة ${commission} YER للمسوق بنجاح! 🌟`);
+            alert(`تم اعتماد الطلب وإضافة عمولة المسوق المحددة (${commission} YER) بنجاح! 🌟`);
             loadAdminPanel();
         }
 
@@ -272,13 +277,14 @@
         async function saveProductData() {
             let title = document.getElementById('pTitle').value.trim();
             let category = document.getElementById('pCategory').value;
-            let price = document.getElementById('pPrice').value.trim();
-            let old_price = document.getElementById('pOldPrice').value.trim();
+            let price = toEnglishDigits(document.getElementById('pPrice').value.trim());
+            let old_price = toEnglishDigits(document.getElementById('pOldPrice').value.trim());
             let discount = document.getElementById('pDiscount').value.trim();
+            let affiliate_commission = parseFloat(toEnglishDigits(document.getElementById('pAffCommission').value.trim())) || 0;
             let description = document.getElementById('pDesc').value.trim();
             let fileInput = document.getElementById('pImage');
 
-            if(!title || !price) { alert('ادخل العنوان والسعر'); return; }
+            if(!title || !price) { alert('يرجى إدخال العنوان والسعر.'); return; }
 
             let imageUrl = '';
             if(fileInput.files[0]) {
@@ -291,8 +297,19 @@
                 }
             }
 
-            await db.from('platform_services').insert([{ title, category, price, old_price, discount, description, image: imageUrl, is_active: true }]);
-            alert('تمت إضافة المنتج!');
+            await db.from('platform_services').insert([{ 
+                title, 
+                category, 
+                price, 
+                old_price, 
+                discount, 
+                affiliate_commission, 
+                description, 
+                image: imageUrl, 
+                is_active: true 
+            }]);
+            
+            alert('تمت إضافة المنتج بنجاح مع تحديد عمولة المسوق!');
             loadAdminPanel();
         }
 
