@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; user-select: text; /* السماح بتحديد وتنسخ النصوص بمرونة */ }
         body { background: #F3F4F6; padding: 15px; color: #111827; padding-bottom: 50px; }
         .container { max-width: 800px; margin: 0 auto; }
         .box { background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
@@ -30,9 +30,14 @@
         .stat-card h3 { font-size: 15px; color: #10B981; font-family: sans-serif; font-weight: 900; }
         .stat-card p { font-size: 10px; color: #6B7280; font-weight: bold; margin-top: 3px; }
 
-        .product-item-row { background: #F9FAFB; border: 1px solid #E5E7EB; padding: 12px; border-radius: 9px; margin-bottom: 12px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-        .prod-thumb { width: 70px; height: 70px; object-fit: contain; background: #ffffff; border: 1px solid #E5E7EB; border-radius: 6px; padding: 3px; }
-        .copy-btn { background: #0284C7; color: white; border: none; padding: 7px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 10px; }
+        .product-item-row { background: #F9FAFB; border: 1px solid #E5E7EB; padding: 12px; border-radius: 9px; margin-bottom: 12px; display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+        .prod-thumb { width: 80px; height: 80px; object-fit: contain; background: #ffffff; border: 1px solid #E5E7EB; border-radius: 6px; padding: 3px; cursor: pointer; transition: 0.2s; }
+        .prod-thumb:hover { opacity: 0.85; transform: scale(1.02); }
+        
+        .action-btns-group { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+        .action-chip { background: #0284C7; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 9.5px; }
+        .action-chip.copy-text { background: #4B5563; }
+        
         .logout-btn { background: #EF4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; float: left; }
         .back-store { display: inline-block; margin-bottom: 15px; color: #4B5563; text-decoration: none; font-size: 11px; font-weight: bold; }
     </style>
@@ -41,16 +46,14 @@
     <div class="container">
         <a href="index.html" class="back-store"><i class="fa-solid fa-store"></i> العودة للمتجر الرئيسي</a>
 
-        <!-- قسم تسجيل الدخول / التسجيل -->
         <div class="box" id="authBox">
             <h2>🤝 بوابة المسوقين (الأفلييت)</h2>
             
             <div class="tabs">
-                <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">تسجيل الدخول (للحسابات السابقة)</button>
+                <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">تسجيل الدخول</button>
                 <button class="tab-btn" id="tabRegister" onclick="switchTab('register')">إنشاء حساب جديد</button>
             </div>
 
-            <!-- نموذج تسجيل الدخول -->
             <div id="loginFormSection">
                 <div class="form-group">
                     <label>رقم الهاتف / الواتساب المسجل</label>
@@ -59,7 +62,6 @@
                 <button onclick="handleLogin()" class="btn">تسجيل الدخول إلى حسابي 🚀</button>
             </div>
 
-            <!-- نموذج إنشاء حساب جديد -->
             <div id="registerFormSection" style="display:none;">
                 <div class="form-group">
                     <label>الاسم الكامل</label>
@@ -84,7 +86,6 @@
             </div>
         </div>
 
-        <!-- لوحة تحكم المسوق -->
         <div id="dashBox" style="display:none;">
             <div class="box">
                 <button onclick="logoutAffiliate()" class="logout-btn">تسجيل الخروج 🚪</button>
@@ -100,8 +101,8 @@
             </div>
 
             <div class="box">
-                <h2>📦 منتجات المتجر وعمولات التسويق الخاصة بك</h2>
-                <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">انسخ رابط أي منتج وشاركه، وكل عميل يدخل ويشتري من رابطك ستحتسب مبيعته وعمولته بالريال اليمني تلقائياً.</p>
+                <h2>📦 منتجات المتجر وروابط التسويق (مرونة تامة للنسخ والتحميل)</h2>
+                <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">اضغط على أي صورة لعرضها وتحميلها، أو انسخ العنوان، الوصف، أو رابط التسويق بضغطة زر.</p>
                 <div id="affProductsList">جاري جلب المنتجات...</div>
             </div>
         </div>
@@ -149,9 +150,7 @@
                 }
                 localStorage.setItem('sadara_aff_phone', phone);
                 showDashboard(existing);
-            } catch(e) {
-                alert('حدث خطأ أثناء تسجيل الدخول.');
-            }
+            } catch(e) { alert('حدث خطأ أثناء تسجيل الدخول.'); }
         }
 
         async function handleRegister() {
@@ -161,7 +160,7 @@
             let account = toEnglishDigits(document.getElementById('regPayAccount').value.trim());
 
             if(!name || !phone || !account) {
-                alert('يرجى تعبئة جميع الحقول (الاسم، رقم الجوال، ورقم الحساب).');
+                alert('يرجى تعبئة جميع الحقول.');
                 return;
             }
 
@@ -191,9 +190,7 @@
                     localStorage.setItem('sadara_aff_phone', phone);
                     showDashboard(created);
                 }
-            } catch(e) {
-                alert('حدث خطأ أثناء التسجيل: ' + e.message);
-            }
+            } catch(e) { alert('خطأ أثناء التسجيل: ' + e.message); }
         }
 
         async function fetchAffiliateData(phone) {
@@ -227,16 +224,23 @@
                 prods.forEach(p => {
                     let fullUrl = `${baseUrl}product.html?id=${p.id}&ref=${aff.ref_code}`;
                     let comm = p.affiliate_commission || 0;
+                    let imgSrc = p.image || 'images/logo.jpg';
+
                     listContainer.innerHTML += `
                         <div class="product-item-row">
-                            <img src="${p.image || 'images/logo.jpg'}" class="prod-thumb">
+                            <img src="${imgSrc}" class="prod-thumb" title="اضغط لعرض الصورة بحجمها الكامل" onclick="window.open('${imgSrc}', '_blank')">
                             <div style="flex:1; min-width:180px;">
-                                <b style="font-size:11.5px; color:#111827;">${p.title}</b><br>
+                                <b style="font-size:11.5px; color:#111827; user-select:text;">${p.title}</b><br>
                                 <span style="font-size:11px; color:#EF4444; font-weight:900; font-family:sans-serif;">السعر: ${toEnglishDigits(p.price)} YER</span><br>
-                                <span style="font-size:11px; color:#10B981; font-weight:900; font-family:sans-serif;">🎁 عمولتك من هذا المنتج: ${toEnglishDigits(comm)} YER</span><br>
-                                <span style="font-size:10px; color:#6B7280; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;">${p.description || ''}</span>
+                                <span style="font-size:11px; color:#10B981; font-weight:900; font-family:sans-serif;">🎁 عمولتك: ${toEnglishDigits(comm)} YER</span><br>
+                                <span style="font-size:10.5px; color:#4B5563; display:block; margin-top:4px; user-select:text;">${p.description || ''}</span>
+                                
+                                <div class="action-btns-group">
+                                    <button class="action-chip copy-text" onclick="navigator.clipboard.writeText('${p.title}'); alert('تم نسخ عنوان المنتج! 📋');">نسخ العنوان</button>
+                                    <button class="action-chip copy-text" onclick="navigator.clipboard.writeText('${p.description || ''}'); alert('تم نسخ وصف المنتج! 📋');">نسخ الوصف</button>
+                                    <button class="action-chip" onclick="navigator.clipboard.writeText('${fullUrl}'); alert('تم نسخ رابط التسويق بنجاح! 🎉');">نسخ رابط التسويق 🔗</button>
+                                </div>
                             </div>
-                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${fullUrl}'); alert('تم نسخ رابط التسويق لهذا المنتج بنجاح! 🎉');">نسخ رابط التسويق 📋</button>
                         </div>
                     `;
                 });
