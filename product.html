@@ -9,26 +9,45 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: #F9FAFB; padding: 15px; color: #1F2937; }
-        .container { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #E5E7EB; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        .prod-img { width: 100%; height: 260px; object-fit: contain; background: #ffffff; border-radius: 8px; margin-bottom: 15px; border:1px solid #E5E7EB; padding:5px; }
-        h1 { font-size: 16px; font-weight: 900; color: #111827; margin-bottom: 8px; }
-        .price-box { font-size: 16px; font-weight: 900; color: #EF4444; margin-bottom: 12px; font-family: sans-serif; }
-        .desc { font-size: 11.5px; color: #4B5563; line-height: 1.6; margin-bottom: 20px; background:#F9FAFB; padding:10px; border-radius:8px; }
+        
+        /* خلفية عائمة معتمة تغطي الشاشة بالكامل لإتاحة الإغلاق عند الضغط خارج النافذة */
+        body { background: rgba(0, 0, 0, 0.6); padding: 15px; color: #1F2937; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
 
-        .payment-info-box { background: #FEF3C7; border: 1px solid #F59E0B; padding: 12px; border-radius: 9px; margin-bottom: 15px; font-size: 11px; }
-        .payment-info-box b { color: #92400E; display: block; margin-bottom: 6px; }
-        .pay-method { background: #ffffff; padding: 8px; border-radius: 6px; border: 1px dashed #D97706; margin-bottom: 6px; font-family: sans-serif; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; display: flex; justify-content: center; align-items: center; padding: 10px; }
+        
+        .container { background: #ffffff; width: 100%; max-width: 550px; max-height: 90vh; overflow-y: auto; padding: 20px; border-radius: 14px; border: 1px solid #E5E7EB; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; z-index: 1000; animation: scaleIn 0.25s ease-out; }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
 
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 5px; color: #374151; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 11px; outline: none; background: #F9FAFB; }
-        .submit-btn { background: #111827; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; font-size: 12px; margin-top: 10px; }
-        .back-btn { display: block; text-align: center; margin-top: 15px; color: #6B7280; text-decoration: none; font-size: 11px; font-weight: bold; }
+        .close-x-btn { position: absolute; top: 12px; left: 12px; background: #F3F4F6; border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: 900; cursor: pointer; display: flex; justify-content: center; align-items: center; color: #374151; transition: 0.2s; }
+        .close-x-btn:hover { background: #EF4444; color: #ffffff; }
+
+        .prod-img { width: 100%; height: 220px; object-fit: contain; background: #ffffff; border-radius: 8px; margin-bottom: 12px; border: 1px solid #E5E7EB; padding: 5px; }
+        h1 { font-size: 15px; font-weight: 900; color: #111827; margin-bottom: 8px; padding-left: 25px; }
+        .price-box { font-size: 15px; font-weight: 900; color: #EF4444; margin-bottom: 10px; font-family: sans-serif; }
+        .desc { font-size: 11px; color: #4B5563; line-height: 1.6; margin-bottom: 15px; background: #F9FAFB; padding: 10px; border-radius: 8px; }
+
+        .payment-info-box { background: #FEF3C7; border: 1px solid #F59E0B; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 10.5px; }
+        .payment-info-box b { color: #92400E; display: block; margin-bottom: 4px; }
+        .pay-method { background: #ffffff; padding: 6px 8px; border-radius: 6px; border: 1px dashed #D97706; margin-bottom: 4px; font-family: sans-serif; }
+
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 10.5px; font-weight: 900; margin-bottom: 4px; color: #374151; }
+        .form-group input { width: 100%; padding: 9px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 11px; outline: none; background: #F9FAFB; }
+        .submit-btn { background: #111827; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; font-size: 11.5px; margin-top: 8px; }
+        .back-btn { display: block; text-align: center; margin-top: 12px; color: #6B7280; text-decoration: none; font-size: 10.5px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="container" id="productContainer">جاري التحميل...</div>
+
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="container" id="productContainer" onclick="event.stopPropagation()">
+            جاري التحميل...
+        </div>
+    </div>
 
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
@@ -40,30 +59,41 @@
             return String(str).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
         }
 
+        function closeModal(e) {
+            // إذا ضغط المستخدم في المساحة الرمادية المعتمة خارج الصندوق
+            if(e.target.id === 'modalOverlay') {
+                window.location.href = 'index.html';
+            }
+        }
+
         async function loadProduct() {
             const urlParams = new URLSearchParams(window.location.search);
             const prodId = urlParams.get('id');
             const container = document.getElementById('productContainer');
 
-            if(!prodId) { container.innerHTML = '<p>المنتج غير موجود.</p><a href="index.html" class="back-btn">العودة للرئيسية</a>'; return; }
+            if(!prodId) { 
+                container.innerHTML = '<p>المنتج غير موجود.</p><a href="index.html" class="back-btn">العودة للرئيسية</a>'; 
+                return; 
+            }
 
             try {
                 let { data: p, error } = await db.from('platform_services').select('*').eq('id', prodId).single();
                 if(error || !p) throw error;
 
                 container.innerHTML = `
+                    <button class="close-x-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-xmark"></i></button>
                     <img src="${p.image || 'images/logo.jpg'}" class="prod-img">
                     <h1>${p.title}</h1>
-                    <div class="price-box">${toEnglishDigits(p.price)} YER ${p.old_price ? `<span style="text-decoration:line-through; color:#9CA3AF; font-size:12px; margin-right:8px;">${toEnglishDigits(p.old_price)} YER</span>` : ''}</div>
+                    <div class="price-box">${toEnglishDigits(p.price)} YER ${p.old_price ? `<span style="text-decoration:line-through; color:#9CA3AF; font-size:11px; margin-right:6px;">${toEnglishDigits(p.old_price)} YER</span>` : ''}</div>
                     <div class="desc">${p.description || 'لا توجد تفاصيل إضافية لهذا المنتج.'}</div>
                     
                     <div class="payment-info-box">
-                        <b>💳 طرق الدفع المتاحة:</b>
-                        <div class="pay-method">📱 محفظة جيب (Jeeb): <b>780568507</b>(عبدالرحمن عبدالله صالح الذماري )</div>
-                        <div class="pay-method">🏦 بنك الكريمي (نقطة حاسب): <b>2628009</b> (شركة صدارة للتسويق والخدمات الرقمية )</div>
+                        <b>💳 بيانات السداد المتاحة:</b>
+                        <div class="pay-method">📱 محفظة جيب (Jeeb): <b>780568507</b></div>
+                        <div class="pay-method">🏦 نقطة حاسب الكريمي: <b>2628009</b> (عبدالرحمن عبدالله صالح الذماري)</div>
                     </div>
 
-                    <h3 style="font-size:13px; font-weight:900; margin-bottom:10px;">🛒 إتمام طلب الشراء ورفع السند</h3>
+                    <h3 style="font-size:12px; font-weight:900; margin-bottom:8px;">🛒 إتمام طلب الشراء ورفع السند</h3>
                     <div class="form-group">
                         <label>الاسم الكامل</label>
                         <input type="text" id="custName" placeholder="أدخل اسمك الكريم">
@@ -79,7 +109,9 @@
                     <button onclick="submitOrder('${p.title}', '${p.price}')" class="submit-btn" id="sendOrderBtn">تأكيد وإرسال الطلب والسند 🚀</button>
                     <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> العودة للمتجر الرئيسي</a>
                 `;
-            } catch(e) { container.innerHTML = '<p>حدث خطأ أثناء تحميل المنتج.</p>'; }
+            } catch(e) { 
+                container.innerHTML = '<p>حدث خطأ أثناء تحميل المنتج.</p><a href="index.html" class="back-btn">العودة للرئيسية</a>'; 
+            }
         }
 
         async function submitOrder(prodTitle, prodPrice) {
@@ -119,7 +151,7 @@
 
                 if(error) throw error;
 
-                alert('تم إرسال طلبك وسند التحويل بنجاح! سنتواصل معك فوراً لتأكيد التسليم. 🎉');
+                alert('تم إرسال طلبك وسند التحويل بنجاح! سنتواصل معك فوراً. 🎉');
                 window.location.href = 'index.html';
             } catch(err) {
                 alert('خطأ أثناء إرسال الطلب: ' + err.message);
