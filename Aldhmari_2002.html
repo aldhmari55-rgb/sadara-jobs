@@ -57,7 +57,7 @@
             <div id="ordersAdminList">جاري التحميل...</div>
         </div>
 
-        <!-- 2. السلايدر (إظهار، إخفاء، حذف) -->
+        <!-- 2. السلايدر -->
         <div class="section-box">
             <h3>🎞️ إدارة بانرات السلايدر المتحرك (إظهار / إخفاء / حذف)</h3>
             <div style="margin-bottom:12px; display:flex; gap:10px; align-items:center;">
@@ -85,7 +85,7 @@
             <button onclick="savePolicy()" class="submit-btn" style="background:var(--green);">حفظ وتحديث محتوى السياسة 📝</button>
         </div>
 
-        <!-- 4. المنتجات (إضافة / تعديل) -->
+        <!-- 4. المنتجات -->
         <div class="section-box">
             <h3 id="formTitle">➕ إضافة منتج جديد أو تعديل منتج قائم</h3>
             <input type="hidden" id="editProductId">
@@ -111,13 +111,13 @@
             <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:#F3F4F6; color:var(--primary); border:none; padding:9px; border-radius:9px; margin-top:8px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
         </div>
 
-        <!-- 5. قائمة المنتجات (تعديل، حذف، إظهار/إخفاء) -->
+        <!-- 5. قائمة المنتجات -->
         <div class="section-box">
             <h3>📦 قائمة المنتجات والخدمات (تعديل، حذف، إظهار/إخفاء)</h3>
             <div id="productsAdminList">جاري التحميل...</div>
         </div>
 
-        <!-- 6. المسوقين (تعديل، حذف، تصفية) -->
+        <!-- 6. المسوقين -->
         <div class="section-box">
             <h3>🤝 إدارة المسوقين (تعديل، حذف، وتصفية العمولات)</h3>
             <div id="affiliatesAdminList">جاري التحميل...</div>
@@ -142,14 +142,12 @@
                 let { data: settings } = await db.from('store_settings').select('*');
                 globalSettings = settings || [];
 
-                // حالة السلايدر
                 let sliderStatusSet = globalSettings.find(s => s.key === 'hero_slider_active');
                 let isSliderActive = sliderStatusSet ? sliderStatusSet.value !== 'false' : true;
                 let toggleBtn = document.getElementById('sliderToggleBtn');
                 toggleBtn.textContent = isSliderActive ? '🟢 السلايدر ظاهر (اضغط للإخفاء)' : '🔴 السلايدر مخفي (اضغط للإظهار)';
                 toggleBtn.style.background = isSliderActive ? '#10B981' : '#EF4444';
 
-                // طلبات الشراء
                 let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
                 let oBox = document.getElementById('ordersAdminList');
                 oBox.innerHTML = '';
@@ -174,7 +172,6 @@
                     });
                 } else { oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات شراء حالياً.</p>'; }
 
-                // صور السلايدر
                 let sBox = document.getElementById('sliderAdminList');
                 sBox.innerHTML = '';
                 let sliderSetting = globalSettings.find(s => s.key === 'hero_slider_images');
@@ -194,7 +191,6 @@
                     });
                 } else { sBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد صور مضافة للسلايدر.</p>'; }
 
-                // المنتجات
                 let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 globalProducts = prods || [];
                 let pBox = document.getElementById('productsAdminList');
@@ -207,7 +203,7 @@
                                 <img src="${p.image || 'images/logo.jpg'}" class="product-thumb">
                                 <div style="font-size:11px;">
                                     <b>${p.title}</b> ${statusText}<br>
-                                    السعر: ${toEnglishDigits(p.price)} YER | العمولة: ${toEnglishDigits(p.affiliate_commission || 0)} YER
+                                    السعر: ${toEnglishDigits(p.price)} YER | العمولة: <b style="color:var(--green);">${toEnglishDigits(p.affiliate_commission || 0)} YER</b>
                                 </div>
                             </div>
                             <div style="display:flex; gap:5px; flex-wrap:wrap;">
@@ -219,7 +215,6 @@
                     `;
                 });
 
-                // المسوقين
                 let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
                 let aBox = document.getElementById('affiliatesAdminList');
                 aBox.innerHTML = '';
@@ -327,16 +322,26 @@
                 }
             }
 
-            let payload = { title, category, price, old_price, discount, affiliate_commission, description };
+            let payload = { 
+                title, 
+                category, 
+                price, 
+                old_price, 
+                discount, 
+                affiliate_commission, 
+                description 
+            };
             if(imageUrl) payload.image = imageUrl;
 
             if(editId) {
-                await db.from('platform_services').update(payload).eq('id', editId);
-                alert('تم تحديث المنتج بنجاح! ✅');
+                let { error } = await db.from('platform_services').update(payload).eq('id', editId);
+                if(error) alert('خطأ في التحديث: ' + error.message);
+                else alert('تم تحديث المنتج وعمولته بنجاح! ✅');
             } else {
                 payload.is_active = true;
-                await db.from('platform_services').insert([payload]);
-                alert('تمت إضافة المنتج بنجاح! 🎉');
+                let { error } = await db.from('platform_services').insert([payload]);
+                if(error) alert('خطأ في الإضافة: ' + error.message);
+                else alert('تمت إضافة المنتج وعمولته بنجاح! 🎉');
             }
 
             resetForm();
@@ -356,7 +361,7 @@
                 document.getElementById('pDesc').value = p.description || '';
                 
                 document.getElementById('formTitle').textContent = '✏️ تعديل المنتج: ' + p.title;
-                document.getElementById('saveBtn').textContent = 'تحفظ التعديلات الآن 🔄';
+                document.getElementById('saveBtn').textContent = 'حفظ التعديلات الآن 🔄';
                 document.getElementById('cancelEditBtn').style.display = 'block';
                 window.scrollTo({top:0, behavior:'smooth'});
             }
