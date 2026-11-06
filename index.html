@@ -114,7 +114,7 @@
     </a>
 
     <div class="container">
-        <!-- شريط الإحصائيات بأرقام إنجليزية -->
+        <!-- شريط الإحصائيات -->
         <div class="stats-banner">
             <div class="stat-item"><h3 id="statLiveVisitors" style="color:#10B981;">1</h3><p>🟢 زوار متواجدون</p></div>
             <div class="stat-item"><h3 id="statTotalVisits">...</h3><p>👁️ إجمالي الزيارات</p></div>
@@ -122,11 +122,13 @@
             <div class="stat-item"><h3 id="statAffiliates">...</h3><p>🤝 المسوقين</p></div>
         </div>
 
+        <!-- السلايدر المتحرك (يظهر فقط إذا كان مفعلاً من لوحة التحكم) -->
         <div class="hero-slider-container" id="heroSliderWrapper" style="display: none;">
             <div class="hero-slides-track" id="heroSlidesTrack"></div>
             <div class="slider-dots" id="sliderDots"></div>
         </div>
 
+        <!-- التصنيفات -->
         <div class="categories-slider">
             <div class="cat-box active" onclick="filterStore('الكل', this)"><div class="cat-icon-circle"><i class="fa-solid fa-globe"></i></div><div class="cat-txt">الكل</div></div>
             <div class="cat-box" onclick="filterStore('جوالات', this)"><div class="cat-icon-circle"><i class="fa-solid fa-mobile-screen"></i></div><div class="cat-txt">جوالات</div></div>
@@ -198,12 +200,10 @@
 
         async function loadStoreData() {
             try {
-                // تتبع الإحالة من رابط الأفلييت وتسجيل الزيارة
                 const urlParams = new URLSearchParams(window.location.search);
                 const refCode = urlParams.get('ref');
                 if(refCode) {
                     localStorage.setItem('sadara_ref', refCode);
-                    // تسجيل زيادة النقرات للمسوق
                     try {
                         let { data: affData } = await db.from('affiliates').select('clicks').eq('ref_code', refCode).single();
                         if(affData) {
@@ -213,22 +213,28 @@
                 }
 
                 let { data: settings } = await db.from('store_settings').select('*');
+                let sliderStatusSet = settings ? settings.find(s => s.key === 'hero_slider_active') : null;
+                let isSliderActive = sliderStatusSet ? sliderStatusSet.value !== 'false' : true;
+
                 let sliderSetting = settings ? settings.find(s => s.key === 'hero_slider_images') : null;
                 let bannerImages = [];
                 try {
                     if(sliderSetting && sliderSetting.value) bannerImages = JSON.parse(sliderSetting.value);
                 } catch(e) { bannerImages = []; }
 
-                if(bannerImages && bannerImages.length > 0) {
+                if(isSliderActive && bannerImages && bannerImages.length > 0) {
                     document.getElementById('heroSliderWrapper').style.display = 'block';
                     renderHeroSlider(bannerImages);
                 } else {
                     document.getElementById('heroSliderWrapper').style.display = 'none';
                 }
 
+                // جلب المنتجات الظاهرة فقط (is_active != false)
                 let { data, error } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 if(error) throw error;
-                allProducts = data || [];
+                
+                // تصفية المنتجات المخفية
+                allProducts = (data || []).filter(p => p.is_active !== false);
                 
                 let offersList = allProducts.filter(p => (p.discount && p.discount.trim() !== '') || (p.old_price && p.old_price.trim() !== ''));
                 if(offersList.length === 0) offersList = allProducts.slice(0, 6);
