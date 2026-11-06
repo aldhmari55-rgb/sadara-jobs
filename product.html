@@ -3,18 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تفاصيل المنتج والطلب | منصة صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400,700,900&display=swap" rel="stylesheet">
+    <title>تفاصيل المنتج والدفع | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: #F9FAFB; padding: 15px; color: #1F2937; }
         .container { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #E5E7EB; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        .prod-img { width: 100%; height: 250px; object-fit: contain; background: #F3F4F6; border-radius: 8px; margin-bottom: 15px; padding: 5px; }
-        h1 { font-size: 16px; font-weight: 900; color: #111827; margin-bottom: 10px; }
-        .price-box { font-size: 16px; font-weight: 900; color: #EF4444; margin-bottom: 12px; }
-        .desc { font-size: 11.5px; color: #4B5563; line-height: 1.6; margin-bottom: 20px; }
+        .prod-img { width: 100%; height: 260px; object-fit: contain; background: #ffffff; border-radius: 8px; margin-bottom: 15px; border:1px solid #E5E7EB; padding:5px; }
+        h1 { font-size: 16px; font-weight: 900; color: #111827; margin-bottom: 8px; }
+        .price-box { font-size: 16px; font-weight: 900; color: #EF4444; margin-bottom: 12px; font-family: sans-serif; }
+        .desc { font-size: 11.5px; color: #4B5563; line-height: 1.6; margin-bottom: 20px; background:#F9FAFB; padding:10px; border-radius:8px; }
+
+        .payment-info-box { background: #FEF3C7; border: 1px solid #F59E0B; padding: 12px; border-radius: 9px; margin-bottom: 15px; font-size: 11px; }
+        .payment-info-box b { color: #92400E; display: block; margin-bottom: 6px; }
+        .pay-method { background: #ffffff; padding: 8px; border-radius: 6px; border: 1px dashed #D97706; margin-bottom: 6px; font-family: sans-serif; }
+
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 5px; color: #374151; }
         .form-group input { width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 11px; outline: none; background: #F9FAFB; }
@@ -23,24 +28,24 @@
     </style>
 </head>
 <body>
-    <div class="container" id="productContainer">
-        جاري تحميل تفاصيل المنتج...
-    </div>
+    <div class="container" id="productContainer">جاري التحميل...</div>
 
     <script>
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const BUCKET_NAME = "platform-files";
+
+        function toEnglishDigits(str) {
+            return String(str).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+        }
 
         async function loadProduct() {
             const urlParams = new URLSearchParams(window.location.search);
             const prodId = urlParams.get('id');
             const container = document.getElementById('productContainer');
 
-            if(!prodId) {
-                container.innerHTML = '<p>المنتج غير موجود.</p><a href="index.html" class="back-btn">العودة للرئيسية</a>';
-                return;
-            }
+            if(!prodId) { container.innerHTML = '<p>المنتج غير موجود.</p><a href="index.html" class="back-btn">العودة للرئيسية</a>'; return; }
 
             try {
                 let { data: p, error } = await db.from('platform_services').select('*').eq('id', prodId).single();
@@ -49,12 +54,16 @@
                 container.innerHTML = `
                     <img src="${p.image || 'images/logo.jpg'}" class="prod-img">
                     <h1>${p.title}</h1>
-                    <div class="price-box">${p.price} ${p.old_price ? `<span style="text-decoration:line-through; color:#9CA3AF; font-size:12px; margin-right:8px;">${p.old_price}</span>` : ''}</div>
+                    <div class="price-box">${toEnglishDigits(p.price)} YER ${p.old_price ? `<span style="text-decoration:line-through; color:#9CA3AF; font-size:12px; margin-right:8px;">${toEnglishDigits(p.old_price)} YER</span>` : ''}</div>
                     <div class="desc">${p.description || 'لا توجد تفاصيل إضافية لهذا المنتج.'}</div>
                     
-                    <hr style="border:0; border-top:1px solid #E5E7EB; margin:15px 0;">
-                    
-                    <h3 style="font-size:13px; font-weight:900; margin-bottom:10px;">🛒 إتمام طلب الشراء</h3>
+                    <div class="payment-info-box">
+                        <b>💳 طرق الدفع المتاحة:</b>
+                        <div class="pay-method">📱 محفظة جيب (Jeeb): <b>780568507</b>(عبدالرحمنعبداللهصالحالذماري )</div>
+                        <div class="pay-method">🏦 بنك الكريمي (حساب تجاري): <b>2628009</b> (شركة صدارة للتسويق والخدمات الرقمية )</div>
+                    </div>
+
+                    <h3 style="font-size:13px; font-weight:900; margin-bottom:10px;">🛒 إتمام طلب الشراء ورفع السند</h3>
                     <div class="form-group">
                         <label>الاسم الكامل</label>
                         <input type="text" id="custName" placeholder="أدخل اسمك الكريم">
@@ -63,37 +72,59 @@
                         <label>رقم الهاتف / واتساب</label>
                         <input type="text" id="custPhone" placeholder="07xxxxxxx أو 71xxxxxxx">
                     </div>
-                    <button onclick="submitOrder('${p.title}', '${p.price}')" class="submit-btn">تأكيد وإرسال الطلب 🚀</button>
+                    <div class="form-group">
+                        <label>صورة سند التحويل (من معرض جوالك)</label>
+                        <input type="file" id="receiptFile" accept="image/*">
+                    </div>
+                    <button onclick="submitOrder('${p.title}', '${p.price}')" class="submit-btn" id="sendOrderBtn">تأكيد وإرسال الطلب والسند 🚀</button>
                     <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> العودة للمتجر الرئيسي</a>
                 `;
-            } catch(e) {
-                container.innerHTML = '<p>عذراً، حدث خطأ أثناء جلب تفاصيل المنتج.</p><a href="index.html" class="back-btn">العودة للرئيسية</a>';
-            }
+            } catch(e) { container.innerHTML = '<p>حدث خطأ أثناء تحميل المنتج.</p>'; }
         }
 
         async function submitOrder(prodTitle, prodPrice) {
             let name = document.getElementById('custName').value.trim();
             let phone = document.getElementById('custPhone').value.trim();
+            let fileInput = document.getElementById('receiptFile');
+            let btn = document.getElementById('sendOrderBtn');
 
-            if(!name || !phone) {
-                alert('يرجى إدخال الاسم ورقم الهاتف.');
-                return;
-            }
+            if(!name || !phone) { alert('يرجى إدخال الاسم ورقم الهاتف.'); return; }
+            if(!fileInput.files[0]) { alert('يرجى إرفاق صورة سند التحويل لتأكيد الطلب.'); return; }
+
+            btn.disabled = true;
+            btn.textContent = 'جاري رفع السند وإرسال الطلب...';
 
             try {
+                let file = fileInput.files[0];
+                let fileName = 'receipts/' + Date.now() + '_' + file.name;
+                let { data: uploadData, error: uploadErr } = await db.storage.from(BUCKET_NAME).upload(fileName, file);
+                
+                let receiptUrl = '';
+                if(!uploadErr && uploadData) {
+                    let { data: pub } = db.storage.from(BUCKET_NAME).getPublicUrl(fileName);
+                    receiptUrl = pub.publicUrl;
+                }
+
+                let refCode = localStorage.getItem('sadara_ref') || null;
+
                 let { error } = await db.from('orders').insert([{
                     product_title: prodTitle,
                     customer_name: name,
                     customer_phone: phone,
                     total_price: prodPrice,
-                    status: 'جديد'
+                    receipt_url: receiptUrl,
+                    ref_code: refCode,
+                    status: 'قيد التوثيق'
                 }]);
 
                 if(error) throw error;
-                alert('تم إرسال طلبك بنجاح! سنتواصل معك قريباً جداً. 🎉');
+
+                alert('تم إرسال طلبك وسند التحويل بنجاح! سنتواصل معك فوراً لتأكيد التسليم. 🎉');
                 window.location.href = 'index.html';
             } catch(err) {
-                alert('حدث خطأ أثناء إرسال الطلب: ' + err.message);
+                alert('خطأ أثناء إرسال الطلب: ' + err.message);
+                btn.disabled = false;
+                btn.textContent = 'تأكيد وإرسال الطلب والسند 🚀';
             }
         }
 
