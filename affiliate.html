@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة المسوقين والأفلييت | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: #F3F4F6; padding: 15px; color: #111827; }
+        .container { max-width: 650px; margin: 0 auto; }
+        .box { background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 15px; box-shadow:0 2px 6px rgba(0,0,0,0.02); }
+        h2 { font-size: 15px; font-weight: 900; margin-bottom: 12px; color: #111827; }
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 4px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 11px; background: #F9FAFB; }
+        .btn { background: #111827; color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; font-weight: 900; cursor: pointer; font-size: 11px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; margin-bottom: 15px; }
+        .stat-card { background: #F9FAFB; border: 1px solid #E5E7EB; padding: 10px; border-radius: 8px; }
+        .stat-card h3 { font-size: 14px; color: #10B981; font-family: sans-serif; }
+        .stat-card p { font-size: 10px; color: #6B7280; }
+        .link-item { background: #F9FAFB; border: 1px solid #E5E7EB; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .copy-btn { background: #0284C7; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="box" id="authBox">
+            <h2>🤝 انضم أو سجل دخولك في نظام الأفلييت (التسويق بالعمولة)</h2>
+            <div class="form-group"><label>الاسم الكامل</label><input type="text" id="affName" placeholder="اسمك الكريم"></div>
+            <div class="form-group"><label>رقم الهاتف / الواتساب</label><input type="text" id="affPhone" placeholder="07xxxxxxx"></div>
+            <button onclick="loginOrRegisterAffiliate()" class="btn">دخول لوحة تسويقك 🚀</button>
+        </div>
+
+        <div id="dashBox" style="display:none;">
+            <div class="box">
+                <h2>📊 إحصائيات الأرباح والزيارات (<span id="affNameDisp"></span>)</h2>
+                <div style="font-size:11px; margin-bottom:10px;">كودك الخاص: <code id="affCodeDisp" style="background:#FEF3C7; padding:2px 6px; border-radius:4px; font-weight:bold;"></code></div>
+                <div class="stat-grid">
+                    <div class="stat-card"><h3 id="affClicks">0</h3><p>🔗 الزيارات</p></div>
+                    <div class="stat-card"><h3 id="affSales">0</h3><p>📦 المبيعات</p></div>
+                    <div class="stat-card"><h3 id="affEarnings">0 YER</h3><p>💰 العمولات المستحقة</p></div>
+                </div>
+            </div>
+
+            <div class="box">
+                <h2>🔗 روابط التسويق الخاصة بك (انسخ وشاركه)</h2>
+                <div id="linksList">جاري جلب روابط المنتجات...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function loginOrRegisterAffiliate() {
+            let name = document.getElementById('affName').value.trim();
+            let phone = document.getElementById('affPhone').value.trim();
+
+            if(!phone) { alert('يرجى كتابة رقم الهاتف.'); return; }
+
+            let { data: existing } = await db.from('affiliates').select('*').eq('phone', phone).maybeSingle();
+
+            if(existing) {
+                showDashboard(existing);
+            } else {
+                if(!name) { alert('يرجى كتابة اسمك الكامل للتسجيل جديداً.'); return; }
+                let refCode = 'SADARA_' + Math.floor(1000 + Math.random() * 9000);
+                let { data: created, error } = await db.from('affiliates').insert([{ full_name: name, phone: phone, ref_code: refCode, clicks: 0, total_sales: 0, total_earnings: 0 }]).select().single();
+                if(!error && created) showDashboard(created);
+                else alert('خطأ في التسجيل.');
+            }
+        }
+
+        async function showDashboard(aff) {
+            document.getElementById('authBox').style.display = 'none';
+            document.getElementById('dashBox').style.display = 'block';
+            document.getElementById('affNameDisp').textContent = aff.full_name || aff.phone;
+            document.getElementById('affCodeDisp').textContent = aff.ref_code;
+            document.getElementById('affClicks').textContent = aff.clicks || 0;
+            document.getElementById('affSales').textContent = aff.total_sales || 0;
+            document.getElementById('affEarnings').textContent = (aff.total_earnings || 0) + ' YER';
+
+            let { data: products } = await db.from('platform_services').select('*');
+            let linksContainer = document.getElementById('linksList');
+            linksContainer.innerHTML = '';
+
+            let baseUrl = window.location.origin + window.location.pathname.replace('affiliate.html', '');
+
+            if(products && products.length > 0) {
+                products.forEach(p => {
+                    let fullUrl = `${baseUrl}product.html?id=${p.id}&ref=${aff.ref_code}`;
+                    linksContainer.innerHTML += `
+                        <div class="link-item">
+                            <div style="font-size:11px;">
+                                <b>${p.title}</b><br>
+                                <span style="font-size:9.5px; color:#6B7280; font-family:sans-serif;">${fullUrl}</span>
+                            </div>
+                            <button class="copy-btn" onclick="navigator.clipboard.writeText('${fullUrl}'); alert('تم نسخ رابط المنتج بنجاح! 🎉');">نسخ الرابط 📋</button>
+                        </div>
+                    `;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
