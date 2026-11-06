@@ -37,6 +37,8 @@
         .action-btn { border: none; padding: 7px 12px; border-radius: 6px; font-weight: 900; font-size: 10.5px; cursor: pointer; color: white; transition: 0.2s; }
         .btn-delete { background: var(--red); }
         .btn-green { background: var(--green); }
+        .btn-edit { background: #F59E0B; }
+        .btn-toggle { background: #6366F1; }
         
         .product-thumb { width: 80px; height: 50px; border-radius: 6px; object-fit: cover; background: #ffffff; border: 1px solid var(--border); padding: 2px; }
     </style>
@@ -49,23 +51,27 @@
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. إدارة طلبات الشراء وسندات التحويل -->
+        <!-- 1. طلبات الشراء -->
         <div class="section-box">
             <h3>🛒 طلبات الشراء الواردة وسندات التحويل</h3>
             <div id="ordersAdminList">جاري التحميل...</div>
         </div>
 
-        <!-- 2. السلايدر المتحرك -->
+        <!-- 2. السلايدر (إظهار، إخفاء، حذف) -->
         <div class="section-box">
-            <h3>🎞️ إدارة بانرات السلايدر المتحرك</h3>
+            <h3>🎞️ إدارة بانرات السلايدر المتحرك (إظهار / إخفاء / حذف)</h3>
+            <div style="margin-bottom:12px; display:flex; gap:10px; align-items:center;">
+                <label style="font-size:11px; font-weight:900;">حالة السلايدر في الواجهة:</label>
+                <button id="sliderToggleBtn" class="action-btn btn-toggle" onclick="toggleSliderVisibility()">جاري التحميل...</button>
+            </div>
             <div class="form-group"><input type="file" id="sliderFileInput" accept="image/*"></div>
-            <button onclick="uploadSliderImage()" class="submit-btn" style="background:var(--primary); color:var(--gold); margin-bottom: 12px;">رفع وإضافة الصورة للسلايدر 🌟</button>
+            <button onclick="uploadSliderImage()" class="submit-btn" style="background:var(--primary); color:var(--gold); margin-bottom: 12px;">رفع وإضافة صورة جديدة للسلايدر 🌟</button>
             <div id="sliderAdminList">جاري التحميل...</div>
         </div>
 
         <!-- 3. سياسات المتجر -->
         <div class="section-box">
-            <h3>📜 إدارة سياسات وشروط وضمانات المتجر</h3>
+            <h3>📜 إدارة وتعديل سياسات وشروط المتجر</h3>
             <div class="form-group">
                 <label>اختر القسم</label>
                 <select id="policyKey" onchange="loadPolicyContent()">
@@ -76,12 +82,12 @@
                 </select>
             </div>
             <div class="form-group"><textarea id="policyText" rows="4"></textarea></div>
-            <button onclick="savePolicy()" class="submit-btn" style="background:var(--green);">حفظ وتحديث المحتوى 📝</button>
+            <button onclick="savePolicy()" class="submit-btn" style="background:var(--green);">حفظ وتحديث محتوى السياسة 📝</button>
         </div>
 
-        <!-- 4. المنتجات وعمولة المسوق -->
+        <!-- 4. المنتجات (إضافة / تعديل) -->
         <div class="section-box">
-            <h3 id="formTitle">➕ إضافة منتج أو خدمة جديدة</h3>
+            <h3 id="formTitle">➕ إضافة منتج جديد أو تعديل منتج قائم</h3>
             <input type="hidden" id="editProductId">
             <div class="form-group"><label>العنوان</label><input type="text" id="pTitle"></div>
             <div class="form-group">
@@ -98,21 +104,22 @@
             <div class="form-group"><label>السعر الحالي (YER)</label><input type="text" id="pPrice"></div>
             <div class="form-group"><label>السعر السابق المشطوب (YER)</label><input type="text" id="pOldPrice"></div>
             <div class="form-group"><label>شارة الخصم (مثل -20%)</label><input type="text" id="pDiscount"></div>
-            <div class="form-group"><label>عمولة المسوق المحددة للمنتج (بالريال اليمني - مثال: 100, 500, 1000, 5000)</label><input type="number" id="pAffCommission" placeholder="أدخل مبلغ العمولة بالريال اليمني" value="0"></div>
+            <div class="form-group"><label>عمولة المسوق للمنتج (بالريال اليمني - مثال: 100, 500, 1000, 5000)</label><input type="number" id="pAffCommission" placeholder="أدخل مبلغ العمولة بالريال" value="0"></div>
             <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage" accept="image/*"></div>
             <div class="form-group"><label>الوصف</label><textarea id="pDesc" rows="2"></textarea></div>
-            <button onclick="saveProductData()" id="saveBtn" class="submit-btn">نشر / حفظ المنتج 🚀</button>
+            <button onclick="saveProductData()" id="saveBtn" class="submit-btn">نشر / حفظ التعديلات 🚀</button>
+            <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:#F3F4F6; color:var(--primary); border:none; padding:9px; border-radius:9px; margin-top:8px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
         </div>
 
-        <!-- 5. قائمة المنتجات -->
+        <!-- 5. قائمة المنتجات (تعديل، حذف، إظهار/إخفاء) -->
         <div class="section-box">
-            <h3>📦 قائمة المنتجات والخدمات</h3>
+            <h3>📦 قائمة المنتجات والخدمات (تعديل، حذف، إظهار/إخفاء)</h3>
             <div id="productsAdminList">جاري التحميل...</div>
         </div>
 
-        <!-- 6. المسوقين -->
+        <!-- 6. المسوقين (تعديل، حذف، تصفية) -->
         <div class="section-box">
-            <h3>🤝 إدارة المسوقين وحساب العمولات</h3>
+            <h3>🤝 إدارة المسوقين (تعديل، حذف، وتصفية العمولات)</h3>
             <div id="affiliatesAdminList">جاري التحميل...</div>
         </div>
     </div>
@@ -124,6 +131,7 @@
         const STORAGE_BUCKET = "platform-files";
 
         let globalProducts = [];
+        let globalSettings = [];
 
         function toEnglishDigits(str) {
             return String(str).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
@@ -131,6 +139,17 @@
 
         async function loadAdminPanel() {
             try {
+                let { data: settings } = await db.from('store_settings').select('*');
+                globalSettings = settings || [];
+
+                // حالة السلايدر
+                let sliderStatusSet = globalSettings.find(s => s.key === 'hero_slider_active');
+                let isSliderActive = sliderStatusSet ? sliderStatusSet.value !== 'false' : true;
+                let toggleBtn = document.getElementById('sliderToggleBtn');
+                toggleBtn.textContent = isSliderActive ? '🟢 السلايدر ظاهر (اضغط للإخفاء)' : '🔴 السلايدر مخفي (اضغط للإظهار)';
+                toggleBtn.style.background = isSliderActive ? '#10B981' : '#EF4444';
+
+                // طلبات الشراء
                 let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
                 let oBox = document.getElementById('ordersAdminList');
                 oBox.innerHTML = '';
@@ -147,7 +166,7 @@
                                     💳 السند: ${receiptLink} | الحالة: <b>${o.status || 'جديد'}</b>
                                 </div>
                                 <div style="display:flex; gap:6px;">
-                                    ${o.ref_code && o.status !== 'مكتمل' ? `<button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code}', '${o.product_title}')">تأكيد واحتساب العمولة 💰</button>` : ''}
+                                    ${o.ref_code && o.status !== 'مكتمل' ? `<button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code}', '${o.product_title}')">اعتماد واحتساب العمولة 💰</button>` : ''}
                                     <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
                                 </div>
                             </div>
@@ -155,10 +174,10 @@
                     });
                 } else { oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات شراء حالياً.</p>'; }
 
-                let { data: settings } = await db.from('store_settings').select('*');
+                // صور السلايدر
                 let sBox = document.getElementById('sliderAdminList');
                 sBox.innerHTML = '';
-                let sliderSetting = settings ? settings.find(s => s.key === 'hero_slider_images') : null;
+                let sliderSetting = globalSettings.find(s => s.key === 'hero_slider_images');
                 let sliderImages = [];
                 try { if(sliderSetting && sliderSetting.value) sliderImages = JSON.parse(sliderSetting.value); } catch(e) {}
                 if(sliderImages.length > 0) {
@@ -167,33 +186,40 @@
                             <div class="data-row">
                                 <div style="display:flex; align-items:center; gap:10px;">
                                     <img src="${imgUrl}" class="product-thumb">
-                                    <span style="font-size:11px;">صورة (${idx + 1})</span>
+                                    <span style="font-size:11px;">صورة سلايدر رقم (${idx + 1})</span>
                                 </div>
                                 <button class="action-btn btn-delete" onclick="removeSliderImage(${idx})">حذف 🗑️</button>
                             </div>
                         `;
                     });
-                } else { sBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد صور في السلايدر.</p>'; }
+                } else { sBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد صور مضافة للسلايدر.</p>'; }
 
+                // المنتجات
                 let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 globalProducts = prods || [];
                 let pBox = document.getElementById('productsAdminList');
                 pBox.innerHTML = '';
                 globalProducts.forEach(p => {
+                    let statusText = p.is_active !== false ? '<span style="color:#10B981; font-weight:bold;">[ظاهر في المتجر]</span>' : '<span style="color:#EF4444; font-weight:bold;">[مخفي من المتجر]</span>';
                     pBox.innerHTML += `
                         <div class="data-row">
                             <div style="display:flex; align-items:center; gap:10px;">
                                 <img src="${p.image || 'images/logo.jpg'}" class="product-thumb">
                                 <div style="font-size:11px;">
-                                    <b>${p.title}</b><br>
-                                    السعر: ${toEnglishDigits(p.price)} YER | <span style="color:var(--green); font-weight:bold;">عمولة المسوق: ${toEnglishDigits(p.affiliate_commission || 0)} YER</span>
+                                    <b>${p.title}</b> ${statusText}<br>
+                                    السعر: ${toEnglishDigits(p.price)} YER | العمولة: ${toEnglishDigits(p.affiliate_commission || 0)} YER
                                 </div>
                             </div>
-                            <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
+                            <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                                <button class="action-btn btn-toggle" onclick="toggleProductVisibility(${p.id}, ${p.is_active !== false})">${p.is_active !== false ? 'إخفاء 👁️‍🗨️' : 'إظهار 👁️'}</button>
+                                <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل ✏️</button>
+                                <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
+                            </div>
                         </div>
                     `;
                 });
 
+                // المسوقين
                 let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
                 let aBox = document.getElementById('affiliatesAdminList');
                 aBox.innerHTML = '';
@@ -203,9 +229,12 @@
                             <div class="data-row">
                                 <div style="font-size:11px;">
                                     👤 <b>${a.full_name || 'مسوق'}</b> (${a.phone})<br>
-                                    🔗 الكود: <code>${a.ref_code}</code> | مبيعات: ${toEnglishDigits(a.total_sales || 0)} | الأرباح: <b style="color:var(--green);">${toEnglishDigits(a.total_earnings || 0)} YER</b>
+                                    🔗 الكود: <code>${a.ref_code}</code> | مبيعات: ${toEnglishDigits(a.total_sales || 0)} | أرباح: <b style="color:var(--green);">${toEnglishDigits(a.total_earnings || 0)} YER</b>
                                 </div>
-                                <button class="action-btn btn-green" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية العمولات 💵</button>
+                                <div style="display:flex; gap:5px;">
+                                    <button class="action-btn btn-green" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية 💵</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
+                                </div>
                             </div>
                         `;
                     });
@@ -215,49 +244,49 @@
             } catch(err) { console.error(err); }
         }
 
-        async function approveOrderWithCommission(orderId, refCode, prodTitle) {
-            // البحث عن المنتج لجلب عمولته المحددة بالريال اليمني
-            let prod = globalProducts.find(p => p.title === prodTitle);
-            let commission = prod ? (parseFloat(prod.affiliate_commission) || 0) : 0;
+        async function toggleSliderVisibility() {
+            let sliderStatusSet = globalSettings.find(s => s.key === 'hero_slider_active');
+            let currentState = sliderStatusSet ? sliderStatusSet.value !== 'false' : true;
+            let newState = (!currentState).toString();
+            await db.from('store_settings').upsert({ key: 'hero_slider_active', value: newState });
+            alert(newState === 'true' ? 'تم إظهار السلايدر في المتجر بنجاح!' : 'تم إخفاء السلايدر من المتجر بنجاح!');
+            loadAdminPanel();
+        }
 
-            let { data: aff } = await db.from('affiliates').select('*').eq('ref_code', refCode).maybeSingle();
-            if(aff) {
-                await db.from('affiliates').update({
-                    total_sales: (aff.total_sales || 0) + 1,
-                    total_earnings: (aff.total_earnings || 0) + commission
-                }).eq('id', aff.id);
-            }
-
-            await db.from('orders').update({ status: 'مكتمل' }).eq('id', orderId);
-            alert(`تم اعتماد الطلب وإضافة عمولة المسوق المحددة (${commission} YER) بنجاح! 🌟`);
+        async function toggleProductVisibility(id, currentStatus) {
+            let newStatus = !currentStatus;
+            await db.from('platform_services').update({ is_active: newStatus }).eq('id', id);
+            alert(newStatus ? 'تم إظهار المنتج في المتجر!' : 'تم إخفاء المنتج من المتجر!');
             loadAdminPanel();
         }
 
         async function uploadSliderImage() {
             let input = document.getElementById('sliderFileInput');
             let file = input.files[0];
-            if(!file) return;
+            if(!file) { alert('اختر صورة أولاً'); return; }
 
             let fileName = 'slider/slide_' + Date.now() + '_' + file.name;
             let { data } = await db.storage.from(STORAGE_BUCKET).upload(fileName, file);
             if(data) {
                 let { data: pub } = db.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
-                let { data: currentSet } = await db.from('store_settings').select('*').eq('key', 'hero_slider_images').maybeSingle();
+                let sliderSetting = globalSettings.find(s => s.key === 'hero_slider_images');
                 let imgs = [];
-                try { if(currentSet && currentSet.value) imgs = JSON.parse(currentSet.value); } catch(e) {}
+                try { if(sliderSetting && sliderSetting.value) imgs = JSON.parse(sliderSetting.value); } catch(e) {}
                 imgs.push(pub.publicUrl);
                 await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(imgs) });
-                alert('تم رفع الصورة للبنر المتحرك!');
+                alert('تمت إضافة الصورة للسلايدر بنجاح!');
+                input.value = '';
                 loadAdminPanel();
             }
         }
 
         async function removeSliderImage(index) {
-            let { data: currentSet } = await db.from('store_settings').select('*').eq('key', 'hero_slider_images').maybeSingle();
+            let sliderSetting = globalSettings.find(s => s.key === 'hero_slider_images');
             let imgs = [];
-            try { if(currentSet && currentSet.value) imgs = JSON.parse(currentSet.value); } catch(e) {}
+            try { if(sliderSetting && sliderSetting.value) imgs = JSON.parse(sliderSetting.value); } catch(e) {}
             imgs.splice(index, 1);
             await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(imgs) });
+            alert('تم حذف الصورة من السلايدر!');
             loadAdminPanel();
         }
 
@@ -265,16 +294,17 @@
             let key = 'policy_' + document.getElementById('policyKey').value;
             let value = document.getElementById('policyText').value.trim();
             await db.from('store_settings').upsert({ key, value });
-            alert('تم الحفظ!');
+            alert('تم حفظ وتحديث محتوى السياسة بنجاح! 📝');
         }
 
         async function loadPolicyContent() {
             let key = document.getElementById('policyKey').value;
-            let { data } = await db.from('store_settings').select('value').eq('key', 'policy_' + key).maybeSingle();
+            let { data } = await db.from('store_settings').select('value').eq('key', key).maybeSingle();
             document.getElementById('policyText').value = data ? data.value : '';
         }
 
         async function saveProductData() {
+            let editId = document.getElementById('editProductId').value;
             let title = document.getElementById('pTitle').value.trim();
             let category = document.getElementById('pCategory').value;
             let price = toEnglishDigits(document.getElementById('pPrice').value.trim());
@@ -284,7 +314,7 @@
             let description = document.getElementById('pDesc').value.trim();
             let fileInput = document.getElementById('pImage');
 
-            if(!title || !price) { alert('يرجى إدخال العنوان والسعر.'); return; }
+            if(!title || !price) { alert('يرجى إدخال العنوان والسعر على الأقل.'); return; }
 
             let imageUrl = '';
             if(fileInput.files[0]) {
@@ -297,19 +327,69 @@
                 }
             }
 
-            await db.from('platform_services').insert([{ 
-                title, 
-                category, 
-                price, 
-                old_price, 
-                discount, 
-                affiliate_commission, 
-                description, 
-                image: imageUrl, 
-                is_active: true 
-            }]);
-            
-            alert('تمت إضافة المنتج بنجاح مع تحديد عمولة المسوق!');
+            let payload = { title, category, price, old_price, discount, affiliate_commission, description };
+            if(imageUrl) payload.image = imageUrl;
+
+            if(editId) {
+                await db.from('platform_services').update(payload).eq('id', editId);
+                alert('تم تحديث المنتج بنجاح! ✅');
+            } else {
+                payload.is_active = true;
+                await db.from('platform_services').insert([payload]);
+                alert('تمت إضافة المنتج بنجاح! 🎉');
+            }
+
+            resetForm();
+            loadAdminPanel();
+        }
+
+        function editProduct(id) {
+            let p = globalProducts.find(x => x.id === id);
+            if(p) {
+                document.getElementById('editProductId').value = p.id;
+                document.getElementById('pTitle').value = p.title || '';
+                document.getElementById('pCategory').value = p.category || 'جوالات';
+                document.getElementById('pPrice').value = p.price || '';
+                document.getElementById('pOldPrice').value = p.old_price || '';
+                document.getElementById('pDiscount').value = p.discount || '';
+                document.getElementById('pAffCommission').value = p.affiliate_commission || 0;
+                document.getElementById('pDesc').value = p.description || '';
+                
+                document.getElementById('formTitle').textContent = '✏️ تعديل المنتج: ' + p.title;
+                document.getElementById('saveBtn').textContent = 'تحفظ التعديلات الآن 🔄';
+                document.getElementById('cancelEditBtn').style.display = 'block';
+                window.scrollTo({top:0, behavior:'smooth'});
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('editProductId').value = '';
+            document.getElementById('pTitle').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('pOldPrice').value = '';
+            document.getElementById('pDiscount').value = '';
+            document.getElementById('pAffCommission').value = '0';
+            document.getElementById('pImage').value = '';
+            document.getElementById('pDesc').value = '';
+            document.getElementById('formTitle').textContent = '➕ إضافة منتج جديد أو تعديل منتج قائم';
+            document.getElementById('saveBtn').textContent = 'نشر / حفظ التعديلات 🚀';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
+        async function approveOrderWithCommission(orderId, refCode, prodTitle) {
+            let prod = globalProducts.find(p => p.title === prodTitle);
+            let commission = prod ? (parseFloat(prod.affiliate_commission) || 0) : 0;
+
+            let { data: aff } = await db.from('affiliates').select('*').eq('ref_code', refCode).maybeSingle();
+            if(aff) {
+                await db.from('affiliates').update({
+                    total_sales: (aff.total_sales || 0) + 1,
+                    total_earnings: (aff.total_earnings || 0) + commission
+                }).eq('id', aff.id);
+            }
+
+            await db.from('orders').update({ status: 'مكتمل' }).eq('id', orderId);
+            alert(`تم اعتماد الطلب واحتساب عمولة المسوق (${commission} YER) بنجاح! 🌟`);
             loadAdminPanel();
         }
 
@@ -324,8 +404,9 @@
         }
 
         async function deleteRecord(table, id) {
-            if(confirm('هل أنت متأكد من الحذف؟')) {
+            if(confirm('هل أنت متأكد من الحذف النهائي؟')) {
                 await db.from(table).delete().eq('id', id);
+                alert('تم الحذف بنجاح!');
                 loadAdminPanel();
             }
         }
