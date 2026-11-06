@@ -15,6 +15,7 @@
             --btn: #0284C7;
             --red: #EF4444; 
             --green: #10B981;
+            --whatsapp: #25D366;
             --border: #E5E7EB;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
@@ -34,11 +35,12 @@
         .submit-btn { background: var(--btn); color: white; border: none; padding: 12px; border-radius: 9px; font-weight: 900; width: 100%; cursor: pointer; font-size: 12px; transition: 0.2s; }
         
         .data-row { background: #F9FAFB; border: 1px solid var(--border); padding: 12px; border-radius: 9px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .action-btn { border: none; padding: 7px 12px; border-radius: 6px; font-weight: 900; font-size: 10.5px; cursor: pointer; color: white; transition: 0.2s; }
+        .action-btn { border: none; padding: 7px 12px; border-radius: 6px; font-weight: 900; font-size: 10.5px; cursor: pointer; color: white; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
         .btn-delete { background: var(--red); }
         .btn-green { background: var(--green); }
         .btn-edit { background: #F59E0B; }
         .btn-toggle { background: #6366F1; }
+        .btn-whatsapp { background: var(--whatsapp); color: white; }
         
         .product-thumb { width: 80px; height: 50px; border-radius: 6px; object-fit: cover; background: #ffffff; border: 1px solid var(--border); padding: 2px; }
     </style>
@@ -154,7 +156,6 @@
                 toggleBtn.textContent = isSliderActive ? '🟢 السلايدر ظاهر (اضغط للإخفاء)' : '🔴 السلايدر مخفي (اضغط للإظهار)';
                 toggleBtn.style.background = isSliderActive ? '#10B981' : '#EF4444';
 
-                // طلبات الشراء (قيد التوثيق أو غير المكتملة)
                 let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
                 let oBox = document.getElementById('ordersAdminList');
                 let cBox = document.getElementById('completedOrdersList');
@@ -168,6 +169,8 @@
                     pendingOrders.forEach(o => {
                         let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn); font-weight:bold;">[معاينة السند 📄]</a>` : 'بدون سند';
                         let refText = o.ref_code ? `<span style="color:var(--gold); font-weight:bold;"> [المسوق: ${o.ref_code}]</span>` : '';
+                        let cleanPhone = toEnglishDigits(o.customer_phone || '').replace(/\D/g, '');
+                        let waMsg = encodeURIComponent(`مرحباً ${o.customer_name || 'عميلنا الكريم'}, بخصوص طلبك لمنتج (${o.product_title}) في منصة صدارة...`);
                         
                         oBox.innerHTML += `
                             <div class="data-row">
@@ -177,7 +180,8 @@
                                     💳 السند: ${receiptLink} | الحالة: <b>${o.status || 'قيد التوثيق'}</b>
                                 </div>
                                 <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                    <button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code || ''}', '${o.product_title}')">اعتماد واحتساب العمولة 💰</button>
+                                    <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="action-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> واتساب 💬</a>
+                                    <button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code || ''}', '${o.product_title}')">اعتماد العمولة 💰</button>
                                     <button class="action-btn btn-edit" onclick="editOrder(${o.id}, '${o.customer_name}', '${o.customer_phone}')">تعديل ✏️</button>
                                     <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
                                 </div>
@@ -186,11 +190,12 @@
                     });
                 } else { oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات واردة جديدة.</p>'; }
 
-                // الطلبيات المنجزة
                 if(completedOrders.length > 0) {
                     completedOrders.forEach(o => {
                         let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn); font-weight:bold;">[معاينة السند 📄]</a>` : 'بدون سند';
                         let refText = o.ref_code ? `<span style="color:var(--gold); font-weight:bold;"> [المسوق: ${o.ref_code}]</span>` : '';
+                        let cleanPhone = toEnglishDigits(o.customer_phone || '').replace(/\D/g, '');
+                        let waMsg = encodeURIComponent(`مرحباً ${o.customer_name || 'عميلنا الكريم'}, شكراً لتسوقك من منصة صدارة. طلبك (${o.product_title}) مكتمل ومنجز بنجاح! ⭐`);
                         
                         cBox.innerHTML += `
                             <div class="data-row">
@@ -200,6 +205,7 @@
                                     💳 السند: ${receiptLink} | الحالة: <b style="color:var(--green);">مكتمل ومنجز</b>
                                 </div>
                                 <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                    <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="action-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> واتساب 💬</a>
                                     <button class="action-btn btn-edit" onclick="editOrder(${o.id}, '${o.customer_name}', '${o.customer_phone}')">تعديل ✏️</button>
                                     <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
                                 </div>
@@ -208,7 +214,6 @@
                     });
                 } else { cBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات منجزة حتى الآن.</p>'; }
 
-                // صور السلايدر
                 let sBox = document.getElementById('sliderAdminList');
                 sBox.innerHTML = '';
                 let sliderSetting = globalSettings.find(s => s.key === 'hero_slider_images');
@@ -228,7 +233,6 @@
                     });
                 } else { sBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد صور مضافة للسلايدر.</p>'; }
 
-                // المنتجات
                 let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 globalProducts = prods || [];
                 let pBox = document.getElementById('productsAdminList');
@@ -253,7 +257,6 @@
                     `;
                 });
 
-                // المسوقين
                 let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
                 let aBox = document.getElementById('affiliatesAdminList');
                 aBox.innerHTML = '';
