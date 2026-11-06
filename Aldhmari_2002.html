@@ -32,11 +32,11 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 9px; font-size: 11px; outline: none; background: #F9FAFB; color: #1F2937; font-weight: 700; }
 
         .submit-btn { background: var(--btn); color: white; border: none; padding: 12px; border-radius: 9px; font-weight: 900; width: 100%; cursor: pointer; font-size: 12px; transition: 0.2s; }
-        .submit-btn:hover { opacity: 0.9; }
         
         .data-row { background: #F9FAFB; border: 1px solid var(--border); padding: 12px; border-radius: 9px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .action-btn { border: none; padding: 8px 14px; border-radius: 6px; font-weight: 900; font-size: 11px; cursor: pointer; color: white; transition: 0.2s; }
+        .action-btn { border: none; padding: 7px 12px; border-radius: 6px; font-weight: 900; font-size: 10.5px; cursor: pointer; color: white; transition: 0.2s; }
         .btn-delete { background: var(--red); }
+        .btn-green { background: var(--green); }
         
         .product-thumb { width: 80px; height: 50px; border-radius: 6px; object-fit: cover; background: #ffffff; border: 1px solid var(--border); padding: 2px; }
     </style>
@@ -49,25 +49,25 @@
             <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <!-- 1. إدارة ورفع بانرات السلايدر المتحرك (صور متعددة تظهر تحت بعضها) -->
+        <!-- 1. إدارة طلبات الشراء وسندات التحويل وحساب العمولات -->
         <div class="section-box">
-            <h3>🎞️ إدارة بانرات السلايدر المتحرك (صور متعددة تظهر تحت بعضها)</h3>
-            <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">اختر صورة من معرض الجوال وأضفها للسلايدر:</p>
-            
-            <div class="form-group">
-                <input type="file" id="sliderFileInput" accept="image/*">
-            </div>
-            <button onclick="uploadSliderImage()" class="submit-btn" style="background:var(--primary); color:var(--gold); margin-bottom: 15px;">رفع وإضافة الصورة للسلايدر 🌟</button>
+            <h3>🛒 طلبات الشراء الواردة وسندات التحويل</h3>
+            <div id="ordersAdminList">جاري التحميل...</div>
+        </div>
 
-            <div style="font-weight: 900; font-size: 12px; margin-bottom: 10px; color: var(--primary);">الصور المضافة حالياً (تحت بعضها):</div>
+        <!-- 2. السلايدر المتحرك -->
+        <div class="section-box">
+            <h3>🎞️ إدارة بانرات السلايدر المتحرك (صور متعددة)</h3>
+            <div class="form-group"><input type="file" id="sliderFileInput" accept="image/*"></div>
+            <button onclick="uploadSliderImage()" class="submit-btn" style="background:var(--primary); color:var(--gold); margin-bottom: 12px;">رفع وإضافة الصورة للسلايدر 🌟</button>
             <div id="sliderAdminList">جاري التحميل...</div>
         </div>
 
-        <!-- 2. إدارة سياسات المتجر والضمان -->
+        <!-- 3. سياسات المتجر -->
         <div class="section-box">
             <h3>📜 إدارة سياسات وشروط وضمانات المتجر</h3>
             <div class="form-group">
-                <label>اختر القسم المراد تعديله</label>
+                <label>اختر القسم</label>
                 <select id="policyKey" onchange="loadPolicyContent()">
                     <option value="privacy">سياسة الخصوصية</option>
                     <option value="exchange">سياسة الاستبدال والاسترجاع</option>
@@ -75,18 +75,15 @@
                     <option value="warranty">الضمان وشروط الخدمة</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label>محتوى السياسة أو الشروط</label>
-                <textarea id="policyText" rows="5" placeholder="اكتب النص هنا..."></textarea>
-            </div>
+            <div class="form-group"><textarea id="policyText" rows="4"></textarea></div>
             <button onclick="savePolicy()" class="submit-btn" style="background:var(--green);">حفظ وتحديث المحتوى 📝</button>
         </div>
 
-        <!-- 3. إضافة / تعديل المنتجات والتخفيضات -->
+        <!-- 4. المنتجات -->
         <div class="section-box">
-            <h3 id="formTitle">➕ إضافة / تعديل منتج أو عرض تخفيض</h3>
+            <h3 id="formTitle">➕ إضافة / تعديل منتج</h3>
             <input type="hidden" id="editProductId">
-            <div class="form-group"><label>عنوان المنتج / الخدمة</label><input type="text" id="pTitle" placeholder="مثال: آيفون 15 برو ماكس"></div>
+            <div class="form-group"><label>العنوان</label><input type="text" id="pTitle"></div>
             <div class="form-group">
                 <label>التصنيف</label>
                 <select id="pCategory">
@@ -98,31 +95,24 @@
                     <option value="ملابس">ملابس</option>
                 </select>
             </div>
-            <div class="form-group"><label>السعر الحالي</label><input type="text" id="pPrice" placeholder="3500 YER"></div>
-            <div class="form-group"><label>السعر السابق المشطوب (لتفعيل العرض الخاص)</label><input type="text" id="pOldPrice" placeholder="5000 YER"></div>
-            <div class="form-group"><label>نسبة أو شارة الخصم (مثل: -30%)</label><input type="text" id="pDiscount" placeholder="-30%"></div>
+            <div class="form-group"><label>السعر (YER)</label><input type="text" id="pPrice"></div>
+            <div class="form-group"><label>السعر المشطوب (YER)</label><input type="text" id="pOldPrice"></div>
+            <div class="form-group"><label>شارة الخصم (مثل -20%)</label><input type="text" id="pDiscount"></div>
             <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage" accept="image/*"></div>
-            <div class="form-group"><label>الوصف والتفاصيل</label><textarea id="pDesc" rows="2" placeholder="تفاصيل المنتج..."></textarea></div>
-            <button onclick="saveProductData()" id="saveBtn" class="submit-btn">نشر / حفظ المنتج في المتجر 🚀</button>
-            <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:#F3F4F6; color:var(--primary); border:none; padding:9px; border-radius:9px; margin-top:8px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
+            <div class="form-group"><label>الوصف</label><textarea id="pDesc" rows="2"></textarea></div>
+            <button onclick="saveProductData()" id="saveBtn" class="submit-btn">نشر / حفظ المنتج 🚀</button>
         </div>
 
-        <!-- 4. قائمة المنتجات -->
+        <!-- 5. قائمة المنتجات -->
         <div class="section-box">
-            <h3>📦 قائمة المنتجات والتخفيضات (تعديل وحذف)</h3>
+            <h3>📦 قائمة المنتجات والتخفيضات</h3>
             <div id="productsAdminList">جاري التحميل...</div>
         </div>
 
-        <!-- 5. إدارة المسوقين والعمولات -->
+        <!-- 6. المسوقين -->
         <div class="section-box">
-            <h3>🤝 إدارة المسوقين والعمولات والروابط</h3>
+            <h3>🤝 إدارة المسوقين وحساب العمولات</h3>
             <div id="affiliatesAdminList">جاري التحميل...</div>
-        </div>
-
-        <!-- 6. طلبات الشراء -->
-        <div class="section-box">
-            <h3>🛒 طلبات الشراء الواردة</h3>
-            <div id="ordersAdminList">جاري التحميل...</div>
         </div>
     </div>
 
@@ -130,75 +120,76 @@
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const STORAGE_BUCKET = "platform-files"; // تم التحديث ليتطابق مع الـ Bucket لديك
+        const STORAGE_BUCKET = "platform-files";
 
         let globalProducts = [];
 
         async function loadAdminPanel() {
             try {
-                let { data: settings } = await db.from('store_settings').select('*');
-                let sBox = document.getElementById('sliderAdminList');
-                sBox.innerHTML = '';
-                
-                let sliderSetting = settings ? settings.find(s => s.key === 'hero_slider_images') : null;
-                let sliderImages = [];
-                try {
-                    if(sliderSetting && sliderSetting.value) {
-                        sliderImages = JSON.parse(sliderSetting.value);
-                    }
-                } catch(e) { sliderImages = []; }
-
-                if(!sliderImages || sliderImages.length === 0) {
-                    sBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد صور مضافة للسلايدر حالياً.</p>';
-                } else {
-                    sliderImages.forEach((imgUrl, idx) => {
-                        sBox.innerHTML += `
+                // عرض الطلبات وسندات التحويل
+                let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
+                let oBox = document.getElementById('ordersAdminList');
+                oBox.innerHTML = '';
+                if(orders && orders.length > 0) {
+                    orders.forEach(o => {
+                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn); font-weight:bold;">[معاينة سند التحويل 📄]</a>` : 'بدون سند';
+                        let refText = o.ref_code ? `<span style="color:var(--gold); font-weight:bold;"> [عبر المسوق: ${o.ref_code}]</span>` : '';
+                        
+                        oBox.innerHTML += `
                             <div class="data-row">
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <img src="${imgUrl}" class="product-thumb">
-                                    <div style="font-size:11px;">
-                                        <b>صورة سلايدر رقم (${idx + 1})</b><br>
-                                        <span style="color:#10B981; font-weight:bold;">نشطة في المتجر</span>
-                                    </div>
+                                <div style="font-size:11px;">
+                                    📦 <b>${o.product_title}</b> (${o.total_price}) ${refText}<br>
+                                    👤 العميل: <b>${o.customer_name}</b> (${o.customer_phone})<br>
+                                    💳 السند: ${receiptLink} | الحالة: <b>${o.status || 'جديد'}</b>
                                 </div>
-                                <div style="display:flex; gap:6px; align-items:center;">
-                                    <button class="action-btn btn-delete" onclick="removeSliderImage(${idx})">حذف 🗑️</button>
+                                <div style="display:flex; gap:6px;">
+                                    ${o.ref_code && o.status !== 'مكتمل' ? `<button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code}', '${o.total_price}')">تأكيد واحتساب عمولة 💰</button>` : ''}
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
                                 </div>
                             </div>
                         `;
                     });
-                }
+                } else { oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات شراء حالياً.</p>'; }
 
+                // البنرات والسلايدر
+                let { data: settings } = await db.from('store_settings').select('*');
+                let sBox = document.getElementById('sliderAdminList');
+                sBox.innerHTML = '';
+                let sliderSetting = settings ? settings.find(s => s.key === 'hero_slider_images') : null;
+                let sliderImages = [];
+                try { if(sliderSetting && sliderSetting.value) sliderImages = JSON.parse(sliderSetting.value); } catch(e) {}
+                if(sliderImages.length > 0) {
+                    sliderImages.forEach((imgUrl, idx) => {
+                        sBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <img src="${imgUrl}" class="product-thumb">
+                                    <span style="font-size:11px;">صورة (${idx + 1})</span>
+                                </div>
+                                <button class="action-btn btn-delete" onclick="removeSliderImage(${idx})">حذف 🗑️</button>
+                            </div>
+                        `;
+                    });
+                } else { sBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد صور في السلايدر.</p>'; }
+
+                // المنتجات
                 let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 globalProducts = prods || [];
                 let pBox = document.getElementById('productsAdminList');
                 pBox.innerHTML = '';
-
-                if(!globalProducts || globalProducts.length === 0) {
-                    pBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد منتجات حالياً.</p>';
-                } else {
-                    globalProducts.forEach(p => {
-                        let img = p.image || 'images/logo.jpg';
-                        let offerTag = (p.old_price || p.discount) ? '<span style="color:var(--red); font-weight:900;"> [عرض وتخفيض 🔥]</span>' : '';
-                        
-                        pBox.innerHTML += `
-                            <div class="data-row">
-                                <div style="display:flex; align-items:center; gap:10px;">
-                                    <img src="${img}" class="product-thumb">
-                                    <div style="font-size:11px;">
-                                        <b>${p.title}</b> (${p.category}) ${offerTag}<br>
-                                        السعر: <span style="color:var(--red);">${p.price}</span> ${p.old_price ? `(السابق: ${p.old_price})` : ''}
-                                    </div>
-                                </div>
-                                <div style="display:flex; gap:6px;">
-                                    <button class="action-btn" style="background:var(--btn);" onclick="editProduct(${p.id})">تعديل ✏️</button>
-                                    <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
-                                </div>
+                globalProducts.forEach(p => {
+                    pBox.innerHTML += `
+                        <div class="data-row">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <img src="${p.image || 'images/logo.jpg'}" class="product-thumb">
+                                <div style="font-size:11px;"><b>${p.title}</b><br>السعر: ${p.price}</div>
                             </div>
-                        `;
-                    });
-                }
+                            <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
+                        </div>
+                    `;
+                });
 
+                // المسوقين
                 let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
                 let aBox = document.getElementById('affiliatesAdminList');
                 aBox.innerHTML = '';
@@ -207,122 +198,87 @@
                         aBox.innerHTML += `
                             <div class="data-row">
                                 <div style="font-size:11px;">
-                                    👤 <b>${a.full_name || a.name || 'مسوق'}</b> (${a.phone})<br>
-                                    🔗 كود: <code>${a.ref_code}</code> | زيارات: ${a.clicks || 0} | مبيعات: ${a.total_sales || 0} | أرباح مستحقة: <b style="color:var(--green);">${a.total_earnings || 0} YER</b>
+                                    👤 <b>${a.full_name || 'مسوق'}</b> (${a.phone})<br>
+                                    🔗 الكود: <code>${a.ref_code}</code> | مبيعات: ${a.total_sales || 0} | الأرباح: <b style="color:var(--green);">${a.total_earnings || 0} YER</b>
                                 </div>
-                                <div style="display:flex; gap:6px;">
-                                    <button class="action-btn btn-pay" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية 💰</button>
-                                    <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
-                                </div>
+                                <button class="action-btn btn-green" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية العمولات 💵</button>
                             </div>
                         `;
                     });
-                } else {
-                    aBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد مسوقين مسجلين.</p>';
-                }
-
-                let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
-                let oBox = document.getElementById('ordersAdminList');
-                oBox.innerHTML = '';
-                if(orders && orders.length > 0) {
-                    orders.forEach(o => {
-                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn);">[عرض السند]</a>` : 'بدون سند';
-                        oBox.innerHTML += `
-                            <div class="data-row">
-                                <div style="font-size:11px;">
-                                    📦 <b>${o.product_title}</b><br>
-                                    👤 العميل: ${o.customer_name} (${o.customer_phone}) | السند: ${receiptLink}
-                                </div>
-                                <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
-                            </div>
-                        `;
-                    });
-                } else {
-                    oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات شراء واردة.</p>';
-                }
+                } else { aBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا يوجد مسوقين.</p>'; }
 
                 loadPolicyContent();
-            } catch(err) {
-                console.error("Admin load error:", err);
+            } catch(err) { console.error(err); }
+        }
+
+        async function approveOrderWithCommission(orderId, refCode, priceStr) {
+            let numPrice = parseFloat(priceStr) || 0;
+            let commission = Math.round(numPrice * 0.05); // احتساب 5% عمولة تلقائياً للمسوق
+
+            let { data: aff } = await db.from('affiliates').select('*').eq('ref_code', refCode).maybeSingle();
+            if(aff) {
+                await db.from('affiliates').update({
+                    total_sales: (aff.total_sales || 0) + 1,
+                    total_earnings: (aff.total_earnings || 0) + commission
+                }).eq('id', aff.id);
             }
+
+            await db.from('orders').update({ status: 'مكتمل' }).eq('id', orderId);
+            alert(`تم اعتماد الطلب واحتساب عمولة ${commission} YER للمسوق بنجاح! 🌟`);
+            loadAdminPanel();
         }
 
         async function uploadSliderImage() {
-            let fileInput = document.getElementById('sliderFileInput');
-            let file = fileInput.files[0];
-            if(!file) { alert('يرجى اختيار صورة من المعرض أولاً.'); return; }
+            let input = document.getElementById('sliderFileInput');
+            let file = input.files[0];
+            if(!file) return;
 
-            try {
-                let fileName = 'slider/slide_' + Date.now() + '_' + file.name;
-                let { data, error } = await db.storage.from(STORAGE_BUCKET).upload(fileName, file);
-                if(error) throw error;
-
-                if(data) {
-                    let { data: pub } = db.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
-                    let pubUrl = pub.publicUrl;
-
-                    let { data: currentSet } = await db.from('store_settings').select('*').eq('key', 'hero_slider_images').maybeSingle();
-                    let currentImgs = [];
-                    try {
-                        if(currentSet && currentSet.value) currentImgs = JSON.parse(currentSet.value);
-                    } catch(e) { currentImgs = []; }
-
-                    currentImgs.push(pubUrl);
-
-                    await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(currentImgs) });
-
-                    fileInput.value = '';
-                    alert('تمت إضافة الصورة بنجاح إلى السلايدر المتحرك! 🌟');
-                    loadAdminPanel();
-                }
-            } catch(err) {
-                alert('خطأ أثناء الرفع: ' + err.message);
-            }
-        }
-
-        async function removeSliderImage(index) {
-            if(confirm('هل أنت متأكد من رغبتك في حذف هذه الصورة؟')) {
+            let fileName = 'slider/slide_' + Date.now() + '_' + file.name;
+            let { data } = await db.storage.from(STORAGE_BUCKET).upload(fileName, file);
+            if(data) {
+                let { data: pub } = db.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
                 let { data: currentSet } = await db.from('store_settings').select('*').eq('key', 'hero_slider_images').maybeSingle();
-                let currentImgs = [];
-                try {
-                    if(currentSet && currentSet.value) currentImgs = JSON.parse(currentSet.value);
-                } catch(e) { currentImgs = []; }
-
-                currentImgs.splice(index, 1);
-                await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(currentImgs) });
-
-                alert('تم حذف الصورة بنجاح!');
+                let imgs = [];
+                try { if(currentSet && currentSet.value) imgs = JSON.parse(currentSet.value); } catch(e) {}
+                imgs.push(pub.publicUrl);
+                await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(imgs) });
+                alert('تم رفع الصورة للبنر المتحرك!');
                 loadAdminPanel();
             }
         }
 
-        async function loadPolicyContent() {
-            try {
-                let key = document.getElementById('policyKey').value;
-                let { data } = await db.from('store_settings').select('value').eq('key', 'policy_' + key).maybeSingle();
-                document.getElementById('policyText').value = data ? data.value : '';
-            } catch(e) {}
+        async function removeSliderImage(index) {
+            let { data: currentSet } = await db.from('store_settings').select('*').eq('key', 'hero_slider_images').maybeSingle();
+            let imgs = [];
+            try { if(currentSet && currentSet.value) imgs = JSON.parse(currentSet.value); } catch(e) {}
+            imgs.splice(index, 1);
+            await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(imgs) });
+            loadAdminPanel();
         }
 
         async function savePolicy() {
             let key = 'policy_' + document.getElementById('policyKey').value;
             let value = document.getElementById('policyText').value.trim();
-            let { error } = await db.from('store_settings').upsert({ key, value });
-            if(!error) alert('تم حفظ وتحديث المحتوى بنجاح! 📝');
-            else alert('حدث خطأ أثناء الحفظ.');
+            await db.from('store_settings').upsert({ key, value });
+            alert('تم الحفظ!');
+        }
+
+        async function loadPolicyContent() {
+            let key = document.getElementById('policyKey').value;
+            let { data } = await db.from('store_settings').select('value').eq('key', 'policy_' + key).maybeSingle();
+            document.getElementById('policyText').value = data ? data.value : '';
         }
 
         async function saveProductData() {
-            let editId = document.getElementById('editProductId').value;
             let title = document.getElementById('pTitle').value.trim();
             let category = document.getElementById('pCategory').value;
             let price = document.getElementById('pPrice').value.trim();
             let old_price = document.getElementById('pOldPrice').value.trim();
             let discount = document.getElementById('pDiscount').value.trim();
-            let fileInput = document.getElementById('pImage');
             let description = document.getElementById('pDesc').value.trim();
+            let fileInput = document.getElementById('pImage');
 
-            if(!title || !price) { alert('يرجى إدخال عنوان المنتج والسعر على الأقل.'); return; }
+            if(!title || !price) { alert('ادخل العنوان والسعر'); return; }
 
             let imageUrl = '';
             if(fileInput.files[0]) {
@@ -335,61 +291,9 @@
                 }
             }
 
-            let payload = { 
-                title, 
-                category, 
-                price, 
-                old_price: old_price || null, 
-                discount: discount || null, 
-                description, 
-                is_active: true 
-            };
-            
-            if(imageUrl) payload.image = imageUrl;
-
-            if(editId) {
-                let { error } = await db.from('platform_services').update(payload).eq('id', editId);
-                if(error) alert('خطأ في التحديث: ' + error.message);
-                else alert('تم تحديث المنتج بنجاح! ✅');
-            } else {
-                let { error } = await db.from('platform_services').insert([payload]);
-                if(error) alert('خطأ في الإضافة: ' + error.message);
-                else alert('تمت إضافة المنتج بنجاح! 🎉');
-            }
-
-            resetForm();
+            await db.from('platform_services').insert([{ title, category, price, old_price, discount, description, image: imageUrl, is_active: true }]);
+            alert('تمت إضافة المنتج!');
             loadAdminPanel();
-        }
-
-        function editProduct(id) {
-            let p = globalProducts.find(x => x.id === id);
-            if(p) {
-                document.getElementById('editProductId').value = p.id;
-                document.getElementById('pTitle').value = p.title || '';
-                document.getElementById('pCategory').value = p.category || 'جوالات';
-                document.getElementById('pPrice').value = p.price || '';
-                document.getElementById('pOldPrice').value = p.old_price || '';
-                document.getElementById('pDiscount').value = p.discount || '';
-                document.getElementById('pDesc').value = p.description || '';
-                
-                document.getElementById('formTitle').textContent = '✏️ تعديل المنتج: ' + p.title;
-                document.getElementById('saveBtn').textContent = 'تحديث المنتج الآن 🔄';
-                document.getElementById('cancelEditBtn').style.display = 'block';
-                window.scrollTo({top:0, behavior:'smooth'});
-            }
-        }
-
-        function resetForm() {
-            document.getElementById('editProductId').value = '';
-            document.getElementById('pTitle').value = '';
-            document.getElementById('pPrice').value = '';
-            document.getElementById('pOldPrice').value = '';
-            document.getElementById('pDiscount').value = '';
-            document.getElementById('pImage').value = '';
-            document.getElementById('pDesc').value = '';
-            document.getElementById('formTitle').textContent = '➕ إضافة / تعديل منتج أو عرض تخفيض';
-            document.getElementById('saveBtn').textContent = 'نشر / حفظ المنتج في المتجر 🚀';
-            document.getElementById('cancelEditBtn').style.display = 'none';
         }
 
         async function settleCommission(affId, current) {
@@ -397,13 +301,13 @@
             if(paid !== null) {
                 let remaining = Math.max(0, current - Number(paid));
                 await db.from('affiliates').update({ total_earnings: remaining }).eq('id', affId);
-                alert('تمت تسوية العمولة بنجاح! 💵');
+                alert('تمت التسوية بنجاح!');
                 loadAdminPanel();
             }
         }
 
         async function deleteRecord(table, id) {
-            if(confirm('هل أنت متأكد من رغبتك في الحذف؟')) {
+            if(confirm('هل أنت متأكد من الحذف؟')) {
                 await db.from(table).delete().eq('id', id);
                 loadAdminPanel();
             }
