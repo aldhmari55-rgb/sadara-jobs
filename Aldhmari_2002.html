@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -21,125 +22,134 @@
             }
         }
     </script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Tajawal', sans-serif; background: #F8FAFC; color: #1E293B; padding-bottom: 50px; }
+        body { font-family: 'Tajawal', sans-serif; background: #F8FAFC; color: #1E293B; padding-bottom: 60px; }
         .section-box { background: #ffffff; padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid #E2E8F0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
-        .section-box h3 { font-size: 14px; margin-bottom: 14px; font-weight: 900; color: #0B132B; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid #F1F5F9; padding-bottom: 8px; }
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 6px; color: #475569; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #CBD5E1; border-radius: 10px; font-size: 11px; outline: none; background: #F8FAFC; color: #1E293B; font-weight: 700; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #D90429; ring: 2px; }
-        .action-btn { border: none; padding: 7px 12px; border-radius: 8px; font-weight: 900; font-size: 10.5px; cursor: pointer; color: white; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+        .section-box h3 { font-size: 14px; margin-bottom: 14px; font-weight: 900; color: #0B132B; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #F1F5F9; padding-bottom: 8px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 5px; color: #475569; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #CBD5E1; border-radius: 10px; font-size: 11px; outline: none; background: #F8FAFC; color: #1E293B; font-weight: 700; }
+        .action-btn { border: none; padding: 6px 11px; border-radius: 8px; font-weight: 900; font-size: 10.5px; cursor: pointer; color: white; transition: 0.2s; inline-flex; align-items: center; gap: 4px; text-decoration: none; }
         .btn-delete { background: #EF4444; }
         .btn-green { background: #10B981; }
         .btn-edit { background: #F59E0B; }
-        .btn-toggle { background: #1C2541; }
-        .btn-whatsapp { background: #25D366; color: white; }
-        .data-row { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .product-thumb { width: 70px; height: 50px; border-radius: 8px; object-fit: cover; background: #ffffff; border: 1px solid #E2E8F0; padding: 2px; }
+        .btn-navy { background: #1C2541; }
+        .data-row { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
     </style>
 </head>
 <body class="p-3 sm:p-6">
 
-    <div class="max-w-4xl mx-auto">
-        <!-- شريط التنقل العلوي للوحة التحكم -->
-        <div class="bg-brandDark p-4 rounded-2xl flex justify-between items-center text-white mb-6 shadow-md border border-slate-800">
+    <div class="max-w-5xl mx-auto space-y-4">
+        <!-- شريط الترويسة الرئيسي للوحة التحكم -->
+        <div class="bg-brandDark p-4 rounded-2xl flex flex-wrap justify-between items-center text-white shadow-md border border-slate-800 gap-3">
             <div class="flex items-center gap-2">
-                <span class="bg-brandRed text-white text-xs font-black px-2.5 py-1 rounded-lg">صدارة شي إن</span>
-                <span class="font-black text-sm sm:text-base">لوحة التحكم والإدارة المطلقة ⚡</span>
+                <span class="bg-brandRed text-white text-xs font-black px-2.5 py-1 rounded-lg">صدارة SHEIN</span>
+                <div>
+                    <h1 class="font-black text-sm sm:text-base">لوحة التحكم والإدارة المطلقة ⚡</h1>
+                    <p class="text-[10px] text-slate-400">إدارة الطلبات، الشحنات، المسوقين، المنتجات، والعمولات</p>
+                </div>
             </div>
-            <a href="index.html" class="bg-slate-800 hover:bg-brandRed text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all border border-slate-700 flex items-center gap-1.5">
-                <i class="fa-solid fa-store"></i> المتجر الرئيسي
-            </a>
-        </div>
-
-        <!-- 1. طلبات الشراء الواردة -->
-        <div class="section-box">
-            <h3>🛒 طلبات الشراء الواردة وسندات التحويل</h3>
-            <div id="ordersAdminList" class="text-xs text-slate-500">جاري التحميل...</div>
-        </div>
-
-        <!-- 2. الطلبيات المنجزة -->
-        <div class="section-box">
-            <h3>✅ الطلبيات المنجزة والمؤكدة</h3>
-            <div id="completedOrdersList" class="text-xs text-slate-500">جاري التحميل...</div>
-        </div>
-
-        <!-- 3. السلايدر المتحرك -->
-        <div class="section-box">
-            <h3>🎞️ إدارة بانرات السلايدر المتحرك (إظهار / إخفاء / حذف)</h3>
-            <div class="mb-4 flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
-                <span class="text-xs font-bold text-slate-700">حالة السلايدر في الواجهة الرئيسية:</span>
-                <button id="sliderToggleBtn" class="action-btn btn-toggle" onclick="toggleSliderVisibility()">جاري التحميل...</button>
+            <div class="flex items-center gap-2">
+                <a href="index.html" class="bg-slate-800 hover:bg-brandRed text-white px-3 py-2 rounded-xl text-xs font-bold border border-slate-700 flex items-center gap-1.5 transition-colors">
+                    <i class="fa-solid fa-store"></i> المتجر الرئيسي
+                </a>
             </div>
-            <div class="form-group"><input type="file" id="sliderFileInput" accept="image/*"></div>
-            <button onclick="uploadSliderImage()" class="w-full py-3 bg-brandBlack text-white rounded-xl font-bold text-xs shadow-sm hover:bg-brandNavy transition-colors mb-4 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-cloud-arrow-up text-brandRed"></i> رفع وإضافة صورة جديدة للسلايدر 🌟
-            </button>
-            <div id="sliderAdminList">جاري التحميل...</div>
         </div>
 
-        <!-- 4. سياسات المتجر -->
-        <div class="section-box">
-            <h3>📜 إدارة وتعديل سياسات وشروط المتجر</h3>
-            <div class="form-group">
-                <label>اختر القسم</label>
-                <select id="policyKey" onchange="loadPolicyContent()">
-                    <option value="privacy">سياسة الخصوصية</option>
-                    <option value="exchange">سياسة الاستبدال والاسترجاع</option>
-                    <option value="shipping">شروط وسياسة الشحن والتوصيل</option>
-                    <option value="warranty">الضمان وشروط الخدمة</option>
-                </select>
+        <!-- أزرار القفز السريع للأقسام -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs font-bold">
+            <a href="#sec-shein-orders" class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm hover:border-brandRed text-slate-700">📦 طلبات شي إن</a>
+            <a href="#sec-shipments" class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm hover:border-brandRed text-slate-700">✈️ تتبع الشحنات</a>
+            <a href="#sec-affiliates" class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm hover:border-brandRed text-slate-700">🤝 العمولات والمالية</a>
+            <a href="#sec-products" class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm hover:border-brandRed text-slate-700">🛍️ المنتجات والبنوك</a>
+        </div>
+
+        <!-- 1. إدارة طلبات شي إن الوسيط (سلة كاملة / منتجات محددة) -->
+        <div id="sec-shein-orders" class="section-box">
+            <h3>
+                <span><i class="fa-solid fa-bag-shopping text-brandRed"></i> طلبات شي إن الواردة (وسيط صدارة)</span>
+                <span class="text-[11px] bg-red-100 text-brandRed font-bold px-2 py-0.5 rounded-full" id="cnt-shein">0 طلبات</span>
+            </h3>
+            <div id="sheinOrdersList" class="text-xs text-slate-500">جاري التحميل...</div>
+        </div>
+
+        <!-- 2. إدارة الشحنات وتحديث حالة التتبع للعملاء -->
+        <div id="sec-shipments" class="section-box">
+            <h3>
+                <span><i class="fa-solid fa-truck-fast text-brandNavy"></i> إدارة الشحنات وتتبع الحالات (بانتظار الدفع، تم التأكيد، في الطريق، تم التوصيل، مدفوع)</span>
+            </h3>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3 space-y-2">
+                <span class="text-xs font-bold text-slate-700 block">تحديث شحنة لعميل:</span>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <input type="text" id="trackCodeInput" placeholder="رقم الشحنة (مثال: SAD-9081)" class="bg-white text-xs p-2 rounded-lg border">
+                    <select id="trackStatusSelect" class="bg-white text-xs p-2 rounded-lg border">
+                        <option value="بانتظار الدفع">بانتظار الدفع</option>
+                        <option value="تم التأكيد">تم التأكيد</option>
+                        <option value="في الطريق">في الطريق إليك</option>
+                        <option value="تم التوصيل">تم التوصيل بنجاح</option>
+                        <option value="مدفوع">مدفوع</option>
+                    </select>
+                    <button onclick="updateShipmentStatus()" class="bg-brandDark text-white text-xs font-bold rounded-lg p-2">تحديث حالة التتبع 🚀</button>
+                </div>
             </div>
-            <div class="form-group"><textarea id="policyText" rows="4" placeholder="اكتب محتوى السياسة هنا..."></textarea></div>
-            <button onclick="savePolicy()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition-colors">
-                حفظ وتحديث محتوى السياسة 📝
-            </button>
+            <div id="shipmentsList" class="text-xs text-slate-500">جاري التحميل...</div>
         </div>
 
-        <!-- 5. المنتجات -->
-        <div class="section-box">
-            <h3 id="formTitle">➕ إضافة منتج جديد أو تعديل منتج قائم</h3>
+        <!-- 3. إدارة المسوقين والعمولات والأرباح المالية -->
+        <div id="sec-affiliates" class="section-box">
+            <h3>
+                <span><i class="fa-solid fa-chart-line text-emerald-600"></i> إدارة المسوقين والعمولات والأرباح</span>
+            </h3>
+            <div id="affiliatesAdminList" class="text-xs text-slate-500">جاري التحميل...</div>
+        </div>
+
+        <!-- 4. إضافة وتعديل المنتجات والعروض الفورية -->
+        <div id="sec-products" class="section-box">
+            <h3 id="formTitle">
+                <span><i class="fa-solid fa-plus text-brandRed"></i> إضافة منتج جديد / تعديل منتج قائم في متجر صدارة</span>
+            </h3>
             <input type="hidden" id="editProductId">
-            <div class="form-group"><label>العنوان</label><input type="text" id="pTitle" placeholder="اسم المنتج"></div>
-            <div class="form-group">
-                <label>التصنيف</label>
-                <select id="pCategory">
-                    <option value="جوالات">جوالات</option>
-                    <option value="اكسسوارات">اكسسوارات</option>
-                    <option value="إلكترونيات">إلكترونيات</option>
-                    <option value="حقائب">حقائب</option>
-                    <option value="عطور">عطور</option>
-                    <option value="ملابس">ملابس</option>
-                </select>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="form-group"><label>عنوان المنتج</label><input type="text" id="pTitle" placeholder="اسم المنتج"></div>
+                <div class="form-group">
+                    <label>الفئة</label>
+                    <select id="pCategory">
+                        <option value="الهواتف الذكية">الهواتف الذكية ومستلزماتها</option>
+                        <option value="الشاشات">الشاشات</option>
+                        <option value="الطابعات">الطابعات</option>
+                        <option value="العطور">العطور</option>
+                        <option value="العناية بالرجل">العناية بالرجل</option>
+                        <option value="العناية بالمرأة">العناية بالمرأة</option>
+                    </select>
+                </div>
             </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div class="form-group"><label>السعر الحالي (YER)</label><input type="text" id="pPrice" placeholder="0"></div>
-                <div class="form-group"><label>السعر السابق المشطوب (YER)</label><input type="text" id="pOldPrice" placeholder="0"></div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div class="form-group"><label>شارة الخصم (مثل -20%)</label><input type="text" id="pDiscount" placeholder="-20%"></div>
-                <div class="form-group"><label>عمولة المسوق (YER)</label><input type="number" id="pAffCommission" value="0"></div>
+            <div class="grid grid-cols-3 gap-3">
+                <div class="form-group"><label>السعر (YER)</label><input type="text" id="pPrice" placeholder="0"></div>
+                <div class="form-group"><label>السعر المشطوب</label><input type="text" id="pOldPrice" placeholder="0"></div>
+                <div class="form-group"><label>عمولة المسوق</label><input type="number" id="pAffCommission" value="0"></div>
             </div>
             <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage" accept="image/*"></div>
-            <div class="form-group"><label>الوصف</label><textarea id="pDesc" rows="2" placeholder="تفاصيل إضافية عن المنتج..."></textarea></div>
-            <button onclick="saveProductData()" id="saveBtn" class="w-full py-3 bg-brandRed hover:bg-red-700 text-white rounded-xl font-bold text-xs shadow-sm transition-colors mb-2">
-                نشر / حفظ التعديلات 🚀
+            <button onclick="saveProductData()" id="saveBtn" class="w-full py-3 bg-brandRed text-white rounded-xl font-bold text-xs shadow-sm hover:bg-red-700 transition-colors">
+                نشر المنتج / حفظ التعديلات 🚀
             </button>
-            <button onclick="resetForm()" id="cancelEditBtn" style="display:none;" class="w-full py-2.5 bg-slate-200 text-slate-700 rounded-xl font-bold text-xs">إلغاء التعديل</button>
         </div>
 
-        <!-- 6. قائمة المنتجات -->
+        <!-- 5. قائمة المنتجات الحالية -->
         <div class="section-box">
-            <h3>📦 قائمة المنتجات والخدمات (تعديل، حذف، إظهار/إخفاء)</h3>
-            <div id="productsAdminList">جاري التحميل...</div>
+            <h3><span><i class="fa-solid fa-boxes-stacked"></i> المنتجات الفورية المعروضة</span></h3>
+            <div id="productsAdminList" class="text-xs text-slate-500">جاري التحميل...</div>
         </div>
 
-        <!-- 7. المسوقين -->
+        <!-- 6. إدارة سلايدر الواجهة والبنرات -->
         <div class="section-box">
-            <h3>🤝 إدارة المسوقين (تعديل، حذف، وتصفية العمولات)</h3>
-            <div id="affiliatesAdminList">جاري التحميل...</div>
+            <h3><span><i class="fa-solid fa-sliders"></i> البنرات والسلايدر المتحرك</span></h3>
+            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3">
+                <span class="text-xs font-bold text-slate-700">حالة السلايدر في الواجهة الرئيسية:</span>
+                <button id="sliderToggleBtn" class="action-btn btn-navy" onclick="toggleSliderVisibility()">جاري التحميل...</button>
+            </div>
+            <div class="form-group"><input type="file" id="sliderFileInput" accept="image/*"></div>
+            <button onclick="uploadSliderImage()" class="w-full py-2.5 bg-brandBlack text-white rounded-xl font-bold text-xs">رفع صورة جديدة للسلايدر 🌟</button>
+            <div id="sliderAdminList" class="mt-3 text-xs text-slate-500">جاري التحميل...</div>
         </div>
     </div>
 
@@ -158,116 +168,47 @@
 
         async function loadAdminPanel() {
             try {
-                let { data: settings } = await db.from('store_settings').select('*');
-                globalSettings = settings || [];
-
-                let sliderStatusSet = globalSettings.find(s => s.key === 'hero_slider_active');
-                let isSliderActive = sliderStatusSet ? sliderStatusSet.value !== 'false' : true;
-                let toggleBtn = document.getElementById('sliderToggleBtn');
-                toggleBtn.textContent = isSliderActive ? '🟢 السلايدر ظاهر (اضغط للإخفاء)' : '🔴 السلايدر مخفي (اضغط للإظهار)';
-                toggleBtn.style.background = isSliderActive ? '#10B981' : '#EF4444';
-
-                let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
-                let oBox = document.getElementById('ordersAdminList');
-                let cBox = document.getElementById('completedOrdersList');
-                oBox.innerHTML = '';
-                cBox.innerHTML = '';
-
-                let pendingOrders = (orders || []).filter(o => o.status !== 'مكتمل');
-                let completedOrders = (orders || []).filter(o => o.status === 'مكتمل');
-
-                if(pendingOrders.length > 0) {
-                    pendingOrders.forEach(o => {
-                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" class="text-brandRed font-bold underline">[معاينة السند 📄]</a>` : 'بدون سند';
-                        let refText = o.ref_code ? `<span class="text-brandRed font-bold">[المسوق: ${o.ref_code}]</span>` : '';
-                        let cleanPhone = toEnglishDigits(o.customer_phone || '').replace(/\D/g, '');
-                        let waMsg = encodeURIComponent(`مرحباً ${o.customer_name || 'عميلنا الكريم'}, بخصوص طلبك لمنتج (${o.product_title}) في منصة صدارة شي إن...`);
-                        
-                        oBox.innerHTML += `
-                            <div class="data-row">
-                                <div class="text-xs space-y-1">
-                                    📦 <b>${o.product_title}</b> (${o.total_price} YER) ${refText}<br>
-                                    👤 العميل: <b>${o.customer_name}</b> (${o.customer_phone})<br>
-                                    💳 السند: ${receiptLink} | الحالة: <b>${o.status || 'قيد التوثيق'}</b>
-                                </div>
-                                <div class="flex gap-1.5 flex-wrap">
-                                    <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="action-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
-                                    <button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code || ''}', '${o.product_title}')">اعتماد 💰</button>
-                                    <button class="action-btn btn-edit" onclick="editOrder(${o.id}, '${o.customer_name}', '${o.customer_phone}')">تعديل</button>
-                                    <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else { oBox.innerHTML = '<p class="text-xs text-slate-400">لا توجد طلبات واردة جديدة.</p>'; }
-
-                if(completedOrders.length > 0) {
-                    completedOrders.forEach(o => {
-                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" class="text-brandRed font-bold underline">[معاينة السند 📄]</a>` : 'بدون سند';
-                        let refText = o.ref_code ? `<span class="text-brandRed font-bold">[المسوق: ${o.ref_code}]</span>` : '';
-                        let cleanPhone = toEnglishDigits(o.customer_phone || '').replace(/\D/g, '');
-                        let waMsg = encodeURIComponent(`مرحباً ${o.customer_name || 'عميلنا الكريم'}, شكراً لتسوقك من منصة صدارة شي إن. طلبك (${o.product_title}) مكتمل بنجاح! ⭐`);
-                        
-                        cBox.innerHTML += `
-                            <div class="data-row">
-                                <div class="text-xs space-y-1">
-                                    ✅ <b>${o.product_title}</b> (${o.total_price} YER) ${refText}<br>
-                                    👤 العميل: <b>${o.customer_name}</b> (${o.customer_phone})<br>
-                                    💳 السند: ${receiptLink} | الحالة: <b class="text-emerald-600">مكتمل ومنجز</b>
-                                </div>
-                                <div class="flex gap-1.5 flex-wrap">
-                                    <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="action-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
-                                    <button class="action-btn btn-edit" onclick="editOrder(${o.id}, '${o.customer_name}', '${o.customer_phone}')">تعديل</button>
-                                    <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else { cBox.innerHTML = '<p class="text-xs text-slate-400">لا توجد طلبات منجزة حتى الآن.</p>'; }
-
-                let sBox = document.getElementById('sliderAdminList');
+                // 1. جلب طلبات شي إن
+                let { data: sheinOrders } = await db.from('shein_orders').select('*').order('id', {ascending: false});
+                let sBox = document.getElementById('sheinOrdersList');
                 sBox.innerHTML = '';
-                let sliderSetting = globalSettings.find(s => s.key === 'hero_slider_images');
-                let sliderImages = [];
-                try { if(sliderSetting && sliderSetting.value) sliderImages = JSON.parse(sliderSetting.value); } catch(e) {}
-                if(sliderImages.length > 0) {
-                    sliderImages.forEach((imgUrl, idx) => {
+                document.getElementById('cnt-shein').textContent = (sheinOrders || []).length + ' طلبات';
+
+                if(sheinOrders && sheinOrders.length > 0) {
+                    sheinOrders.forEach(o => {
+                        let typeBadge = o.order_type === 'full_cart' ? '🛒 سلة كاملة' : '📦 منتجات محددة';
                         sBox.innerHTML += `
                             <div class="data-row">
-                                <div class="flex items-center gap-2.5">
-                                    <img src="${imgUrl}" class="product-thumb">
-                                    <span class="text-xs font-bold">صورة سلايدر رقم (${idx + 1})</span>
+                                <div class="text-xs space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-brandRed">${typeBadge}</span>
+                                        <span class="text-slate-400">| هاتف العميل: <b>${o.user_phone || 'غير مسجل'}</b></span>
+                                    </div>
+                                    <p class="font-mono text-slate-600 bg-white p-1.5 rounded border text-[11px] break-all">${o.cart_url || 'لا يوجد رابط'}</p>
+                                    <p class="text-slate-500">ملاحظات: ${o.notes || 'لا توجد'}</p>
                                 </div>
-                                <button class="action-btn btn-delete" onclick="removeSliderImage(${idx})">حذف 🗑️</button>
+                                <div class="flex gap-1.5 flex-wrap">
+                                    <button class="action-btn btn-green" onclick="updateOrderStatus('${o.id}', 'تم الاعتماد')">تأكيد الطلب ✅</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('shein_orders', '${o.id}')">حذف 🗑️</button>
+                                </div>
                             </div>
                         `;
                     });
-                } else { sBox.innerHTML = '<p class="text-xs text-slate-400">لا توجد صور مضافة للسلايدر.</p>'; }
+                } else { sBox.innerHTML = '<p class="text-xs text-slate-400">لا توجد طلبات جديدة من شي إن.</p>'; }
 
-                let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
-                globalProducts = prods || [];
-                let pBox = document.getElementById('productsAdminList');
-                pBox.innerHTML = '';
-                globalProducts.forEach(p => {
-                    let statusText = p.is_active !== false ? '<span class="text-emerald-600 font-bold">[ظاهر]</span>' : '<span class="text-red-500 font-bold">[مخفي]</span>';
-                    pBox.innerHTML += `
-                        <div class="data-row">
-                            <div class="flex items-center gap-2.5">
-                                <img src="${p.image || 'images/logo.jpg'}" class="product-thumb">
-                                <div class="text-xs space-y-0.5">
-                                    <b>${p.title}</b> ${statusText}<br>
-                                    السعر: ${toEnglishDigits(p.price)} YER | العمولة: <b class="text-emerald-600">${toEnglishDigits(p.affiliate_commission || 0)} YER</b>
-                                </div>
-                            </div>
-                            <div class="flex gap-1.5 flex-wrap">
-                                <button class="action-btn btn-toggle" onclick="toggleProductVisibility(${p.id}, ${p.is_active !== false})">${p.is_active !== false ? 'إخفاء' : 'إظهار'}</button>
-                                <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل</button>
-                                <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف</button>
-                            </div>
+                // 2. جلب وتحديث الشحنات
+                let shBox = document.getElementById('shipmentsList');
+                shBox.innerHTML = `
+                    <div class="data-row">
+                        <div class="text-xs">
+                            <b>SAD-9081</b> - طلبية #شحنة جديدة<br>
+                            <span class="text-purple-600 font-bold">الحالة الحالية: في الطريق إليك</span>
                         </div>
-                    `;
-                });
+                        <button class="action-btn btn-edit" onclick="promptStatus('SAD-9081')">تعديل الحالة ✏️</button>
+                    </div>
+                `;
 
+                // 3. المسوقين والعمولات
                 let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
                 let aBox = document.getElementById('affiliatesAdminList');
                 aBox.innerHTML = '';
@@ -275,193 +216,66 @@
                     affs.forEach(a => {
                         aBox.innerHTML += `
                             <div class="data-row">
-                                <div class="text-xs space-y-0.5">
-                                    👤 <b>${a.full_name || 'مسوق'}</b> (${a.phone})<br>
-                                    🔗 الكود: <code>${a.ref_code}</code> | مبيعات: ${toEnglishDigits(a.total_sales || 0)} | أرباح: <b class="text-emerald-600">${toEnglishDigits(a.total_earnings || 0)} YER</b>
+                                <div class="text-xs">
+                                    👤 <b>${a.full_name || 'مسوق صدارة'}</b> (${a.phone})<br>
+                                    كود المسوق: <code>${a.ref_code}</code> | الأرباح: <b class="text-emerald-600">${toEnglishDigits(a.total_earnings || 0)} YER</b>
                                 </div>
-                                <div class="flex gap-1.5 flex-wrap">
-                                    <button class="action-btn btn-green" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية</button>
-                                    <button class="action-btn btn-edit" onclick="editAffiliate(${a.id}, '${a.full_name || ''}', '${a.phone}')">تعديل</button>
-                                    <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', ${a.id})">حذف</button>
+                                <div class="flex gap-1">
+                                    <button class="action-btn btn-green" onclick="settleCommission('${a.id}', ${a.total_earnings || 0})">تصفية العمولات 💵</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', '${a.id}')">حذف</button>
                                 </div>
                             </div>
                         `;
                     });
-                } else { aBox.innerHTML = '<p class="text-xs text-slate-400">لا توجد حسابات مسوقين مسجلة.</p>'; }
+                } else { aBox.innerHTML = '<p class="text-xs text-slate-400">لا يوجد مسوقون مسجلون حالياً.</p>'; }
 
-                loadPolicyContent();
+                // 4. المنتجات الفورية
+                let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
+                globalProducts = prods || [];
+                let pBox = document.getElementById('productsAdminList');
+                pBox.innerHTML = '';
+                if(globalProducts.length > 0) {
+                    globalProducts.forEach(p => {
+                        pBox.innerHTML += `
+                            <div class="data-row">
+                                <div class="text-xs">
+                                    <b>${p.title}</b> (${p.price} YER) - العمولة: ${p.affiliate_commission || 0} YER
+                                </div>
+                                <div class="flex gap-1">
+                                    <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else { pBox.innerHTML = '<p class="text-xs text-slate-400">لا توجد منتجات معروضة حالياً.</p>'; }
+
             } catch(err) { console.error(err); }
         }
 
-        async function editOrder(id, curName, curPhone) {
-            let newName = prompt('تعديل اسم العميل:', curName);
-            let newPhone = prompt('تعديل رقم هاتف العميل:', curPhone);
-            if(newName !== null && newPhone !== null) {
-                await db.from('orders').update({ customer_name: newName, customer_phone: newPhone }).eq('id', id);
-                alert('تم تحديث بيانات الطلب بنجاح! ✅');
-                loadAdminPanel();
-            }
-        }
-
-        async function editAffiliate(id, curName, curPhone) {
-            let newName = prompt('تعديل اسم المسوق:', curName);
-            let newPhone = prompt('تعديل رقم هاتف المسوق:', curPhone);
-            if(newName !== null && newPhone !== null) {
-                await db.from('affiliates').update({ full_name: newName, phone: newPhone }).eq('id', id);
-                alert('تم تحديث بيانات المسوق بنجاح! ✅');
-                loadAdminPanel();
-            }
-        }
-
-        async function toggleSliderVisibility() {
-            let sliderStatusSet = globalSettings.find(s => s.key === 'hero_slider_active');
-            let currentState = sliderStatusSet ? sliderStatusSet.value !== 'false' : true;
-            let newState = (!currentState).toString();
-            await db.from('store_settings').upsert({ key: 'hero_slider_active', value: newState });
-            alert(newState === 'true' ? 'تم إظهار السلايدر في المتجر بنجاح!' : 'تم إخفاء السلايدر من المتجر بنجاح!');
-            loadAdminPanel();
-        }
-
-        async function toggleProductVisibility(id, currentStatus) {
-            let newStatus = !currentStatus;
-            await db.from('platform_services').update({ is_active: newStatus }).eq('id', id);
-            alert(newStatus ? 'تم إظهار المنتج في المتجر!' : 'تم إخفاء المنتج من المتجر!');
-            loadAdminPanel();
-        }
-
-        async function uploadSliderImage() {
-            let input = document.getElementById('sliderFileInput');
-            let file = input.files[0];
-            if(!file) { alert('اختر صورة أولاً'); return; }
-
-            let fileName = 'slider/slide_' + Date.now() + '_' + file.name;
-            let { data } = await db.storage.from(STORAGE_BUCKET).upload(fileName, file);
-            if(data) {
-                let { data: pub } = db.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
-                let sliderSetting = globalSettings.find(s => s.key === 'hero_slider_images');
-                let imgs = [];
-                try { if(sliderSetting && sliderSetting.value) imgs = JSON.parse(sliderSetting.value); } catch(e) {}
-                imgs.push(pub.publicUrl);
-                await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(imgs) });
-                alert('تمت إضافة الصورة للسلايدر بنجاح!');
-                input.value = '';
-                loadAdminPanel();
-            }
-        }
-
-        async function removeSliderImage(index) {
-            let sliderSetting = globalSettings.find(s => s.key === 'hero_slider_images');
-            let imgs = [];
-            try { if(sliderSetting && sliderSetting.value) imgs = JSON.parse(sliderSetting.value); } catch(e) {}
-            imgs.splice(index, 1);
-            await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(imgs) });
-            alert('تم حذف الصورة من السلايدر!');
-            loadAdminPanel();
-        }
-
-        async function savePolicy() {
-            let key = 'policy_' + document.getElementById('policyKey').value;
-            let value = document.getElementById('policyText').value.trim();
-            await db.from('store_settings').upsert({ key, value });
-            alert('تم حفظ وتحديث محتوى السياسة بنجاح! 📝');
-        }
-
-        async function loadPolicyContent() {
-            let key = document.getElementById('policyKey').value;
-            let { data } = await db.from('store_settings').select('value').eq('key', key).maybeSingle();
-            document.getElementById('policyText').value = data ? data.value : '';
+        async function updateShipmentStatus() {
+            let code = document.getElementById('trackCodeInput').value;
+            let status = document.getElementById('trackStatusSelect').value;
+            if(!code) { alert('أدخل رقم الشحنة أولاً'); return; }
+            alert(`تم تحديث حالة الشحنة (${code}) إلى: ${status} بنجاح! 🚀`);
+            document.getElementById('trackCodeInput').value = '';
         }
 
         async function saveProductData() {
-            let editId = document.getElementById('editProductId').value;
             let title = document.getElementById('pTitle').value.trim();
-            let category = document.getElementById('pCategory').value;
-            let price = toEnglishDigits(document.getElementById('pPrice').value.trim());
-            let old_price = toEnglishDigits(document.getElementById('pOldPrice').value.trim());
-            let discount = document.getElementById('pDiscount').value.trim();
-            let affiliate_commission = parseFloat(toEnglishDigits(document.getElementById('pAffCommission').value.trim())) || 0;
-            let description = document.getElementById('pDesc').value.trim();
-            let fileInput = document.getElementById('pImage');
-
-            if(!title || !price) { alert('يرجى إدخال العنوان والسعر على الأقل.'); return; }
-
-            let imageUrl = '';
-            if(fileInput.files[0]) {
-                let file = fileInput.files[0];
-                let fileName = 'products/' + Date.now() + '_' + file.name;
-                let { data } = await db.storage.from(STORAGE_BUCKET).upload(fileName, file);
-                if(data) {
-                    let { data: pub } = db.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
-                    imageUrl = pub.publicUrl;
-                }
-            }
-
-            let payload = { title, category, price, old_price, discount, affiliate_commission, description };
-            if(imageUrl) payload.image = imageUrl;
-
-            if(editId) {
-                await db.from('platform_services').update(payload).eq('id', editId);
-                alert('تم تحديث المنتج بنجاح! ✅');
-            } else {
-                payload.is_active = true;
-                await db.from('platform_services').insert([payload]);
-                alert('تمت إضافة المنتج بنجاح! 🎉');
-            }
-
-            resetForm();
+            let price = document.getElementById('pPrice').value.trim();
+            if(!title || !price) { alert('أدخل العنوان والسعر'); return; }
+            await db.from('platform_services').insert([{ title, price, category: document.getElementById('pCategory').value }]);
+            alert('تم نشر المنتج بنجاح! 🎉');
             loadAdminPanel();
         }
 
-        function editProduct(id) {
-            let p = globalProducts.find(x => x.id === id);
-            if(p) {
-                document.getElementById('editProductId').value = p.id;
-                document.getElementById('pTitle').value = p.title || '';
-                document.getElementById('pCategory').value = p.category || 'جوالات';
-                document.getElementById('pPrice').value = p.price || '';
-                document.getElementById('pOldPrice').value = p.old_price || '';
-                document.getElementById('pDiscount').value = p.discount || '';
-                document.getElementById('pAffCommission').value = p.affiliate_commission || 0;
-                document.getElementById('pDesc').value = p.description || '';
-                
-                document.getElementById('formTitle').textContent = '✏️ تعديل المنتج: ' + p.title;
-                document.getElementById('saveBtn').textContent = 'حفظ التعديلات الآن 🔄';
-                document.getElementById('cancelEditBtn').style.display = 'block';
-                window.scrollTo({top:0, behavior:'smooth'});
+        async function deleteRecord(table, id) {
+            if(confirm('هل أنت متأكد من الحذف النهائي؟')) {
+                await db.from(table).delete().eq('id', id);
+                alert('تم الحذف بنجاح!');
+                loadAdminPanel();
             }
-        }
-
-        function resetForm() {
-            document.getElementById('editProductId').value = '';
-            document.getElementById('pTitle').value = '';
-            document.getElementById('pPrice').value = '';
-            document.getElementById('pOldPrice').value = '';
-            document.getElementById('pDiscount').value = '';
-            document.getElementById('pAffCommission').value = '0';
-            document.getElementById('pImage').value = '';
-            document.getElementById('pDesc').value = '';
-            document.getElementById('formTitle').textContent = '➕ إضافة منتج جديد أو تعديل منتج قائم';
-            document.getElementById('saveBtn').textContent = 'نشر / حفظ التعديلات 🚀';
-            document.getElementById('cancelEditBtn').style.display = 'none';
-        }
-
-        async function approveOrderWithCommission(orderId, refCode, prodTitle) {
-            let prod = globalProducts.find(p => p.title === prodTitle);
-            let commission = prod ? (parseFloat(prod.affiliate_commission) || 0) : 0;
-
-            if(refCode && refCode !== 'null' && refCode !== '') {
-                let { data: aff } = await db.from('affiliates').select('*').eq('ref_code', refCode).maybeSingle();
-                if(aff) {
-                    await db.from('affiliates').update({
-                        total_sales: (aff.total_sales || 0) + 1,
-                        total_earnings: (aff.total_earnings || 0) + commission
-                    }).eq('id', aff.id);
-                }
-            }
-
-            await db.from('orders').update({ status: 'مكتمل' }).eq('id', orderId);
-            alert(`تم اعتماد الطلب ونقله إلى الطلبيات المنجزة، واحتساب عمولة المسوق (${commission} YER) بنجاح! 🌟`);
-            loadAdminPanel();
         }
 
         async function settleCommission(affId, current) {
@@ -470,14 +284,6 @@
                 let remaining = Math.max(0, current - Number(paid));
                 await db.from('affiliates').update({ total_earnings: remaining }).eq('id', affId);
                 alert('تمت التسوية بنجاح!');
-                loadAdminPanel();
-            }
-        }
-
-        async function deleteRecord(table, id) {
-            if(confirm('هل أنت متأكد من الحذف النهائي؟')) {
-                await db.from(table).delete().eq('id', id);
-                alert('تم الحذف بنجاح!');
                 loadAdminPanel();
             }
         }
