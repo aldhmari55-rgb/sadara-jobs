@@ -1,258 +1,27 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة المسوقين والأفلييت | منصة صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; user-select: text; /* السماح بتحديد وتنسخ النصوص بمرونة */ }
-        body { background: #F3F4F6; padding: 15px; color: #111827; padding-bottom: 50px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        .box { background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-        h2 { font-size: 15px; font-weight: 900; margin-bottom: 12px; color: #111827; display: flex; align-items: center; gap: 6px; }
-        
-        .tabs { display: flex; gap: 8px; margin-bottom: 15px; background: #F3F4F6; padding: 4px; border-radius: 8px; }
-        .tab-btn { flex: 1; padding: 9px; border: none; background: transparent; font-weight: 900; font-size: 11px; cursor: pointer; border-radius: 6px; transition: 0.2s; color: #4B5563; }
-        .tab-btn.active { background: #111827; color: #ffffff; }
-
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 4px; color: #374151; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 11px; background: #F9FAFB; outline: none; }
-        .btn { background: #111827; color: white; border: none; padding: 11px; border-radius: 8px; width: 100%; font-weight: 900; cursor: pointer; font-size: 11.5px; transition: 0.2s; }
-        .btn:hover { background: #1F2937; }
-        
-        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
-        @media(min-width: 576px) { .stat-grid { grid-template-columns: repeat(4, 1fr); } }
-        .stat-card { background: #F9FAFB; border: 1px solid #E5E7EB; padding: 12px; border-radius: 8px; text-align: center; }
-        .stat-card h3 { font-size: 15px; color: #10B981; font-family: sans-serif; font-weight: 900; }
-        .stat-card p { font-size: 10px; color: #6B7280; font-weight: bold; margin-top: 3px; }
-
-        .product-item-row { background: #F9FAFB; border: 1px solid #E5E7EB; padding: 12px; border-radius: 9px; margin-bottom: 12px; display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
-        .prod-thumb { width: 80px; height: 80px; object-fit: contain; background: #ffffff; border: 1px solid #E5E7EB; border-radius: 6px; padding: 3px; cursor: pointer; transition: 0.2s; }
-        .prod-thumb:hover { opacity: 0.85; transform: scale(1.02); }
-        
-        .action-btns-group { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-        .action-chip { background: #0284C7; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 9.5px; }
-        .action-chip.copy-text { background: #4B5563; }
-        
-        .logout-btn { background: #EF4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; float: left; }
-        .back-store { display: inline-block; margin-bottom: 15px; color: #4B5563; text-decoration: none; font-size: 11px; font-weight: bold; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التسوق والعمولات | متجر صدارة</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <a href="index.html" class="back-store"><i class="fa-solid fa-store"></i> العودة للمتجر الرئيسي</a>
-
-        <div class="box" id="authBox">
-            <h2>🤝 بوابة المسوقين (الأفلييت)</h2>
-            
-            <div class="tabs">
-                <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">تسجيل الدخول</button>
-                <button class="tab-btn" id="tabRegister" onclick="switchTab('register')">إنشاء حساب جديد</button>
-            </div>
-
-            <div id="loginFormSection">
-                <div class="form-group">
-                    <label>رقم الهاتف / الواتساب المسجل</label>
-                    <input type="text" id="loginPhone" placeholder="مثال: 770000000">
-                </div>
-                <button onclick="handleLogin()" class="btn">تسجيل الدخول إلى حسابي 🚀</button>
-            </div>
-
-            <div id="registerFormSection" style="display:none;">
-                <div class="form-group">
-                    <label>الاسم الكامل</label>
-                    <input type="text" id="regName" placeholder="اسمك الكريم">
-                </div>
-                <div class="form-group">
-                    <label>رقم الهاتف / الواتساب</label>
-                    <input type="text" id="regPhone" placeholder="مثال: 770000000">
-                </div>
-                <div class="form-group">
-                    <label>طريقة الاستلام المفضلة</label>
-                    <select id="regPayMethod">
-                        <option value="جيب">محفظة جيب (Jeeb)</option>
-                        <option value="الكريمي">بنك الكريمي (نقطة حاسب)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>رقم حساب طريقة الدفع (رقم المحفظة أو الحساب)</label>
-                    <input type="text" id="regPayAccount" placeholder="رقم حسابك لاستلام الأرباح">
-                </div>
-                <button onclick="handleRegister()" class="btn">إتمام إنشاء الحساب والانطلاق 🌟</button>
-            </div>
+<body class="bg-slate-50 text-slate-800 p-4 pb-24">
+  <div class="max-w-md mx-auto space-y-4">
+    <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-lg space-y-2">
+      <span class="text-xs text-lime-400 font-bold">لوحة المسوق بالعمولة - صدارة</span>
+      <h2 class="text-xl font-black">أهلاً بك، عبدالرحمن الذماري</h2>
+      <div class="grid grid-cols-2 gap-2 pt-2">
+        <div class="bg-white/10 p-3 rounded-xl text-center">
+          <span class="text-[10px] text-slate-300 block">إجمالي العمولات</span>
+          <span class="text-lg font-black text-lime-400">﷼145.00</span>
         </div>
-
-        <div id="dashBox" style="display:none;">
-            <div class="box">
-                <button onclick="logoutAffiliate()" class="logout-btn">تسجيل الخروج 🚪</button>
-                <h2>📊 لوحة تحكم المسوق: <span id="affNameDisp" style="color:#D4AF37;"></span></h2>
-                <div style="font-size: 11px; margin-bottom: 15px;">كود التسويق الخاص بك: <code id="affCodeDisp" style="background:#FEF3C7; padding:3px 8px; border-radius:4px; font-weight:bold; font-family:sans-serif;"></code></div>
-                
-                <div class="stat-grid">
-                    <div class="stat-card"><h3 id="affClicks">0</h3><p>🔗 الزيارات</p></div>
-                    <div class="stat-card"><h3 id="affSales">0</h3><p>📦 المبيعات</p></div>
-                    <div class="stat-card"><h3 id="affTotalEarn">0 YER</h3><p>💰 الأرباح الكلية</p></div>
-                    <div class="stat-card"><h3 id="affDueEarn" style="color:#EF4444;">0 YER</h3><p>💵 الأرباح المستحقة</p></div>
-                </div>
-            </div>
-
-            <div class="box">
-                <h2>📦 منتجات المتجر وروابط التسويق (مرونة تامة للنسخ والتحميل)</h2>
-                <p style="font-size: 11px; color: #6B7280; margin-bottom: 12px;">اضغط على أي صورة لعرضها وتحميلها، أو انسخ العنوان، الوصف، أو رابط التسويق بضغطة زر.</p>
-                <div id="affProductsList">جاري جلب المنتجات...</div>
-            </div>
+        <div class="bg-white/10 p-3 rounded-xl text-center">
+          <span class="text-[10px] text-slate-300 block">الطلبات المؤكدة</span>
+          <span class="text-lg font-black">12 طلب</span>
         </div>
+      </div>
     </div>
-
-    <script>
-        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        function toEnglishDigits(str) {
-            return String(str).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
-        }
-
-        function switchTab(tab) {
-            if(tab === 'login') {
-                document.getElementById('tabLogin').classList.add('active');
-                document.getElementById('tabRegister').classList.remove('active');
-                document.getElementById('loginFormSection').style.display = 'block';
-                document.getElementById('registerFormSection').style.display = 'none';
-            } else {
-                document.getElementById('tabRegister').classList.add('active');
-                document.getElementById('tabLogin').classList.remove('active');
-                document.getElementById('registerFormSection').style.display = 'block';
-                document.getElementById('loginFormSection').style.display = 'none';
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            let savedPhone = localStorage.getItem('sadara_aff_phone');
-            if(savedPhone) {
-                fetchAffiliateData(savedPhone);
-            }
-        });
-
-        async function handleLogin() {
-            let phone = toEnglishDigits(document.getElementById('loginPhone').value.trim());
-            if(!phone) { alert('يرجى إدخال رقم الهاتف.'); return; }
-
-            try {
-                let { data: existing, error } = await db.from('affiliates').select('*').eq('phone', phone).maybeSingle();
-                if(error || !existing) {
-                    alert('رقم الجوال غير مسجل مسبقاً. يرجى الانتقال إلى تبويب "إنشاء حساب جديد".');
-                    return;
-                }
-                localStorage.setItem('sadara_aff_phone', phone);
-                showDashboard(existing);
-            } catch(e) { alert('حدث خطأ أثناء تسجيل الدخول.'); }
-        }
-
-        async function handleRegister() {
-            let name = document.getElementById('regName').value.trim();
-            let phone = toEnglishDigits(document.getElementById('regPhone').value.trim());
-            let method = document.getElementById('regPayMethod').value;
-            let account = toEnglishDigits(document.getElementById('regPayAccount').value.trim());
-
-            if(!name || !phone || !account) {
-                alert('يرجى تعبئة جميع الحقول.');
-                return;
-            }
-
-            try {
-                let { data: existing } = await db.from('affiliates').select('*').eq('phone', phone).maybeSingle();
-                if(existing) {
-                    alert('رقم الجوال مسجل مسبقاً! قم بتسجيل الدخول مباشرة.');
-                    switchTab('login');
-                    document.getElementById('loginPhone').value = phone;
-                    return;
-                }
-
-                let refCode = 'SADARA_' + Math.floor(1000 + Math.random() * 9000);
-                let { data: created, error } = await db.from('affiliates').insert([{
-                    full_name: name,
-                    phone: phone,
-                    ref_code: refCode,
-                    payment_method: method,
-                    payment_account: account,
-                    clicks: 0,
-                    total_sales: 0,
-                    total_earnings: 0
-                }]).select().single();
-
-                if(error) throw error;
-                if(created) {
-                    localStorage.setItem('sadara_aff_phone', phone);
-                    showDashboard(created);
-                }
-            } catch(e) { alert('خطأ أثناء التسجيل: ' + e.message); }
-        }
-
-        async function fetchAffiliateData(phone) {
-            try {
-                let { data: aff, error } = await db.from('affiliates').select('*').eq('phone', phone).single();
-                if(error || !aff) {
-                    localStorage.removeItem('sadara_aff_phone');
-                    return;
-                }
-                showDashboard(aff);
-            } catch(e) { console.error(e); }
-        }
-
-        async function showDashboard(aff) {
-            document.getElementById('authBox').style.display = 'none';
-            document.getElementById('dashBox').style.display = 'block';
-            document.getElementById('affNameDisp').textContent = aff.full_name || aff.phone;
-            document.getElementById('affCodeDisp').textContent = aff.ref_code;
-            document.getElementById('affClicks').textContent = toEnglishDigits(aff.clicks || 0);
-            document.getElementById('affSales').textContent = toEnglishDigits(aff.total_sales || 0);
-            document.getElementById('affTotalEarn').textContent = toEnglishDigits(aff.total_earnings || 0) + ' YER';
-            document.getElementById('affDueEarn').textContent = toEnglishDigits(aff.total_earnings || 0) + ' YER';
-
-            let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
-            let listContainer = document.getElementById('affProductsList');
-            listContainer.innerHTML = '';
-
-            let baseUrl = window.location.origin + window.location.pathname.replace('affiliate.html', '');
-
-            if(prods && prods.length > 0) {
-                prods.forEach(p => {
-                    let fullUrl = `${baseUrl}product.html?id=${p.id}&ref=${aff.ref_code}`;
-                    let comm = p.affiliate_commission || 0;
-                    let imgSrc = p.image || 'images/logo.jpg';
-
-                    listContainer.innerHTML += `
-                        <div class="product-item-row">
-                            <img src="${imgSrc}" class="prod-thumb" title="اضغط لعرض الصورة بحجمها الكامل" onclick="window.open('${imgSrc}', '_blank')">
-                            <div style="flex:1; min-width:180px;">
-                                <b style="font-size:11.5px; color:#111827; user-select:text;">${p.title}</b><br>
-                                <span style="font-size:11px; color:#EF4444; font-weight:900; font-family:sans-serif;">السعر: ${toEnglishDigits(p.price)} YER</span><br>
-                                <span style="font-size:11px; color:#10B981; font-weight:900; font-family:sans-serif;">🎁 عمولتك: ${toEnglishDigits(comm)} YER</span><br>
-                                <span style="font-size:10.5px; color:#4B5563; display:block; margin-top:4px; user-select:text;">${p.description || ''}</span>
-                                
-                                <div class="action-btns-group">
-                                    <button class="action-chip copy-text" onclick="navigator.clipboard.writeText('${p.title}'); alert('تم نسخ عنوان المنتج! 📋');">نسخ العنوان</button>
-                                    <button class="action-chip copy-text" onclick="navigator.clipboard.writeText('${p.description || ''}'); alert('تم نسخ وصف المنتج! 📋');">نسخ الوصف</button>
-                                    <button class="action-chip" onclick="navigator.clipboard.writeText('${fullUrl}'); alert('تم نسخ رابط التسويق بنجاح! 🎉');">نسخ رابط التسويق 🔗</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-            } else {
-                listContainer.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد منتجات مضافة حالياً في المتجر.</p>';
-            }
-        }
-
-        function logoutAffiliate() {
-            localStorage.removeItem('sadara_aff_phone');
-            window.location.reload();
-        }
-    </script>
+  </div>
 </body>
 </html>
