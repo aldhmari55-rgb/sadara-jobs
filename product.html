@@ -1,166 +1,53 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تفاصيل المنتج والدفع | منصة صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        
-        /* خلفية عائمة معتمة تغطي الشاشة بالكامل لإتاحة الإغلاق عند الضغط خارج النافذة */
-        body { background: rgba(0, 0, 0, 0.6); padding: 15px; color: #1F2937; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; display: flex; justify-content: center; align-items: center; padding: 10px; }
-        
-        .container { background: #ffffff; width: 100%; max-width: 550px; max-height: 90vh; overflow-y: auto; padding: 20px; border-radius: 14px; border: 1px solid #E5E7EB; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; z-index: 1000; animation: scaleIn 0.25s ease-out; }
-        
-        @keyframes scaleIn {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .close-x-btn { position: absolute; top: 12px; left: 12px; background: #F3F4F6; border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: 900; cursor: pointer; display: flex; justify-content: center; align-items: center; color: #374151; transition: 0.2s; }
-        .close-x-btn:hover { background: #EF4444; color: #ffffff; }
-
-        .prod-img { width: 100%; height: 220px; object-fit: contain; background: #ffffff; border-radius: 8px; margin-bottom: 12px; border: 1px solid #E5E7EB; padding: 5px; }
-        h1 { font-size: 15px; font-weight: 900; color: #111827; margin-bottom: 8px; padding-left: 25px; }
-        .price-box { font-size: 15px; font-weight: 900; color: #EF4444; margin-bottom: 10px; font-family: sans-serif; }
-        .desc { font-size: 11px; color: #4B5563; line-height: 1.6; margin-bottom: 15px; background: #F9FAFB; padding: 10px; border-radius: 8px; }
-
-        .payment-info-box { background: #FEF3C7; border: 1px solid #F59E0B; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 10.5px; }
-        .payment-info-box b { color: #92400E; display: block; margin-bottom: 4px; }
-        .pay-method { background: #ffffff; padding: 6px 8px; border-radius: 6px; border: 1px dashed #D97706; margin-bottom: 4px; font-family: sans-serif; }
-
-        .form-group { margin-bottom: 10px; }
-        .form-group label { display: block; font-size: 10.5px; font-weight: 900; margin-bottom: 4px; color: #374151; }
-        .form-group input { width: 100%; padding: 9px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 11px; outline: none; background: #F9FAFB; }
-        .submit-btn { background: #111827; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; font-size: 11.5px; margin-top: 8px; }
-        .back-btn { display: block; text-align: center; margin-top: 12px; color: #6B7280; text-decoration: none; font-size: 10.5px; font-weight: bold; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>طلبات شي إن | صدارة شي إن</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 pb-24">
+  <header class="bg-white border-b border-slate-100 p-4 sticky top-0 z-40">
+    <h1 class="font-extrabold text-lg">طلب وسيط صدارة شي إن 🛍️</h1>
+  </header>
 
-    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-        <div class="container" id="productContainer" onclick="event.stopPropagation()">
-            جاري التحميل...
-        </div>
+  <main class="max-w-md mx-auto p-4 space-y-4">
+    <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-emerald-900 text-xs font-bold space-y-1">
+      <p>انسخ روابط منتجاتك أو سلتك المجمعة من SHEIN وسنقوم بطلبها وتوصيلها لك.</p>
+      <p class="text-emerald-700 font-black">واتساب الدعم: 777900693</p>
     </div>
 
-    <script>
-        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const BUCKET_NAME = "platform-files";
+    <form class="bg-white p-4 rounded-2xl border border-slate-200 space-y-4 shadow-sm" id="shein-form">
+      <div>
+        <label class="text-xs font-bold block mb-1">رابط سلة شي إن أو المنتج:</label>
+        <textarea rows="3" required placeholder="الصق رابط السلة (Share Cart) هنا..." class="w-full bg-slate-50 text-xs p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-lime-500 outline-none"></textarea>
+      </div>
 
-        function toEnglishDigits(str) {
-            return String(str).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
-        }
+      <div>
+        <label class="text-xs font-bold block mb-1">ملاحظات المقاسات والألوان:</label>
+        <textarea rows="2" placeholder="أكتب التفاصيل..." class="w-full bg-slate-50 text-xs p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-lime-500 outline-none"></textarea>
+      </div>
 
-        function closeModal(e) {
-            // إذا ضغط المستخدم في المساحة الرمادية المعتمة خارج الصندوق
-            if(e.target.id === 'modalOverlay') {
-                window.location.href = 'index.html';
-            }
-        }
+      <button type="submit" class="w-full py-3 bg-slate-900 text-white font-bold text-xs rounded-xl shadow-md">
+        إرسال الطلب لـ صدارة شي إن
+      </button>
+    </form>
 
-        async function loadProduct() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const prodId = urlParams.get('id');
-            const container = document.getElementById('productContainer');
-
-            if(!prodId) { 
-                container.innerHTML = '<p>المنتج غير موجود.</p><a href="index.html" class="back-btn">العودة للرئيسية</a>'; 
-                return; 
-            }
-
-            try {
-                let { data: p, error } = await db.from('platform_services').select('*').eq('id', prodId).single();
-                if(error || !p) throw error;
-
-                container.innerHTML = `
-                    <button class="close-x-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-xmark"></i></button>
-                    <img src="${p.image || 'images/logo.jpg'}" class="prod-img">
-                    <h1>${p.title}</h1>
-                    <div class="price-box">${toEnglishDigits(p.price)} YER ${p.old_price ? `<span style="text-decoration:line-through; color:#9CA3AF; font-size:11px; margin-right:6px;">${toEnglishDigits(p.old_price)} YER</span>` : ''}</div>
-                    <div class="desc">${p.description || 'لا توجد تفاصيل إضافية لهذا المنتج.'}</div>
-                    
-                    <div class="payment-info-box">
-                        <b>💳 بيانات السداد المتاحة:</b>
-                        <div class="pay-method">📱 محفظة جيب (Jeeb): <b>780568507</b></div>
-                        <div class="pay-method">🏦 نقطة حاسب الكريمي: <b>2628009</b> (عبدالرحمن عبدالله صالح الذماري)</div>
-                    </div>
-
-                    <h3 style="font-size:12px; font-weight:900; margin-bottom:8px;">🛒 إتمام طلب الشراء ورفع السند</h3>
-                    <div class="form-group">
-                        <label>الاسم الكامل</label>
-                        <input type="text" id="custName" placeholder="أدخل اسمك الكريم">
-                    </div>
-                    <div class="form-group">
-                        <label>رقم الهاتف / واتساب</label>
-                        <input type="text" id="custPhone" placeholder="07xxxxxxx أو 71xxxxxxx">
-                    </div>
-                    <div class="form-group">
-                        <label>صورة سند التحويل (من معرض جوالك)</label>
-                        <input type="file" id="receiptFile" accept="image/*">
-                    </div>
-                    <button onclick="submitOrder('${p.title}', '${p.price}')" class="submit-btn" id="sendOrderBtn">تأكيد وإرسال الطلب والسند 🚀</button>
-                    <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> العودة للمتجر الرئيسي</a>
-                `;
-            } catch(e) { 
-                container.innerHTML = '<p>حدث خطأ أثناء تحميل المنتج.</p><a href="index.html" class="back-btn">العودة للرئيسية</a>'; 
-            }
-        }
-
-        async function submitOrder(prodTitle, prodPrice) {
-            let name = document.getElementById('custName').value.trim();
-            let phone = document.getElementById('custPhone').value.trim();
-            let fileInput = document.getElementById('receiptFile');
-            let btn = document.getElementById('sendOrderBtn');
-
-            if(!name || !phone) { alert('يرجى إدخال الاسم ورقم الهاتف.'); return; }
-            if(!fileInput.files[0]) { alert('يرجى إرفاق صورة سند التحويل لتأكيد الطلب.'); return; }
-
-            btn.disabled = true;
-            btn.textContent = 'جاري رفع السند وإرسال الطلب...';
-
-            try {
-                let file = fileInput.files[0];
-                let fileName = 'receipts/' + Date.now() + '_' + file.name;
-                let { data: uploadData, error: uploadErr } = await db.storage.from(BUCKET_NAME).upload(fileName, file);
-                
-                let receiptUrl = '';
-                if(!uploadErr && uploadData) {
-                    let { data: pub } = db.storage.from(BUCKET_NAME).getPublicUrl(fileName);
-                    receiptUrl = pub.publicUrl;
-                }
-
-                let refCode = localStorage.getItem('sadara_ref') || null;
-
-                let { error } = await db.from('orders').insert([{
-                    product_title: prodTitle,
-                    customer_name: name,
-                    customer_phone: phone,
-                    total_price: prodPrice,
-                    receipt_url: receiptUrl,
-                    ref_code: refCode,
-                    status: 'قيد التوثيق'
-                }]);
-
-                if(error) throw error;
-
-                alert('تم إرسال طلبك وسند التحويل بنجاح! سنتواصل معك فوراً. 🎉');
-                window.location.href = 'index.html';
-            } catch(err) {
-                alert('خطأ أثناء إرسال الطلب: ' + err.message);
-                btn.disabled = false;
-                btn.textContent = 'تأكيد وإرسال الطلب والسند 🚀';
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', loadProduct);
-    </script>
+    <!-- قائمة الشحنات والتتبع -->
+    <div class="space-y-2 pt-2">
+      <h3 class="font-extrabold text-sm">تتبع شحناتك الحالية ✈️</h3>
+      <div class="bg-white p-4 rounded-2xl border border-slate-100 space-y-2 shadow-sm">
+        <div class="flex justify-between items-center text-xs">
+          <span class="font-bold">طلبية #شحنة جديدة</span>
+          <span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold">في الطريق إليك</span>
+        </div>
+        <div class="text-[11px] text-slate-400 flex justify-between border-t pt-2">
+          <span>تاريخ الطلب: 2026-10-30</span>
+          <span class="text-lime-600 font-bold cursor-pointer">تفاصيل التتبع ←</span>
+        </div>
+      </div>
+    </div>
+  </main>
 </body>
 </html>
