@@ -12,10 +12,10 @@
       theme: {
         extend: {
           colors: {
-            brandDark: '#0B132B',  /* كحلي داكن */
-            brandNavy: '#1C2541',  /* كحلي */
-            brandRed: '#D90429',   /* أحمر */
-            brandBlack: '#111111'  /* أسود */
+            brandDark: '#0B132B',
+            brandNavy: '#1C2541',
+            brandRed: '#D90429',
+            brandBlack: '#111111'
           }
         }
       }
@@ -93,7 +93,6 @@
         <span class="text-xs text-brandRed font-bold cursor-pointer">عرض الكل</span>
       </div>
       <div class="grid grid-cols-2 gap-3" id="products-grid">
-        <!-- سيتم جلب المنتجات من Supabase دون وضع بيانات عشوائية -->
         <div class="col-span-2 text-center py-10 text-slate-400 text-xs bg-white rounded-2xl border border-slate-200">
           <i class="fa-solid fa-box-open text-2xl mb-2 text-slate-300 block"></i>
           لا توجد منتجات معروضة حالياً. سيتم تحديث القائمة فور ربط البيانات.
@@ -103,7 +102,7 @@
 
   </main>
 
-  <!-- الشريط السفلي الثابت (Bottom Navigation) -->
+  <!-- الشريط السفلي الثابت (محدث للربط بـ my.html) -->
   <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-lg">
     <div class="max-w-md mx-auto grid grid-cols-5 py-2 text-center text-[10px]">
       <a href="index.html" class="flex flex-col items-center gap-1 text-brandRed font-bold">
@@ -123,9 +122,9 @@
         <i class="fa-solid fa-cart-shopping text-base"></i>
         <span>السلة</span>
       </a>
-      <a href="Aldhmari_2002.html" class="flex flex-col items-center gap-1 text-slate-400">
+      <a href="my.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-brandRed">
         <i class="fa-solid fa-user text-base"></i>
-        <span>حسابي</span>
+        <span>الملف الشخصي</span>
       </a>
     </div>
   </nav>
