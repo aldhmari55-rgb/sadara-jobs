@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الفئات | صدارة شي إن</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0B132B',
+            brandNavy: '#1C2541',
+            brandRed: '#D90429',
+            brandBlack: '#111111'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-24">
+
+  <header class="bg-brandDark text-white border-b border-slate-800 p-4 sticky top-0 z-40 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <a href="index.html" class="p-1 rounded-full bg-slate-800 text-slate-300">
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <h1 class="font-extrabold text-base">جميع الفئات</h1>
+    </div>
+    <span class="text-xs font-bold text-brandRed">صدارة SHEIN</span>
+  </header>
+
+  <main class="max-w-md mx-auto p-4 space-y-4">
+    <div class="grid grid-cols-3 gap-3" id="categories-grid">
+      <!-- تم إعداد خانات الفئات الأنيقة -->
+      <a href="categories.html?cat=phones" class="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-sm space-y-2 hover:border-brandRed transition-all">
+        <div class="w-12 h-12 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-brandNavy text-xl"><i class="fa-solid fa-mobile-screen"></i></div>
+        <span class="text-xs font-extrabold text-slate-700 block truncate">الهواتف الذكية</span>
+      </a>
+
+      <a href="categories.html?cat=screens" class="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-sm space-y-2 hover:border-brandRed transition-all">
+        <div class="w-12 h-12 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-brandNavy text-xl"><i class="fa-solid fa-desktop"></i></div>
+        <span class="text-xs font-extrabold text-slate-700 block truncate">الشاشات</span>
+      </a>
+
+      <a href="categories.html?cat=printers" class="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-sm space-y-2 hover:border-brandRed transition-all">
+        <div class="w-12 h-12 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-brandNavy text-xl"><i class="fa-solid fa-print"></i></div>
+        <span class="text-xs font-extrabold text-slate-700 block truncate">الطابعات</span>
+      </a>
+
+      <a href="categories.html?cat=perfumes" class="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-sm space-y-2 hover:border-brandRed transition-all">
+        <div class="w-12 h-12 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-brandNavy text-xl"><i class="fa-solid fa-spray-can"></i></div>
+        <span class="text-xs font-extrabold text-slate-700 block truncate">العطور</span>
+      </a>
+
+      <a href="categories.html?cat=men" class="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-sm space-y-2 hover:border-brandRed transition-all">
+        <div class="w-12 h-12 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-brandNavy text-xl"><i class="fa-solid fa-user-tie"></i></div>
+        <span class="text-xs font-extrabold text-slate-700 block truncate">العناية بالرجل</span>
+      </a>
+
+      <a href="categories.html?cat=women" class="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-sm space-y-2 hover:border-brandRed transition-all">
+        <div class="w-12 h-12 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-brandNavy text-xl"><i class="fa-solid fa-pump-soap"></i></div>
+        <span class="text-xs font-extrabold text-slate-700 block truncate">العناية بالمرأة</span>
+      </a>
+    </div>
+  </main>
+
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-lg">
+    <div class="max-w-md mx-auto grid grid-cols-5 py-2 text-center text-[10px]">
+      <a href="index.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-brandRed">
+        <i class="fa-solid fa-house text-base"></i>
+        <span>الرئيسية</span>
+      </a>
+      <a href="categories.html" class="flex flex-col items-center gap-1 text-brandNavy font-bold">
+        <i class="fa-solid fa-layer-group text-base"></i>
+        <span>الفئات</span>
+      </a>
+      <a href="product.html" class="flex flex-col items-center gap-1 text-slate-400 relative hover:text-brandRed">
+        <span class="bg-brandRed text-white font-black text-[8px] px-1 rounded-full absolute -top-1">SHEIN</span>
+        <i class="fa-solid fa-bag-shopping text-base"></i>
+        <span>طلبات شي إن</span>
+      </a>
+      <a href="cart.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-brandNavy">
+        <i class="fa-solid fa-cart-shopping text-base"></i>
+        <span>السلة</span>
+      </a>
+      <a href="my.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-brandRed">
+        <i class="fa-solid fa-user text-base"></i>
+        <span>الملف الشخصي</span>
+      </a>
+    </div>
+  </nav>
+
+</body>
+</html>
