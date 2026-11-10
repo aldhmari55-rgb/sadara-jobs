@@ -13,15 +13,23 @@
         <nav>
             <a href="index.html">الرئيسية</a>
             <a href="cart.html">السلة (<span id="cart-count">0</span>)</a>
-            <a href="affiliate.html">نظام المسوقين</a>
+            <a onclick="openModal('loginModal')">دخول المسوقين</a>
+            <a onclick="openModal('registerModal')">انضم كمسوق</a>
             <a href="admin.html">الإدارة</a>
         </nav>
     </header>
 
-    <section class="hero">
-        <h1>متجر صدارة الرقمي لمحافظة ذمار</h1>
-        <p>إلكترونيات، ملابس، تجميل، وأدوات منزلية - توصيل ميداني سريع لكافة الحارات</p>
-    </section>
+    <!-- السلايدر المتحرك -->
+    <div class="slider-container">
+        <div class="slide" style="display: block;">
+            <h2>عروض الحرق في محافظة ذمار 🔥</h2>
+            <p>توصيل ميداني سريع لكافة الحارات والشوارع الرئيسية والفرعية.</p>
+        </div>
+        <div class="slide">
+            <h2>قسم الإلكترونيات والجوالات الأحدث 📱</h2>
+            <p>أفضل الأسعار بالريال اليمني وبضمان حقيقي.</p>
+        </div>
+    </div>
 
     <section class="categories-section">
         <h2>أقسام المتجر</h2>
@@ -33,10 +41,50 @@
         </div>
     </section>
 
+    <!-- قسم العروض والتخفيضات -->
+    <section class="offers-section" style="background: #fffbeb; border-top: 2px dashed #f59e0b; border-bottom: 2px dashed #f59e0b;">
+        <h2 style="color: #b45309;">⚡ عروض وتخفيضات صدارة الحصرية</h2>
+        <div class="products-grid" id="offers-container"></div>
+    </section>
+
     <section class="products-section">
-        <h2>أحدث المنتجات</h2>
+        <h2>أحدث المنتجات المتوفرة</h2>
         <div class="products-grid" id="products-container"></div>
     </section>
+
+    <!-- نافذة تسجيل الدخول للمسوق (منبثقة Modal) -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('loginModal')">&times;</span>
+            <h2>تسجيل دخول المسوق</h2>
+            <form onsubmit="loginAffiliate(event)" style="margin-top: 15px;">
+                <div class="form-group">
+                    <label>رقم الهاتف المسجل:</label>
+                    <input type="tel" id="login_phone" required placeholder="77XXXXXXX">
+                </div>
+                <button type="submit" class="btn-buy">دخول لوحة التحكم</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة حساب جديد للمسوق (منبثقة Modal) -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('registerModal')">&times;</span>
+            <h2>انضم كمسوق جديد</h2>
+            <form onsubmit="registerAffiliate(event)" style="margin-top: 15px;">
+                <div class="form-group">
+                    <label>الاسم الكامل:</label>
+                    <input type="text" id="reg_name" required placeholder="اسمك الكريم">
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف:</label>
+                    <input type="tel" id="reg_phone" required placeholder="77XXXXXXX">
+                </div>
+                <button type="submit" class="btn-buy">إنشاء حساب مسوق</button>
+            </form>
+        </div>
+    </div>
 
     <footer>
         <p>جميع الحقوق محفوظة © متجر صدارة - ذمار 2026 | sadarah.top</p>
