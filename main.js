@@ -3,10 +3,10 @@ const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const products = [
-    { id: 1, name: "هاتف ذكي حديث", category: "electronics", price: 130 },
-    { id: 2, name: "طقم ملابس رجالي عصري", category: "fashion", price: 20 },
-    { id: 3, name: "عطر ومستحضرات تجميل فاخرة", category: "beauty", price: 30 },
-    { id: 4, name: "طقم أدوات مطبخ متكامل", category: "home", price: 45 }
+    { id: 1, name: "هاتف ذكي حديث", category: "electronics", price: 75000, isOffer: false },
+    { id: 2, name: "طقم ملابس رجالي عصري", category: "fashion", price: 12000, isOffer: true },
+    { id: 3, name: "عطر ومستحضرات تجميل فاخرة", category: "beauty", price: 18000, isOffer: true },
+    { id: 4, name: "طقم أدوات مطبخ متكامل", category: "home", price: 25000, isOffer: false }
 ];
 
 window.onload = function() {
@@ -15,26 +15,65 @@ window.onload = function() {
     captureAffiliateRef();
     renderCartItems();
     loadAdminOrders();
+    initSlider();
+    initAffiliateDashboard();
 };
 
+// التحكم بالنوافذ المنبثقة (Modals) للمسوقين
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.style.display = 'none';
+}
+
+// حركة السلايدر المتحرك
+let slideIndex = 0;
+function initSlider() {
+    const slides = document.querySelectorAll('.slide');
+    if (slides.length === 0) return;
+    setInterval(() => {
+        slides.forEach(s => s.style.display = 'none');
+        slideIndex = (slideIndex + 1) % slides.length;
+        slides[slideIndex].style.display = 'block';
+    }, 4000);
+}
+
+// عرض المنتجات والعروض بنظام الشبكة (Grid)
 function loadProducts() {
     const container = document.getElementById('products-container');
-    if (!container) return;
+    const offersContainer = document.getElementById('offers-container');
     
-    container.innerHTML = products.map(p => `
+    if (container) {
+        container.innerHTML = products.filter(p => !p.isOffer).map(p => productCardHtml(p)).join('');
+    }
+    if (offersContainer) {
+        offersContainer.innerHTML = products.filter(p => p.isOffer).map(p => productCardHtml(p)).join('');
+    }
+}
+
+function productCardHtml(p) {
+    return `
         <div class="product-card">
-            <div style="background:#e2e8f0; height:120px; border-radius:6px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; color:#64748b;">صورة المنتج</div>
+            <div class="product-img">صورة المنتج</div>
             <h3>${p.name}</h3>
-            <p class="price">${p.price} $</p>
+            <p class="price">${p.price.toLocaleString()} ر.ي</p>
             <button onclick="addToCart(${p.id})" class="btn-buy">إضافة إلى السلة</button>
         </div>
-    `).join('');
+    `;
 }
 
 function captureAffiliateRef() {
     const urlParams = new URLSearchParams(window.location.search);
     const ref = urlParams.get('ref');
-    if (ref) localStorage.setItem('sadarah_ref', ref);
+    if (ref) {
+        localStorage.setItem('sadarah_ref', ref);
+        let visits = parseInt(localStorage.getItem(`visits_${ref}`) || '0') + 1;
+        localStorage.setItem(`visits_${ref}`, visits);
+    }
 }
 
 function addToCart(id) {
@@ -58,7 +97,7 @@ function renderCartItems() {
     
     let cart = JSON.parse(localStorage.getItem('sadarah_cart')) || [];
     if (cart.length === 0) {
-        container.innerHTML = "<p>سلة التسوق فارغة حالياً.</p>";
+        container.innerHTML = "<p style='text-align:center;'>سلة التسوق فارغة حالياً.</p>";
         return;
     }
 
@@ -67,13 +106,13 @@ function renderCartItems() {
         <ul style="list-style: none; padding: 0;">
             ${cart.map((item) => {
                 total += item.price;
-                return `<li style="padding: 8px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
+                return `<li style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
                     <span>${item.name}</span>
-                    <strong>${item.price} $</strong>
+                    <strong>${item.price.toLocaleString()} ر.ي</strong>
                 </li>`;
             }).join('')}
         </ul>
-        <h3 style="margin-top: 15px; color: #059669;">الإجمالي الكلي: ${total} $</h3>
+        <h3 style="margin-top: 15px; color: #059669; text-align: left;">الإجمالي الكلي: ${total.toLocaleString()} ر.ي</h3>
     `;
 }
 
@@ -92,7 +131,7 @@ async function uploadFileToSupabase(fileInputId) {
     const fileName = `receipts/receipt_${Date.now()}.${fileExt}`;
 
     const { error } = await supabaseClient.storage
-        .from('platform-files') /* استخدام الحاوية الموجودة لديك مسبقاً[span_1](start_span)[span_1](end_span) */
+        .from('platform-files') // استخدام الحاوية الموجودة لديك مسبقاً[span_1](start_span)[span_1](end_span)
         .upload(fileName, file);
 
     if (error) {
@@ -148,6 +187,53 @@ async function submitOrderWithReceipt(e) {
     }
 }
 
+// إدارة المسوقين: تسجيل جديد عبر النافذة المنبثقة
+function registerAffiliate(e) {
+    e.preventDefault();
+    const name = document.getElementById('reg_name').value;
+    const phone = document.getElementById('reg_phone').value;
+    
+    localStorage.setItem('affiliate_phone', phone);
+    localStorage.setItem('affiliate_name', name);
+    alert("تم إنشاء حساب المسوق بنجاح!");
+    window.location.href = 'affiliate-dashboard.html';
+}
+
+// إدارة المسوقين: تسجيل الدخول عبر النافذة المنبثقة
+function loginAffiliate(e) {
+    e.preventDefault();
+    const phone = document.getElementById('login_phone').value;
+    if (phone) {
+        localStorage.setItem('affiliate_phone', phone);
+        window.location.href = 'affiliate-dashboard.html';
+    } else {
+        alert("يرجى إدخال رقم الهاتف صحيحاً.");
+    }
+}
+
+function logoutAffiliate() {
+    localStorage.removeItem('affiliate_phone');
+    window.location.href = 'index.html';
+}
+
+// عرض بيانات لوحة تحكم المسوق
+function initAffiliateDashboard() {
+    const phone = localStorage.getItem('affiliate_phone');
+    if (!phone && window.location.pathname.includes('affiliate-dashboard.html')) {
+        window.location.href = 'index.html';
+        return;
+    }
+    
+    if (document.getElementById('ref-link')) {
+        document.getElementById('dash-name').innerText = localStorage.getItem('affiliate_name') || phone;
+        document.getElementById('ref-link').value = `https://sadarah.top/?ref=${phone}`;
+        document.getElementById('stat-visits').innerText = localStorage.getItem(`visits_${phone}`) || '0';
+        document.getElementById('stat-sales').innerText = localStorage.getItem(`sales_${phone}`) || '0';
+        document.getElementById('stat-current-comm').innerText = (localStorage.getItem(`curr_comm_${phone}`) || '0') + ' ر.ي';
+        document.getElementById('stat-total-comm').innerText = (localStorage.getItem(`total_comm_${phone}`) || '0') + ' ر.ي';
+    }
+}
+
 async function loadAdminOrders() {
     const tableBody = document.getElementById('admin-orders-table');
     if (!tableBody) return;
@@ -168,20 +254,8 @@ async function loadAdminOrders() {
             <td>${ord.phone}</td>
             <td>${ord.address}</td>
             <td>${ord.payment_method}</td>
-            <td>${ord.receipt_url ? `<a href="${ord.receipt_url}" target="_blank">عرض السند</a>` : 'دفع عند الاستلام'}</td>
+            <td>${ord.receipt_url ? `<a href="${ord.receipt_url}" target="_blank" style="color:#2563eb;">عرض السند</a>` : 'دفع عند الاستلام'}</td>
             <td>${ord.affiliate_ref}</td>
         </tr>
     `).join('');
-}
-
-function loginAffiliate() {
-    const phone = document.getElementById('aff_phone').value;
-    if (!phone) {
-        alert("يرجى إدخال رقم الهاتف");
-        return;
-    }
-    document.getElementById('affiliate-login-box').style.display = 'none';
-    document.getElementById('affiliate-dashboard').style.display = 'block';
-    document.getElementById('dash-phone').innerText = phone;
-    document.getElementById('ref-link').value = `https://sadarah.top/?ref=${phone}`;
 }
