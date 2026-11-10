@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الملف الشخصي | صدارة شي إن</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0B132B',
+            brandNavy: '#1C2541',
+            brandRed: '#D90429',
+            brandBlack: '#111111'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-24 select-none">
+
+  <!-- رأس الملف الشخصي الداكن -->
+  <div class="bg-brandDark text-white p-5 rounded-b-3xl shadow-md space-y-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <button class="w-9 h-9 bg-slate-800 text-slate-300 rounded-full flex items-center justify-center hover:bg-brandRed hover:text-white transition-colors">
+          <i class="fa-solid fa-gear text-sm"></i>
+        </button>
+        <button class="w-9 h-9 bg-slate-800 text-slate-300 rounded-full flex items-center justify-center hover:bg-brandRed hover:text-white transition-colors relative">
+          <span class="w-2 h-2 bg-brandRed rounded-full absolute top-2 right-2.5"></span>
+          <i class="fa-regular fa-bell text-sm"></i>
+        </button>
+      </div>
+      <div class="text-left">
+        <h2 class="font-black text-sm">عبدالرحمن عبدالله صالح الذماري</h2>
+        <p class="text-[11px] text-slate-400">aldhmari55@gmail.com</p>
+      </div>
+      <div class="w-12 h-12 bg-slate-800 border-2 border-brandRed rounded-full overflow-hidden flex items-center justify-center text-white font-black text-base">
+        ص
+      </div>
+    </div>
+
+    <!-- إحصائيات سريعة (سلة المشتريات، أمنياتي، تم الطلب) -->
+    <div class="grid grid-cols-3 gap-2 bg-brandNavy/60 border border-slate-800 p-3 rounded-2xl text-center">
+      <div>
+        <span class="text-base font-black text-white block">0</span>
+        <span class="text-[10px] text-slate-400 block">تم الطلب</span>
+      </div>
+      <div class="border-x border-slate-700">
+        <span class="text-base font-black text-white block">0</span>
+        <span class="text-[10px] text-slate-400 block">أمنياتي</span>
+      </div>
+      <div>
+        <span class="text-base font-black text-white block">0</span>
+        <span class="text-[10px] text-slate-400 block">سلة المشتريات</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- المحتوى الرئيسي للمستخدم -->
+  <main class="max-w-md mx-auto p-4 space-y-4">
+
+    <!-- قسم الطلبات -->
+    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+      <div class="flex justify-between items-center">
+        <h3 class="font-extrabold text-sm text-slate-800">الطلبات</h3>
+        <span class="text-xs text-brandRed font-bold cursor-pointer">عرض الكل</span>
+      </div>
+
+      <div class="grid grid-cols-5 gap-1 text-center pt-1">
+        <div class="space-y-1 cursor-pointer group">
+          <div class="w-10 h-10 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-slate-600 group-hover:bg-brandRed group-hover:text-white transition-colors">
+            <i class="fa-solid fa-wallet text-xs"></i>
+          </div>
+          <span class="text-[10px] font-bold text-slate-600 block">بانتظار الدفع</span>
+        </div>
+        <div class="space-y-1 cursor-pointer group">
+          <div class="w-10 h-10 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-slate-600 group-hover:bg-brandRed group-hover:text-white transition-colors">
+            <i class="fa-solid fa-circle-check text-xs"></i>
+          </div>
+          <span class="text-[10px] font-bold text-slate-600 block">تم التأكيد</span>
+        </div>
+        <div class="space-y-1 cursor-pointer group">
+          <div class="w-10 h-10 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-slate-600 group-hover:bg-brandRed group-hover:text-white transition-colors">
+            <i class="fa-solid fa-truck text-xs"></i>
+          </div>
+          <span class="text-[10px] font-bold text-slate-600 block">في الطريق</span>
+        </div>
+        <div class="space-y-1 cursor-pointer group">
+          <div class="w-10 h-10 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-slate-600 group-hover:bg-brandRed group-hover:text-white transition-colors">
+            <i class="fa-solid fa-box-open text-xs"></i>
+          </div>
+          <span class="text-[10px] font-bold text-slate-600 block">تم التوصيل</span>
+        </div>
+        <div class="space-y-1 cursor-pointer group">
+          <div class="w-10 h-10 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-slate-600 group-hover:bg-brandRed group-hover:text-white transition-colors">
+            <i class="fa-solid fa-money-bill-wave text-xs"></i>
+          </div>
+          <span class="text-[10px] font-bold text-slate-600 block">مدفوع</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- قسم المزيد من المميزات -->
+    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+      <h3 class="font-extrabold text-sm text-slate-800">المزيد من المميزات</h3>
+      <div class="grid grid-cols-4 gap-3 text-center">
+        <div class="space-y-1.5 cursor-pointer">
+          <div class="w-10 h-10 mx-auto bg-slate-50 border border-slate-100 rounded-full flex items-center justify-center text-brandNavy">
+            <i class="fa-solid fa-ticket text-sm"></i>
+          </div>
+          <span class="text-[10px] font-bold text-slate-600 block">كوبونات الخصم</span>
+        </div>
+        <div class="space-y-1.5 cursor-pointer">
+          <div class="w-10 h-10 mx-auto bg-slate-50 border border-slate-100 rounded-full flex items-center justify-center text-brandNavy">
+            <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+          </div>
+          <span class="text-[10px] font-bold text-slate-600 block">التنزيلات</span>
+        </div>
+        <div class="space-y-1.5 cursor-pointer">
+          <div class="w-10 h-10 mx-auto bg-slate-50 border border-slate-100 rounded-full flex items-center justify-center text-brandNavy">
+            <i class="fa-regular fa-comments text-sm"></i>
+          </div>
+          <span class="text-[10px] font-bold text-slate-600 block">الرسائل</span>
+        </div>
+        <div class="space-y-1.5 cursor-pointer">
+          <div class="w-10 h-10 mx-auto bg-slate-50 border border-slate-100 rounded-full flex items-center justify-center text-brandNavy">
+            <i class="fa-regular fa-heart text-sm"></i>
+          </div>
+          <span class="text-[10px] font-bold text-slate-600 block">قائمة أمنياتي</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- قسم التسوق والخدمات -->
+    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+      <h3 class="font-extrabold text-sm text-slate-800">التسوق</h3>
+      <div class="grid grid-cols-2 gap-2">
+        <a href="product.html" class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex items-center gap-3 hover:border-brandRed transition-all">
+          <div class="w-8 h-8 bg-brandRed text-white rounded-lg flex items-center justify-center text-xs">
+            <i class="fa-solid fa-bag-shopping"></i>
+          </div>
+          <div>
+            <span class="text-xs font-black text-slate-800 block">تتبع طلبي من شي إن</span>
+            <span class="text-[10px] text-slate-400 block">حالة الشحنات</span>
+          </div>
+        </a>
+
+        <a href="affiliate.html" class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex items-center gap-3 hover:border-brandNavy transition-all">
+          <div class="w-8 h-8 bg-brandNavy text-white rounded-lg flex items-center justify-center text-xs">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div>
+            <span class="text-xs font-black text-slate-800 block">لوحة المسوقين</span>
+            <span class="text-[10px] text-slate-400 block">أرباحك وعمولاتك</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- زر تسجيل الخروج -->
+    <button class="w-full py-3 bg-white border border-red-200 text-brandRed hover:bg-red-50 text-xs font-bold rounded-2xl shadow-sm transition-all flex items-center justify-center gap-2">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span>تسجيل الخروج</span>
+    </button>
+
+  </main>
+
+  <!-- شريط التنقل السفلي الثابت -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-lg">
+    <div class="max-w-md mx-auto grid grid-cols-5 py-2 text-center text-[10px]">
+      <a href="index.html" class="flex flex-col items-center gap-1 text-slate-400">
+        <i class="fa-solid fa-house text-base"></i>
+        <span>الرئيسية</span>
+      </a>
+      <a href="page.html?type=categories" class="flex flex-col items-center gap-1 text-slate-400">
+        <i class="fa-solid fa-layer-group text-base"></i>
+        <span>الفئات</span>
+      </a>
+      <a href="product.html" class="flex flex-col items-center gap-1 text-slate-400 relative">
+        <span class="bg-brandRed text-white font-black text-[8px] px-1 rounded-full absolute -top-1">SHEIN</span>
+        <i class="fa-solid fa-bag-shopping text-base"></i>
+        <span>طلبات شي إن</span>
+      </a>
+      <a href="affiliate.html" class="flex flex-col items-center gap-1 text-slate-400">
+        <i class="fa-solid fa-cart-shopping text-base"></i>
+        <span>السلة</span>
+      </a>
+      <a href="Aldhmari_2002.html" class="flex flex-col items-center gap-1 text-brandRed font-bold">
+        <i class="fa-solid fa-user text-base"></i>
+        <span>الملف الشخصي</span>
+      </a>
+    </div>
+  </nav>
+
+</body>
+</html>
