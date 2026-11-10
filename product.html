@@ -3,51 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>طلبات شي إن | صدارة شي إن</title>
+  <title>اطلب لي من شي إن | صدارة</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0B132B',
+            brandNavy: '#1C2541',
+            brandRed: '#D90429',
+            brandBlack: '#111111'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-800 pb-24">
-  <header class="bg-white border-b border-slate-100 p-4 sticky top-0 z-40">
-    <h1 class="font-extrabold text-lg">طلب وسيط صدارة شي إن 🛍️</h1>
+
+  <header class="bg-brandDark text-white border-b border-slate-800 p-4 sticky top-0 z-40 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <a href="index.html" class="p-1 rounded-full bg-slate-800 text-slate-300">
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <h1 class="font-extrabold text-base">اطلب لي من شي إن 🛍️</h1>
+    </div>
+    <span class="text-xs font-bold text-brandRed">صدارة SHEIN</span>
   </header>
 
   <main class="max-w-md mx-auto p-4 space-y-4">
-    <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-emerald-900 text-xs font-bold space-y-1">
-      <p>انسخ روابط منتجاتك أو سلتك المجمعة من SHEIN وسنقوم بطلبها وتوصيلها لك.</p>
-      <p class="text-emerald-700 font-black">واتساب الدعم: 777900693</p>
+    
+    <!-- التنسيق التوضيحي -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 text-slate-700 text-xs font-bold shadow-sm flex items-center gap-3">
+      <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-lg flex-shrink-0">
+        <i class="fa-brands fa-whatsapp"></i>
+      </div>
+      <div>
+        <p>انسخ روابط منتجاتك أو سلتك من شي إن - SHEIN وسنقوم بطلبها وتوصيلها لك.</p>
+      </div>
     </div>
 
-    <form class="bg-white p-4 rounded-2xl border border-slate-200 space-y-4 shadow-sm" id="shein-form">
-      <div>
-        <label class="text-xs font-bold block mb-1">رابط سلة شي إن أو المنتج:</label>
-        <textarea rows="3" required placeholder="الصق رابط السلة (Share Cart) هنا..." class="w-full bg-slate-50 text-xs p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-lime-500 outline-none"></textarea>
+    <!-- ترويسة اختيار سلة كاملة أو منتجات محددة -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 space-y-4 shadow-sm">
+      <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
+        <button id="btn-full" onclick="switchMode('full')" class="py-2.5 text-xs font-bold rounded-lg transition-all bg-white text-brandDark shadow-sm">
+          🛒 سلة كاملة
+        </button>
+        <button id="btn-single" onclick="switchMode('single')" class="py-2.5 text-xs font-bold rounded-lg transition-all text-slate-500">
+          📦 منتجات محددة
+        </button>
       </div>
 
-      <div>
-        <label class="text-xs font-bold block mb-1">ملاحظات المقاسات والألوان:</label>
-        <textarea rows="2" placeholder="أكتب التفاصيل..." class="w-full bg-slate-50 text-xs p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-lime-500 outline-none"></textarea>
-      </div>
-
-      <button type="submit" class="w-full py-3 bg-slate-900 text-white font-bold text-xs rounded-xl shadow-md">
-        إرسال الطلب لـ صدارة شي إن
-      </button>
-    </form>
-
-    <!-- قائمة الشحنات والتتبع -->
-    <div class="space-y-2 pt-2">
-      <h3 class="font-extrabold text-sm">تتبع شحناتك الحالية ✈️</h3>
-      <div class="bg-white p-4 rounded-2xl border border-slate-100 space-y-2 shadow-sm">
-        <div class="flex justify-between items-center text-xs">
-          <span class="font-bold">طلبية #شحنة جديدة</span>
-          <span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold">في الطريق إليك</span>
+      <!-- نموذج سلة كاملة -->
+      <form id="form-full" class="space-y-4">
+        <div>
+          <label class="text-xs font-extrabold text-slate-700 block mb-1">رابط سلة شي إن المجمعة:</label>
+          <div class="relative">
+            <textarea rows="3" required placeholder="الصق رابط السلة (Share Cart) هنا..." class="w-full bg-slate-50 text-xs p-3 pr-3 pl-9 rounded-xl border border-slate-200 focus:outline-none focus:border-brandRed"></textarea>
+            <i class="fa-solid fa-link text-slate-400 absolute left-3 top-3 text-xs"></i>
+          </div>
         </div>
-        <div class="text-[11px] text-slate-400 flex justify-between border-t pt-2">
-          <span>تاريخ الطلب: 2026-10-30</span>
-          <span class="text-lime-600 font-bold cursor-pointer">تفاصيل التتبع ←</span>
+
+        <div>
+          <label class="text-xs font-extrabold text-slate-700 block mb-1">ملاحظات إضافية:</label>
+          <textarea rows="2" placeholder="اكتب أي تفاصيل أخرى ترغب بإضافتها..." class="w-full bg-slate-50 text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-brandRed"></textarea>
         </div>
-      </div>
+
+        <button type="submit" class="w-full py-3.5 bg-brandBlack hover:bg-brandNavy text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-paper-plane text-brandRed"></i>
+          <span>إرسال الطلب للإدارة</span>
+        </button>
+      </form>
+
+      <!-- نموذج منتجات محددة -->
+      <form id="form-single" class="space-y-4 hidden">
+        <div class="text-xs font-extrabold text-slate-700">تفاصيل المنتجات المراد طلبها:</div>
+        
+        <div id="items-container" class="space-y-3">
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+            <span class="text-[10px] font-bold bg-slate-200 px-2 py-0.5 rounded text-slate-600">منتج رقم 1</span>
+            <input type="url" placeholder="رابط المنتج" required class="w-full bg-white text-xs p-2.5 rounded-lg border border-slate-200 outline-none">
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" placeholder="المقاس / اللون" class="bg-white text-xs p-2.5 rounded-lg border border-slate-200 outline-none">
+              <input type="number" value="1" min="1" placeholder="الكمية" class="bg-white text-xs p-2.5 rounded-lg border border-slate-200 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <button type="button" onclick="addItem()" class="w-full py-2.5 border-2 border-dashed border-slate-300 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-50 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-plus text-brandRed"></i>
+          <span>إضافة منتج آخر</span>
+        </button>
+
+        <div>
+          <label class="text-xs font-extrabold text-slate-700 block mb-1">ملاحظات إضافية:</label>
+          <textarea rows="2" placeholder="اكتب أي تفاصيل أخرى ترغب بإضافتها..." class="w-full bg-slate-50 text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-brandRed"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 bg-brandBlack text-white text-xs font-bold rounded-xl shadow-md transition-all">
+          إرسال المنتجات للإدارة
+        </button>
+      </form>
+
     </div>
+
   </main>
+
+  <script>
+    function switchMode(mode) {
+      const btnFull = document.getElementById('btn-full');
+      const btnSingle = document.getElementById('btn-single');
+      const formFull = document.getElementById('form-full');
+      const formSingle = document.getElementById('form-single');
+
+      if (mode === 'full') {
+        btnFull.className = 'py-2.5 text-xs font-bold rounded-lg transition-all bg-white text-brandDark shadow-sm';
+        btnSingle.className = 'py-2.5 text-xs font-bold rounded-lg transition-all text-slate-500';
+        formFull.classList.remove('hidden');
+        formSingle.classList.add('hidden');
+      } else {
+        btnSingle.className = 'py-2.5 text-xs font-bold rounded-lg transition-all bg-white text-brandDark shadow-sm';
+        btnFull.className = 'py-2.5 text-xs font-bold rounded-lg transition-all text-slate-500';
+        formSingle.classList.remove('hidden');
+        formFull.classList.add('hidden');
+      }
+    }
+
+    let itemCount = 1;
+    function addItem() {
+      itemCount++;
+      const container = document.getElementById('items-container');
+      const div = document.createElement('div');
+      div.className = 'bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2';
+      div.innerHTML = `
+        <span class="text-[10px] font-bold bg-slate-200 px-2 py-0.5 rounded text-slate-600">منتج رقم ${itemCount}</span>
+        <input type="url" placeholder="رابط المنتج" required class="w-full bg-white text-xs p-2.5 rounded-lg border border-slate-200 outline-none">
+        <div class="grid grid-cols-2 gap-2">
+          <input type="text" placeholder="المقاس / اللون" class="bg-white text-xs p-2.5 rounded-lg border border-slate-200 outline-none">
+          <input type="number" value="1" min="1" placeholder="الكمية" class="bg-white text-xs p-2.5 rounded-lg border border-slate-200 outline-none">
+        </div>
+      `;
+      container.appendChild(div);
+    }
+  </script>
 </body>
 </html>
