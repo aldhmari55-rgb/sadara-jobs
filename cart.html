@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سلة المشتريات | صدارة</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0B132B',
+            brandNavy: '#1C2541',
+            brandRed: '#D90429',
+            brandBlack: '#111111'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-24">
+
+  <header class="bg-brandDark text-white border-b border-slate-800 p-4 sticky top-0 z-40 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <a href="index.html" class="p-1 rounded-full bg-slate-800 text-slate-300">
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <h1 class="font-extrabold text-base">سلة المشتريات</h1>
+    </div>
+    <span class="text-xs font-bold text-brandRed">صدارة SHEIN</span>
+  </header>
+
+  <main class="max-w-md mx-auto p-4 space-y-4">
+    
+    <div class="bg-white rounded-2xl p-8 border border-slate-200 text-center space-y-3 shadow-sm">
+      <div class="w-16 h-16 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-2xl">
+        <i class="fa-solid fa-cart-arrow-down"></i>
+      </div>
+      <h3 class="font-extrabold text-sm text-slate-700">سلة المشتريات فارغة</h3>
+      <p class="text-xs text-slate-400">لم تقم بإضافة أي منتجات بعد.</p>
+      <a href="index.html" class="inline-block py-2.5 px-6 bg-brandBlack text-white text-xs font-bold rounded-xl">
+        تصفح المنتجات الآن
+      </a>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+      <div class="flex justify-between items-center text-xs">
+        <span class="font-bold text-slate-500">المبلغ الإجمالي:</span>
+        <span class="font-black text-slate-800 text-sm">﷼0.00</span>
+      </div>
+      <button disabled class="w-full py-3.5 bg-slate-200 text-slate-400 text-xs font-bold rounded-xl cursor-not-allowed">
+        متابعة إلى الشحن
+      </button>
+    </div>
+
+  </main>
+
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-lg">
+    <div class="max-w-md mx-auto grid grid-cols-5 py-2 text-center text-[10px]">
+      <a href="index.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-brandRed">
+        <i class="fa-solid fa-house text-base"></i>
+        <span>الرئيسية</span>
+      </a>
+      <a href="categories.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-brandNavy">
+        <i class="fa-solid fa-layer-group text-base"></i>
+        <span>الفئات</span>
+      </a>
+      <a href="product.html" class="flex flex-col items-center gap-1 text-slate-400 relative hover:text-brandRed">
+        <span class="bg-brandRed text-white font-black text-[8px] px-1 rounded-full absolute -top-1">SHEIN</span>
+        <i class="fa-solid fa-bag-shopping text-base"></i>
+        <span>طلبات شي إن</span>
+      </a>
+      <a href="cart.html" class="flex flex-col items-center gap-1 text-brandNavy font-bold relative">
+        <i class="fa-solid fa-cart-shopping text-base"></i>
+        <span>السلة</span>
+      </a>
+      <a href="my.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-brandRed">
+        <i class="fa-solid fa-user text-base"></i>
+        <span>الملف الشخصي</span>
+      </a>
+    </div>
+  </nav>
+
+</body>
+</html>
