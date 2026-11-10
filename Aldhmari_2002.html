@@ -3,292 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم والإدارة المطلقة | صدارة شي إن</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>لوحة التحكم الإدارية - صدارة</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brandDark: '#0B132B',
-                        brandNavy: '#1C2541',
-                        brandRed: '#D90429',
-                        brandBlack: '#111111'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Tajawal', sans-serif; background: #F8FAFC; color: #1E293B; padding-bottom: 60px; }
-        .section-box { background: #ffffff; padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid #E2E8F0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
-        .section-box h3 { font-size: 14px; margin-bottom: 14px; font-weight: 900; color: #0B132B; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #F1F5F9; padding-bottom: 8px; }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 5px; color: #475569; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #CBD5E1; border-radius: 10px; font-size: 11px; outline: none; background: #F8FAFC; color: #1E293B; font-weight: 700; }
-        .action-btn { border: none; padding: 6px 11px; border-radius: 8px; font-weight: 900; font-size: 10.5px; cursor: pointer; color: white; transition: 0.2s; inline-flex; align-items: center; gap: 4px; text-decoration: none; }
-        .btn-delete { background: #EF4444; }
-        .btn-green { background: #10B981; }
-        .btn-edit { background: #F59E0B; }
-        .btn-navy { background: #1C2541; }
-        .data-row { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="p-3 sm:p-6">
+<body>
+    <header class="navbar">
+        <div class="logo">لوحة إدارة <span>صدارة</span></div>
+        <nav><a href="index.html">المتجر الرئيسي</a></nav>
+    </header>
 
-    <div class="max-w-5xl mx-auto space-y-4">
-        <!-- شريط الترويسة الرئيسي للوحة التحكم -->
-        <div class="bg-brandDark p-4 rounded-2xl flex flex-wrap justify-between items-center text-white shadow-md border border-slate-800 gap-3">
-            <div class="flex items-center gap-2">
-                <span class="bg-brandRed text-white text-xs font-black px-2.5 py-1 rounded-lg">صدارة SHEIN</span>
-                <div>
-                    <h1 class="font-black text-sm sm:text-base">لوحة التحكم والإدارة المطلقة ⚡</h1>
-                    <p class="text-[10px] text-slate-400">إدارة الطلبات، الشحنات، المسوقين، المنتجات، والعمولات</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-2">
-                <a href="index.html" class="bg-slate-800 hover:bg-brandRed text-white px-3 py-2 rounded-xl text-xs font-bold border border-slate-700 flex items-center gap-1.5 transition-colors">
-                    <i class="fa-solid fa-store"></i> المتجر الرئيسي
-                </a>
-            </div>
-        </div>
-
-        <!-- أزرار القفز السريع للأقسام -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs font-bold">
-            <a href="#sec-shein-orders" class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm hover:border-brandRed text-slate-700">📦 طلبات شي إن</a>
-            <a href="#sec-shipments" class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm hover:border-brandRed text-slate-700">✈️ تتبع الشحنات</a>
-            <a href="#sec-affiliates" class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm hover:border-brandRed text-slate-700">🤝 العمولات والمالية</a>
-            <a href="#sec-products" class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm hover:border-brandRed text-slate-700">🛍️ المنتجات والبنوك</a>
-        </div>
-
-        <!-- 1. إدارة طلبات شي إن الوسيط (سلة كاملة / منتجات محددة) -->
-        <div id="sec-shein-orders" class="section-box">
-            <h3>
-                <span><i class="fa-solid fa-bag-shopping text-brandRed"></i> طلبات شي إن الواردة (وسيط صدارة)</span>
-                <span class="text-[11px] bg-red-100 text-brandRed font-bold px-2 py-0.5 rounded-full" id="cnt-shein">0 طلبات</span>
-            </h3>
-            <div id="sheinOrdersList" class="text-xs text-slate-500">جاري التحميل...</div>
-        </div>
-
-        <!-- 2. إدارة الشحنات وتحديث حالة التتبع للعملاء -->
-        <div id="sec-shipments" class="section-box">
-            <h3>
-                <span><i class="fa-solid fa-truck-fast text-brandNavy"></i> إدارة الشحنات وتتبع الحالات (بانتظار الدفع، تم التأكيد، في الطريق، تم التوصيل، مدفوع)</span>
-            </h3>
-            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3 space-y-2">
-                <span class="text-xs font-bold text-slate-700 block">تحديث شحنة لعميل:</span>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <input type="text" id="trackCodeInput" placeholder="رقم الشحنة (مثال: SAD-9081)" class="bg-white text-xs p-2 rounded-lg border">
-                    <select id="trackStatusSelect" class="bg-white text-xs p-2 rounded-lg border">
-                        <option value="بانتظار الدفع">بانتظار الدفع</option>
-                        <option value="تم التأكيد">تم التأكيد</option>
-                        <option value="في الطريق">في الطريق إليك</option>
-                        <option value="تم التوصيل">تم التوصيل بنجاح</option>
-                        <option value="مدفوع">مدفوع</option>
-                    </select>
-                    <button onclick="updateShipmentStatus()" class="bg-brandDark text-white text-xs font-bold rounded-lg p-2">تحديث حالة التتبع 🚀</button>
-                </div>
-            </div>
-            <div id="shipmentsList" class="text-xs text-slate-500">جاري التحميل...</div>
-        </div>
-
-        <!-- 3. إدارة المسوقين والعمولات والأرباح المالية -->
-        <div id="sec-affiliates" class="section-box">
-            <h3>
-                <span><i class="fa-solid fa-chart-line text-emerald-600"></i> إدارة المسوقين والعمولات والأرباح</span>
-            </h3>
-            <div id="affiliatesAdminList" class="text-xs text-slate-500">جاري التحميل...</div>
-        </div>
-
-        <!-- 4. إضافة وتعديل المنتجات والعروض الفورية -->
-        <div id="sec-products" class="section-box">
-            <h3 id="formTitle">
-                <span><i class="fa-solid fa-plus text-brandRed"></i> إضافة منتج جديد / تعديل منتج قائم في متجر صدارة</span>
-            </h3>
-            <input type="hidden" id="editProductId">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div class="form-group"><label>عنوان المنتج</label><input type="text" id="pTitle" placeholder="اسم المنتج"></div>
-                <div class="form-group">
-                    <label>الفئة</label>
-                    <select id="pCategory">
-                        <option value="الهواتف الذكية">الهواتف الذكية ومستلزماتها</option>
-                        <option value="الشاشات">الشاشات</option>
-                        <option value="الطابعات">الطابعات</option>
-                        <option value="العطور">العطور</option>
-                        <option value="العناية بالرجل">العناية بالرجل</option>
-                        <option value="العناية بالمرأة">العناية بالمرأة</option>
-                    </select>
-                </div>
-            </div>
-            <div class="grid grid-cols-3 gap-3">
-                <div class="form-group"><label>السعر (YER)</label><input type="text" id="pPrice" placeholder="0"></div>
-                <div class="form-group"><label>السعر المشطوب</label><input type="text" id="pOldPrice" placeholder="0"></div>
-                <div class="form-group"><label>عمولة المسوق</label><input type="number" id="pAffCommission" value="0"></div>
-            </div>
-            <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage" accept="image/*"></div>
-            <button onclick="saveProductData()" id="saveBtn" class="w-full py-3 bg-brandRed text-white rounded-xl font-bold text-xs shadow-sm hover:bg-red-700 transition-colors">
-                نشر المنتج / حفظ التعديلات 🚀
-            </button>
-        </div>
-
-        <!-- 5. قائمة المنتجات الحالية -->
-        <div class="section-box">
-            <h3><span><i class="fa-solid fa-boxes-stacked"></i> المنتجات الفورية المعروضة</span></h3>
-            <div id="productsAdminList" class="text-xs text-slate-500">جاري التحميل...</div>
-        </div>
-
-        <!-- 6. إدارة سلايدر الواجهة والبنرات -->
-        <div class="section-box">
-            <h3><span><i class="fa-solid fa-sliders"></i> البنرات والسلايدر المتحرك</span></h3>
-            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3">
-                <span class="text-xs font-bold text-slate-700">حالة السلايدر في الواجهة الرئيسية:</span>
-                <button id="sliderToggleBtn" class="action-btn btn-navy" onclick="toggleSliderVisibility()">جاري التحميل...</button>
-            </div>
-            <div class="form-group"><input type="file" id="sliderFileInput" accept="image/*"></div>
-            <button onclick="uploadSliderImage()" class="w-full py-2.5 bg-brandBlack text-white rounded-xl font-bold text-xs">رفع صورة جديدة للسلايدر 🌟</button>
-            <div id="sliderAdminList" class="mt-3 text-xs text-slate-500">جاري التحميل...</div>
+    <div class="container" style="max-width: 900px;">
+        <h2>طلبات العملاء الواردة وسندات التحويل</h2>
+        <div style="overflow-x: auto; margin-top: 20px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>اسم العميل</th>
+                        <th>الهاتف</th>
+                        <th>العنوان (ذمار)</th>
+                        <th>طريقة الدفع</th>
+                        <th>سند التحويل</th>
+                        <th>المسوق</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-orders-table"></tbody>
+            </table>
         </div>
     </div>
 
-    <script>
-        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const STORAGE_BUCKET = "platform-files";
-
-        let globalProducts = [];
-        let globalSettings = [];
-
-        function toEnglishDigits(str) {
-            return String(str).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
-        }
-
-        async function loadAdminPanel() {
-            try {
-                // 1. جلب طلبات شي إن
-                let { data: sheinOrders } = await db.from('shein_orders').select('*').order('id', {ascending: false});
-                let sBox = document.getElementById('sheinOrdersList');
-                sBox.innerHTML = '';
-                document.getElementById('cnt-shein').textContent = (sheinOrders || []).length + ' طلبات';
-
-                if(sheinOrders && sheinOrders.length > 0) {
-                    sheinOrders.forEach(o => {
-                        let typeBadge = o.order_type === 'full_cart' ? '🛒 سلة كاملة' : '📦 منتجات محددة';
-                        sBox.innerHTML += `
-                            <div class="data-row">
-                                <div class="text-xs space-y-1">
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-bold text-brandRed">${typeBadge}</span>
-                                        <span class="text-slate-400">| هاتف العميل: <b>${o.user_phone || 'غير مسجل'}</b></span>
-                                    </div>
-                                    <p class="font-mono text-slate-600 bg-white p-1.5 rounded border text-[11px] break-all">${o.cart_url || 'لا يوجد رابط'}</p>
-                                    <p class="text-slate-500">ملاحظات: ${o.notes || 'لا توجد'}</p>
-                                </div>
-                                <div class="flex gap-1.5 flex-wrap">
-                                    <button class="action-btn btn-green" onclick="updateOrderStatus('${o.id}', 'تم الاعتماد')">تأكيد الطلب ✅</button>
-                                    <button class="action-btn btn-delete" onclick="deleteRecord('shein_orders', '${o.id}')">حذف 🗑️</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else { sBox.innerHTML = '<p class="text-xs text-slate-400">لا توجد طلبات جديدة من شي إن.</p>'; }
-
-                // 2. جلب وتحديث الشحنات
-                let shBox = document.getElementById('shipmentsList');
-                shBox.innerHTML = `
-                    <div class="data-row">
-                        <div class="text-xs">
-                            <b>SAD-9081</b> - طلبية #شحنة جديدة<br>
-                            <span class="text-purple-600 font-bold">الحالة الحالية: في الطريق إليك</span>
-                        </div>
-                        <button class="action-btn btn-edit" onclick="promptStatus('SAD-9081')">تعديل الحالة ✏️</button>
-                    </div>
-                `;
-
-                // 3. المسوقين والعمولات
-                let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
-                let aBox = document.getElementById('affiliatesAdminList');
-                aBox.innerHTML = '';
-                if(affs && affs.length > 0) {
-                    affs.forEach(a => {
-                        aBox.innerHTML += `
-                            <div class="data-row">
-                                <div class="text-xs">
-                                    👤 <b>${a.full_name || 'مسوق صدارة'}</b> (${a.phone})<br>
-                                    كود المسوق: <code>${a.ref_code}</code> | الأرباح: <b class="text-emerald-600">${toEnglishDigits(a.total_earnings || 0)} YER</b>
-                                </div>
-                                <div class="flex gap-1">
-                                    <button class="action-btn btn-green" onclick="settleCommission('${a.id}', ${a.total_earnings || 0})">تصفية العمولات 💵</button>
-                                    <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', '${a.id}')">حذف</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else { aBox.innerHTML = '<p class="text-xs text-slate-400">لا يوجد مسوقون مسجلون حالياً.</p>'; }
-
-                // 4. المنتجات الفورية
-                let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
-                globalProducts = prods || [];
-                let pBox = document.getElementById('productsAdminList');
-                pBox.innerHTML = '';
-                if(globalProducts.length > 0) {
-                    globalProducts.forEach(p => {
-                        pBox.innerHTML += `
-                            <div class="data-row">
-                                <div class="text-xs">
-                                    <b>${p.title}</b> (${p.price} YER) - العمولة: ${p.affiliate_commission || 0} YER
-                                </div>
-                                <div class="flex gap-1">
-                                    <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل</button>
-                                    <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else { pBox.innerHTML = '<p class="text-xs text-slate-400">لا توجد منتجات معروضة حالياً.</p>'; }
-
-            } catch(err) { console.error(err); }
-        }
-
-        async function updateShipmentStatus() {
-            let code = document.getElementById('trackCodeInput').value;
-            let status = document.getElementById('trackStatusSelect').value;
-            if(!code) { alert('أدخل رقم الشحنة أولاً'); return; }
-            alert(`تم تحديث حالة الشحنة (${code}) إلى: ${status} بنجاح! 🚀`);
-            document.getElementById('trackCodeInput').value = '';
-        }
-
-        async function saveProductData() {
-            let title = document.getElementById('pTitle').value.trim();
-            let price = document.getElementById('pPrice').value.trim();
-            if(!title || !price) { alert('أدخل العنوان والسعر'); return; }
-            await db.from('platform_services').insert([{ title, price, category: document.getElementById('pCategory').value }]);
-            alert('تم نشر المنتج بنجاح! 🎉');
-            loadAdminPanel();
-        }
-
-        async function deleteRecord(table, id) {
-            if(confirm('هل أنت متأكد من الحذف النهائي؟')) {
-                await db.from(table).delete().eq('id', id);
-                alert('تم الحذف بنجاح!');
-                loadAdminPanel();
-            }
-        }
-
-        async function settleCommission(affId, current) {
-            let paid = prompt('أدخل المبلغ المراد تسويته مع المسوق:', current);
-            if(paid !== null) {
-                let remaining = Math.max(0, current - Number(paid));
-                await db.from('affiliates').update({ total_earnings: remaining }).eq('id', affId);
-                alert('تمت التسوية بنجاح!');
-                loadAdminPanel();
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', loadAdminPanel);
-    </script>
+    <script src="main.js"></script>
 </body>
 </html>
