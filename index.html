@@ -7,101 +7,121 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0B132B',  /* كحلي داكن */
+            brandNavy: '#1C2541',  /* كحلي */
+            brandRed: '#D90429',   /* أحمر */
+            brandBlack: '#111111'  /* أسود */
+          }
+        }
+      }
+    }
+  </script>
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; }
-    .scrollbar-none::-webkit-scrollbar { display: none; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 pb-24 select-none">
 
-  <!-- Header ثابت -->
-  <header class="sticky top-0 z-40 bg-white border-b border-slate-100 shadow-sm">
+  <!-- Header علوي -->
+  <header class="sticky top-0 z-40 bg-brandDark text-white border-b border-slate-800 shadow-sm">
     <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between gap-3">
       <div class="flex items-center gap-2">
-        <div class="bg-lime-500 text-slate-900 font-extrabold px-2.5 py-1 rounded-lg text-lg">
+        <div class="bg-brandRed text-white font-extrabold px-2.5 py-1 rounded-lg text-lg tracking-wider">
           صدارة
         </div>
-        <span className="text-xs font-bold text-slate-500">SHEIN</span>
+        <span class="text-xs font-bold text-slate-300">SHEIN</span>
       </div>
       <div class="flex-1 relative">
-        <input type="text" placeholder="ابحث في صدارة شي إن..." class="w-full bg-slate-100 text-xs py-2.5 pr-9 pl-4 rounded-full border-none focus:outline-none focus:ring-2 focus:ring-lime-500">
+        <input type="text" placeholder="ابحث في صدارة شي إن..." class="w-full bg-slate-800 text-white text-xs py-2.5 pr-9 pl-4 rounded-full border border-slate-700 focus:outline-none focus:border-brandRed">
         <i class="fa-solid fa-magnifying-glass text-slate-400 absolute right-3 top-3 text-xs"></i>
       </div>
-      <div class="flex items-center gap-3 text-slate-600">
-        <i class="fa-regular fa-heart text-lg cursor-pointer"></i>
-        <i class="fa-regular fa-bell text-lg cursor-pointer"></i>
+      <div class="flex items-center gap-3 text-slate-300">
+        <i class="fa-regular fa-heart text-lg cursor-pointer hover:text-brandRed"></i>
+        <i class="fa-regular fa-bell text-lg cursor-pointer hover:text-brandRed"></i>
       </div>
     </div>
   </header>
 
-  <!-- Main Content -->
+  <!-- المحتوى الرئيسي -->
   <main class="max-w-md mx-auto px-3 pt-3 space-y-4">
 
-    <!-- Banner -->
-    <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-lime-500 to-lime-600 text-slate-900 p-5 shadow-lg">
+    <!-- البنر الرئيسي الترويجي -->
+    <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-brandNavy to-brandDark text-white p-5 shadow-lg border border-slate-800">
       <div class="relative z-10 space-y-2">
-        <span class="bg-slate-900 text-lime-400 text-[10px] font-bold px-2 py-0.5 rounded-full inline-block">
-          وسيط شي إن المعتمد في اليمن
+        <span class="bg-brandRed text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full inline-block">
+          وسيط شي إن المعتمد
         </span>
         <h2 class="text-xl font-black leading-snug">
-          اختاري الذي يعجبك من شي إن <br> وصدارة يوصل لك..
+          صدارة شي إن <br> خيارك الأول للطلب والتوصيل
         </h2>
         <div class="flex items-center gap-2 pt-1">
-          <span class="bg-white/90 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">
-            توصيل لجميع المحافظات
-          </span>
-          <a href="product.html" class="text-xs font-bold underline">اطلب الآن ←</a>
+          <a href="product.html" class="bg-white text-brandDark text-xs font-bold px-4 py-1.5 rounded-full shadow-sm hover:bg-brandRed hover:text-white transition-colors">
+            اطلب الآن ←
+          </a>
         </div>
       </div>
     </div>
 
-    <!-- الأزرار السريعة -->
+    <!-- أزرار الخدمات والطلب -->
     <div class="grid grid-cols-2 gap-2.5">
-      <a href="product.html" class="flex items-center justify-between p-3.5 bg-slate-900 text-white rounded-xl shadow-md text-right">
+      <a href="product.html" class="flex items-center justify-between p-3.5 bg-brandBlack text-white rounded-xl shadow-md border border-slate-800 text-right">
         <div>
-          <div class="text-xs font-bold text-lime-400">صدارة شي إن</div>
+          <div class="text-xs font-bold text-brandRed">صدارة شي إن</div>
           <div class="text-sm font-extrabold">أطلب من شي إن</div>
         </div>
-        <i class="fa-solid fa-paper-plane text-lime-400"></i>
+        <i class="fa-solid fa-paper-plane text-brandRed"></i>
       </a>
 
-      <a href="affiliate.html" class="flex items-center justify-between p-3.5 bg-white text-slate-800 rounded-xl border border-slate-200 shadow-sm text-right">
+      <a href="product.html#tracking" class="flex items-center justify-between p-3.5 bg-white text-slate-800 rounded-xl border border-slate-200 shadow-sm text-right">
         <div>
-          <div class="text-[11px] font-bold text-slate-400">برنامج التسويق</div>
-          <div class="text-sm font-extrabold">لوحة المسوقين</div>
+          <div class="text-[11px] font-bold text-slate-400">تتبع الشحنة</div>
+          <div class="text-sm font-extrabold text-brandNavy">تتبع طلباتك</div>
         </div>
-        <i class="fa-solid fa-chart-line text-lime-600"></i>
+        <i class="fa-solid fa-truck-fast text-brandNavy"></i>
       </a>
     </div>
 
-    <!-- شبكة العروض -->
+    <!-- قسم العروض والمنتجات -->
     <div class="space-y-2">
-      <h3 class="font-extrabold text-slate-800 text-sm px-1">عروض المنتجات الفورية في متجر صدارة</h3>
+      <div class="flex justify-between items-center px-1">
+        <h3 class="font-extrabold text-slate-800 text-sm">عروض المنتجات الفورية</h3>
+        <span class="text-xs text-brandRed font-bold cursor-pointer">عرض الكل</span>
+      </div>
       <div class="grid grid-cols-2 gap-3" id="products-grid">
-        <!-- يتم تحميل المنتجات هنا -->
+        <!-- سيتم جلب المنتجات من Supabase دون وضع بيانات عشوائية -->
+        <div class="col-span-2 text-center py-10 text-slate-400 text-xs bg-white rounded-2xl border border-slate-200">
+          <i class="fa-solid fa-box-open text-2xl mb-2 text-slate-300 block"></i>
+          لا توجد منتجات معروضة حالياً. سيتم تحديث القائمة فور ربط البيانات.
+        </div>
       </div>
     </div>
+
   </main>
 
-  <!-- Bottom Nav -->
+  <!-- الشريط السفلي الثابت (Bottom Navigation) -->
   <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-lg">
     <div class="max-w-md mx-auto grid grid-cols-5 py-2 text-center text-[10px]">
-      <a href="index.html" class="flex flex-col items-center gap-1 text-lime-600 font-bold">
+      <a href="index.html" class="flex flex-col items-center gap-1 text-brandRed font-bold">
         <i class="fa-solid fa-house text-base"></i>
         <span>الرئيسية</span>
       </a>
-      <a href="page.html" class="flex flex-col items-center gap-1 text-slate-400">
+      <a href="page.html?type=categories" class="flex flex-col items-center gap-1 text-slate-400">
         <i class="fa-solid fa-layer-group text-base"></i>
         <span>الفئات</span>
       </a>
       <a href="product.html" class="flex flex-col items-center gap-1 text-slate-400 relative">
-        <span class="bg-lime-500 text-slate-900 font-black text-[8px] px-1 rounded-full absolute -top-1">SHEIN</span>
+        <span class="bg-brandRed text-white font-black text-[8px] px-1 rounded-full absolute -top-1">SHEIN</span>
         <i class="fa-solid fa-bag-shopping text-base"></i>
         <span>طلبات شي إن</span>
       </a>
       <a href="affiliate.html" class="flex flex-col items-center gap-1 text-slate-400">
-        <i class="fa-solid fa-users text-base"></i>
-        <span>التسويق</span>
+        <i class="fa-solid fa-cart-shopping text-base"></i>
+        <span>السلة</span>
       </a>
       <a href="Aldhmari_2002.html" class="flex flex-col items-center gap-1 text-slate-400">
         <i class="fa-solid fa-user text-base"></i>
@@ -110,26 +130,5 @@
     </div>
   </nav>
 
-  <script>
-    const sampleProducts = [
-      { title: 'حقيبة يد كروس بودي بلون موحد مع قلادة', price: '11.90', old: '14.00', img: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500' },
-      { title: 'قطعة واحدة من ملاءة السرير ذات نمط قلب', price: '8.63', old: '11.76', img: 'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=500' }
-    ];
-
-    const grid = document.getElementById('products-grid');
-    grid.innerHTML = sampleProducts.map(p => `
-      <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
-        <img src="${p.img}" class="w-full h-36 object-cover">
-        <div class="p-3 space-y-1">
-          <p class="text-xs font-bold text-slate-700 truncate">${p.title}</p>
-          <div class="flex items-baseline gap-1">
-            <span class="text-sm font-black">﷼${p.price}</span>
-            <span class="text-[10px] text-slate-400 line-through">﷼${p.old}</span>
-          </div>
-          <button class="w-full py-1.5 bg-slate-900 text-white text-xs font-bold rounded-lg">إضافة للسلة</button>
-        </div>
-      </div>
-    `).join('');
-  </script>
 </body>
 </html>
