@@ -18,29 +18,37 @@
         <div id="cart-items-list" style="margin-bottom: 20px;"></div>
 
         <form id="checkout-form" class="checkout-form" onsubmit="submitOrderWithReceipt(event)">
-            <label>الاسم الكامل:</label>
-            <input type="text" id="c_name" required placeholder="أدخل اسمك الكريم">
+            <div class="form-group">
+                <label>الاسم الكامل:</label>
+                <input type="text" id="c_name" required placeholder="أدخل اسمك الكريم">
+            </div>
 
-            <label>رقم الهاتف (واتساب):</label>
-            <input type="tel" id="c_phone" required placeholder="77XXXXXXX">
+            <div class="form-group">
+                <label>رقم الهاتف (واتساب):</label>
+                <input type="tel" id="c_phone" required placeholder="77XXXXXXX">
+            </div>
 
-            <label>العنوان التفصيلي في ذمار:</label>
-            <input type="text" id="c_address" required placeholder="الشارع / الحارة / معلم قريب">
+            <div class="form-group">
+                <label>العنوان التفصيلي في ذمار:</label>
+                <input type="text" id="c_address" required placeholder="الشارع / الحارة / معلم قريب">
+            </div>
 
-            <label>طريقة الدفع:</label>
-            <select id="payment_method" onchange="toggleReceiptField()" required>
-                <option value="kuraimi">تحويل عبر الكريمي (حاسب)</option>
-                <option value="jeeb">محفظة جيب</option>
-                <option value="cod">دفع عند الاستلام (داخل مدينة ذمار)</option>
-            </select>
+            <div class="form-group">
+                <label>طريقة الدفع:</label>
+                <select id="payment_method" onchange="toggleReceiptField()" required>
+                    <option value="kuraimi">تحويل عبر الكريمي (حاسب)</option>
+                    <option value="jeeb">محفظة جيب</option>
+                    <option value="cod">دفع عند الاستلام (داخل مدينة ذمار)</option>
+                </select>
+            </div>
 
             <div id="transfer-info" class="bank-info">
                 <p><strong>اسم المستلم للتحويل:</strong> عبدالرحمن عبدالله صالح الذماري</p>
-                <label>ارفع صورة سند التحويل أو الإيداع:</label>
-                <input type="file" id="receipt_file" accept="image/*">
+                <label style="margin-top: 10px; display:block;">ارفع صورة سند التحويل أو الإيداع:</label>
+                <input type="file" id="receipt_file" accept="image/*" style="margin-top: 5px;">
             </div>
 
-            <button type="submit" class="btn-submit" style="margin-top:20px;">تأكيد وإرسال الطلب</button>
+            <button type="submit" class="btn-buy" style="margin-top:20px;">تأكيد وإرسال الطلب</button>
         </form>
     </div>
 
