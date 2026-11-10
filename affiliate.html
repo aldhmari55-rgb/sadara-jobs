@@ -1,69 +1,32 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة المسوقين | صدارة</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brandDark: '#0B132B',
-            brandNavy: '#1C2541',
-            brandRed: '#D90429',
-            brandBlack: '#111111'
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المسوقين (Affiliate) - صدارة</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 text-slate-800 pb-24">
+<body>
+    <header class="navbar">
+        <div class="logo"><a href="index.html" style="color:white; text-decoration:none;">صدارة <span>ذمار</span></a></div>
+        <nav><a href="index.html">الرئيسية</a></nav>
+    </header>
 
-  <header class="bg-brandDark text-white border-b border-slate-800 p-4 sticky top-0 z-40 flex items-center justify-between">
-    <div class="flex items-center gap-2">
-      <a href="my.html" class="p-1 rounded-full bg-slate-800 text-slate-300">
-        <i class="fa-solid fa-arrow-right"></i>
-      </a>
-      <h1 class="font-extrabold text-base">لوحة المسوقين بالعمولة</h1>
-    </div>
-    <span class="text-xs font-bold text-brandRed">صدارة SHEIN</span>
-  </header>
-
-  <main class="max-w-md mx-auto p-4 space-y-4">
-    
-    <div class="bg-brandDark text-white p-5 rounded-2xl shadow-lg space-y-3">
-      <span class="text-xs text-brandRed font-bold block">برنامج التسويق لـ صدارة</span>
-      <h2 class="text-lg font-black" id="affiliate-name">عبدالرحمن عبدالله صالح الذماري</h2>
-      <div class="grid grid-cols-2 gap-2 pt-2">
-        <div class="bg-brandNavy p-3 rounded-xl text-center border border-slate-700">
-          <span class="text-[10px] text-slate-400 block">إجمالي العمولات</span>
-          <span class="text-lg font-black text-brandRed">﷼0.00</span>
+    <div class="container">
+        <h2>لوحة تحكم المسوقين الشركاء</h2>
+        <div id="affiliate-login-box">
+            <p>سجل برقم هاتفك للحصول على رابط التسويق الخاص بك:</p>
+            <input type="tel" id="aff_phone" placeholder="أدخل رقم هاتفك (مثال: 77XXXXXXX)" style="width:100%; padding:10px; margin:10px 0;">
+            <button onclick="loginAffiliate()" class="btn-submit">دخول لوحة المسوق</button>
         </div>
-        <div class="bg-brandNavy p-3 rounded-xl text-center border border-slate-700">
-          <span class="text-[10px] text-slate-400 block">الطلبات المؤكدة</span>
-          <span class="text-lg font-black text-white">0 طلب</span>
+
+        <div id="affiliate-dashboard" style="display:none; margin-top:20px;">
+            <h3>أهلاً بك، <span id="dash-phone"></span></h3>
+            <p style="margin: 10px 0;">رابط الإحالة الخاص بك:</p>
+            <input type="text" id="ref-link" readonly style="width:100%; padding:10px; background:#eee;">
         </div>
-      </div>
     </div>
 
-    <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
-      <h3 class="font-extrabold text-sm text-slate-800">رابط التسويق الخاص بك</h3>
-      <div class="flex items-center gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-xs">
-        <input type="text" readonly value="https://sadara.top?ref=780568507" class="bg-transparent flex-1 outline-none text-slate-600 font-mono">
-        <button onclick="navigator.clipboard.writeText('https://sadara.top?ref=780568507')" class="bg-brandBlack text-white px-3 py-1.5 rounded-lg font-bold">
-          نسخ
-        </button>
-      </div>
-    </div>
-
-  </main>
-
+    <script src="main.js"></script>
 </body>
 </html>
