@@ -3,77 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم والإدارة المطلقة | منصة صدارة</title>
+    <title>لوحة التحكم والإدارة المطلقة | صدارة شي إن</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root { 
-            --primary: #111827;
-            --light: #F3F4F6;
-            --gold: #D4AF37;
-            --btn: #0284C7;
-            --red: #EF4444; 
-            --green: #10B981;
-            --whatsapp: #25D366;
-            --border: #E5E7EB;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandDark: '#0B132B',
+                        brandNavy: '#1C2541',
+                        brandRed: '#D90429',
+                        brandBlack: '#111111'
+                    }
+                }
+            }
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--light); padding: 15px; color: var(--primary); padding-bottom: 70px; }
-
-        .container { max-width: 950px; margin: 0 auto; }
-        .top-nav { background: var(--primary); padding: 16px 20px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .mini-btn { background: rgba(255,255,255,0.12); color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 1px solid rgba(212,175,55,0.4); }
-
-        .section-box { background: #ffffff; padding: 20px; border-radius: 14px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        .section-box h3 { font-size: 14px; margin-bottom: 14px; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--light); padding-bottom: 8px; }
-
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background: #F8FAFC; color: #1E293B; padding-bottom: 50px; }
+        .section-box { background: #ffffff; padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid #E2E8F0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+        .section-box h3 { font-size: 14px; margin-bottom: 14px; font-weight: 900; color: #0B132B; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid #F1F5F9; padding-bottom: 8px; }
         .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 6px; color: #374151; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 9px; font-size: 11px; outline: none; background: #F9FAFB; color: #1F2937; font-weight: 700; }
-
-        .submit-btn { background: var(--btn); color: white; border: none; padding: 12px; border-radius: 9px; font-weight: 900; width: 100%; cursor: pointer; font-size: 12px; transition: 0.2s; }
-        
-        .data-row { background: #F9FAFB; border: 1px solid var(--border); padding: 12px; border-radius: 9px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .action-btn { border: none; padding: 7px 12px; border-radius: 6px; font-weight: 900; font-size: 10.5px; cursor: pointer; color: white; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
-        .btn-delete { background: var(--red); }
-        .btn-green { background: var(--green); }
+        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 6px; color: #475569; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #CBD5E1; border-radius: 10px; font-size: 11px; outline: none; background: #F8FAFC; color: #1E293B; font-weight: 700; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #D90429; ring: 2px; }
+        .action-btn { border: none; padding: 7px 12px; border-radius: 8px; font-weight: 900; font-size: 10.5px; cursor: pointer; color: white; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+        .btn-delete { background: #EF4444; }
+        .btn-green { background: #10B981; }
         .btn-edit { background: #F59E0B; }
-        .btn-toggle { background: #6366F1; }
-        .btn-whatsapp { background: var(--whatsapp); color: white; }
-        
-        .product-thumb { width: 80px; height: 50px; border-radius: 6px; object-fit: cover; background: #ffffff; border: 1px solid var(--border); padding: 2px; }
+        .btn-toggle { background: #1C2541; }
+        .btn-whatsapp { background: #25D366; color: white; }
+        .data-row { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .product-thumb { width: 70px; height: 50px; border-radius: 8px; object-fit: cover; background: #ffffff; border: 1px solid #E2E8F0; padding: 2px; }
     </style>
 </head>
-<body>
+<body class="p-3 sm:p-6">
 
-    <div class="container">
-        <div class="top-nav">
-            <span style="font-weight:900; font-size:15px; color:var(--gold);">⚡ لوحة التحكم والإدارة المطلقة</span>
-            <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
+    <div class="max-w-4xl mx-auto">
+        <!-- شريط التنقل العلوي للوحة التحكم -->
+        <div class="bg-brandDark p-4 rounded-2xl flex justify-between items-center text-white mb-6 shadow-md border border-slate-800">
+            <div class="flex items-center gap-2">
+                <span class="bg-brandRed text-white text-xs font-black px-2.5 py-1 rounded-lg">صدارة شي إن</span>
+                <span class="font-black text-sm sm:text-base">لوحة التحكم والإدارة المطلقة ⚡</span>
+            </div>
+            <a href="index.html" class="bg-slate-800 hover:bg-brandRed text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all border border-slate-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-store"></i> المتجر الرئيسي
+            </a>
         </div>
 
         <!-- 1. طلبات الشراء الواردة -->
         <div class="section-box">
             <h3>🛒 طلبات الشراء الواردة وسندات التحويل</h3>
-            <div id="ordersAdminList">جاري التحميل...</div>
+            <div id="ordersAdminList" class="text-xs text-slate-500">جاري التحميل...</div>
         </div>
 
         <!-- 2. الطلبيات المنجزة -->
         <div class="section-box">
             <h3>✅ الطلبيات المنجزة والمؤكدة</h3>
-            <div id="completedOrdersList">جاري التحميل...</div>
+            <div id="completedOrdersList" class="text-xs text-slate-500">جاري التحميل...</div>
         </div>
 
         <!-- 3. السلايدر المتحرك -->
         <div class="section-box">
             <h3>🎞️ إدارة بانرات السلايدر المتحرك (إظهار / إخفاء / حذف)</h3>
-            <div style="margin-bottom:12px; display:flex; gap:10px; align-items:center;">
-                <label style="font-size:11px; font-weight:900;">حالة السلايدر في الواجهة:</label>
+            <div class="mb-4 flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <span class="text-xs font-bold text-slate-700">حالة السلايدر في الواجهة الرئيسية:</span>
                 <button id="sliderToggleBtn" class="action-btn btn-toggle" onclick="toggleSliderVisibility()">جاري التحميل...</button>
             </div>
             <div class="form-group"><input type="file" id="sliderFileInput" accept="image/*"></div>
-            <button onclick="uploadSliderImage()" class="submit-btn" style="background:var(--primary); color:var(--gold); margin-bottom: 12px;">رفع وإضافة صورة جديدة للسلايدر 🌟</button>
+            <button onclick="uploadSliderImage()" class="w-full py-3 bg-brandBlack text-white rounded-xl font-bold text-xs shadow-sm hover:bg-brandNavy transition-colors mb-4 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up text-brandRed"></i> رفع وإضافة صورة جديدة للسلايدر 🌟
+            </button>
             <div id="sliderAdminList">جاري التحميل...</div>
         </div>
 
@@ -89,15 +92,17 @@
                     <option value="warranty">الضمان وشروط الخدمة</option>
                 </select>
             </div>
-            <div class="form-group"><textarea id="policyText" rows="4"></textarea></div>
-            <button onclick="savePolicy()" class="submit-btn" style="background:var(--green);">حفظ وتحديث محتوى السياسة 📝</button>
+            <div class="form-group"><textarea id="policyText" rows="4" placeholder="اكتب محتوى السياسة هنا..."></textarea></div>
+            <button onclick="savePolicy()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition-colors">
+                حفظ وتحديث محتوى السياسة 📝
+            </button>
         </div>
 
         <!-- 5. المنتجات -->
         <div class="section-box">
             <h3 id="formTitle">➕ إضافة منتج جديد أو تعديل منتج قائم</h3>
             <input type="hidden" id="editProductId">
-            <div class="form-group"><label>العنوان</label><input type="text" id="pTitle"></div>
+            <div class="form-group"><label>العنوان</label><input type="text" id="pTitle" placeholder="اسم المنتج"></div>
             <div class="form-group">
                 <label>التصنيف</label>
                 <select id="pCategory">
@@ -109,14 +114,20 @@
                     <option value="ملابس">ملابس</option>
                 </select>
             </div>
-            <div class="form-group"><label>السعر الحالي (YER)</label><input type="text" id="pPrice"></div>
-            <div class="form-group"><label>السعر السابق المشطوب (YER)</label><input type="text" id="pOldPrice"></div>
-            <div class="form-group"><label>شارة الخصم (مثل -20%)</label><input type="text" id="pDiscount"></div>
-            <div class="form-group"><label>عمولة المسوق للمنتج (بالريال اليمني - مثال: 100, 500, 1000, 5000)</label><input type="number" id="pAffCommission" placeholder="أدخل مبلغ العمولة بالريال" value="0"></div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="form-group"><label>السعر الحالي (YER)</label><input type="text" id="pPrice" placeholder="0"></div>
+                <div class="form-group"><label>السعر السابق المشطوب (YER)</label><input type="text" id="pOldPrice" placeholder="0"></div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="form-group"><label>شارة الخصم (مثل -20%)</label><input type="text" id="pDiscount" placeholder="-20%"></div>
+                <div class="form-group"><label>عمولة المسوق (YER)</label><input type="number" id="pAffCommission" value="0"></div>
+            </div>
             <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage" accept="image/*"></div>
-            <div class="form-group"><label>الوصف</label><textarea id="pDesc" rows="2"></textarea></div>
-            <button onclick="saveProductData()" id="saveBtn" class="submit-btn">نشر / حفظ التعديلات 🚀</button>
-            <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:#F3F4F6; color:var(--primary); border:none; padding:9px; border-radius:9px; margin-top:8px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
+            <div class="form-group"><label>الوصف</label><textarea id="pDesc" rows="2" placeholder="تفاصيل إضافية عن المنتج..."></textarea></div>
+            <button onclick="saveProductData()" id="saveBtn" class="w-full py-3 bg-brandRed hover:bg-red-700 text-white rounded-xl font-bold text-xs shadow-sm transition-colors mb-2">
+                نشر / حفظ التعديلات 🚀
+            </button>
+            <button onclick="resetForm()" id="cancelEditBtn" style="display:none;" class="w-full py-2.5 bg-slate-200 text-slate-700 rounded-xl font-bold text-xs">إلغاء التعديل</button>
         </div>
 
         <!-- 6. قائمة المنتجات -->
@@ -167,52 +178,52 @@
 
                 if(pendingOrders.length > 0) {
                     pendingOrders.forEach(o => {
-                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn); font-weight:bold;">[معاينة السند 📄]</a>` : 'بدون سند';
-                        let refText = o.ref_code ? `<span style="color:var(--gold); font-weight:bold;"> [المسوق: ${o.ref_code}]</span>` : '';
+                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" class="text-brandRed font-bold underline">[معاينة السند 📄]</a>` : 'بدون سند';
+                        let refText = o.ref_code ? `<span class="text-brandRed font-bold">[المسوق: ${o.ref_code}]</span>` : '';
                         let cleanPhone = toEnglishDigits(o.customer_phone || '').replace(/\D/g, '');
-                        let waMsg = encodeURIComponent(`مرحباً ${o.customer_name || 'عميلنا الكريم'}, بخصوص طلبك لمنتج (${o.product_title}) في منصة صدارة...`);
+                        let waMsg = encodeURIComponent(`مرحباً ${o.customer_name || 'عميلنا الكريم'}, بخصوص طلبك لمنتج (${o.product_title}) في منصة صدارة شي إن...`);
                         
                         oBox.innerHTML += `
                             <div class="data-row">
-                                <div style="font-size:11px;">
+                                <div class="text-xs space-y-1">
                                     📦 <b>${o.product_title}</b> (${o.total_price} YER) ${refText}<br>
                                     👤 العميل: <b>${o.customer_name}</b> (${o.customer_phone})<br>
                                     💳 السند: ${receiptLink} | الحالة: <b>${o.status || 'قيد التوثيق'}</b>
                                 </div>
-                                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                    <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="action-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> واتساب 💬</a>
-                                    <button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code || ''}', '${o.product_title}')">اعتماد العمولة 💰</button>
-                                    <button class="action-btn btn-edit" onclick="editOrder(${o.id}, '${o.customer_name}', '${o.customer_phone}')">تعديل ✏️</button>
-                                    <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
+                                <div class="flex gap-1.5 flex-wrap">
+                                    <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="action-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
+                                    <button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code || ''}', '${o.product_title}')">اعتماد 💰</button>
+                                    <button class="action-btn btn-edit" onclick="editOrder(${o.id}, '${o.customer_name}', '${o.customer_phone}')">تعديل</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف</button>
                                 </div>
                             </div>
                         `;
                     });
-                } else { oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات واردة جديدة.</p>'; }
+                } else { oBox.innerHTML = '<p class="text-xs text-slate-400">لا توجد طلبات واردة جديدة.</p>'; }
 
                 if(completedOrders.length > 0) {
                     completedOrders.forEach(o => {
-                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn); font-weight:bold;">[معاينة السند 📄]</a>` : 'بدون سند';
-                        let refText = o.ref_code ? `<span style="color:var(--gold); font-weight:bold;"> [المسوق: ${o.ref_code}]</span>` : '';
+                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" class="text-brandRed font-bold underline">[معاينة السند 📄]</a>` : 'بدون سند';
+                        let refText = o.ref_code ? `<span class="text-brandRed font-bold">[المسوق: ${o.ref_code}]</span>` : '';
                         let cleanPhone = toEnglishDigits(o.customer_phone || '').replace(/\D/g, '');
-                        let waMsg = encodeURIComponent(`مرحباً ${o.customer_name || 'عميلنا الكريم'}, شكراً لتسوقك من منصة صدارة. طلبك (${o.product_title}) مكتمل ومنجز بنجاح! ⭐`);
+                        let waMsg = encodeURIComponent(`مرحباً ${o.customer_name || 'عميلنا الكريم'}, شكراً لتسوقك من منصة صدارة شي إن. طلبك (${o.product_title}) مكتمل بنجاح! ⭐`);
                         
                         cBox.innerHTML += `
                             <div class="data-row">
-                                <div style="font-size:11px;">
+                                <div class="text-xs space-y-1">
                                     ✅ <b>${o.product_title}</b> (${o.total_price} YER) ${refText}<br>
                                     👤 العميل: <b>${o.customer_name}</b> (${o.customer_phone})<br>
-                                    💳 السند: ${receiptLink} | الحالة: <b style="color:var(--green);">مكتمل ومنجز</b>
+                                    💳 السند: ${receiptLink} | الحالة: <b class="text-emerald-600">مكتمل ومنجز</b>
                                 </div>
-                                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                    <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="action-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> واتساب 💬</a>
-                                    <button class="action-btn btn-edit" onclick="editOrder(${o.id}, '${o.customer_name}', '${o.customer_phone}')">تعديل ✏️</button>
-                                    <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
+                                <div class="flex gap-1.5 flex-wrap">
+                                    <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="action-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
+                                    <button class="action-btn btn-edit" onclick="editOrder(${o.id}, '${o.customer_name}', '${o.customer_phone}')">تعديل</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف</button>
                                 </div>
                             </div>
                         `;
                     });
-                } else { cBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات منجزة حتى الآن.</p>'; }
+                } else { cBox.innerHTML = '<p class="text-xs text-slate-400">لا توجد طلبات منجزة حتى الآن.</p>'; }
 
                 let sBox = document.getElementById('sliderAdminList');
                 sBox.innerHTML = '';
@@ -223,35 +234,35 @@
                     sliderImages.forEach((imgUrl, idx) => {
                         sBox.innerHTML += `
                             <div class="data-row">
-                                <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="flex items-center gap-2.5">
                                     <img src="${imgUrl}" class="product-thumb">
-                                    <span style="font-size:11px;">صورة سلايدر رقم (${idx + 1})</span>
+                                    <span class="text-xs font-bold">صورة سلايدر رقم (${idx + 1})</span>
                                 </div>
                                 <button class="action-btn btn-delete" onclick="removeSliderImage(${idx})">حذف 🗑️</button>
                             </div>
                         `;
                     });
-                } else { sBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد صور مضافة للسلايدر.</p>'; }
+                } else { sBox.innerHTML = '<p class="text-xs text-slate-400">لا توجد صور مضافة للسلايدر.</p>'; }
 
                 let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
                 globalProducts = prods || [];
                 let pBox = document.getElementById('productsAdminList');
                 pBox.innerHTML = '';
                 globalProducts.forEach(p => {
-                    let statusText = p.is_active !== false ? '<span style="color:#10B981; font-weight:bold;">[ظاهر في المتجر]</span>' : '<span style="color:#EF4444; font-weight:bold;">[مخفي من المتجر]</span>';
+                    let statusText = p.is_active !== false ? '<span class="text-emerald-600 font-bold">[ظاهر]</span>' : '<span class="text-red-500 font-bold">[مخفي]</span>';
                     pBox.innerHTML += `
                         <div class="data-row">
-                            <div style="display:flex; align-items:center; gap:10px;">
+                            <div class="flex items-center gap-2.5">
                                 <img src="${p.image || 'images/logo.jpg'}" class="product-thumb">
-                                <div style="font-size:11px;">
+                                <div class="text-xs space-y-0.5">
                                     <b>${p.title}</b> ${statusText}<br>
-                                    السعر: ${toEnglishDigits(p.price)} YER | العمولة: <b style="color:var(--green);">${toEnglishDigits(p.affiliate_commission || 0)} YER</b>
+                                    السعر: ${toEnglishDigits(p.price)} YER | العمولة: <b class="text-emerald-600">${toEnglishDigits(p.affiliate_commission || 0)} YER</b>
                                 </div>
                             </div>
-                            <div style="display:flex; gap:5px; flex-wrap:wrap;">
-                                <button class="action-btn btn-toggle" onclick="toggleProductVisibility(${p.id}, ${p.is_active !== false})">${p.is_active !== false ? 'إخفاء 👁️‍🗨️' : 'إظهار 👁️'}</button>
-                                <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل ✏️</button>
-                                <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
+                            <div class="flex gap-1.5 flex-wrap">
+                                <button class="action-btn btn-toggle" onclick="toggleProductVisibility(${p.id}, ${p.is_active !== false})">${p.is_active !== false ? 'إخفاء' : 'إظهار'}</button>
+                                <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل</button>
+                                <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف</button>
                             </div>
                         </div>
                     `;
@@ -264,19 +275,19 @@
                     affs.forEach(a => {
                         aBox.innerHTML += `
                             <div class="data-row">
-                                <div style="font-size:11px;">
+                                <div class="text-xs space-y-0.5">
                                     👤 <b>${a.full_name || 'مسوق'}</b> (${a.phone})<br>
-                                    🔗 الكود: <code>${a.ref_code}</code> | مبيعات: ${toEnglishDigits(a.total_sales || 0)} | أرباح: <b style="color:var(--green);">${toEnglishDigits(a.total_earnings || 0)} YER</b>
+                                    🔗 الكود: <code>${a.ref_code}</code> | مبيعات: ${toEnglishDigits(a.total_sales || 0)} | أرباح: <b class="text-emerald-600">${toEnglishDigits(a.total_earnings || 0)} YER</b>
                                 </div>
-                                <div style="display:flex; gap:5px; flex-wrap:wrap;">
-                                    <button class="action-btn btn-green" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية 💵</button>
-                                    <button class="action-btn btn-edit" onclick="editAffiliate(${a.id}, '${a.full_name || ''}', '${a.phone}')">تعديل ✏️</button>
-                                    <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
+                                <div class="flex gap-1.5 flex-wrap">
+                                    <button class="action-btn btn-green" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية</button>
+                                    <button class="action-btn btn-edit" onclick="editAffiliate(${a.id}, '${a.full_name || ''}', '${a.phone}')">تعديل</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', ${a.id})">حذف</button>
                                 </div>
                             </div>
                         `;
                     });
-                } else { aBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا يوجد مسوقين.</p>'; }
+                } else { aBox.innerHTML = '<p class="text-xs text-slate-400">لا توجد حسابات مسوقين مسجلة.</p>'; }
 
                 loadPolicyContent();
             } catch(err) { console.error(err); }
