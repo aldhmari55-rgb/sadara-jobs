@@ -3,27 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام المسوقين (Affiliate) - صدارة</title>
+    <title>لوحة تحكم المسوق - صدارة</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="navbar">
-        <div class="logo"><a href="index.html" style="color:white; text-decoration:none;">صدارة <span>ذمار</span></a></div>
-        <nav><a href="index.html">الرئيسية</a></nav>
+        <div class="logo">لوحة المسوق <span>صدارة</span></div>
+        <nav><a href="index.html">المتجر</a> | <a href="#" onclick="logoutAffiliate()">تسجيل الخروج</a></nav>
     </header>
 
-    <div class="container">
-        <h2>لوحة تحكم المسوقين الشركاء</h2>
-        <div id="affiliate-login-box">
-            <p>سجل برقم هاتفك للحصول على رابط التسويق الخاص بك:</p>
-            <input type="tel" id="aff_phone" placeholder="أدخل رقم هاتفك (مثال: 77XXXXXXX)" style="width:100%; padding:10px; margin:10px 0;">
-            <button onclick="loginAffiliate()" class="btn-submit">دخول لوحة المسوق</button>
+    <div class="container" style="max-width: 700px;">
+        <h2>أهلاً بك، <span id="dash-name">شريكنا المميز</span></h2>
+        
+        <div class="form-group" style="margin-top: 20px;">
+            <label>رابط الإحالة الخاص بك:</label>
+            <input type="text" id="ref-link" readonly style="background:#f8fafc; font-weight:bold;">
         </div>
 
-        <div id="affiliate-dashboard" style="display:none; margin-top:20px;">
-            <h3>أهلاً بك، <span id="dash-phone"></span></h3>
-            <p style="margin: 10px 0;">رابط الإحالة الخاص بك:</p>
-            <input type="text" id="ref-link" readonly style="width:100%; padding:10px; background:#eee;">
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 25px;">
+            <div style="background:#e0f2fe; padding:20px; border-radius:8px; text-align:center;">
+                <p style="font-size: 14px; color:#0369a1;">إجمالي الزيارات</p>
+                <h3 id="stat-visits" style="font-size: 24px; color:#0c4a6e; margin-top:5px;">0</h3>
+            </div>
+            <div style="background:#fef3c7; padding:20px; border-radius:8px; text-align:center;">
+                <p style="font-size: 14px; color:#b45309;">عدد المبيعات المؤكدة</p>
+                <h3 id="stat-sales" style="font-size: 24px; color:#78350f; margin-top:5px;">0</h3>
+            </div>
+            <div style="background:#dcfce7; padding:20px; border-radius:8px; text-align:center;">
+                <p style="font-size: 14px; color:#15803d;">عمولات الشهر الحالي</p>
+                <h3 id="stat-current-comm" style="font-size: 22px; color:#14532d; margin-top:5px;">0 ر.ي</h3>
+            </div>
+            <div style="background:#f3e8ff; padding:20px; border-radius:8px; text-align:center;">
+                <p style="font-size: 14px; color:#7e22ce;">إجمالي العمولات الكلية</p>
+                <h3 id="stat-total-comm" style="font-size: 22px; color:#581c87; margin-top:5px;">0 ر.ي</h3>
+            </div>
         </div>
     </div>
 
