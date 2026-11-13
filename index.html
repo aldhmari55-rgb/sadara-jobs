@@ -243,19 +243,12 @@
     <div class="toast" id="toast">تم التنفيذ بنجاح!</div>
 
     <script>
+        // سحب البيانات المحدثة من قاعدة البيانات المحلية المشتركة مع لوحة التحكم
         let db = JSON.parse(localStorage.getItem('sadarah_store_db')) || {
             settings: { storeName: "متجر صدارة", whatsapp: "967780568507" },
-            categories: [
-                { id: "men", name: "ملابس رجالية", subs: ["ملابس علوية", "معاطف وجاكيتات"] },
-                { id: "women", name: "ملابس نسائية", subs: ["فساتين", "عبايات"] }
-            ],
-            products: [
-                { id: 1, catId: "men", name: "طقم رجالي قطن فاخر", code: "M101", price: 8500, img: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=400&q=80" }
-            ],
-            payments: [
-                { id: 1, title: "بنك الكريمي", number: "2628009", note: "باسم/ عبدالرحمن الذماري", icon: "fa-university" }
-            ],
-            orders: [], users: []
+            categories: [],
+            products: [],
+            payments: []
         };
 
         let cart = [];
@@ -265,12 +258,14 @@
             document.getElementById('uiStoreTitle').innerText = db.settings.storeName;
             document.getElementById('uiFooterTitle').innerText = db.settings.storeName;
 
+            // شريط الأقسام العلوي
             const catNav = document.getElementById('catNav');
             catNav.innerHTML = `<div class="cat-tab ${activeCategoryFilter === 'all' ? 'active' : ''}" onclick="filterCategory('all')">الكل</div>`;
             db.categories.forEach(cat => {
                 catNav.innerHTML += `<div class="cat-tab ${activeCategoryFilter === cat.id ? 'active' : ''}" onclick="filterCategory('${cat.id}')">${cat.name}</div>`;
             });
 
+            // القائمة الجانبية
             const sideMenuBody = document.getElementById('sideMenuBody');
             sideMenuBody.innerHTML = '';
             db.categories.forEach(cat => {
@@ -280,6 +275,7 @@
                     </div>`;
             });
 
+            // المنتجات والأقسام
             const container = document.getElementById('sectionsContainer');
             const query = document.getElementById('searchInput').value.toLowerCase();
             container.innerHTML = '';
@@ -291,7 +287,7 @@
 
                 let cardsHTML = catProducts.map(p => `
                     <div class="product-card">
-                        <div class="product-img-wrap"><img src="${p.img}" alt="${p.name}"></div>
+                        <div class="product-img-wrap"><img src="${p.img}" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'"></div>
                         <div class="product-details">
                             <div class="product-name">${p.name}</div>
                             <div class="price-code-row">
@@ -314,6 +310,7 @@
                     </div>`;
             });
 
+            // طرق الدفع (بما في ذلك الكريمي المحدث)
             const payContainer = document.getElementById('paymentCardsContainer');
             payContainer.innerHTML = db.payments.map(pay => `
                 <div class="payment-card">
@@ -398,6 +395,12 @@
             const t = document.getElementById('toast'); t.innerText = msg; t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 2500);
         }
+
+        // التحديث التلقائي للواجهة إذا تم تعديل أي شيء من لوحة التحكم الخارجية
+        window.addEventListener('storage', () => {
+            db = JSON.parse(localStorage.getItem('sadarah_store_db')) || db;
+            renderAllStoreUI();
+        });
 
         renderAllStoreUI();
         updateCartUI();
