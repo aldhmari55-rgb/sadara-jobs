@@ -243,33 +243,37 @@
     <div class="toast" id="toast">تم التنفيذ بنجاح!</div>
 
     <script>
-        // بيانات افتراضية شاملة تظهر مباشرة إذا كانت الواجهة فارغة
+        // دالة جلب قاعدة البيانات مع بيانات افتراضية إذا كانت فارغة تماماً
         const DEFAULT_DB = {
             settings: { storeName: "متجر صدارة", whatsapp: "967780568507" },
             categories: [
                 { id: "men", name: "ملابس رجالية", subs: ["ملابس علوية", "معاطف وجاكيتات"] },
-                { id: "women", name: "ملابس نسائية", subs: ["فساتين", "عبايات"] },
-                { id: "perfumes", name: "عطور", subs: ["عطور رجالية", "عطور نسائية"] }
+                { id: "women", name: "ملابس نسائية", subs: ["فساتين", "عبايات"] }
             ],
             products: [
-                { id: 1, catId: "men", name: "طقم رجالي قطن فاخر", code: "M101", price: 8500, img: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=400&q=80" },
-                { id: 2, catId: "women", name: "فستان نسائي أنيق", code: "W201", price: 9500, img: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&q=80" }
+                { id: 1, catId: "men", name: "طقم رجالي قطن فاخر", code: "M101", price: 8500, img: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=400&q=80" }
             ],
             payments: [
                 { id: 1, title: "بنك الكريمي", number: "2628009", note: "باسم/ عبدالرحمن الذماري", icon: "fa-university" }
             ]
         };
 
-        let db = JSON.parse(localStorage.getItem('sadarah_store_db'));
-        if (!db || !db.categories || db.categories.length === 0) {
-            db = DEFAULT_DB;
-            localStorage.setItem('sadarah_store_db', JSON.stringify(db));
+        function getDatabase() {
+            let data = JSON.parse(localStorage.getItem('sadarah_store_db'));
+            if (!data || !data.categories || data.categories.length === 0) {
+                data = DEFAULT_DB;
+                localStorage.setItem('sadarah_store_db', JSON.stringify(data));
+            }
+            return data;
         }
 
+        let db = getDatabase();
         let cart = [];
         let activeCategoryFilter = 'all';
 
         function renderAllStoreUI() {
+            db = getDatabase(); // تحديث البيانات في كل عملية رسم
+
             document.getElementById('uiStoreTitle').innerText = db.settings.storeName;
             document.getElementById('uiFooterTitle').innerText = db.settings.storeName;
 
@@ -280,7 +284,7 @@
                 catNav.innerHTML += `<div class="cat-tab ${activeCategoryFilter === cat.id ? 'active' : ''}" onclick="filterCategory('${cat.id}')">${cat.name}</div>`;
             });
 
-            // القائمة الجانبية
+            // القائمة الجانبية للأقسام
             const sideMenuBody = document.getElementById('sideMenuBody');
             sideMenuBody.innerHTML = '';
             db.categories.forEach(cat => {
@@ -290,10 +294,14 @@
                     </div>`;
             });
 
-            // المنتجات والأقسام
+            // المنتجات والأقسام الرئيسية
             const container = document.getElementById('sectionsContainer');
             const query = document.getElementById('searchInput').value.toLowerCase();
             container.innerHTML = '';
+
+            if (db.categories.length === 0 || db.products.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);">لا توجد منتجات مضافة حالياً. يرجى إضافتها من لوحة التحكم.</div>`;
+            }
 
             db.categories.forEach(cat => {
                 if (activeCategoryFilter !== 'all' && activeCategoryFilter !== cat.id) return;
@@ -411,13 +419,22 @@
             setTimeout(() => t.classList.remove('show'), 2500);
         }
 
-        // الاستماع للتعديلات القادمة من لوحة التحكم وتحديث الواجهة فوراً
-        window.addEventListener('storage', () => {
-            const updatedDb = JSON.parse(localStorage.getItem('sadarah_store_db'));
-            if (updatedDb) {
-                db = updatedDb;
-                renderAllStoreUI();
+        // المزامنة التلقائية اللحظية (تتحقق كل ثانية من أي تحديث قادم من لوحة التحكم)
+        setInterval(() => {
+            let currentStorage = localStorage.getItem('sadarah_store_db');
+            if (currentStorage) {
+                let parsed = JSON.parse(currentStorage);
+                // مقارنة بسيطة لضمان إعادة الرسم فقط عند حدوث تغيير حقيقي
+                if (JSON.stringify(parsed) !== JSON.stringify(db)) {
+                    db = parsed;
+                    renderAllStoreUI();
+                }
             }
+        }, 1000);
+
+        // التحديث عبر أحداث التخزين أيضاً إن وُجدت
+        window.addEventListener('storage', () => {
+            renderAllStoreUI();
         });
 
         renderAllStoreUI();
