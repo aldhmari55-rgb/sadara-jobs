@@ -243,13 +243,28 @@
     <div class="toast" id="toast">تم التنفيذ بنجاح!</div>
 
     <script>
-        // سحب البيانات المحدثة من قاعدة البيانات المحلية المشتركة مع لوحة التحكم
-        let db = JSON.parse(localStorage.getItem('sadarah_store_db')) || {
+        // بيانات افتراضية شاملة تظهر مباشرة إذا كانت الواجهة فارغة
+        const DEFAULT_DB = {
             settings: { storeName: "متجر صدارة", whatsapp: "967780568507" },
-            categories: [],
-            products: [],
-            payments: []
+            categories: [
+                { id: "men", name: "ملابس رجالية", subs: ["ملابس علوية", "معاطف وجاكيتات"] },
+                { id: "women", name: "ملابس نسائية", subs: ["فساتين", "عبايات"] },
+                { id: "perfumes", name: "عطور", subs: ["عطور رجالية", "عطور نسائية"] }
+            ],
+            products: [
+                { id: 1, catId: "men", name: "طقم رجالي قطن فاخر", code: "M101", price: 8500, img: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=400&q=80" },
+                { id: 2, catId: "women", name: "فستان نسائي أنيق", code: "W201", price: 9500, img: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&q=80" }
+            ],
+            payments: [
+                { id: 1, title: "بنك الكريمي", number: "2628009", note: "باسم/ عبدالرحمن الذماري", icon: "fa-university" }
+            ]
         };
+
+        let db = JSON.parse(localStorage.getItem('sadarah_store_db'));
+        if (!db || !db.categories || db.categories.length === 0) {
+            db = DEFAULT_DB;
+            localStorage.setItem('sadarah_store_db', JSON.stringify(db));
+        }
 
         let cart = [];
         let activeCategoryFilter = 'all';
@@ -310,7 +325,7 @@
                     </div>`;
             });
 
-            // طرق الدفع (بما في ذلك الكريمي المحدث)
+            // طرق الدفع
             const payContainer = document.getElementById('paymentCardsContainer');
             payContainer.innerHTML = db.payments.map(pay => `
                 <div class="payment-card">
@@ -396,10 +411,13 @@
             setTimeout(() => t.classList.remove('show'), 2500);
         }
 
-        // التحديث التلقائي للواجهة إذا تم تعديل أي شيء من لوحة التحكم الخارجية
+        // الاستماع للتعديلات القادمة من لوحة التحكم وتحديث الواجهة فوراً
         window.addEventListener('storage', () => {
-            db = JSON.parse(localStorage.getItem('sadarah_store_db')) || db;
-            renderAllStoreUI();
+            const updatedDb = JSON.parse(localStorage.getItem('sadarah_store_db'));
+            if (updatedDb) {
+                db = updatedDb;
+                renderAllStoreUI();
+            }
         });
 
         renderAllStoreUI();
