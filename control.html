@@ -6,7 +6,6 @@
     <title>لوحة التحكم السحابية | الإدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- مكتبة Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
@@ -161,7 +160,7 @@
     <div class="toast" id="toast">جاري الاتصال بالسحابة...</div>
 
     <script>
-        // إعدادات اتصال Supabase الخاص بك
+        // ضع بيانات Supabase الخاصة بك هنا
         const SUPABASE_URL = 'ضع_رابط_مشروعك_هنا_supabase.co';
         const SUPABASE_ANON_KEY = 'ضع_مفتاح_anon_key_هنا';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -172,7 +171,7 @@
         };
 
         async function loadCloudData() {
-            const { data, error } = await _supabase.from('store_data').select('*').single();
+            const { data, error } = await _supabase.from('store_data').select('*').eq('id', 1).single();
             if (data && data.payload) {
                 storeData = data.payload;
                 renderAdminUI();
@@ -301,7 +300,6 @@
             document.getElementById('formModal').classList.add('open');
         }
 
-        // دالة رفع الصورة إلى Supabase Storage (الدلو platform-files)
         async function uploadImageToSupabaseStorage(e) {
             const file = e.target.files[0];
             if (!file) return;
