@@ -6,6 +6,8 @@
     <title id="pageTitle">متجر صدارة | Sadarah Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- استدعاء مكتبة Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
         :root {
@@ -79,9 +81,7 @@
         .main-content { padding: 15px; }
         .category-block { background: var(--white); border-radius: 22px; padding: 18px; margin-bottom: 20px; box-shadow: var(--card-shadow); }
         .block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .block-title-wrap { display: flex; align-items: center; gap: 10px; }
         .block-title { font-size: 1.2rem; font-weight: 800; }
-        .block-subtitle { font-size: 0.8rem; color: var(--text-muted); display: block; margin-top: 2px; }
         .blue-line { width: 28px; height: 3px; background: var(--primary-blue); border-radius: 2px; }
 
         .view-all-btn {
@@ -123,23 +123,26 @@
         .copy-box { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-top: 12px; }
         .account-num { font-size: 1.08rem; font-weight: 800; direction: ltr; }
 
-        /* النوافذ المنبثقة */
+        /* نوافذ الحساب */
         .auth-modal-overlay {
             position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45);
             backdrop-filter: blur(6px); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px;
         }
         .auth-modal-overlay.open { display: flex; }
-        .auth-card { background: var(--white); width: 100%; max-width: 400px; border-radius: 26px; padding: 24px 22px 28px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+        .auth-card { background: var(--white); width: 100%; max-width: 400px; border-radius: 26px; padding: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
         .auth-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
         .auth-tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
-        .auth-tab { flex: 1; text-align: center; padding: 12px 5px; font-weight: 700; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; }
+        .auth-tab { flex: 1; text-align: center; padding: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; }
         .auth-tab.active { color: var(--primary-blue); border-bottom-color: var(--primary-blue); }
         .auth-form { display: none; }
         .auth-form.active { display: block; }
-        .form-group { margin-bottom: 14px; }
+        .form-group { margin-bottom: 14px; text-align: right; }
         .form-group label { display: block; font-size: 0.86rem; font-weight: 700; margin-bottom: 6px; }
-        .form-group input { width: 100%; padding: 12px 14px; border: 1px solid var(--border-color); background: #f8fafc; border-radius: 12px; font-size: 0.92rem; outline: none; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); background: #f8fafc; border-radius: 12px; font-size: 0.92rem; outline: none; }
         .btn-auth-submit { width: 100%; padding: 13px; border: none; border-radius: 14px; font-size: 1rem; font-weight: 800; color: white; background: var(--primary-blue); cursor: pointer; }
+        .user-profile-box { text-align: right; }
+        .profile-info-item { background: #f8fafc; padding: 12px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border-color); font-size: 0.9rem; }
+        .profile-info-item span { font-weight: 700; color: var(--primary-blue); display: block; margin-bottom: 2px; }
 
         .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: none; }
         .drawer-overlay.open { display: block; }
@@ -158,7 +161,7 @@
             <header class="top-bar">
                 <div class="header-actions">
                     <button class="icon-circle user-btn" onclick="toggleSideMenu()" title="جميع الأقسام"><i class="fas fa-bars"></i></button>
-                    <button class="icon-circle user-btn" onclick="openAuthModal('login')" title="حسابي"><i class="far fa-user"></i></button>
+                    <button class="icon-circle user-btn" onclick="openAuthModal()" title="حسابي"><i class="far fa-user"></i></button>
                 </div>
                 <div class="store-title" id="uiStoreTitle">متجر صدارة</div>
                 <button class="icon-circle cart-btn" onclick="toggleCart()">
@@ -172,7 +175,7 @@
             <div class="search-section">
                 <div class="search-input-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="ابحث بالاسم أو الكود..." onkeyup="renderAllStoreUI()">
+                    <input type="text" id="searchInput" placeholder="ابحث بالاسم أو الكود..." onkeyup="renderStoreUI()">
                 </div>
                 <button class="tool-btn" onclick="toggleSideMenu()"><i class="fas fa-sliders-h"></i></button>
             </div>
@@ -191,27 +194,7 @@
 
     <!-- نافذة حسابي -->
     <div class="auth-modal-overlay" id="authModal" onclick="if(event.target===this) closeAuthModal()">
-        <div class="auth-card">
-            <div class="auth-top">
-                <h3>حسابي</h3>
-                <button onclick="closeAuthModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
-            </div>
-            <div class="auth-tabs">
-                <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">تسجيل الدخول</div>
-                <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">إنشاء حساب جديد</div>
-            </div>
-            <form class="auth-form active" id="formLogin" onsubmit="handleLogin(event)">
-                <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" style="direction:ltr;" required></div>
-                <div class="form-group"><label>كلمة المرور</label><input type="password" id="loginPass" style="direction:ltr;" required></div>
-                <button type="submit" class="btn-auth-submit">تسجيل الدخول</button>
-            </form>
-            <form class="auth-form" id="formRegister" onsubmit="handleRegister(event)">
-                <div class="form-group"><label>الاسم الأول</label><input type="text" id="regFirst" required></div>
-                <div class="form-group"><label>الاسم الأخير</label><input type="text" id="regLast" required></div>
-                <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="regEmail" style="direction:ltr;" required></div>
-                <button type="submit" class="btn-auth-submit">إنشاء الحساب</button>
-            </form>
-        </div>
+        <div class="auth-card" id="authCardContent"></div>
     </div>
 
     <!-- القائمة الجانبية -->
@@ -240,72 +223,60 @@
         </div>
     </aside>
 
-    <div class="toast" id="toast">تم التنفيذ بنجاح!</div>
+    <div class="toast" id="toast">جاري مزامنة المتجر...</div>
 
     <script>
-        // دالة جلب قاعدة البيانات مع بيانات افتراضية إذا كانت فارغة تماماً
-        const DEFAULT_DB = {
+        // إعدادات اتصال Supabase الخاص بك
+        const SUPABASE_URL = 'ضع_رابط_مشروعك_هنا_supabase.co';
+        const SUPABASE_ANON_KEY = 'ضع_مفتاح_anon_key_هنا';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let storeData = {
             settings: { storeName: "متجر صدارة", whatsapp: "967780568507" },
-            categories: [
-                { id: "men", name: "ملابس رجالية", subs: ["ملابس علوية", "معاطف وجاكيتات"] },
-                { id: "women", name: "ملابس نسائية", subs: ["فساتين", "عبايات"] }
-            ],
-            products: [
-                { id: 1, catId: "men", name: "طقم رجالي قطن فاخر", code: "M101", price: 8500, img: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=400&q=80" }
-            ],
-            payments: [
-                { id: 1, title: "بنك الكريمي", number: "2628009", note: "باسم/ عبدالرحمن الذماري", icon: "fa-university" }
-            ]
+            categories: [],
+            products: [],
+            payments: [],
+            users: []
         };
-
-        function getDatabase() {
-            let data = JSON.parse(localStorage.getItem('sadarah_store_db'));
-            if (!data || !data.categories || data.categories.length === 0) {
-                data = DEFAULT_DB;
-                localStorage.setItem('sadarah_store_db', JSON.stringify(data));
-            }
-            return data;
-        }
-
-        let db = getDatabase();
         let cart = [];
         let activeCategoryFilter = 'all';
+        let currentUser = JSON.parse(localStorage.getItem('sadarah_current_user')) || null;
 
-        function renderAllStoreUI() {
-            db = getDatabase(); // تحديث البيانات في كل عملية رسم
+        async function fetchFromSupabase() {
+            try {
+                const { data, error } = await _supabase.from('store_data').select('*').single();
+                if (data && data.payload) {
+                    storeData = data.payload;
+                    renderStoreUI();
+                }
+            } catch (err) {
+                console.log('وضع التخزين المحلي الاحتياطي');
+            }
+        }
 
-            document.getElementById('uiStoreTitle').innerText = db.settings.storeName;
-            document.getElementById('uiFooterTitle').innerText = db.settings.storeName;
+        function renderStoreUI() {
+            document.getElementById('uiStoreTitle').innerText = storeData.settings?.storeName || "متجر صدارة";
+            document.getElementById('uiFooterTitle').innerText = storeData.settings?.storeName || "متجر صدارة";
 
-            // شريط الأقسام العلوي
             const catNav = document.getElementById('catNav');
             catNav.innerHTML = `<div class="cat-tab ${activeCategoryFilter === 'all' ? 'active' : ''}" onclick="filterCategory('all')">الكل</div>`;
-            db.categories.forEach(cat => {
+            (storeData.categories || []).forEach(cat => {
                 catNav.innerHTML += `<div class="cat-tab ${activeCategoryFilter === cat.id ? 'active' : ''}" onclick="filterCategory('${cat.id}')">${cat.name}</div>`;
             });
 
-            // القائمة الجانبية للأقسام
             const sideMenuBody = document.getElementById('sideMenuBody');
             sideMenuBody.innerHTML = '';
-            db.categories.forEach(cat => {
-                sideMenuBody.innerHTML += `
-                    <div style="margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
-                        <div style="font-weight:800; cursor:pointer;" onclick="filterCategory('${cat.id}'); toggleSideMenu();">${cat.name}</div>
-                    </div>`;
+            (storeData.categories || []).forEach(cat => {
+                sideMenuBody.innerHTML += `<div style="margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;"><div style="font-weight:800; cursor:pointer;" onclick="filterCategory('${cat.id}'); toggleSideMenu();">${cat.name}</div></div>`;
             });
 
-            // المنتجات والأقسام الرئيسية
             const container = document.getElementById('sectionsContainer');
             const query = document.getElementById('searchInput').value.toLowerCase();
             container.innerHTML = '';
 
-            if (db.categories.length === 0 || db.products.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);">لا توجد منتجات مضافة حالياً. يرجى إضافتها من لوحة التحكم.</div>`;
-            }
-
-            db.categories.forEach(cat => {
+            (storeData.categories || []).forEach(cat => {
                 if (activeCategoryFilter !== 'all' && activeCategoryFilter !== cat.id) return;
-                const catProducts = db.products.filter(p => p.catId === cat.id && (p.name.toLowerCase().includes(query) || p.code.toLowerCase().includes(query)));
+                const catProducts = (storeData.products || []).filter(p => p.catId === cat.id && (p.name.toLowerCase().includes(query) || p.code.toLowerCase().includes(query)));
                 if (catProducts.length === 0) return;
 
                 let cardsHTML = catProducts.map(p => `
@@ -333,9 +304,8 @@
                     </div>`;
             });
 
-            // طرق الدفع
             const payContainer = document.getElementById('paymentCardsContainer');
-            payContainer.innerHTML = db.payments.map(pay => `
+            payContainer.innerHTML = (storeData.payments || []).map(pay => `
                 <div class="payment-card">
                     <div class="pay-logo"><i class="fas ${pay.icon || 'fa-university'}"></i></div>
                     <h4>${pay.title}</h4>
@@ -346,10 +316,10 @@
                 </div>`).join('');
         }
 
-        function filterCategory(catId) { activeCategoryFilter = catId; renderAllStoreUI(); }
+        function filterCategory(catId) { activeCategoryFilter = catId; renderStoreUI(); }
 
         function addToCart(prodId) {
-            const prod = db.products.find(p => p.id === prodId);
+            const prod = storeData.products.find(p => p.id === prodId);
             if (!prod) return;
             const ex = cart.find(i => i.id === prodId);
             if (ex) ex.qty++; else cart.push({ ...prod, qty: 1 });
@@ -374,36 +344,57 @@
         }
 
         function orderSingleWhatsApp(prodId) {
-            const p = db.products.find(x => x.id === prodId);
-            const msg = `مرحباً ${db.settings.storeName}، أرغب بطلب:%0A- ${p.name}%0A- الكود: ${p.code}%0A- السعر: ${p.price} ريال`;
-            window.open(`https://wa.me/${db.settings.whatsapp}?text=${msg}`, '_blank');
+            const p = storeData.products.find(x => x.id === prodId);
+            const msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب:%0A- ${p.name}%0A- الكود: ${p.code}%0A- السعر: ${p.price} ريال`;
+            window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
         }
 
         function checkoutWhatsApp() {
             if (cart.length === 0) return showToast('السلة فارغة!');
-            let msg = `مرحباً ${db.settings.storeName}، طلب جديد من السلة:%0A%0A`;
+            let msg = `مرحباً ${storeData.settings.storeName}، طلب جديد من السلة:%0A%0A`;
             let total = 0;
             cart.forEach((i, idx) => {
                 msg += `${idx+1}. ${i.name} (كود: ${i.code}) × ${i.qty} = ${i.price * i.qty} ريال%0A`;
                 total += i.price * i.qty;
             });
             msg += `%0A*الإجمالي: ${total.toLocaleString()} ريال*`;
-            window.open(`https://wa.me/${db.settings.whatsapp}?text=${msg}`, '_blank');
+            window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
         }
 
-        function handleLogin(e) {
-            e.preventDefault();
-            showToast('تم تسجيل الدخول بنجاح!');
-            closeAuthModal();
+        function openAuthModal() {
+            const modalContent = document.getElementById('authCardContent');
+            if (currentUser) {
+                modalContent.innerHTML = `
+                    <div class="auth-top"><h3>حسابي الشخصي</h3><button onclick="closeAuthModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button></div>
+                    <div class="user-profile-box">
+                        <div class="profile-info-item"><span>الاسم الكامل</span> ${currentUser.firstName} ${currentUser.lastName}</div>
+                        <div class="profile-info-item"><span>البريد الإلكتروني</span> ${currentUser.email}</div>
+                        <div class="profile-info-item"><span>حالة الحساب</span> مفعل عبر السحابة</div>
+                        <button class="btn-auth-submit" style="background:var(--danger-red); margin-top:15px;" onclick="handleLogout()">تسجيل الخروج</button>
+                    </div>`;
+            } else {
+                modalContent.innerHTML = `
+                    <div class="auth-top"><h3>حسابي</h3><button onclick="closeAuthModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button></div>
+                    <div class="auth-tabs">
+                        <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">تسجيل الدخول</div>
+                        <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">إنشاء حساب جديد</div>
+                    </div>
+                    <form class="auth-form active" id="formLogin" onsubmit="handleLogin(event)">
+                        <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" style="direction:ltr;" required></div>
+                        <div class="form-group"><label>كلمة المرور</label><input type="password" id="loginPass" style="direction:ltr;" required></div>
+                        <button type="submit" class="btn-auth-submit">تسجيل الدخول</button>
+                    </form>
+                    <form class="auth-form" id="formRegister" onsubmit="handleRegister(event)">
+                        <div class="form-group"><label>الاسم الأول</label><input type="text" id="regFirst" required></div>
+                        <div class="form-group"><label>الاسم الأخير</label><input type="text" id="regLast" required></div>
+                        <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="regEmail" style="direction:ltr;" required></div>
+                        <div class="form-group"><label>كلمة المرور</label><input type="password" id="regPass" style="direction:ltr;" required placeholder="أدخل كلمة المرور"></div>
+                        <button type="submit" class="btn-auth-submit">إنشاء الحساب</button>
+                    </form>`;
+            }
+            document.getElementById('authModal').classList.add('open');
         }
 
-        function handleRegister(e) {
-            e.preventDefault();
-            showToast('تم إنشاء الحساب بنجاح!');
-            closeAuthModal();
-        }
-
-        function openAuthModal(mode) { document.getElementById('authModal').classList.add('open'); }
         function closeAuthModal() { document.getElementById('authModal').classList.remove('open'); }
         function switchAuthTab(mode) {
             document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
@@ -411,33 +402,60 @@
             document.getElementById('formLogin').classList.toggle('active', mode === 'login');
             document.getElementById('formRegister').classList.toggle('active', mode === 'register');
         }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const firstName = document.getElementById('regFirst').value.trim();
+            const lastName = document.getElementById('regLast').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPass').value.trim();
+
+            if (!storeData.users) storeData.users = [];
+            if (storeData.users.find(u => u.email === email)) return showToast('البريد مسجل مسبقاً!');
+
+            const newUser = { firstName, lastName, email, password };
+            storeData.users.push(newUser);
+            currentUser = newUser;
+            localStorage.setItem('sadarah_current_user', JSON.stringify(currentUser));
+            
+            await _supabase.from('store_data').update({ payload: storeData }).eq('id', 1);
+            showToast('تم إنشاء الحساب بنجاح!');
+            openAuthModal();
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPass').value.trim();
+
+            const user = (storeData.users || []).find(u => u.email === email && u.password === password);
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('sadarah_current_user', JSON.stringify(currentUser));
+                showToast('تم تسجيل الدخول بنجاح!');
+                openAuthModal();
+            } else {
+                showToast('بيانات الدخول غير صحيحة!');
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('sadarah_current_user');
+            showToast('تم تسجيل الخروج');
+            openAuthModal();
+        }
+
         function toggleSideMenu() { document.getElementById('sideMenu').classList.toggle('open'); document.getElementById('sideMenuOverlay').classList.toggle('open'); }
         function toggleCart() { document.getElementById('cartDrawer').classList.toggle('open'); document.getElementById('cartOverlay').classList.toggle('open'); }
-        function copyText(txt) { navigator.clipboard.writeText(txt).then(() => showToast(`تم نسخ الرقم (${txt})`)); }
+        function copyText(txt) { navigator.clipboard.writeText(txt).then(() => showToast(`تم نسخ (${txt})`)); }
         function showToast(msg) {
             const t = document.getElementById('toast'); t.innerText = msg; t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 2500);
         }
 
-        // المزامنة التلقائية اللحظية (تتحقق كل ثانية من أي تحديث قادم من لوحة التحكم)
-        setInterval(() => {
-            let currentStorage = localStorage.getItem('sadarah_store_db');
-            if (currentStorage) {
-                let parsed = JSON.parse(currentStorage);
-                // مقارنة بسيطة لضمان إعادة الرسم فقط عند حدوث تغيير حقيقي
-                if (JSON.stringify(parsed) !== JSON.stringify(db)) {
-                    db = parsed;
-                    renderAllStoreUI();
-                }
-            }
-        }, 1000);
-
-        // التحديث عبر أحداث التخزين أيضاً إن وُجدت
-        window.addEventListener('storage', () => {
-            renderAllStoreUI();
-        });
-
-        renderAllStoreUI();
+        setInterval(fetchFromSupabase, 3000);
+        fetchFromSupabase();
         updateCartUI();
     </script>
 </body>
