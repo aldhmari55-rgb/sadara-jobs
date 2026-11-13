@@ -56,6 +56,12 @@
             padding: 14px 18px;
         }
 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .icon-circle {
             width: 40px;
             height: 40px;
@@ -105,7 +111,7 @@
         .categories-nav {
             display: flex;
             overflow-x: auto;
-            gap: 20px;
+            gap: 18px;
             padding: 8px 18px 0;
             border-bottom: 1px solid var(--border-color);
             scrollbar-width: none;
@@ -115,7 +121,7 @@
         .cat-tab {
             white-space: nowrap;
             padding-bottom: 10px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             font-weight: 600;
             color: var(--text-muted);
             cursor: pointer;
@@ -124,9 +130,9 @@
         }
 
         .cat-tab.active {
-            color: var(--text-main);
+            color: var(--primary-blue);
             font-weight: 800;
-            border-bottom-color: #94a3b8;
+            border-bottom-color: var(--primary-blue);
         }
 
         /* شريط البحث والأدوات */
@@ -173,6 +179,177 @@
             justify-content: center;
             cursor: pointer;
             font-size: 1rem;
+        }
+
+        /* ================= نافذة حسابي (تسجيل الدخول / إنشاء حساب) ================= */
+        .auth-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-modal-overlay.open {
+            display: flex;
+        }
+
+        .auth-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 26px;
+            padding: 24px 22px 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            animation: popIn 0.25s ease;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.94); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .auth-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .auth-top h3 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .close-auth {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 22px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 5px;
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: 0.2s;
+        }
+
+        .auth-tab.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            text-align: right;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 15px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus {
+            background: #e2e8f0;
+        }
+
+        .form-group input.ltr-input {
+            direction: ltr;
+            text-align: left;
+        }
+
+        .forgot-link {
+            display: block;
+            text-align: left;
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin: -6px 0 18px;
+        }
+
+        .btn-auth-submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--white);
+            background: var(--primary-blue);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-auth-submit.soft-blue {
+            background: #93c5fd;
+        }
+
+        .btn-auth-submit.soft-blue:hover {
+            background: var(--primary-blue);
+        }
+
+        .auth-footer-note {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .auth-footer-note a {
+            color: var(--primary-blue);
+            font-weight: 700;
+            text-decoration: none;
         }
 
         /* ================= القائمة الجانبية للفئات (Drawer) ================= */
@@ -222,20 +399,21 @@
         }
 
         .menu-category-group {
-            margin-bottom: 18px;
+            margin-bottom: 14px;
             border-bottom: 1px solid #f1f5f9;
-            padding-bottom: 12px;
+            padding-bottom: 10px;
         }
 
         .menu-category-title {
-            font-size: 1.05rem;
+            font-size: 1rem;
             font-weight: 800;
             color: var(--text-main);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
+            padding: 4px 0;
         }
 
         .sub-categories-list {
@@ -246,7 +424,7 @@
         .sub-categories-list.show { display: block; }
 
         .sub-categories-list li {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: var(--text-muted);
             padding: 6px 0;
             cursor: pointer;
@@ -283,7 +461,7 @@
         }
 
         .block-title {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 800;
             color: var(--text-main);
         }
@@ -306,14 +484,14 @@
             background: var(--primary-blue);
             color: var(--white);
             border: none;
-            padding: 8px 18px;
+            padding: 7px 15px;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
 
         .products-carousel {
@@ -326,8 +504,8 @@
         .products-carousel::-webkit-scrollbar { display: none; }
 
         .product-card {
-            min-width: 250px;
-            max-width: 250px;
+            min-width: 245px;
+            max-width: 245px;
             background: var(--white);
             border: 1px solid #f1f5f9;
             border-radius: 18px;
@@ -337,7 +515,7 @@
         }
 
         .product-img-wrap {
-            height: 210px;
+            height: 200px;
             background: #f8fafc;
             position: relative;
             overflow: hidden;
@@ -354,7 +532,7 @@
         }
 
         .product-name {
-            font-size: 0.98rem;
+            font-size: 0.96rem;
             font-weight: 700;
             color: var(--text-main);
             white-space: nowrap;
@@ -376,7 +554,7 @@
         }
 
         .product-price {
-            font-size: 1.1rem;
+            font-size: 1.08rem;
             font-weight: 800;
             color: var(--primary-blue);
         }
@@ -394,7 +572,7 @@
             border: none;
             padding: 10px;
             border-radius: 25px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 700;
             cursor: pointer;
             margin-bottom: 8px;
@@ -411,7 +589,7 @@
             border: none;
             padding: 10px;
             border-radius: 25px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -438,6 +616,18 @@
             text-align: center;
         }
 
+        .pay-logo {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 10px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
         .copy-box {
             background: #f8fafc;
             border: 1px solid var(--border-color);
@@ -450,10 +640,16 @@
             margin-top: 12px;
         }
 
+        .copy-box:active {
+            background: var(--primary-light);
+            border-color: var(--primary-blue);
+        }
+
         .account-num {
-            font-size: 1.05rem;
-            font-weight: 700;
+            font-size: 1.08rem;
+            font-weight: 800;
             direction: ltr;
+            color: var(--text-main);
         }
 
         /* سلة المشتريات المنبثقة */
@@ -494,83 +690,169 @@
 </head>
 <body>
 
-    <!-- الهيدر وثلاثي الأزرار -->
+    <!-- الهيدر الثابت -->
     <div class="sticky-top">
         <header class="top-bar">
-            <!-- زر فتح القائمة الجانبية للفئات -->
-            <button class="icon-circle user-btn" onclick="toggleSideMenu()" title="القائمة والفئات">
-                <i class="fas fa-bars"></i>
-            </button>
+            <div class="header-actions">
+                <!-- زر القائمة الجانبية للأقسام -->
+                <button class="icon-circle user-btn" onclick="toggleSideMenu()" title="جميع الأقسام والفئات">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <!-- زر حسابي (تسجيل الدخول / إنشاء حساب) -->
+                <button class="icon-circle user-btn" onclick="openAuthModal('login')" title="حسابي">
+                    <i class="far fa-user"></i>
+                </button>
+            </div>
             
             <div class="store-title">متجر صدارة</div>
             
-            <button class="icon-circle cart-btn" onclick="toggleCart()">
+            <button class="icon-circle cart-btn" onclick="toggleCart()" title="سلة المشتريات">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="cart-badge" id="cartCount">0</span>
             </button>
         </header>
 
-        <!-- شريط الأقسام السريع -->
+        <!-- شريط التصنيفات المتحرك بجميع الأقسام الجديدة -->
         <nav class="categories-nav" id="catNav">
             <div class="cat-tab active" onclick="selectTab(this, 'all')">الكل</div>
-            <div class="cat-tab" onclick="selectTab(this, 'bags')">حقائب</div>
-            <div class="cat-tab" onclick="selectTab(this, 'cosmetics')">مستلزمات التجميل</div>
-            <div class="cat-tab" onclick="selectTab(this, 'school')">مستلزمات مدرسية</div>
-            <div class="cat-tab" onclick="selectTab(this, 'abaya')">عبايات</div>
-            <div class="cat-tab" onclick="selectTab(this, 'perfumes')">عطور</div>
             <div class="cat-tab" onclick="selectTab(this, 'men')">ملابس رجالية</div>
+            <div class="cat-tab" onclick="selectTab(this, 'women')">ملابس نسائية</div>
+            <div class="cat-tab" onclick="selectTab(this, 'boys')">ملابس ولادية</div>
+            <div class="cat-tab" onclick="selectTab(this, 'girls')">ملابس بناتية</div>
+            <div class="cat-tab" onclick="selectTab(this, 'newborn')">ملابس مواليد</div>
+            <div class="cat-tab" onclick="selectTab(this, 'perfumes')">عطور</div>
+            <div class="cat-tab" onclick="selectTab(this, 'gifts')">هدايا</div>
+            <div class="cat-tab" onclick="selectTab(this, 'bags')">حقائب</div>
+            <div class="cat-tab" onclick="selectTab(this, 'school_bags')">شنط مدرسية</div>
+            <div class="cat-tab" onclick="selectTab(this, 'school_tools')">أدوات مدرسية</div>
+            <div class="cat-tab" onclick="selectTab(this, 'home')">أدوات منزلية</div>
+            <div class="cat-tab" onclick="selectTab(this, 'kitchen')">أدوات المطبخ</div>
+            <div class="cat-tab" onclick="selectTab(this, 'medical')">أدوات طبية</div>
+            <div class="cat-tab" onclick="selectTab(this, 'health')">أدوات صحية</div>
         </nav>
 
         <!-- شريط البحث -->
         <div class="search-section">
             <div class="search-input-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="ابحث بالاسم..." onkeyup="searchProducts()">
+                <input type="text" id="searchInput" placeholder="ابحث بالاسم أو الكود..." onkeyup="searchProducts()">
             </div>
-            <button class="tool-btn" title="فلترة" onclick="toggleSideMenu()">
+            <button class="tool-btn" title="تصفية حسب الفئات" onclick="toggleSideMenu()">
                 <i class="fas fa-sliders-h"></i>
             </button>
         </div>
     </div>
 
-    <!-- القائمة الجانبية المنسدلة (الفئات والتصنيفات المطابقة للصور) -->
+    <!-- نافذة حسابي (تسجيل الدخول وإنشاء حساب جديد) -->
+    <div class="auth-modal-overlay" id="authModal" onclick="if(event.target===this) closeAuthModal()">
+        <div class="auth-card">
+            <div class="auth-top">
+                <h3>حسابي</h3>
+                <button class="close-auth" onclick="closeAuthModal()">&times;</button>
+            </div>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">تسجيل الدخول</div>
+                <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">إنشاء حساب جديد</div>
+            </div>
+
+            <!-- نموذج تسجيل الدخول -->
+            <form class="auth-form active" id="formLogin" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" class="ltr-input" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" class="ltr-input" placeholder="••••••••" required>
+                </div>
+                <a href="#" class="forgot-link" onclick="showToast('تم إرسال رابط استعادة كلمة المرور لبريدك'); return false;">نسيت كلمة المرور؟</a>
+                <button type="submit" class="btn-auth-submit">تسجيل الدخول</button>
+                <div class="auth-footer-note">
+                    ما عندك حساب؟ <a href="#" onclick="switchAuthTab('register'); return false;">سجّل الآن</a>
+                </div>
+            </form>
+
+            <!-- نموذج إنشاء حساب جديد -->
+            <form class="auth-form" id="formRegister" onsubmit="handleRegister(event)">
+                <div class="form-row-2">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>الاسم الأول</label>
+                        <input type="text" placeholder="محمد" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>الاسم الأخير</label>
+                        <input type="text" placeholder="العمري" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" class="ltr-input" placeholder="example@email.com" required>
+                </div>
+                <button type="submit" class="btn-auth-submit soft-blue">إنشاء الحساب</button>
+                <div class="auth-footer-note">
+                    سيصلك إيميل لتفعيل حسابك وإنشاء كلمة مرور<br>
+                    عندك حساب؟ <a href="#" onclick="switchAuthTab('login'); return false;">سجّل دخول</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- القائمة الجانبية المنسدلة لجميع الفئات -->
     <div class="side-menu-overlay" id="sideMenuOverlay" onclick="toggleSideMenu()"></div>
     <aside class="side-menu" id="sideMenu">
         <div class="side-menu-header">
-            <h3 class="side-menu-title">أقسام المتجر</h3>
+            <h3 class="side-menu-title">أقسام وفئات المتجر</h3>
             <button onclick="toggleSideMenu()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
         </div>
         <div class="side-menu-body" id="sideMenuBody">
-            <!-- يتم توليد القائمة ديناميكياً بناءً على الصور -->
+            <!-- يتم توليد القائمة ديناميكياً -->
         </div>
     </aside>
 
-    <!-- المحتوى الرئيسي للمنتجات -->
+    <!-- المحتوى الرئيسي للأقسام والمنتجات -->
     <main class="main-content" id="sectionsContainer">
-        <!-- المنتجات -->
+        <!-- يتم توليد الأقسام والمنتجات ديناميكياً -->
     </main>
 
-    <!-- قسم الدفع الإلكتروني -->
+    <!-- قسم طرق الدفع الإلكتروني -->
     <section class="payment-section">
-        <h3 style="text-align:center; margin-bottom:20px;">طرق الدفع الإلكتروني</h3>
+        <h3 style="text-align:center; margin-bottom:20px; font-weight:800;">طرق الدفع الإلكتروني</h3>
+        
+        <!-- حساب الكريمي المعدل -->
         <div class="payment-card">
-            <h4>كريمي نقطة حاسب</h4>
-            <div class="copy-box" onclick="copyText('1433380')">
-                <i class="far fa-copy"></i>
-                <span class="account-num">1433380</span>
+            <div class="pay-logo" style="background:#f3e8ff; color:#7e22ce;">
+                <i class="fas fa-university"></i>
+            </div>
+            <h4>بنك الكريمي (حساب / حاسب)</h4>
+            <div class="copy-box" onclick="copyText('2628009')">
+                <i class="far fa-copy" style="color:var(--text-muted);"></i>
+                <span class="account-num">2628009</span>
             </div>
         </div>
+
+        <!-- المحافظ الإلكترونية والحوالات -->
         <div class="payment-card">
-            <h4>محفظة جيب / ون كاش / حوالة</h4>
+            <div class="pay-logo" style="background:#fee2e2; color:#dc2626;">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <h4>محفظة جيب / ون كاش / حوالة عبر أي شبكة</h4>
             <div class="copy-box" onclick="copyText('780568507')">
-                <i class="far fa-copy"></i>
+                <i class="far fa-copy" style="color:var(--text-muted);"></i>
                 <span class="account-num">780568507</span>
             </div>
-            <small style="color:var(--text-muted); display:block; margin-top:8px;">باسم/ عبدالرحمن عبدالله صالح الذماري</small>
+            <small style="color:var(--text-muted); display:block; margin-top:10px; line-height:1.5;">
+                يمكنك إرسال الحوالة إلى الرقم المذكور باسم/<br>
+                <strong style="color:var(--text-main);">عبدالرحمن عبدالله صالح الذماري</strong>
+            </small>
         </div>
+
+        <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:15px;">
+            © 2026 <strong>متجر صدارة</strong>. جميع الحقوق محفوظة.
+        </p>
     </section>
 
-    <!-- سلة المشتريات -->
+    <!-- سلة المشتريات المنبثقة -->
     <div class="cart-drawer" id="cartDrawer" onclick="if(event.target===this) toggleCart()">
         <div class="drawer-content">
             <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:15px; border-bottom:1px solid #e2e8f0;">
@@ -578,7 +860,7 @@
                 <button onclick="toggleCart()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
             </div>
             <div id="cartItemsList" style="flex:1; overflow-y:auto; padding:15px 0;">
-                <p style="text-align:center; color:#64748b;">السلة فارغة</p>
+                <p style="text-align:center; color:#64748b; margin-top:30px;">السلة فارغة</p>
             </div>
             <div style="border-top:1px solid #e2e8f0; padding-top:15px;">
                 <div style="display:flex; justify-content:space-between; font-weight:800; margin-bottom:12px;">
@@ -597,95 +879,258 @@
     <script>
         const WHATSAPP_NUMBER = "967780568507";
 
-        // هيكلة الأقسام والفئات الفرعية بدقة مطابقة للصور المرفقة
+        // شجرة الأقسام والفئات الكاملة حسب طلبك
         const categoriesTree = [
             {
-                name: "مستلزمات التجميل",
-                id: "cosmetics",
-                subs: ["وشم وفنون الجسم", "الرموش الصناعية واللاصقات", "فرش مكياج", "أدوات مكياج", "أدوات العناية بالبشرة", "أدوات الشعر", "أساسيات التجميل", "أدوات العناية بالجسم", "أدوات الفم والأنف", "حقيبة مكياج وتخزين", "أدوات التجميل المخصصة", "إكسسوارات الشعر", "أدوات الصالون والسبا", "حاويات قابلة لإعادة التعبئة", "حلاقة وإزالة الشعر للنساء", "إكسسوارات الاستحمام", "المكياج"]
-            },
-            {
-                name: "مستلزمات مدرسية",
-                id: "school",
-                subs: ["أدوات قرطاسية", "اقلام", "حقائب مدرسية", "حقائب بناتي مدرسية"]
-            },
-            {
-                name: "عبايات",
-                id: "abaya",
-                subs: ["عباية نسائي مطرزة", "عباية نسائي", "براقع نسائي", "عبايات بناتيه"]
-            },
-            {
-                name: "عطور",
-                id: "perfumes",
-                subs: ["عطور نسائية", "عطور رجالية"]
-            },
-            {
-                name: "حقائب",
-                id: "bags",
-                subs: ["حقائب ظهر بناتي", "حقائب يد", "حقائب سفر"]
-            },
-            {
-                name: "أدوات وألعاب اطفال",
-                id: "kids",
-                subs: ["العاب اطفال"]
-            },
-            {
-                name: "ملابس ولادي",
-                id: "boys",
-                subs: ["طقم بدلات ولادي", "ملابس ولادي علوية", "ملابس سفليّة ولادي", "بجائم ولادي", "زي مدرسي ولادي"]
-            },
-            {
-                name: "ملابس رجالية",
                 id: "men",
-                subs: ["ملابس علوية رجال", "معاطف وجاكيتات رجال", "تشكيلة قميص وجاكيت رجالية", "ملابس سفليّة للرجال", "هودي و باتيز هقيلة للرجال", "أطقم و بدلات رجالية", "ملابس سباحة رجالية", "بدلات وأزياء جينز رجالية", "ملابس رجالية مخصصة", "اكسسوارات رجالية", "ملابس رجالية تقليدية وحرفية", "ملابس داخلية وملابس نوم للرجال"]
+                name: "ملابس رجالية",
+                subs: ["ملابس علوية رجالية", "معاطف وجاكيتات رجالية", "قمصان وتيشيرتات", "بناطيل وجينز رجالي", "أطقم وبدلات رجالية", "ملابس تقليدية وثوب", "ملابس داخلية ونوم رجالية"]
             },
             {
-                name: "أدوات منزلية",
+                id: "women",
+                name: "ملابس نسائية",
+                subs: ["فساتين نسائية", "عبايات وجلابيات", "بلوزات وتنانير", "أطقم نسائية", "بجائم وملابس منزلية", "شيلان وطرح"]
+            },
+            {
+                id: "boys",
+                name: "ملابس ولادية",
+                subs: ["أطقم وبدلات ولادية", "تيشيرتات وقمصان ولادية", "بناطيل وشورتات ولادية", "بجائم ولادية", "زي مدرسي ولادي"]
+            },
+            {
+                id: "girls",
+                name: "ملابس بناتية",
+                subs: ["فساتين بناتية", "أطقم بناتية", "بجائم بناتية", "ملابس شتوية بناتية", "مريول وزي مدرسي بناتي"]
+            },
+            {
+                id: "newborn",
+                name: "ملابس مواليد",
+                subs: ["أطقم مواليد حديثي الولادة", "بربتوزات وأفرولات", "بطانيات وقماطات مواليد", "جوارب وقبعات مواليد", "مستلزمات رضاعة وعناية"]
+            },
+            {
+                id: "perfumes",
+                name: "عطور",
+                subs: ["عطور رجالية فاخرة", "عطور نسائية", "عطور شرقية وعود", "معطرات جسم وشعر", "بخور ومباخر"]
+            },
+            {
+                id: "gifts",
+                name: "هدايا",
+                subs: ["بوكسات هدايا رجالية", "بوكسات هدايا نسائية", "هدايا مواليد", "ساعات وإكسسوارات هدايا", "تغليف وكروت إهداء"]
+            },
+            {
+                id: "bags",
+                name: "حقائب",
+                subs: ["حقائب يد نسائية", "حقائب كتف وكروس", "حقائب سفر", "محافظ رجالية ونسائية", "حقائب لابتوب"]
+            },
+            {
+                id: "school_bags",
+                name: "شنط مدرسية",
+                subs: ["شنط مدرسية بناتي", "شنط مدرسية ولادي", "شنط ظهر بعجلات", "أطقم شنط مدرسية متكاملة", "لانش بوكس وحافظات طعام"]
+            },
+            {
+                id: "school_tools",
+                name: "أدوات مدرسية",
+                subs: ["دفاتر وكراسات", "أقلام حبر ورصاص وألوان", "أدوات هندسية ومسطرة", "مقالم مدرسية", "وسائل تعليمية وقرطاسية"]
+            },
+            {
                 id: "home",
-                subs: ["أدوات المطبخ", "التنظيف المنزلي", "ديكور منزل", "اثاث ومفروشات", "الاجهزة المنزلية", "أدوات طاقه وكهرباء", "أدوات المنزل الكهربائية", "إكسسوارات ولمسات ديكور للمنزل", "أدوات تنظيف المنزل", "أدوات الطبخ", "عروض خاصه ادوات قطع صغيره", "استكات", "اكسسوارات الجوال"]
+                name: "أدوات منزلية",
+                subs: ["منظمات المنزل", "أدوات التنظيف المنزلي", "ديكورات وتحف منزلية", "مفروشات وستائر", "إضاءة وأدوات كهربائية"]
+            },
+            {
+                id: "kitchen",
+                name: "أدوات المطبخ",
+                subs: ["قدور وأواني الطبخ", "أطقم سفرة وتقديم", "ترامس ودلال قهوة وشاي", "أجهزة المطبخ الكهربائية", "أدوات تقطيع وتحضير", "حافظات طعام وبهارات"]
+            },
+            {
+                id: "medical",
+                name: "أدوات طبية",
+                subs: ["أجهزة قياس الضغط والسكر", "موازين حرارة طبية", "أجهزة بخار واستنشاق", "مشدات ودعامات طبية", "مستلزمات إسعافات أولية"]
+            },
+            {
+                id: "health",
+                name: "أدوات صحية",
+                subs: ["أجهزة مساج واسترخاء", "ميزان وزن إلكتروني", "أدوات العناية الشخصية والصحية", "فلاتر ومستلزمات صحية", "معقمات ومستلزمات وقاية"]
             }
         ];
 
-        // عينة المنتجات
+        // بيانات المنتجات موزعة على الأقسام الجديدة
         const storeData = [
             {
-                id: "bags",
-                title: "حقائب ظهر بناتي",
-                countText: "4 منتج متاح",
+                id: "men",
+                title: "ملابس رجالية",
+                countText: "24 منتج متاح",
                 products: [
-                    { id: 101, name: "شنط مدرسية للأطفال بتصاميم كرتونية", code: "6b23", price: 3000, img: "https://images.unsplash.com/photo-1588072432836-e10032774350?w=400&q=80" },
-                    { id: 102, name: "حقيبة ظهر مدرسية عصرية", code: "6b24", price: 4500, img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&q=80" }
+                    { id: 1, name: "طقم رجالي كاجوال قطن فاخر", code: "M101", price: 8500, img: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=400&q=80" },
+                    { id: 2, name: "قميص رجالي كلاسيك أكمام طويلة", code: "M102", price: 4500, img: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400&q=80" }
                 ]
             },
             {
-                id: "cosmetics",
-                title: "أدوات الشعر والتجميل",
-                countText: "64 منتج متاح",
+                id: "women",
+                title: "ملابس نسائية",
+                countText: "32 منتج متاح",
                 products: [
-                    { id: 201, name: "صابون الشعر الأخضر الطبيعي الأصلي", code: "4b210", price: 3000, img: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=400&q=80" }
+                    { id: 3, name: "فستان نسائي أنيق بتصميم عصري", code: "W201", price: 9500, img: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&q=80" }
+                ]
+            },
+            {
+                id: "boys",
+                title: "ملابس ولادية",
+                countText: "18 منتج متاح",
+                products: [
+                    { id: 4, name: "طقم بدلة ولادي صيفي مريح", code: "B301", price: 5000, img: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&q=80" }
+                ]
+            },
+            {
+                id: "girls",
+                title: "ملابس بناتية",
+                countText: "21 منتج متاح",
+                products: [
+                    { id: 5, name: "فستان بناتي قطني بألوان زاهية", code: "G401", price: 5500, img: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=400&q=80" }
+                ]
+            },
+            {
+                id: "newborn",
+                title: "ملابس مواليد",
+                countText: "15 منتج متاح",
+                products: [
+                    { id: 6, name: "طقم مواليد متكامل 5 قطع قطن 100%", code: "NB501", price: 4800, img: "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=400&q=80" }
+                ]
+            },
+            {
+                id: "perfumes",
+                title: "عطور",
+                countText: "19 منتج متاح",
+                products: [
+                    { id: 7, name: "عطر صدارة الملكي بالعود والعنبر", code: "P601", price: 7000, img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&q=80" }
+                ]
+            },
+            {
+                id: "gifts",
+                title: "هدايا",
+                countText: "12 منتج متاح",
+                products: [
+                    { id: 8, name: "بوكس هدايا فاخر (ساعة + عطر + محفظة)", code: "GF701", price: 12000, img: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&q=80" }
+                ]
+            },
+            {
+                id: "bags",
+                title: "حقائب",
+                countText: "20 منتج متاح",
+                products: [
+                    { id: 9, name: "حقيبة يد نسائية جلد فاخر", code: "BG801", price: 6500, img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80" }
+                ]
+            },
+            {
+                id: "school_bags",
+                title: "شنط مدرسية",
+                countText: "14 منتج متاح",
+                products: [
+                    { id: 10, name: "شنط مدرسية للأطفال بتصاميم كرتونية", code: "6b23", price: 3000, img: "https://images.unsplash.com/photo-1588072432836-e10032774350?w=400&q=80" }
+                ]
+            },
+            {
+                id: "school_tools",
+                title: "أدوات مدرسية",
+                countText: "40 منتج متاح",
+                products: [
+                    { id: 11, name: "حقيبة أدوات هندسية وأقلام متكاملة", code: "ST901", price: 1800, img: "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400&q=80" }
+                ]
+            },
+            {
+                id: "home",
+                title: "أدوات منزلية",
+                countText: "35 منتج متاح",
+                products: [
+                    { id: 12, name: "طقم منظمات منزلية متعددة الاستخدام", code: "HM1001", price: 3200, img: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&q=80" }
+                ]
+            },
+            {
+                id: "kitchen",
+                title: "أدوات المطبخ",
+                countText: "28 منتج متاح",
+                products: [
+                    { id: 13, name: "طقم قدور جرانيت غير لاصق 7 قطع", code: "KT1101", price: 18500, img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=400&q=80" }
+                ]
+            },
+            {
+                id: "medical",
+                title: "أدوات طبية",
+                countText: "10 منتج متاح",
+                products: [
+                    { id: 14, name: "جهاز قياس ضغط الدم الرقمي الدقيق", code: "MD1201", price: 9000, img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&q=80" }
+                ]
+            },
+            {
+                id: "health",
+                title: "أدوات صحية",
+                countText: "16 منتج متاح",
+                products: [
+                    { id: 15, name: "ميزان وزن ذكي إلكتروني بشاشة رقمية", code: "HL1301", price: 4200, img: "https://images.unsplash.com/photo-1576678927484-cc907957088c?w=400&q=80" }
                 ]
             }
         ];
 
         let cart = [];
 
-        // بناء القائمة الجانبية بناءً على الصور
+        // التحكم بنافذة حسابي (تسجيل الدخول / إنشاء حساب)
+        function openAuthModal(mode = 'login') {
+            document.getElementById('authModal').classList.add('open');
+            switchAuthTab(mode);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('open');
+        }
+
+        function switchAuthTab(mode) {
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+            const formLogin = document.getElementById('formLogin');
+            const formRegister = document.getElementById('formRegister');
+
+            if (mode === 'login') {
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+                formLogin.classList.add('active');
+                formRegister.classList.remove('active');
+            } else {
+                tabRegister.classList.add('active');
+                tabLogin.classList.remove('active');
+                formRegister.classList.add('active');
+                formLogin.classList.remove('active');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            closeAuthModal();
+            showToast('تم تسجيل الدخول بنجاح! مرحباً بك في متجر صدارة');
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            closeAuthModal();
+            showToast('تم إنشاء الحساب! يرجى مراجعة بريدك الإلكتروني للتفعيل');
+        }
+
+        // بناء القائمة الجانبية بجميع الفئات
         function renderSideMenu() {
             const body = document.getElementById('sideMenuBody');
             body.innerHTML = '';
-            categoriesTree.forEach((cat, idx) => {
+            categoriesTree.forEach(cat => {
                 let subsHTML = '';
                 cat.subs.forEach(sub => {
-                    subsHTML += `<li onclick="filterBySub('${sub}')">${sub}</li>`;
+                    subsHTML += `<li onclick="filterBySub('${cat.id}', '${sub}')">${sub}</li>`;
                 });
 
                 body.innerHTML += `
                     <div class="menu-category-group">
                         <div class="menu-category-title" onclick="toggleSubList(this)">
                             <span>${cat.name}</span>
-                            <i class="fas fa-chevron-down" style="font-size:0.8rem;"></i>
+                            <i class="fas fa-chevron-down" style="font-size:0.8rem; transition:0.2s;"></i>
                         </div>
                         <ul class="sub-categories-list">
+                            <li style="color:var(--primary-blue); font-weight:700;" onclick="filterByCatFromMenu('${cat.id}', '${cat.name}')">عرض كل ${cat.name}</li>
                             ${subsHTML}
                         </ul>
                     </div>
@@ -705,14 +1150,19 @@
             document.getElementById('sideMenuOverlay').classList.toggle('open');
         }
 
-        function filterBySub(subName) {
+        function filterByCatFromMenu(catId, catName) {
             toggleSideMenu();
-            showToast(`تم اختيار الفئة: ${subName}`);
-            document.getElementById('searchInput').value = subName;
-            searchProducts();
+            renderStore(catId);
+            showToast(`قسم: ${catName}`);
         }
 
-        // عرض المنتجات
+        function filterBySub(catId, subName) {
+            toggleSideMenu();
+            renderStore(catId);
+            showToast(`الفئة: ${subName}`);
+        }
+
+        // عرض الأقسام والمنتجات
         function renderStore(filterCat = 'all', query = '') {
             const container = document.getElementById('sectionsContainer');
             container.innerHTML = '';
@@ -720,19 +1170,22 @@
             storeData.forEach(section => {
                 if (filterCat !== 'all' && section.id !== filterCat) return;
 
-                let prods = section.products.filter(p => p.name.includes(query) || p.code.includes(query));
+                let prods = section.products.filter(p => 
+                    p.name.toLowerCase().includes(query.toLowerCase()) || 
+                    p.code.toLowerCase().includes(query.toLowerCase())
+                );
                 if (prods.length === 0 && query !== '') return;
 
                 let cards = '';
                 prods.forEach(p => {
                     cards += `
                         <div class="product-card">
-                            <div class="product-img-wrap"><img src="${p.img}"></div>
+                            <div class="product-img-wrap"><img src="${p.img}" alt="${p.name}"></div>
                             <div class="product-details">
                                 <div class="product-name">${p.name}</div>
                                 <div class="price-code-row">
                                     <span class="product-code">كود: ${p.code}</span>
-                                    <span class="product-price">${p.price} <small>ريال</small></span>
+                                    <span class="product-price">${p.price.toLocaleString()} <small>ريال</small></span>
                                 </div>
                                 <button class="btn-add-cart" onclick="addToCart(${p.id}, '${p.name}', ${p.price}, '${p.code}')">أضف للسلة <i class="fas fa-plus"></i></button>
                                 <button class="btn-whatsapp" onclick="orderSingleWhatsApp('${p.name}', '${p.code}', ${p.price})">طلب عبر واتساب <i class="fab fa-whatsapp"></i></button>
@@ -748,6 +1201,9 @@
                                 <div class="block-title-wrap"><h3 class="block-title">${section.title}</h3><span class="blue-line"></span></div>
                                 <span class="block-subtitle">${section.countText}</span>
                             </div>
+                            <button class="view-all-btn" onclick="renderStore('${section.id}')">
+                                عرض الكل <i class="fas fa-arrow-left"></i>
+                            </button>
                         </div>
                         <div class="products-carousel">${cards}</div>
                     </div>
@@ -766,7 +1222,7 @@
         }
 
         function copyText(txt) {
-            navigator.clipboard.writeText(txt).then(() => showToast(`تم نسخ الرقم (${txt})`));
+            navigator.clipboard.writeText(txt).then(() => showToast(`تم نسخ الرقم (${txt}) بنجاح!`));
         }
 
         function showToast(msg) {
@@ -789,24 +1245,36 @@
             cart.forEach((item, idx) => {
                 count += item.qty;
                 total += item.price * item.qty;
-                list.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>${item.name} (${item.qty})</span><button onclick="cart.splice(${idx},1);updateCart();" style="color:red; background:none; border:none;"><i class="fas fa-trash"></i></button></div>`;
+                list.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f1f5f9;">
+                        <div>
+                            <div style="font-weight:700; font-size:0.9rem;">${item.name}</div>
+                            <small style="color:#64748b;">كود: ${item.code} | ${item.price.toLocaleString()} × ${item.qty}</small>
+                        </div>
+                        <button onclick="cart.splice(${idx},1);updateCart();" style="color:#ef4444; background:none; border:none; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                    </div>`;
             });
+            if (cart.length === 0) list.innerHTML = '<p style="text-align:center; color:#64748b; margin-top:30px;">السلة فارغة</p>';
             document.getElementById('cartCount').innerText = count;
-            document.getElementById('cartTotal').innerText = total + ' ريال';
+            document.getElementById('cartTotal').innerText = total.toLocaleString() + ' ريال';
         }
 
         function toggleCart() { document.getElementById('cartDrawer').classList.toggle('open'); }
 
         function orderSingleWhatsApp(name, code, price) {
-            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=طلب منتج:%0A${name}%0Aالكود: ${code}%0Aالسعر: ${price} ريال`, '_blank');
+            const msg = `مرحباً متجر صدارة، أرغب بطلب المنتج:%0A- ${name}%0A- الكود: ${code}%0A- السعر: ${price} ريال`;
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
         }
 
         function checkoutWhatsApp() {
             if (cart.length === 0) return showToast('السلة فارغة');
-            let msg = "طلب جديد من سلة متجر صدارة:%0A";
+            let msg = "مرحباً متجر صدارة، طلب جديد من السلة:%0A%0A";
             let total = 0;
-            cart.forEach(i => { msg += `- ${i.name} (كود: ${i.code}) × ${i.qty} = ${i.price * i.qty} ريال%0A`; total += i.price * i.qty; });
-            msg += `الإجمالي: ${total} ريال`;
+            cart.forEach((i, idx) => {
+                msg += `${idx+1}. ${i.name} (كود: ${i.code}) × ${i.qty} = ${(i.price * i.qty).toLocaleString()} ريال%0A`;
+                total += i.price * i.qty;
+            });
+            msg += `%0A*الإجمالي: ${total.toLocaleString()} ريال*`;
             window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
         }
 
