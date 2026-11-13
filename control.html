@@ -170,21 +170,33 @@
         };
 
         async function loadCloudData() {
-            const { data, error } = await _supabase.from('store_data').select('*').eq('id', 1).single();
-            if (data && data.payload) {
-                storeData = data.payload;
+            try {
+                const { data, error } = await _supabase.from('store_data').select('*').eq('id', 1).maybeSingle();
+                if (data && data.payload) {
+                    storeData = data.payload;
+                } else {
+                    // إذا لم يوجد سجل برقم 1، نقوم بإنشائه تلقائياً
+                    await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
+                }
                 renderAdminUI();
+            } catch (err) {
+                showToast('خطأ في الاتصال بقاعدة البيانات');
             }
         }
 
         async function saveCloudData() {
             showToast('جاري الحفظ في Supabase...');
-            const { error } = await _supabase.from('store_data').update({ payload: storeData }).eq('id', 1);
-            if (error) {
-                showToast('فشل الحفظ السحابي!');
-            } else {
-                showToast('تم الحفظ في السحابة بنجاح!');
-                renderAdminUI();
+            try {
+                const { error } = await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
+                if (error) {
+                    console.error(error);
+                    showToast('فشل الحفظ السحابي!');
+                } else {
+                    showToast('تم الحفظ في السحابة بنجاح!');
+                    renderAdminUI();
+                }
+            } catch (err) {
+                showToast('حدث خطأ أثناء الاتصال!');
             }
         }
 
@@ -362,7 +374,7 @@
         }
 
         function saveSettingsToCloud() {
-            storeData.settings.storeName = document.getElementById('setStoreName').value;
+            storeData.settings.storeName = document.getElementById('setStoreName`').value;
             storeData.settings.whatsapp = document.getElementById('setWhatsapp').value;
             saveCloudData();
         }
