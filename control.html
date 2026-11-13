@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | الإدارة</title>
+    <title>لوحة التحكم السحابية | الإدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- مكتبة Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
         :root {
@@ -20,7 +22,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         body { background-color: var(--bg-page); color: var(--text-main); min-height: 100vh; }
 
-        /* شاشة تسجيل الدخول الخارجية */
         .login-screen {
             position: fixed; inset: 0; background: #0f172a; z-index: 9999;
             display: flex; align-items: center; justify-content: center; padding: 20px;
@@ -31,7 +32,6 @@
         }
         .login-card h2 { margin-bottom: 20px; font-size: 1.4rem; font-weight: 800; color: #0f172a; }
 
-        /* لوحة التحكم الرئيسية */
         .admin-wrapper { display: none; min-height: 100vh; }
         .admin-wrapper.active { display: block; }
         .admin-header {
@@ -88,32 +88,24 @@
 </head>
 <body>
 
-    <!-- 1. شاشة تسجيل الدخول الخارجية السرية -->
     <div class="login-screen" id="loginScreen">
         <div class="login-card">
             <h2>تسجيل دخول الإدارة</h2>
             <form onsubmit="handleAdminLogin(event)">
-                <div class="form-group">
-                    <label>اسم المستخدم أو البريد</label>
-                    <input type="text" id="adminUser" style="direction:ltr;" required placeholder="أدخل اسم المستخدم">
-                </div>
-                <div class="form-group">
-                    <label>كلمة المرور</label>
-                    <input type="password" id="adminPass" style="direction:ltr;" required placeholder="••••••••">
-                </div>
+                <div class="form-group"><label>اسم المستخدم</label><input type="text" id="adminUser" style="direction:ltr;" required></div>
+                <div class="form-group"><label>كلمة المرور</label><input type="password" id="adminPass" style="direction:ltr;" required></div>
                 <button type="submit" class="btn-auth-submit">دخول لوحة التحكم</button>
             </form>
         </div>
     </div>
 
-    <!-- 2. محتوى لوحة التحكم الشاملة -->
     <div class="admin-wrapper" id="adminWrapper">
         <header class="admin-header">
             <div style="display:flex; align-items:center; gap:10px;">
                 <i class="fas fa-sliders-h" style="color:#38bdf8; font-size:1.4rem;"></i>
                 <div>
-                    <h2 style="font-size:1.15rem;">لوحة تحكم متجر صدارة</h2>
-                    <small style="color:#94a3b8;">إدارة شاملة وخارجية للمتجر</small>
+                    <h2 style="font-size:1.15rem;">لوحة تحكم صدارة السحابية</h2>
+                    <small style="color:#94a3b8;">متصل بـ Supabase Storage و Database</small>
                 </div>
             </div>
             <button onclick="logoutAdmin()" style="background:#ef4444; color:white; border:none; padding:8px 16px; border-radius:10px; font-weight:700; cursor:pointer;">تسجيل الخروج</button>
@@ -122,42 +114,37 @@
         <div class="admin-container">
             <div class="admin-nav-tabs">
                 <button class="admin-tab-btn active" onclick="switchTab('products', this)"><i class="fas fa-box-open"></i> المنتجات</button>
-                <button class="admin-tab-btn" onclick="switchTab('categories', this)"><i class="fas fa-layer-group"></i> الأقسام والفئات</button>
+                <button class="admin-tab-btn" onclick="switchTab('categories', this)"><i class="fas fa-layer-group"></i> الأقسام</button>
                 <button class="admin-tab-btn" onclick="switchTab('payments', this)"><i class="fas fa-credit-card"></i> طرق الدفع</button>
-                <button class="admin-tab-btn" onclick="switchTab('settings', this)"><i class="fas fa-cog"></i> إعدادات المتجر</button>
+                <button class="admin-tab-btn" onclick="switchTab('settings', this)"><i class="fas fa-cog"></i> الإعدادات</button>
             </div>
 
-            <!-- المنتجات -->
             <div class="admin-panel active" id="panel-products">
                 <button class="btn-add-new" onclick="openFormModal('product')"><i class="fas fa-plus"></i> إضافة منتج جديد</button>
                 <div class="admin-grid" id="adminProductsGrid"></div>
             </div>
 
-            <!-- الأقسام -->
             <div class="admin-panel" id="panel-categories">
                 <button class="btn-add-new" onclick="openFormModal('category')"><i class="fas fa-plus"></i> إضافة قسم جديد</button>
                 <div class="admin-grid" id="adminCategoriesGrid"></div>
             </div>
 
-            <!-- طرق الدفع -->
             <div class="admin-panel" id="panel-payments">
                 <button class="btn-add-new" onclick="openFormModal('payment')"><i class="fas fa-plus"></i> إضافة طريقة دفع</button>
                 <div class="admin-grid" id="adminPaymentsGrid"></div>
             </div>
 
-            <!-- الإعدادات -->
             <div class="admin-panel" id="panel-settings">
                 <div class="control-box" style="max-width:450px;">
                     <h3 style="margin-bottom:15px;">إعدادات المتجر العامة</h3>
                     <div class="form-group"><label>اسم المتجر</label><input type="text" id="setStoreName"></div>
                     <div class="form-group"><label>رقم الواتساب</label><input type="text" id="setWhatsapp" style="direction:ltr;"></div>
-                    <button class="btn-auth-submit" onclick="saveSettings()">حفظ التغييرات</button>
+                    <button class="btn-auth-submit" onclick="saveSettingsToCloud()">حفظ التغييرات سحابياً</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- نافذة الإضافة والتعديل مع رفع الصور من المعرض -->
     <div class="modal-overlay" id="formModal" onclick="if(event.target===this) closeFormModal()">
         <div class="modal-card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -166,37 +153,52 @@
             </div>
             <form id="dynamicForm" onsubmit="saveForm(event)">
                 <div id="formFields"></div>
-                <button type="submit" class="btn-auth-submit" style="margin-top:10px;">حفظ البيانات</button>
+                <button type="submit" class="btn-auth-submit" style="margin-top:10px;">حفظ سحابياً</button>
             </form>
         </div>
     </div>
 
-    <div class="toast" id="toast">تم التنفيذ بنجاح!</div>
+    <div class="toast" id="toast">جاري الاتصال بالسحابة...</div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('sadarah_store_db')) || {
+        // إعدادات اتصال Supabase الخاص بك
+        const SUPABASE_URL = 'ضع_رابط_مشروعك_هنا_supabase.co';
+        const SUPABASE_ANON_KEY = 'ضع_مفتاح_anon_key_هنا';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let storeData = {
             settings: { storeName: "متجر صدارة", whatsapp: "967780568507" },
-            categories: [{ id: "men", name: "ملابس رجالية", subs: [] }],
-            products: [], payments: []
+            categories: [], products: [], payments: [], users: []
         };
 
-        function saveDB() {
-            localStorage.setItem('sadarah_store_db', JSON.stringify(db));
-            renderAdminUI();
+        async function loadCloudData() {
+            const { data, error } = await _supabase.from('store_data').select('*').single();
+            if (data && data.payload) {
+                storeData = data.payload;
+                renderAdminUI();
+            }
         }
 
-        // التحقق من تسجيل دخول الإدارة في الصفحة الخارجية
+        async function saveCloudData() {
+            showToast('جاري الحفظ في Supabase...');
+            const { error } = await _supabase.from('store_data').update({ payload: storeData }).eq('id', 1);
+            if (error) {
+                showToast('فشل الحفظ السحابي!');
+            } else {
+                showToast('تم الحفظ في السحابة بنجاح!');
+                renderAdminUI();
+            }
+        }
+
         function handleAdminLogin(e) {
             e.preventDefault();
             const u = document.getElementById('adminUser').value.trim();
             const p = document.getElementById('adminPass').value.trim();
-
-            // بيانات الدخول الخاصة بك (يمكنك تغييرها هنا)
             if (u === 'admin' && p === 'admin2026') {
                 sessionStorage.setItem('isLoggedIn', 'true');
                 checkAuth();
             } else {
-                showToast('اسم المستخدم أو كلمة المرور غير صحيحة!');
+                showToast('خطأ في اسم المستخدم أو كلمة المرور');
             }
         }
 
@@ -204,7 +206,7 @@
             if (sessionStorage.getItem('isLoggedIn') === 'true') {
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('adminWrapper').classList.add('active');
-                renderAdminUI();
+                loadCloudData();
             }
         }
 
@@ -221,13 +223,10 @@
         }
 
         function renderAdminUI() {
-            // المنتجات
-            document.getElementById('adminProductsGrid').innerHTML = db.products.map(p => `
+            document.getElementById('adminProductsGrid').innerHTML = (storeData.products || []).map(p => `
                 <div class="control-box">
                     <div>
-                        <div class="control-box-header">
-                            <strong>${p.name}</strong><span style="background:#eff6ff; color:#2563eb; padding:2px 8px; border-radius:8px; font-size:0.8rem;">${p.code}</span>
-                        </div>
+                        <div class="control-box-header"><strong>${p.name}</strong><span style="background:#eff6ff; color:#2563eb; padding:2px 8px; border-radius:8px; font-size:0.8rem;">${p.code}</span></div>
                         <img src="${p.img}" style="width:100%; height:120px; object-fit:cover; border-radius:8px; margin-bottom:8px;" onerror="this.src='https://via.placeholder.com/300'">
                         <p style="font-weight:800; color:#10b981;">${Number(p.price).toLocaleString()} ريال</p>
                     </div>
@@ -238,12 +237,9 @@
                 </div>
             `).join('');
 
-            // الأقسام
-            document.getElementById('adminCategoriesGrid').innerHTML = db.categories.map(c => `
+            document.getElementById('adminCategoriesGrid').innerHTML = (storeData.categories || []).map(c => `
                 <div class="control-box">
-                    <div>
-                        <div class="control-box-header"><strong>${c.name}</strong></div>
-                    </div>
+                    <div><div class="control-box-header"><strong>${c.name}</strong></div></div>
                     <div class="control-actions">
                         <button class="btn-edit" onclick="openFormModal('category', '${c.id}')"><i class="fas fa-edit"></i> تعديل</button>
                         <button class="btn-delete" onclick="deleteItem('categories', '${c.id}')"><i class="fas fa-trash"></i> حذف</button>
@@ -251,8 +247,7 @@
                 </div>
             `).join('');
 
-            // الدفع
-            document.getElementById('adminPaymentsGrid').innerHTML = db.payments.map(pay => `
+            document.getElementById('adminPaymentsGrid').innerHTML = (storeData.payments || []).map(pay => `
                 <div class="control-box">
                     <div>
                         <div class="control-box-header"><strong>${pay.title}</strong></div>
@@ -265,23 +260,23 @@
                 </div>
             `).join('');
 
-            document.getElementById('setStoreName').value = db.settings.storeName;
-            document.getElementById('setWhatsapp').value = db.settings.whatsapp;
+            document.getElementById('setStoreName').value = storeData.settings?.storeName || '';
+            document.getElementById('setWhatsapp').value = storeData.settings?.whatsapp || '';
         }
 
-        let currentType = '', currentId = null, tempImageBase64 = '';
+        let currentType = '', currentId = null, tempImageCloudUrl = '';
 
         function openFormModal(type, id = null) {
-            currentType = type; currentId = id; tempImageBase64 = '';
+            currentType = type; currentId = id; tempImageCloudUrl = '';
             const fields = document.getElementById('formFields');
             const title = document.getElementById('modalTitle');
             fields.innerHTML = '';
 
             if (type === 'product') {
-                const item = id ? db.products.find(p => p.id === id) : { name: '', code: '', price: '', catId: db.categories[0]?.id, img: '' };
-                if (item.img) tempImageBase64 = item.img;
+                const item = id ? storeData.products.find(p => p.id === id) : { name: '', code: '', price: '', catId: storeData.categories[0]?.id, img: '' };
+                if (item.img) tempImageCloudUrl = item.img;
                 title.innerText = id ? 'تعديل المنتج' : 'إضافة منتج جديد';
-                let catOptions = db.categories.map(c => `<option value="${c.id}" ${c.id === item.catId ? 'selected' : ''}>${c.name}</option>`).join('');
+                let catOptions = (storeData.categories || []).map(c => `<option value="${c.id}" ${c.id === item.catId ? 'selected' : ''}>${c.name}</option>`).join('');
                 
                 fields.innerHTML = `
                     <div class="form-group"><label>اسم المنتج</label><input type="text" id="f_name" value="${item.name}" required></div>
@@ -289,36 +284,47 @@
                     <div class="form-group"><label>الكود</label><input type="text" id="f_code" value="${item.code}" required></div>
                     <div class="form-group"><label>السعر (ريال)</label><input type="number" id="f_price" value="${item.price}" required></div>
                     <div class="form-group">
-                        <label>صورة المنتج (اختر من المعرض)</label>
-                        <input type="file" accept="image/*" onchange="handleImageUpload(event)" style="padding:8px;">
-                    </div>
-                `;
+                        <label>صورة المنتج (رفع مباشر لـ Supabase Storage)</label>
+                        <input type="file" accept="image/*" onchange="uploadImageToSupabaseStorage(event)" style="padding:8px;">
+                    </div>`;
             } else if (type === 'category') {
-                const item = id ? db.categories.find(c => c.id === id) : { name: '' };
+                const item = id ? storeData.categories.find(c => c.id === id) : { name: '' };
                 title.innerText = id ? 'تعديل القسم' : 'إضافة قسم جديد';
                 fields.innerHTML = `<div class="form-group"><label>اسم القسم</label><input type="text" id="f_catName" value="${item.name}" required></div>`;
             } else if (type === 'payment') {
-                const item = id ? db.payments.find(p => p.id === id) : { title: '', number: '' };
+                const item = id ? storeData.payments.find(p => p.id === id) : { title: '', number: '' };
                 title.innerText = id ? 'تعديل طريقة الدفع' : 'إضافة طريقة دفع';
                 fields.innerHTML = `
                     <div class="form-group"><label>اسم البنك / المحفظة</label><input type="text" id="f_payTitle" value="${item.title}" required></div>
-                    <div class="form-group"><label>رقم الحساب</label><input type="text" id="f_payNum" value="${item.number}" style="direction:ltr;" required></div>
-                `;
+                    <div class="form-group"><label>رقم الحساب</label><input type="text" id="f_payNum" value="${item.number}" style="direction:ltr;" required></div>`;
             }
             document.getElementById('formModal').classList.add('open');
         }
 
-        // تحويل صورة المعرض إلى بيانات نصية لتخزينها محلياً وعرضها فوراً
-        function handleImageUpload(e) {
+        // دالة رفع الصورة إلى Supabase Storage (الدلو platform-files)
+        async function uploadImageToSupabaseStorage(e) {
             const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(uploadEvent) {
-                    tempImageBase64 = uploadEvent.target.result;
-                    showToast('تم تحميل الصورة من المعرض بنجاح');
-                };
-                reader.readAsDataURL(file);
+            if (!file) return;
+            showToast('جاري رفع الصورة إلى سحابة Supabase...');
+
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}.${fileExt}`;
+
+            const { data, error } = await _supabase.storage
+                .from('platform-files')
+                .upload(fileName, file);
+
+            if (error) {
+                showToast('فشل رفع الصورة سحابياً!');
+                return;
             }
+
+            const { data: publicURLData } = _supabase.storage
+                .from('platform-files')
+                .getPublicUrl(fileName);
+
+            tempImageCloudUrl = publicURLData.publicUrl;
+            showToast('تم رفع الصورة بنجاح وتوليد الرابط السحابي!');
         }
 
         function saveForm(e) {
@@ -330,14 +336,14 @@
                     catId: document.getElementById('f_catId').value,
                     code: document.getElementById('f_code').value,
                     price: Number(document.getElementById('f_price').value),
-                    img: tempImageBase64 || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'
+                    img: tempImageCloudUrl || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'
                 };
-                if (currentId) db.products[db.products.findIndex(p => p.id === currentId)] = data;
-                else db.products.unshift(data);
+                if (currentId) storeData.products[storeData.products.findIndex(p => p.id === currentId)] = data;
+                else storeData.products.unshift(data);
             } else if (currentType === 'category') {
                 const name = document.getElementById('f_catName').value;
-                if (currentId) db.categories.find(c => c.id === currentId).name = name;
-                else db.categories.push({ id: 'cat_' + Date.now(), name, subs: [] });
+                if (currentId) storeData.categories.find(c => c.id === currentId).name = name;
+                else storeData.categories.push({ id: 'cat_' + Date.now(), name, subs: [] });
             } else if (currentType === 'payment') {
                 const data = {
                     id: currentId || Date.now(),
@@ -345,26 +351,23 @@
                     number: document.getElementById('f_payNum').value,
                     icon: 'fa-university'
                 };
-                if (currentId) db.payments[db.payments.findIndex(p => p.id === currentId)] = data;
-                else db.payments.push(data);
+                if (currentId) storeData.payments[storeData.payments.findIndex(p => p.id === currentId)] = data;
+                else storeData.payments.push(data);
             }
             closeFormModal();
-            saveDB();
-            showToast('تم الحفظ بنجاح');
+            saveCloudData();
         }
 
         function deleteItem(col, id) {
             if (!confirm('هل أنت متأكد من الحذف؟')) return;
-            db[col] = db[col].filter(i => i.id !== id && i.id !== String(id));
-            saveDB();
-            showToast('تم الحذف بنجاح');
+            storeData[col] = storeData[col].filter(i => i.id !== id && i.id !== String(id));
+            saveCloudData();
         }
 
-        function saveSettings() {
-            db.settings.storeName = document.getElementById('setStoreName').value;
-            db.settings.whatsapp = document.getElementById('setWhatsapp').value;
-            saveDB();
-            showToast('تم حفظ الإعدادات');
+        function saveSettingsToCloud() {
+            storeData.settings.storeName = document.getElementById('setStoreName').value;
+            storeData.settings.whatsapp = document.getElementById('setWhatsapp').value;
+            saveCloudData();
         }
 
         function closeFormModal() { document.getElementById('formModal').classList.remove('open'); }
@@ -373,7 +376,6 @@
             setTimeout(() => t.classList.remove('show'), 2500);
         }
 
-        // الفحص الأولي لجلسة الدخول
         checkAuth();
     </script>
 </body>
