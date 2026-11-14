@@ -35,7 +35,7 @@
         .search-bar input { width: 100%; padding: 11px 45px 11px 15px; border: 1px solid var(--border); border-radius: 14px; background: #f8fafc; outline: none; }
         .search-bar i { position: absolute; right: 35px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
 
-        /* البنرات العائمة والمرنة 100% */
+        /* البنرات العائمة والمرنة */
         .banners-container { padding: 20px 20px 5px; }
         .floating-banner-box {
             position: relative;
@@ -46,50 +46,13 @@
             box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12), 0 8px 20px rgba(15, 23, 42, 0.06);
             border: 1px solid #ffffff;
             overflow: hidden;
-            transition: transform 0.3s ease;
         }
-        .banner-slide {
-            display: none;
-            width: 100%;
-            text-align: center;
-            animation: bannerFade 0.6s ease-in-out;
-        }
-        .banner-slide.active {
-            display: block;
-        }
-        .banner-slide img {
-            width: 100%;
-            height: auto;
-            max-height: 420px;
-            object-fit: contain;
-            border-radius: 18px;
-            display: block;
-            margin: 0 auto;
-        }
-        @keyframes bannerFade {
-            from { opacity: 0.3; transform: scale(0.99); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .banner-dots {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            margin-top: 10px;
-            padding-bottom: 4px;
-        }
-        .b-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #cbd5e1;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .b-dot.active {
-            width: 24px;
-            border-radius: 6px;
-            background: var(--primary);
-        }
+        .banner-slide { display: none; width: 100%; text-align: center; }
+        .banner-slide.active { display: block; }
+        .banner-slide img { width: 100%; height: auto; max-height: 420px; object-fit: contain; border-radius: 18px; display: block; margin: 0 auto; }
+        .banner-dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; padding-bottom: 4px; }
+        .b-dot { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; cursor: pointer; transition: all 0.3s ease; }
+        .b-dot.active { width: 24px; border-radius: 6px; background: var(--primary); }
 
         .main-content { padding: 20px; }
         .cat-block { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
@@ -124,7 +87,14 @@
         .btn-cart { background: var(--primary); }
         .btn-wa { background: var(--whatsapp); margin-top: 4px; }
 
-        .pay-section { background: var(--white); padding: 30px 20px; border-top: 1px solid var(--border); }
+        /* قسم سلة شي إن الجديد فوق طرق الدفع */
+        .shein-section { background: var(--white); padding: 25px 20px; border-top: 1px solid var(--border); }
+        .shein-box { background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid #dbeafe; border-radius: 22px; padding: 20px; box-shadow: 0 4px 15px rgba(37,99,235,0.05); }
+        .shein-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .shein-input { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 12px; background: #fff; outline: none; direction: ltr; font-size: 0.9rem; margin-bottom: 12px; }
+        .shein-input:focus { border-color: var(--primary); }
+
+        .pay-section { background: var(--white); padding: 25px 20px; border-top: 1px solid var(--border); }
         .pay-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
         .pay-card { border: 1px solid #f1f5f9; border-radius: 18px; padding: 18px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); background: #fff; }
         .copy-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-top: 10px; font-weight: 800; }
@@ -177,7 +147,7 @@
         </div>
     </div>
 
-    <!-- قسم البنرات الإعلانية العائمة والمرنة -->
+    <!-- البنرات الإعلانية العائمة -->
     <div class="banners-container" id="bannersSection" style="display:none;">
         <div class="floating-banner-box">
             <div id="slidesWrapper"></div>
@@ -187,6 +157,17 @@
 
     <main class="main-content" id="mainContent"></main>
 
+    <!-- قسم إرسال سلة شي إن عبر متجر صدارة (فوق طرق الدفع مباشرة) -->
+    <section class="shein-section">
+        <div class="shein-box">
+            <div class="shein-title"><i class="fas fa-shopping-bag"></i> إرسال سلة شي إن (SHEIN) عبر متجر صدارة</div>
+            <p style="font-size:0.85rem; color:var(--muted); margin-bottom:12px;">قم بنسخ رابط سلتك من تطبيق SHEIN وألصقه هنا، ثم أرسل الطلب مع سلتك الداخلية مباشرة إلى واتساب المتجر:</p>
+            <input type="text" id="sheinCartUrlInput" class="shein-input" placeholder="الصق رابط سلة شي إن هنا (https://api-shein...)">
+            <button class="btn-wa" onclick="sendSheinCartWA()"><i class="fab fa-whatsapp"></i> إرسال سلة شي إن وطلبk عبر واتساب</button>
+        </div>
+    </section>
+
+    <!-- طرق الدفع الإلكتروني -->
     <section class="pay-section">
         <h3 style="text-align:center; margin-bottom:18px; font-weight:800;">طرق الدفع الإلكتروني</h3>
         <div class="pay-grid" id="payList"></div>
@@ -271,7 +252,6 @@
         document.getElementById('uiStoreName').innerText = storeData.settings?.storeName || 'متجر صدارة';
         document.getElementById('uiFooterName').innerText = storeData.settings?.storeName || 'متجر صدارة';
 
-        // استخراج البنرات الصالحة فقط (التي تحتوي على رابط صورة)
         const validBanners = (storeData.banners || []).filter(b => b && (b.img || b.url || b.image));
         const bannersSec = document.getElementById('bannersSection');
         
@@ -413,6 +393,30 @@
             slideIndex++;
             showSlides();
         }, 5500);
+    }
+
+    // دالة إرسال سلة شي إن مع محتويات سلة المتجر عبر واتساب
+    function sendSheinCartWA() {
+        const sheinUrl = document.getElementById('sheinCartUrlInput').value.trim();
+        let msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب سلة شي إن (SHEIN) عبر متجر صدارة:%0A%0A`;
+        
+        if (sheinUrl) {
+            msg += `🔗 رابط سلة شي إن:%0A${encodeURIComponent(sheinUrl)}%0A%0A`;
+        }
+
+        if (cart.length > 0) {
+            msg += `🛒 المنتجات المضافة في السلة الداخلية للمتجر:%0A`;
+            let total = 0;
+            cart.forEach((i, idx) => {
+                msg += `${idx+1}. ${i.name} (كود: ${i.code}) × ${i.qty} = ${i.price*i.qty} ريال%0A`;
+                total += i.price * i.qty;
+            });
+            msg += `%0A*إجمالي السلة الداخلية: ${total.toLocaleString()} ريال*`;
+        } else {
+            msg += `*(لم يتم إضافة منتجات من سلة المتجر الداخلية)*`;
+        }
+
+        window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
     }
 
     function stepProdImg(prodId, dir) {
