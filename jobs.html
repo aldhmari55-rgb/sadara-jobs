@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة التوظيف - صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #0f172a; --accent: #2563eb; --whatsapp: #22c55e;
+            --bg: #f4f6f9; --white: #ffffff; --text: #1e293b; --muted: #64748b; --border: #e2e8f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); color: var(--text); }
+
+        .header { background: var(--primary); color: #fff; padding: 30px 20px; text-align: center; }
+        .header h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; }
+        .header p { color: #94a3b8; font-size: 0.95rem; max-width: 600px; margin: 0 auto; }
+
+        .container { max-width: 1000px; margin: -20px auto 40px; padding: 0 16px; }
+
+        .search-box { background: var(--white); padding: 16px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+        .search-box input, .search-box select { flex: 1; min-width: 200px; padding: 12px 15px; border: 1px solid var(--border); border-radius: 12px; background: #f8fafc; outline: none; font-size: 0.95rem; }
+
+        .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+        .job-card { background: var(--white); border-radius: 20px; padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: 0.2s; }
+        .job-card:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(0,0,0,0.06); }
+
+        .job-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+        .job-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); }
+        .job-badge { background: #eff6ff; color: var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
+
+        .job-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.85rem; color: var(--muted); margin-bottom: 14px; }
+        .job-meta span { display: flex; align-items: center; gap: 5px; }
+
+        .job-desc { font-size: 0.9rem; color: #475569; line-height: 1.6; margin-bottom: 18px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .job-actions { display: flex; gap: 8px; }
+        .btn { flex: 1; padding: 11px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.9rem; }
+        .btn-apply { background: var(--accent); color: #fff; }
+        .btn-details { background: #f1f5f9; color: var(--text); }
+
+        /* النوافذ المنبثقة */
+        .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal.open { display: flex; }
+        .modal-card { background: #fff; width: 100%; max-width: 480px; border-radius: 24px; padding: 24px; max-height: 90vh; overflow-y: auto; }
+        
+        .grp { margin-bottom: 14px; }
+        .grp label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
+        .grp input, .grp textarea, .grp select { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 12px; background: #f8fafc; outline: none; }
+
+        .toast { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: #fff; padding: 10px 22px; border-radius: 25px; font-size: 0.9rem; z-index: 9999; transition: 0.3s; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <h1>💼 بوابة الوظائف والفرص المهنية</h1>
+    <p>اكتشف أحدث الوظائف الشاغرة وقدّم سيرتك الذاتية مباشرة بخطوات بسيطة</p>
+</header>
+
+<div class="container">
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="ابحث بالمسمى الوظيفي أو الجهة..." onkeyup="renderJobs()">
+        <select id="typeFilter" onchange="renderJobs()">
+            <option value="all">جميع أنواع الدوام</option>
+            <option value="دوام كامل">دوام كامل</option>
+            <option value="دوام جزئي">دوام جزئي</option>
+            <option value="عمل عن بعد">عمل عن بعد</option>
+            <option value="عمل ميداني / بالعمولة">عمل ميداني / بالعمولة</option>
+        </select>
+    </div>
+
+    <div class="jobs-grid" id="jobsGrid">
+        <p style="text-align:center; grid-column:1/-1; color:var(--muted);">جاري تحميل الوظائف...</p>
+    </div>
+</div>
+
+<!-- نافذة تفاصيل الوظيفة -->
+<div class="modal" id="detailsModal" onclick="if(event.target===this) closeModal('detailsModal')">
+    <div class="modal-card" id="detailsContent"></div>
+</div>
+
+<!-- نافذة التقديم على الوظيفة -->
+<div class="modal" id="applyModal" onclick="if(event.target===this) closeModal('applyModal')">
+    <div class="modal-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 id="applyJobTitle">التقديم على الوظيفة</h3>
+            <button onclick="closeModal('applyModal')" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+        </div>
+        <form onsubmit="submitApplication(event)">
+            <input type="hidden" id="appJobId">
+            <div class="grp"><label>الاسم الرباعي الكامل</label><input type="text" id="appName" required></div>
+            <div class="grp"><label>رقم الهاتف (واتساب)</label><input type="tel" id="appPhone" placeholder="77xxxxxxx" style="direction:ltr;" required></div>
+            <div class="grp"><label>المؤهل العلمي والتخصص</label><input type="text" id="appEdu" placeholder="مثال: بكالوريوس إدارة أعمال" required></div>
+            <div class="grp"><label>سنوات الخبرة وأبرز المهارات</label><textarea id="appExp" rows="3" placeholder="اكتب نبذة مختصرة عن خبراتك..." required></textarea></div>
+            <div class="grp"><label>رابط السيرة الذاتية أو معرض الأعمال (اختياري)</label><input type="url" id="appCvLink" placeholder="https://drive.google.com/..." style="direction:ltr;"></div>
+            
+            <button type="submit" class="btn btn-apply" style="width:100%; padding:13px; margin-bottom:8px;">
+                <i class="fas fa-paper-plane"></i> إرسال الطلب إلكترونياً
+            </button>
+            <button type="button" onclick="applyViaWhatsApp()" class="btn" style="width:100%; padding:13px; background:var(--whatsapp); color:#fff;">
+                <i class="fab fa-whatsapp"></i> إرسال البيانات عبر واتساب مباشرة
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const SUPABASE_URL = 'https://lvutrzswngpkjfamgact.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2dXRyenN3bmdwa2pmYW1nYWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNTk4MzAsImV4cCI6MjEwNzkzNTgzMH0.fK9eGSy2uv3spG6tynUCoGNivzmRCJnwLEnBFCCgu7g';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let jobsData = { whatsapp: "967780568507", jobs: [], applications: [] };
+
+    async function loadJobs() {
+        const { data } = await _supabase.from('store_data').select('payload').eq('id', 2).maybeSingle();
+        if (data && data.payload) {
+            jobsData = data.payload;
+            if (!Array.isArray(jobsData.jobs)) jobsData.jobs = [];
+            if (!Array.isArray(jobsData.applications)) jobsData.applications = [];
+        }
+        renderJobs();
+    }
+
+    function renderJobs() {
+        const grid = document.getElementById('jobsGrid');
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const type = document.getElementById('typeFilter').value;
+
+        const filtered = jobsData.jobs.filter(j => {
+            if (j.status === 'مغلقة') return false;
+            const matchText = j.title.toLowerCase().includes(q) || (j.company || '').toLowerCase().includes(q) || (j.location || '').toLowerCase().includes(q);
+            const matchType = type === 'all' || j.type === type;
+            return matchText && matchType;
+        });
+
+        if (!filtered.length) {
+            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:var(--muted); padding:30px;">لا توجد وظائف مطابقة لبحثك حالياً.</p>';
+            return;
+        }
+
+        grid.innerHTML = filtered.map(j => `
+            <div class="job-card">
+                <div>
+                    <div class="job-top">
+                        <h3 class="job-title">${j.title}</h3>
+                        <span class="job-badge">${j.type}</span>
+                    </div>
+                    <div class="job-meta">
+                        <span><i class="fas fa-building"></i> ${j.company || 'جهة معلنة'}</span>
+                        <span><i class="fas fa-map-marker-alt"></i> ${j.location || 'ذمار'}</span>
+                        ${j.salary ? `<span><i class="fas fa-money-bill-wave"></i> ${j.salary}</span>` : ''}
+                    </div>
+                    <p class="job-desc">${j.desc}</p>
+                </div>
+                <div class="job-actions">
+                    <button class="btn btn-details" onclick="openDetails(${j.id})">التفاصيل والشروط</button>
+                    <button class="btn btn-apply" onclick="openApply(${j.id})">قدّم الآن</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function openDetails(id) {
+        const j = jobsData.jobs.find(x => x.id === id);
+        if (!j) return;
+        document.getElementById('detailsContent').innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="color:var(--primary);">${j.title}</h3>
+                <button onclick="closeModal('detailsModal')" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+            <div class="job-meta" style="margin-bottom:15px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+                <span><i class="fas fa-building"></i> ${j.company}</span>
+                <span><i class="fas fa-map-marker-alt"></i> ${j.location}</span>
+                <span><i class="fas fa-clock"></i> ${j.type}</span>
+                ${j.salary ? `<span><i class="fas fa-money-bill-wave"></i> ${j.salary}</span>` : ''}
+            </div>
+            <h4 style="margin-bottom:6px; font-size:0.95rem;">الوصف الوظيفي:</h4>
+            <p style="font-size:0.9rem; color:#475569; line-height:1.7; margin-bottom:15px; white-space:pre-line;">${j.desc}</p>
+            ${j.reqs ? `<h4 style="margin-bottom:6px; font-size:0.95rem;">الشروط والمتطلبات:</h4><p style="font-size:0.9rem; color:#475569; line-height:1.7; margin-bottom:20px; white-space:pre-line;">${j.reqs}</p>` : ''}
+            <button class="btn btn-apply" style="width:100%; padding:13px;" onclick="closeModal('detailsModal'); openApply(${j.id})">التقديم على هذه الوظيفة</button>
+        `;
+        document.getElementById('detailsModal').classList.add('open');
+    }
+
+    function openApply(id) {
+        const j = jobsData.jobs.find(x => x.id === id);
+        if (!j) return;
+        document.getElementById('appJobId').value = j.id;
+        document.getElementById('applyJobTitle').innerText = 'التقديم: ' + j.title;
+        document.getElementById('applyModal').classList.add('open');
+    }
+
+    async function submitApplication(e) {
+        e.preventDefault();
+        const jobId = Number(document.getElementById('appJobId').value);
+        const job = jobsData.jobs.find(x => x.id === jobId);
+        
+        const app = {
+            id: Date.now(),
+            jobId: jobId,
+            jobTitle: job ? job.title : 'وظيفة',
+            name: document.getElementById('appName').value,
+            phone: document.getElementById('appPhone').value,
+            edu: document.getElementById('appEdu').value,
+            exp: document.getElementById('appExp').value,
+            cvLink: document.getElementById('appCvLink').value,
+            date: new Date().toLocaleDateString('ar-YE')
+        };
+
+        jobsData.applications.unshift(app);
+        const { error } = await _supabase.from('store_data').upsert({ id: 2, payload: jobsData });
+        
+        if (error) {
+            showToast('حدث خطأ أثناء الإرسال، حاول عبر واتساب');
+        } else {
+            showToast('تم إرسال طلبك بنجاح! سنتواصل معك قريباً ✓');
+            e.target.reset();
+            closeModal('applyModal');
+        }
+    }
+
+    function applyViaWhatsApp() {
+        const jobId = Number(document.getElementById('appJobId').value);
+        const job = jobsData.jobs.find(x => x.id === jobId);
+        const name = document.getElementById('appName').value.trim();
+        const phone = document.getElementById('appPhone').value.trim();
+        const edu = document.getElementById('appEdu').value.trim();
+        const exp = document.getElementById('appExp').value.trim();
+        const cv = document.getElementById('appCvLink').value.trim();
+
+        if (!name || !phone) return showToast('يرجى كتابة الاسم ورقم الهاتف أولاً');
+
+        let msg = `مرحباً، أرغب بالتقديم على وظيفة: *${job ? job.title : ''}*%0A%0A`;
+        msg += `👤 *الاسم:* ${name}%0A`;
+        msg += `📱 *الهاتف:* ${phone}%0A`;
+        if (edu) msg += `🎓 *المؤهل:* ${edu}%0A`;
+        if (exp) msg += `💼 *الخبرات والمهارات:* ${exp}%0A`;
+        if (cv) msg += `📄 *رابط السيرة الذاتية:* ${cv}%0A`;
+
+        const waNum = job?.whatsapp || jobsData.whatsapp || '967780568507';
+        window.open(`https://wa.me/${waNum}?text=${msg}`, '_blank');
+    }
+
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+
+    loadJobs();
+</script>
+</body>
+</html>
