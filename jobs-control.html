@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة التوظيف - صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary: #2563eb; --danger: #ef4444; --success: #10b981; --bg: #f1f5f9; --border: #e2e8f0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); color: #1e293b; }
+
+        .login-wrap { position: fixed; inset: 0; background: #0f172a; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { background: #fff; width: 100%; max-width: 360px; padding: 28px; border-radius: 22px; text-align: center; }
+        
+        .admin-header { background: #0f172a; color: #fff; padding: 16px 22px; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1100px; margin: 22px auto; padding: 0 16px 50px; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { background: #fff; border: 1px solid var(--border); padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+        .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .btn-new { background: var(--success); color: #fff; border: none; padding: 11px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; margin-bottom: 18px; display: inline-flex; align-items: center; gap: 8px; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+        .card { background: #fff; border-radius: 16px; padding: 18px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; }
+        
+        .card-actions { display: flex; gap: 8px; margin-top: 14px; }
+        .btn-sm { flex: 1; padding: 9px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; font-size: 0.85rem; }
+        .btn-edit { background: #eff6ff; color: var(--primary); }
+        .btn-del { background: #fef2f2; color: var(--danger); }
+        .btn-wa { background: #dcfce7; color: #15803d; }
+
+        .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal.open { display: flex; }
+        .modal-card { background: #fff; width: 100%; max-width: 460px; border-radius: 22px; padding: 22px; max-height: 90vh; overflow-y: auto; }
+        .grp { margin-bottom: 14px; text-align: right; }
+        .grp label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
+        .grp input, .grp select, .grp textarea { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; outline: none; }
+        .btn-main { width: 100%; padding: 12px; border: none; border-radius: 12px; background: var(--primary); color: #fff; font-weight: 800; cursor: pointer; font-size: 1rem; }
+
+        .toast { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: #fff; padding: 10px 22px; border-radius: 25px; font-size: 0.9rem; z-index: 9999; transition: 0.3s; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="login-wrap" id="loginWrap">
+    <div class="login-box">
+        <h2 style="margin-bottom:18px;">إدارة التوظيف</h2>
+        <form onsubmit="adminLogin(event)">
+            <div class="grp"><label>اسم المستخدم</label><input type="text" id="aUser" required style="direction:ltr;"></div>
+            <div class="grp"><label>كلمة المرور</label><input type="password" id="aPass" required style="direction:ltr;"></div>
+            <button type="submit" class="btn-main">دخول</button>
+        </form>
+    </div>
+</div>
+
+<div id="adminApp" style="display:none;">
+    <header class="admin-header">
+        <div>
+            <h3 style="font-size:1.1rem;">لوحة تحكم الوظائف والمتقدمين</h3>
+            <small id="connStatus" style="color:#10b981;">متصل بالسحابة ✓</small>
+        </div>
+        <button onclick="logout()" style="background:var(--danger); color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:700; cursor:pointer;">خروج</button>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('jobs', this)">الوظائف المعلنة</button>
+            <button class="tab-btn" onclick="switchTab('apps', this)">طلبات المتقدمين (<span id="appsCount">0</span>)</button>
+            <button class="tab-btn" onclick="switchTab('settings', this)">الإعدادات</button>
+        </div>
+
+        <div class="panel active" id="p-jobs">
+            <button class="btn-new" onclick="openJobModal()"><i class="fas fa-plus"></i> نشر وظيفة جديدة</button>
+            <div class="grid" id="gridJobs"></div>
+        </div>
+
+        <div class="panel" id="p-apps">
+            <div class="grid" id="gridApps"></div>
+        </div>
+
+        <div class="panel" id="p-settings">
+            <div class="card" style="max-width:450px;">
+                <h3 style="margin-bottom:15px;">إعدادات التوظيف</h3>
+                <div class="grp"><label>رقم واتساب استقبال الطلبات الافتراضي</label><input type="text" id="setWa" style="direction:ltr;"></div>
+                <button class="btn-main" onclick="saveSettings()">حفظ الإعدادات</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="jobModal" onclick="if(event.target===this) closeModal()">
+    <div class="modal-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 id="mTitle">نشر وظيفة</h3>
+            <button onclick="closeModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+        </div>
+        <form onsubmit="saveJob(event)">
+            <input type="hidden" id="jId">
+            <div class="grp"><label>المسمى الوظيفي</label><input type="text" id="jTitle" placeholder="مثال: مصمم جرافيك، مسوق ميداني" required></div>
+            <div class="grp"><label>الجهة / الشركة المعلنة</label><input type="text" id="jCompany" value="شركة صدارة للتسويق والخدمات الرقمية" required></div>
+            <div class="grp"><label>الموقع / المدينة</label><input type="text" id="jLocation" value="ذمار" required></div>
+            <div class="grp">
+                <label>نوع الدوام</label>
+                <select id="jType">
+                    <option value="دوام كامل">دوام كامل</option>
+                    <option value="دوام جزئي">دوام جزئي</option>
+                    <option value="عمل عن بعد">عمل عن بعد</option>
+                    <option value="عمل ميداني / بالعمولة">عمل ميداني / بالعمولة</option>
+                </select>
+            </div>
+            <div class="grp"><label>الراتب أو الحوافز (اختياري)</label><input type="text" id="jSalary" placeholder="مثال: يحدد بعد المقابلة / نسبة مجزية"></div>
+            <div class="grp"><label>الوصف الوظيفي والمهام</label><textarea id="jDesc" rows="3" required></textarea></div>
+            <div class="grp"><label>الشروط والمؤهلات المطلوبة</label><textarea id="jReqs" rows="3"></textarea></div>
+            <div class="grp"><label>رقم واتساب خاص بالوظيفة (اختياري)</label><input type="text" id="jWa" placeholder="967780568507" style="direction:ltr;"></div>
+            <div class="grp">
+                <label>حالة الإعلان</label>
+                <select id="jStatus">
+                    <option value="مفتوحة">مفتوحة للتقديم</option>
+                    <option value="مغلقة">مغلقة (إخفاء من الموقع)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-main">حفظ ونشر الوظيفة</button>
+        </form>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const SUPABASE_URL = 'https://lvutrzswngpkjfamgact.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2dXRyenN3bmdwa2pmYW1nYWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNTk4MzAsImV4cCI6MjEwNzkzNTgzMH0.fK9eGSy2uv3spG6tynUCoGNivzmRCJnwLEnBFCCgu7g';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let jobsData = { whatsapp: "967780568507", jobs: [], applications: [] };
+
+    async function initCloud() {
+        const { data } = await _supabase.from('store_data').select('payload').eq('id', 2).maybeSingle();
+        if (data && data.payload) {
+            jobsData = data.payload;
+            if (!Array.isArray(jobsData.jobs)) jobsData.jobs = [];
+            if (!Array.isArray(jobsData.applications)) jobsData.applications = [];
+        }
+        renderAdmin();
+    }
+
+    async function pushToCloud() {
+        showToast('جاري الحفظ...');
+        const { error } = await _supabase.from('store_data').upsert({ id: 2, payload: jobsData });
+        if (error) alert('خطأ: ' + error.message);
+        else { showToast('تم الحفظ والمزامنة ✓'); renderAdmin(); }
+    }
+
+    function adminLogin(e) {
+        e.preventDefault();
+        if (document.getElementById('aUser').value === 'admin' && document.getElementById('aPass').value === 'admin2026') {
+            sessionStorage.setItem('sadarah_jobs_admin', '1');
+            checkSession();
+        } else showToast('بيانات الدخول غير صحيحة');
+    }
+
+    function checkSession() {
+        if (sessionStorage.getItem('sadarah_jobs_admin') === '1') {
+            document.getElementById('loginWrap').style.display = 'none';
+            document.getElementById('adminApp').style.display = 'block';
+            initCloud();
+        }
+    }
+
+    function logout() { sessionStorage.removeItem('sadarah_jobs_admin'); location.reload(); }
+
+    function switchTab(name, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('p-' + name).classList.add('active');
+    }
+
+    function renderAdmin() {
+        document.getElementById('appsCount').innerText = jobsData.applications.length;
+        document.getElementById('setWa').value = jobsData.whatsapp || '967780568507';
+
+        document.getElementById('gridJobs').innerHTML = jobsData.jobs.map(j => `
+            <div class="card">
+                <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <h4>${j.title}</h4>
+                        <span style="font-size:0.75rem; padding:3px 8px; border-radius:8px; background:${j.status==='مغلقة'?'#fef2f2':'#dcfce7'}; color:${j.status==='مغلقة'?'#ef4444':'#15803d'}; font-weight:700;">${j.status || 'مفتوحة'}</span>
+                    </div>
+                    <small style="color:#64748b; display:block; margin-bottom:6px;">${j.company} | ${j.location} | ${j.type}</small>
+                    <p style="font-size:0.85rem; color:#475569;">${j.desc.substring(0, 90)}...</p>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-sm btn-edit" onclick="openJobModal(${j.id})">تعديل</button>
+                    <button class="btn-sm btn-del" onclick="delJob(${j.id})">حذف</button>
+                </div>
+            </div>
+        `).join('') || '<p style="color:#64748b;">لم يتم نشر أي وظائف بعد.</p>';
+
+        document.getElementById('gridApps').innerHTML = jobsData.applications.map(a => `
+            <div class="card">
+                <div>
+                    <span style="background:#eff6ff; color:var(--primary); font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:10px; display:inline-block; margin-bottom:8px;">${a.jobTitle}</span>
+                    <h4>${a.name}</h4>
+                    <p style="font-size:0.85rem; color:#64748b; margin:4px 0;">🎓 ${a.edu}</p>
+                    <p style="font-size:0.85rem; color:#334155; margin:6px 0; background:#f8fafc; padding:8px; border-radius:8px;">${a.exp}</p>
+                    ${a.cvLink ? `<a href="${a.cvLink}" target="_blank" style="font-size:0.82rem; color:var(--primary); font-weight:700;"><i class="fas fa-external-link-alt"></i> عرض السيرة الذاتية</a>` : ''}
+                    <small style="display:block; color:#94a3b8; margin-top:6px;">تاريخ التقديم: ${a.date}</small>
+                </div>
+                <div class="card-actions">
+                    <a href="https://wa.me/967${a.phone.replace(/^0+/, '')}" target="_blank" class="btn-sm btn-wa"><i class="fab fa-whatsapp"></i> تواصل واتساب</a>
+                    <button class="btn-sm btn-del" onclick="delApp(${a.id})">حذف</button>
+                </div>
+            </div>
+        `).join('') || '<p style="color:#64748b;">لا توجد طلبات توظيف حتى الآن.</p>';
+    }
+
+    function openJobModal(id = null) {
+        const j = id ? jobsData.jobs.find(x => x.id === id) : { id: '', title: '', company: 'شركة صدارة للتسويق والخدمات الرقمية', location: 'ذمار', type: 'دوام كامل', salary: '', desc: '', reqs: '', wa: '', status: 'مفتوحة' };
+        document.getElementById('mTitle').innerText = id ? 'تعديل الوظيفة' : 'نشر وظيفة جديدة';
+        document.getElementById('jId').value = j.id;
+        document.getElementById('jTitle').value = j.title;
+        document.getElementById('jCompany').value = j.company;
+        document.getElementById('jLocation').value = j.location;
+        document.getElementById('jType').value = j.type;
+        document.getElementById('jSalary').value = j.salary || '';
+        document.getElementById('jDesc').value = j.desc;
+        document.getElementById('jReqs').value = j.reqs || '';
+        document.getElementById('jWa').value = j.wa || '';
+        document.getElementById('jStatus').value = j.status || 'مفتوحة';
+        document.getElementById('jobModal').classList.add('open');
+    }
+
+    function saveJob(e) {
+        e.preventDefault();
+        const id = document.getElementById('jId').value;
+        const obj = {
+            id: id ? Number(id) : Date.now(),
+            title: document.getElementById('jTitle').value,
+            company: document.getElementById('jCompany').value,
+            location: document.getElementById('jLocation').value,
+            type: document.getElementById('jType').value,
+            salary: document.getElementById('jSalary').value,
+            desc: document.getElementById('jDesc').value,
+            reqs: document.getElementById('jReqs').value,
+            whatsapp: document.getElementById('jWa').value,
+            status: document.getElementById('jStatus').value
+        };
+
+        if (id) {
+            const idx = jobsData.jobs.findIndex(x => x.id === Number(id));
+            jobsData.jobs[idx] = obj;
+        } else {
+            jobsData.jobs.unshift(obj);
+        }
+
+        closeModal();
+        pushToCloud();
+    }
+
+    function delJob(id) {
+        if (!confirm('حذف هذه الوظيفة؟')) return;
+        jobsData.jobs = jobsData.jobs.filter(x => x.id !== id);
+        pushToCloud();
+    }
+
+    function delApp(id) {
+        if (!confirm('حذف هذا الطلب؟')) return;
+        jobsData.applications = jobsData.applications.filter(x => x.id !== id);
+        pushToCloud();
+    }
+
+    function saveSettings() {
+        jobsData.whatsapp = document.getElementById('setWa').value.trim();
+        pushToCloud();
+    }
+
+    function closeModal() { document.getElementById('jobModal').classList.remove('open'); }
+    function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+
+    checkSession();
+</script>
+</body>
+</html>
