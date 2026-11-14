@@ -9,9 +9,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --primary: #2563eb; --primary-light: #eff6ff; --whatsapp: #22c55e;
-            --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --info: #8b5cf6;
-            --bg: #f4f6f9; --white: #ffffff; --text: #1e293b; --muted: #64748b; --border: #e2e8f0;
+            --primary: #1e293b; --primary-light: #f1f5f9; --whatsapp: #22c55e;
+            --danger: #ef4444; --success: #10b981; --bg: #f4f6f9; --white: #ffffff;
+            --text: #1e293b; --muted: #64748b; --border: #e2e8f0;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); color: var(--text); }
@@ -29,13 +29,13 @@
         .cat-nav { display: flex; overflow-x: auto; gap: 15px; padding: 10px 20px; border-bottom: 1px solid var(--border); scrollbar-width: none; }
         .cat-nav::-webkit-scrollbar { display: none; }
         .cat-tab { white-space: nowrap; padding-bottom: 6px; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; }
-        .cat-tab.active { color: var(--primary); font-weight: 800; border-bottom-color: var(--primary); }
+        .cat-tab.active { color: #2563eb; font-weight: 800; border-bottom-color: #2563eb; }
 
         .search-bar { padding: 12px 20px; background: var(--white); position: relative; }
         .search-bar input { width: 100%; padding: 11px 45px 11px 15px; border: 1px solid var(--border); border-radius: 14px; background: #f8fafc; outline: none; }
         .search-bar i { position: absolute; right: 35px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
 
-        /* الأقسام والشحنات */
+        /* البنرات العائمة */
         .banners-container { padding: 20px 20px 5px; }
         .floating-banner-box { position: relative; width: 100%; background: #ffffff; border-radius: 26px; padding: 10px; box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12); overflow: hidden; }
         .banner-slide { display: none; width: 100%; text-align: center; }
@@ -43,13 +43,13 @@
         .banner-slide img { width: 100%; height: auto; max-height: 420px; object-fit: contain; border-radius: 18px; display: block; margin: 0 auto; }
         .banner-dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; padding-bottom: 4px; }
         .b-dot { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; cursor: pointer; transition: all 0.3s ease; }
-        .b-dot.active { width: 24px; border-radius: 6px; background: var(--primary); }
+        .b-dot.active { width: 24px; border-radius: 6px; background: #2563eb; }
 
         .main-content { padding: 20px; }
         .cat-block { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
         .block-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .block-title { font-size: 1.15rem; font-weight: 800; }
-        .view-btn { background: var(--primary); color: #fff; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+        .view-btn { background: #2563eb; color: #fff; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
 
         .carousel { display: flex; overflow-x: auto; gap: 16px; padding-bottom: 10px; scrollbar-width: thin; scroll-behavior: smooth; }
         .carousel::-webkit-scrollbar { height: 6px; }
@@ -63,31 +63,37 @@
         .gal-prev { right: 6px; } .gal-next { left: 6px; }
         .gal-dots { position: absolute; bottom: 6px; left: 0; right: 0; display: flex; justify-content: center; gap: 4px; z-index: 5; }
         .gal-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(15,23,42,0.25); cursor: pointer; }
-        .gal-dot.active { background: var(--primary); width: 14px; border-radius: 4px; }
+        .gal-dot.active { background: #2563eb; width: 14px; border-radius: 4px; }
 
         .prod-info { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
         .prod-name { font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .prod-meta { display: flex; justify-content: space-between; align-items: center; }
-        .prod-price { font-weight: 800; color: var(--primary); font-size: 1.05rem; }
+        .prod-price { font-weight: 800; color: #2563eb; font-size: 1.05rem; }
         
         .btn-cart, .btn-wa { width: 100%; border: none; padding: 10px; border-radius: 20px; font-weight: 700; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.88rem; }
-        .btn-cart { background: var(--primary); }
+        .btn-cart { background: #2563eb; }
         .btn-wa { background: var(--whatsapp); margin-top: 4px; }
 
-        /* واجهة طلب وتتبع شحنات شي إن المطابقة للصور */
-        .shein-hub { background: var(--white); padding: 25px 20px; border-top: 1px solid var(--border); }
-        .shein-card-box { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: center; }
-        .shein-form-box { background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid #dbeafe; border-radius: 22px; padding: 20px; margin-bottom: 25px; }
+        /* قسم اطلب لي من شي إن المطابق تماماً للصور */
+        .shein-order-section { background: var(--white); padding: 25px 20px; border-top: 1px solid var(--border); }
+        .shein-banner-card { background: #ffffff; border: 1px solid var(--border); border-radius: 20px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         
-        .type-toggle { display: flex; background: #e2e8f0; border-radius: 30px; padding: 4px; margin-bottom: 18px; }
-        .type-btn { flex: 1; text-align: center; padding: 10px; border-radius: 26px; font-weight: 700; cursor: pointer; font-size: 0.9rem; color: var(--muted); border: none; background: transparent; }
-        .type-btn.active { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .shein-tabs { display: flex; background: #e2e8f0; border-radius: 30px; padding: 4px; margin-bottom: 20px; }
+        .shein-tab { flex: 1; text-align: center; padding: 11px; border-radius: 26px; font-weight: 700; cursor: pointer; font-size: 0.9rem; color: var(--muted); border: none; background: transparent; transition: 0.2s; }
+        .shein-tab.active { background: #fff; color: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 
-        .status-badge { padding: 5px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
-        .st-review { background: #fef3c7; color: #d97706; }
-        .st-bought { background: #e0f2fe; color: #0284c7; }
-        .st-shipping { background: #ede9fe; color: #7c3aed; }
-        .st-success { background: #dcfce7; color: #15803d; }
+        .product-item-card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 18px; margin-bottom: 16px; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .product-item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .product-item-num { background: #f8fafc; border: 1px solid var(--border); padding: 4px 12px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; }
+        .product-delete-btn { background: #fef2f2; color: var(--danger); border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        .shein-input-group { margin-bottom: 12px; }
+        .shein-input-group label { display: block; font-size: 0.82rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+        .shein-input-field { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 14px; background: #f8fafc; outline: none; font-size: 0.9rem; direction: ltr; }
+        .shein-row { display: flex; gap: 10px; }
+
+        .btn-add-more { width: 100%; padding: 14px; border: 2px dashed var(--border); border-radius: 18px; background: #fff; font-weight: 800; color: #1e293b; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .btn-submit-order { width: 100%; padding: 15px; border: none; border-radius: 18px; background: #1e293b; color: #fff; font-weight: 800; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
 
         .pay-section { background: var(--white); padding: 25px 20px; border-top: 1px solid var(--border); }
         .pay-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
@@ -107,14 +113,14 @@
         
         .auth-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
         .auth-tab { flex: 1; text-align: center; padding: 10px; font-weight: 700; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; }
-        .auth-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .auth-tab.active { color: #2563eb; border-bottom-color: #2563eb; }
         .auth-form { display: none; }
         .auth-form.active { display: block; }
 
         .form-grp { margin-bottom: 14px; }
         .form-grp label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
         .form-grp input, .form-grp textarea { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 12px; outline: none; background: #f8fafc; }
-        .btn-submit { width: 100%; padding: 12px; border: none; border-radius: 12px; background: var(--primary); color: #fff; font-weight: 800; cursor: pointer; }
+        .btn-submit { width: 100%; padding: 12px; border: none; border-radius: 12px; background: #2563eb; color: #fff; font-weight: 800; cursor: pointer; }
 
         .toast { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: #fff; padding: 10px 22px; border-radius: 25px; font-size: 0.9rem; z-index: 9999; transition: 0.3s; }
         .toast.show { transform: translateX(-50%) translateY(0); }
@@ -142,7 +148,7 @@
         </div>
     </div>
 
-    <!-- البنرات الإعلانية -->
+    <!-- البنرات العائمة -->
     <div class="banners-container" id="bannersSection" style="display:none;">
         <div class="floating-banner-box">
             <div id="slidesWrapper"></div>
@@ -152,31 +158,28 @@
 
     <main class="main-content" id="mainContent"></main>
 
-    <!-- قسم طلبات وتتبع شي إن (SHEIN Hub) المطابق للصور -->
-    <section class="shein-hub">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
-            <h3 style="font-weight:800; font-size:1.2rem; color:var(--primary);">📦 خدمة اطلب لي من شي إن</h3>
-            <span style="font-size:0.85rem; color:var(--muted);" id="sheinCount">0 شحنة مسجلة</span>
+    <!-- قسم اطلب لي من شي إن (المطابق تماماً للصور) -->
+    <section class="shein-order-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 style="font-weight:800; font-size:1.2rem;">🛍️ اطلب لي من شي إن</h3>
         </div>
 
-        <div class="shein-form-box">
-            <div class="type-toggle">
-                <button class="type-btn active" id="btnCartMode" onclick="setSheinMode('cart')"><i class="fas fa-shopping-cart"></i> سلة كاملة</button>
-                <button class="type-btn" id="btnProdMode" onclick="setSheinMode('prod')"><i class="fas fa-box"></i> منتجات محددة</button>
+        <div class="shein-banner-card">
+            <div style="font-size:0.88rem; line-height:1.6; color:var(--text);">
+                انسخ روابط منتجاتك أو سلتك من شي إن - SHEIN وسنقوم بطلبها وتوصيلها لك.<br>
+                <strong>للتواصل واتساب: <span style="direction:ltr; display:inline-block;" id="uiWaNumber">777900693</span></strong>
             </div>
-            <div class="form-grp">
-                <label id="sheinInputLabel">رابط سلة شي إن (Share Cart):</label>
-                <input type="text" id="sheinInputVal" placeholder="الصق الرابط هنا..." style="direction:ltr;">
+            <div style="background:#dcfce7; color:#15803d; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0;">
+                <i class="fab fa-whatsapp"></i>
             </div>
-            <div class="form-grp">
-                <label>ملاحظات إضافية (المقاسات، الألوان، التفاصيل):</label>
-                <textarea id="sheinNotes" rows="2" placeholder="اكتب أي تفاصيل ترغب بإضافتها..."></textarea>
-            </div>
-            <button class="btn-wa" onclick="sendSheinOrder()"><i class="fab fa-whatsapp"></i> إرسال الطلب للإدارة عبر واتساب</button>
         </div>
 
-        <h4 style="font-weight:800; margin-bottom:15px; font-size:1.1rem;">✈️ تتبع شحنات شي إن الأخيرة</h4>
-        <div id="sheinShipmentsList"></div>
+        <div class="shein-tabs">
+            <button class="shein-tab active" id="tabCart" onclick="switchSheinType('cart')"><i class="fas fa-shopping-cart"></i> سلة كاملة</button>
+            <button class="shein-tab" id="tabProd" onclick="switchSheinType('prod')"><i class="fas fa-boxes"></i> منتجات محددة</button>
+        </div>
+
+        <div id="sheinFormContainer"></div>
     </section>
 
     <!-- طرق الدفع الإلكتروني -->
@@ -227,12 +230,13 @@
     let cart = [];
     let activeCat = 'all';
     let currentUser = JSON.parse(localStorage.getItem('sadarah_user')) || null;
-    let sheinMode = 'cart';
     
+    let sheinOrderType = 'cart'; // 'cart' أو 'prod'
+    let sheinProducts = [{ id: 1, link: '', qty: 1, specs: '' }];
+
     let slideIndex = 0;
     let slideTimer = null;
     let prodImgState = {};
-    let touchStartX = 0;
     let lastDataHash = '';
 
     async function syncCloud() {
@@ -262,23 +266,116 @@
         await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
     }
 
-    function setSheinMode(mode) {
-        sheinMode = mode;
-        document.getElementById('btnCartMode').classList.toggle('active', mode === 'cart');
-        document.getElementById('btnProdMode').classList.toggle('active', mode === 'prod');
-        document.getElementById('sheinInputLabel').innerText = mode === 'cart' ? 'رابط سلة شي إن (Share Cart):' : 'روابط المنتجات المطلوبة:';
-        document.getElementById('sheinInputVal').placeholder = mode === 'cart' ? 'الصق رابط السلة هنا...' : 'الصق روابط المنتجات مفصولة بفواصل...';
+    function switchSheinType(type) {
+        sheinOrderType = type;
+        document.getElementById('tabCart').classList.toggle('active', type === 'cart');
+        document.getElementById('tabProd').classList.toggle('active', type === 'prod');
+        renderSheinForm();
     }
 
-    function sendSheinOrder() {
-        const val = document.getElementById('sheinInputVal').value.trim();
-        const notes = document.getElementById('sheinNotes').value.trim();
-        if (!val) return showToast('الرجاء إدخال الرابط أولاً!');
+    function renderSheinForm() {
+        const container = document.getElementById('sheinFormContainer');
+        if (sheinOrderType === 'cart') {
+            container.innerHTML = `
+                <div class="shein-input-group">
+                    <label>رابط سلة شي إن المجمعة:</label>
+                    <input type="text" id="sheinCartLink" class="shein-input-field" placeholder="الصق رابط السلة (Share Cart) هنا...">
+                </div>
+                <div class="shein-input-group">
+                    <label>ملاحظات إضافية:</label>
+                    <textarea id="sheinCartNotes" class="shein-input-field" rows="3" placeholder="اكتب أي تفاصيل أخرى ترغب بإضافتها..."></textarea>
+                </div>
+                <button class="btn-submit-order" onclick="submitSheinCart()"><i class="fab fa-whatsapp"></i> إرسال الطلب للإدارة</button>
+            `;
+        } else {
+            let cardsHtml = sheinProducts.map((p, idx) => `
+                <div class="product-item-card">
+                    <div class="product-item-head">
+                        <span class="product-item-num">منتج رقم ${idx + 1}</span>
+                        ${sheinProducts.length > 1 ? `<button class="product-delete-btn" onclick="removeSheinProd(${p.id})"><i class="far fa-trash-alt"></i></button>` : ''}
+                    </div>
+                    <div class="shein-input-group">
+                        <label>رابط المنتج:</label>
+                        <input type="text" class="shein-input-field prod-link" data-id="${p.id}" value="${p.link}" placeholder="رابط المنتج...">
+                    </div>
+                    <div class="shein-row">
+                        <div class="shein-input-group" style="flex:1;">
+                            <label>الكمية:</label>
+                            <input type="number" class="shein-input-field prod-qty" data-id="${p.id}" value="${p.qty}" min="1">
+                        </div>
+                        <div class="shein-input-group" style="flex:2;">
+                            <label>المقاس / اللون:</label>
+                            <input type="text" class="shein-input-field prod-specs" data-id="${p.id}" value="${p.specs}" placeholder="مثال: M / أسود">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
 
-        let msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب عبر خدمة شي إن (SHEIN):%0A%0A`;
-        msg += `📌 نوع الطلب: ${sheinMode === 'cart' ? 'سلة كاملة' : 'منتجات محددة'}%0A`;
-        msg += `🔗 الرابط:%0A${encodeURIComponent(val)}%0A`;
+            container.innerHTML = `
+                <div style="font-size:0.9rem; font-weight:800; margin-bottom:12px;">تفاصيل المنتجات المراد طلبها:</div>
+                ${cardsHtml}
+                <button class="btn-add-more" onclick="addSheinProd()"><i class="fas fa-plus-circle"></i> إضافة منتج آخر</button>
+                <div class="shein-input-group">
+                    <label>ملاحظات إضافية:</label>
+                    <textarea id="sheinProdNotes" class="shein-input-field" rows="2" placeholder="اكتب أي تفاصيل أخرى ترغب بإضافتها..."></textarea>
+                </div>
+                <button class="btn-submit-order" onclick="submitSheinProds()"><i class="fab fa-whatsapp"></i> إرسال (${sheinProducts.length} منتجات)</button>
+            `;
+        }
+    }
+
+    function addSheinProd() {
+        captureProdInputs();
+        sheinProducts.push({ id: Date.now(), link: '', qty: 1, specs: '' });
+        renderSheinForm();
+    }
+
+    function removeSheinProd(id) {
+        captureProdInputs();
+        sheinProducts = sheinProducts.filter(p => p.id !== id);
+        renderSheinForm();
+    }
+
+    function captureProdInputs() {
+        document.querySelectorAll('.prod-link').forEach(input => {
+            const id = Number(input.getAttribute('data-id'));
+            const prod = sheinProducts.find(p => p.id === id);
+            if (prod) prod.link = input.value;
+        });
+        document.querySelectorAll('.prod-qty').forEach(input => {
+            const id = Number(input.getAttribute('data-id'));
+            const prod = sheinProducts.find(p => p.id === id);
+            if (prod) prod.qty = input.value;
+        });
+        document.querySelectorAll('.prod-specs').forEach(input => {
+            const id = Number(input.getAttribute('data-id'));
+            const prod = sheinProducts.find(p => p.id === id);
+            if (prod) prod.specs = input.value;
+        });
+    }
+
+    function submitSheinCart() {
+        const link = document.getElementById('sheinCartLink').value.trim();
+        const notes = document.getElementById('sheinCartNotes').value.trim();
+        if (!link) return showToast('الرجاء إدخال رابط السلة!');
+
+        let msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب سلة شي إن كاملة:%0A%0A`;
+        msg += `🔗 رابط السلة:%0A${encodeURIComponent(link)}%0A%0A`;
         if (notes) msg += `📝 ملاحظات: ${encodeURIComponent(notes)}%0A`;
+
+        window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
+    }
+
+    function submitSheinProds() {
+        captureProdInputs();
+        const notes = document.getElementById('sheinProdNotes')?.value.trim() || '';
+        if (sheinProducts.some(p => !p.link)) return showToast('الرجاء إدخال روابط جميع المنتجات!');
+
+        let msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب منتجات محددة من شي إن (%0A%0A`;
+        sheinProducts.forEach((p, idx) => {
+            msg += `*المنتج ${idx+1}:*%0A- الرابط: ${encodeURIComponent(p.link)}%0A- الكمية: ${p.qty}%0A- المقاس/اللون: ${encodeURIComponent(p.specs || 'بدون')}%0A%0A`;
+        });
+        if (notes) msg += `📝 ملاحظات عامة: ${encodeURIComponent(notes)}%0A`;
 
         window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
     }
@@ -286,6 +383,9 @@
     function renderUI() {
         document.getElementById('uiStoreName').innerText = storeData.settings?.storeName || 'متجر صدارة';
         document.getElementById('uiFooterName').innerText = storeData.settings?.storeName || 'متجر صدارة';
+        if (storeData.settings?.whatsapp) {
+            document.getElementById('uiWaNumber').innerText = storeData.settings.whatsapp;
+        }
 
         const validBanners = (storeData.banners || []).filter(b => b && (b.img || b.url || b.image));
         const bannersSec = document.getElementById('bannersSection');
@@ -296,30 +396,6 @@
             bannersSec.style.display = 'none';
             if (slideTimer) clearInterval(slideTimer);
         }
-
-        // عرض قائمة شحنات شي إن المطابقة للصورة
-        const sheinList = document.getElementById('sheinShipmentsList');
-        const sheinItems = storeData.shein || [];
-        document.getElementById('sheinCount').innerText = `${sheinItems.length} شحنة مسجلة`;
-
-        sheinList.innerHTML = sheinItems.map(s => {
-            let badgeClass = 'st-review', badgeText = s.status || 'قيد المراجعة والتجميع';
-            if (badgeText.includes('شراء')) badgeClass = 'st-bought';
-            else if (badgeText.includes('طريق')) badgeClass = 'st-shipping';
-            else if (badgeText.includes('تسليم') || badgeText.includes('تم')) badgeClass = 'st-success';
-
-            return `
-            <div class="shein-card-box">
-                <div>
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-                        <span style="font-weight:800; font-size:1.05rem;">${s.title}</span>
-                        <span class="status-badge ${badgeClass}">${badgeText}</span>
-                    </div>
-                    <small style="color:var(--muted);"><i class="far fa-calendar-alt"></i> تاريخ رفع السلة: ${s.date}</small>
-                </div>
-                <button class="view-btn" onclick="trackShein('${s.title}', '${badgeText}', '${s.date}')">عرض التتبع <i class="fas fa-angle-left"></i></button>
-            </div>`;
-        }).join('') || '<p style="text-align:center; color:var(--muted); padding:15px;">لا توجد شحنات مسجلة حالياً</p>';
 
         const catNav = document.getElementById('catNav');
         const sideCat = document.getElementById('sideCatList');
@@ -350,7 +426,7 @@
                     <button class="gal-arrow gal-prev" onclick="stepProdImg(${p.id}, -1)"><i class="fas fa-chevron-right"></i></button>
                     <button class="gal-arrow gal-next" onclick="stepProdImg(${p.id}, 1)"><i class="fas fa-chevron-left"></i></button>
                     <div class="gal-dots" id="dots-${p.id}">
-                        ${imgs.map((_, i) => `<span class="gal-dot ${i === safeIdx ? 'active' : ''}" onclick="setProdImg(${p.id},${i})"></span>`).join('')}
+                        ${imgs.map((_, i) => `<span class="gal-dot ${i === safeIdx ? 'active' : ''}" onclick="setProdImg(${p.id}, ${i})"></span>`).join('')}
                     </div>
                 ` : '';
 
@@ -384,7 +460,7 @@
 
         document.getElementById('payList').innerHTML = (storeData.payments || []).map(pay => `
             <div class="pay-card">
-                <h4 style="color:var(--primary);">${pay.title}</h4>
+                <h4 style="color:#2563eb;">${pay.title}</h4>
                 <div class="copy-box" onclick="copyTxt('${pay.number}')">
                     <i class="far fa-copy" style="color:var(--muted);"></i>
                     <span style="direction:ltr;">${pay.number}</span>
@@ -433,10 +509,6 @@
         slideIndex = n; showSlides();
         if (slideTimer) clearInterval(slideTimer);
         slideTimer = setInterval(() => { slideIndex++; showSlides(); }, 5500);
-    }
-
-    function trackShein(title, status, date) {
-        alert(`تفاصيل الشحنة:\n- العنوان: ${title}\n- الحالة: ${status}\n- تاريخ الرفع: ${date}\n\nيمكنك التواصل مع خدمة العملاء عبر واتساب للمزيد من التفاصيل.`);
     }
 
     function stepProdImg(prodId, dir) {
@@ -512,7 +584,7 @@
                     <button onclick="document.getElementById('authModal').classList.remove('open')" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
                 </div>
                 <div style="background:#f8fafc; padding:15px; border-radius:14px; margin-bottom:15px; border:1px solid var(--border);">
-                    <p style="font-weight:700; color:var(--primary);">${currentUser.name}</p>
+                    <p style="font-weight:700; color:#2563eb;">${currentUser.name}</p>
                     <p style="font-size:0.85rem; color:var(--muted);">${currentUser.email}</p>
                 </div>
                 <button class="btn-submit" style="background:var(--danger);" onclick="logoutUser()">تسجيل الخروج</button>`;
@@ -588,6 +660,7 @@
     function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
 
     syncCloud();
+    renderSheinForm();
     setInterval(syncCloud, 3000);
 </script>
 </body>
