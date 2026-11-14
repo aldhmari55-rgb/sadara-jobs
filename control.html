@@ -3,386 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم السحابية | الإدارة</title>
+    <title>لوحة تحكم صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <style>
-        :root {
-            --primary-blue: #2563eb;
-            --danger-red: #ef4444;
-            --bg-page: #f1f5f9;
-            --white: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-        }
+        :root { --primary: #2563eb; --danger: #ef4444; --success: #10b981; --bg: #f1f5f9; --border: #e2e8f0; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { background-color: var(--bg-page); color: var(--text-main); min-height: 100vh; }
+        body { background: var(--bg); color: #1e293b; }
 
-        .login-screen {
-            position: fixed; inset: 0; background: #0f172a; z-index: 9999;
-            display: flex; align-items: center; justify-content: center; padding: 20px;
-        }
-        .login-card {
-            background: white; width: 100%; max-width: 380px; padding: 30px; border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3); text-align: center;
-        }
-        .login-card h2 { margin-bottom: 20px; font-size: 1.4rem; font-weight: 800; color: #0f172a; }
+        .login-wrap { position: fixed; inset: 0; background: #0f172a; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { background: #fff; width: 100%; max-width: 360px; padding: 28px; border-radius: 22px; text-align: center; }
+        
+        .admin-header { background: #0f172a; color: #fff; padding: 16px 22px; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1000px; margin: 22px auto; padding: 0 16px 50px; }
 
-        .admin-wrapper { display: none; min-height: 100vh; }
-        .admin-wrapper.active { display: block; }
-        .admin-header {
-            background: #0f172a; color: white; padding: 16px 24px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .admin-container { max-width: 1100px; margin: 25px auto; padding: 0 18px 60px; }
+        .tabs { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 5px; }
+        .tab-btn { background: #fff; border: 1px solid var(--border); padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+        .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-        .admin-nav-tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 22px; }
-        .admin-tab-btn {
-            background: white; border: 1px solid var(--border-color); padding: 10px 18px;
-            border-radius: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; color: var(--text-main);
-        }
-        .admin-tab-btn.active { background: var(--primary-blue); color: white; border-color: var(--primary-blue); }
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .btn-new { background: var(--success); color: #fff; border: none; padding: 11px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; margin-bottom: 18px; display: inline-flex; align-items: center; gap: 8px; }
 
-        .admin-panel { display: none; }
-        .admin-panel.active { display: block; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+        .card { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; }
+        .card-actions { display: flex; gap: 8px; margin-top: 12px; }
+        .btn-sm { flex: 1; padding: 8px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-edit { background: #eff6ff; color: var(--primary); }
+        .btn-del { background: #fef2f2; color: var(--danger); }
 
-        .admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
-        .control-box {
-            background: white; border-radius: 18px; padding: 18px; border: 1px solid var(--border-color);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between;
-        }
-        .control-box-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9; }
-        .control-actions { display: flex; gap: 8px; margin-top: 14px; }
+        .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal.open { display: flex; }
+        .modal-card { background: #fff; width: 100%; max-width: 420px; border-radius: 22px; padding: 22px; }
+        .grp { margin-bottom: 14px; text-align: right; }
+        .grp label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
+        .grp input, .grp select { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; outline: none; }
+        .btn-main { width: 100%; padding: 12px; border: none; border-radius: 12px; background: var(--primary); color: #fff; font-weight: 800; cursor: pointer; font-size: 1rem; }
 
-        .btn-edit, .btn-delete, .btn-add-new {
-            padding: 8px 14px; border: none; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-        }
-        .btn-edit { background: #eff6ff; color: var(--primary-blue); flex: 1; justify-content: center; }
-        .btn-delete { background: #fef2f2; color: var(--danger-red); flex: 1; justify-content: center; }
-        .btn-add-new { background: #10b981; color: white; padding: 11px 20px; font-size: 0.95rem; margin-bottom: 18px; border-radius: 12px; border: none; cursor: pointer; }
-
-        .form-group { margin-bottom: 14px; text-align: right; }
-        .form-group label { display: block; font-size: 0.86rem; font-weight: 700; margin-bottom: 6px; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 12px 14px; border: 1px solid var(--border-color); background: #f8fafc; border-radius: 12px; font-size: 0.92rem; outline: none;
-        }
-        .btn-auth-submit { width: 100%; padding: 13px; border: none; border-radius: 14px; font-size: 1rem; font-weight: 800; color: white; background: var(--primary-blue); cursor: pointer; }
-
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(6px); z-index: 3000;
-            display: none; align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal-overlay.open { display: flex; }
-        .modal-card { background: var(--white); width: 100%; max-width: 420px; border-radius: 26px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-
-        .toast {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: #1e293b; color: white; padding: 10px 22px; border-radius: 25px; font-size: 0.9rem; z-index: 9999; transition: 0.3s ease;
-        }
+        .toast { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: #fff; padding: 10px 22px; border-radius: 25px; font-size: 0.9rem; z-index: 9999; transition: 0.3s; }
         .toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
 
-    <div class="login-screen" id="loginScreen">
-        <div class="login-card">
-            <h2>تسجيل دخول الإدارة</h2>
-            <form onsubmit="handleAdminLogin(event)">
-                <div class="form-group"><label>اسم المستخدم</label><input type="text" id="adminUser" style="direction:ltr;" required></div>
-                <div class="form-group"><label>كلمة المرور</label><input type="password" id="adminPass" style="direction:ltr;" required></div>
-                <button type="submit" class="btn-auth-submit">دخول لوحة التحكم</button>
-            </form>
+<div class="login-wrap" id="loginWrap">
+    <div class="login-box">
+        <h2 style="margin-bottom:18px;">دخول الإدارة</h2>
+        <form onsubmit="adminLogin(event)">
+            <div class="grp"><label>اسم المستخدم</label><input type="text" id="aUser" required style="direction:ltr;"></div>
+            <div class="grp"><label>كلمة المرور</label><input type="password" id="aPass" required style="direction:ltr;"></div>
+            <button type="submit" class="btn-main">دخول</button>
+        </form>
+    </div>
+</div>
+
+<div id="adminApp" style="display:none;">
+    <header class="admin-header">
+        <div>
+            <h3 style="font-size:1.1rem;">لوحة تحكم صدارة السحابية</h3>
+            <small id="connStatus" style="color:#38bdf8;">جاري التحقق من الاتصال...</small>
+        </div>
+        <button onclick="logout()" style="background:var(--danger); color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:700; cursor:pointer;">خروج</button>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('products', this)">المنتجات</button>
+            <button class="tab-btn" onclick="switchTab('categories', this)">الأقسام</button>
+            <button class="tab-btn" onclick="switchTab('payments', this)">طرق الدفع</button>
+            <button class="tab-btn" onclick="switchTab('settings', this)">الإعدادات</button>
+        </div>
+
+        <div class="panel active" id="p-products">
+            <button class="btn-new" onclick="openModal('product')"><i class="fas fa-plus"></i> إضافة منتج</button>
+            <div class="grid" id="gridProducts"></div>
+        </div>
+
+        <div class="panel" id="p-categories">
+            <button class="btn-new" onclick="openModal('category')"><i class="fas fa-plus"></i> إضافة قسم</button>
+            <div class="grid" id="gridCategories"></div>
+        </div>
+
+        <div class="panel" id="p-payments">
+            <button class="btn-new" onclick="openModal('payment')"><i class="fas fa-plus"></i> إضافة طريقة دفع</button>
+            <div class="grid" id="gridPayments"></div>
+        </div>
+
+        <div class="panel" id="p-settings">
+            <div class="card" style="max-width:450px;">
+                <h3 style="margin-bottom:15px;">الإعدادات العامة</h3>
+                <div class="grp"><label>اسم المتجر</label><input type="text" id="setName"></div>
+                <div class="grp"><label>رقم الواتساب (مع مفتاح الدولة)</label><input type="text" id="setWa" style="direction:ltr;"></div>
+                <button class="btn-main" onclick="saveSettings()">حفظ الإعدادات</button>
+            </div>
         </div>
     </div>
+</div>
 
-    <div class="admin-wrapper" id="adminWrapper">
-        <header class="admin-header">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <i class="fas fa-sliders-h" style="color:#38bdf8; font-size:1.4rem;"></i>
+<div class="modal" id="formModal" onclick="if(event.target===this) closeModal()">
+    <div class="modal-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 id="mTitle">إضافة</h3>
+            <button onclick="closeModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+        </div>
+        <form onsubmit="handleSave(event)">
+            <div id="mFields"></div>
+            <button type="submit" class="btn-main" style="margin-top:10px;">حفظ في السحابة</button>
+        </form>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    // ====== ضع بيانات مشروعك من Supabase هنا (نفس الموجودة في index.html) ======
+    const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    // =========================================================================
+
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let storeData = { settings: { storeName: "متجر صدارة", whatsapp: "967780568507" }, categories: [], products: [], payments: [], users: [] };
+    let editType = '', editId = null, uploadedImgUrl = '';
+
+    async function initCloud() {
+        const statusEl = document.getElementById('connStatus');
+        const { data, error } = await _supabase.from('store_data').select('payload').eq('id', 1).maybeSingle();
+        if (error) {
+            statusEl.innerText = 'خطأ اتصال: تأكد من مفاتيح Supabase';
+            statusEl.style.color = '#ef4444';
+            return;
+        }
+        statusEl.innerText = 'متصل بالسحابة بنجاح ✓';
+        statusEl.style.color = '#10b981';
+        if (data && data.payload) {
+            storeData = data.payload;
+        }
+        renderAdmin();
+    }
+
+    async function pushToCloud() {
+        showToast('جاري الحفظ...');
+        const { error } = await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
+        if (error) {
+            alert('فشل الحفظ! السبب التقني: ' + error.message);
+        } else {
+            showToast('تم الحفظ والمزامنة مع المتجر بنجاح ✓');
+            renderAdmin();
+        }
+    }
+
+    function adminLogin(e) {
+        e.preventDefault();
+        if (document.getElementById('aUser').value === 'admin' && document.getElementById('aPass').value === 'admin2026') {
+            sessionStorage.setItem('sadarah_admin', '1');
+            checkSession();
+        } else {
+            showToast('بيانات الدخول غير صحيحة');
+        }
+    }
+
+    function checkSession() {
+        if (sessionStorage.getItem('sadarah_admin') === '1') {
+            document.getElementById('loginWrap').style.display = 'none';
+            document.getElementById('adminApp').style.display = 'block';
+            initCloud();
+        }
+    }
+
+    function logout() { sessionStorage.removeItem('sadarah_admin'); location.reload(); }
+
+    function switchTab(name, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('p-' + name).classList.add('active');
+    }
+
+    function renderAdmin() {
+        document.getElementById('gridProducts').innerHTML = (storeData.products || []).map(p => `
+            <div class="card">
                 <div>
-                    <h2 style="font-size:1.15rem;">لوحة تحكم صدارة السحابية</h2>
-                    <small style="color:#94a3b8;">متصل بـ Supabase Storage و Database</small>
+                    <img src="${p.img}" style="width:100%; height:130px; object-fit:cover; border-radius:10px; margin-bottom:10px;" onerror="this.src='https://via.placeholder.com/300'">
+                    <h4>${p.name}</h4>
+                    <small style="color:#64748b;">كود: ${p.code}</small>
+                    <p style="font-weight:800; color:var(--primary); margin-top:4px;">${Number(p.price).toLocaleString()} ريال</p>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-sm btn-edit" onclick="openModal('product', ${p.id})">تعديل</button>
+                    <button class="btn-sm btn-del" onclick="delItem('products', ${p.id})">حذف</button>
                 </div>
             </div>
-            <button onclick="logoutAdmin()" style="background:#ef4444; color:white; border:none; padding:8px 16px; border-radius:10px; font-weight:700; cursor:pointer;">تسجيل الخروج</button>
-        </header>
+        `).join('');
 
-        <div class="admin-container">
-            <div class="admin-nav-tabs">
-                <button class="admin-tab-btn active" onclick="switchTab('products', this)"><i class="fas fa-box-open"></i> المنتجات</button>
-                <button class="admin-tab-btn" onclick="switchTab('categories', this)"><i class="fas fa-layer-group"></i> الأقسام</button>
-                <button class="admin-tab-btn" onclick="switchTab('payments', this)"><i class="fas fa-credit-card"></i> طرق الدفع</button>
-                <button class="admin-tab-btn" onclick="switchTab('settings', this)"><i class="fas fa-cog"></i> الإعدادات</button>
-            </div>
-
-            <div class="admin-panel active" id="panel-products">
-                <button class="btn-add-new" onclick="openFormModal('product')"><i class="fas fa-plus"></i> إضافة منتج جديد</button>
-                <div class="admin-grid" id="adminProductsGrid"></div>
-            </div>
-
-            <div class="admin-panel" id="panel-categories">
-                <button class="btn-add-new" onclick="openFormModal('category')"><i class="fas fa-plus"></i> إضافة قسم جديد</button>
-                <div class="admin-grid" id="adminCategoriesGrid"></div>
-            </div>
-
-            <div class="admin-panel" id="panel-payments">
-                <button class="btn-add-new" onclick="openFormModal('payment')"><i class="fas fa-plus"></i> إضافة طريقة دفع</button>
-                <div class="admin-grid" id="adminPaymentsGrid"></div>
-            </div>
-
-            <div class="admin-panel" id="panel-settings">
-                <div class="control-box" style="max-width:450px;">
-                    <h3 style="margin-bottom:15px;">إعدادات المتجر العامة</h3>
-                    <div class="form-group"><label>اسم المتجر</label><input type="text" id="setStoreName"></div>
-                    <div class="form-group"><label>رقم الواتساب</label><input type="text" id="setWhatsapp" style="direction:ltr;"></div>
-                    <button class="btn-auth-submit" onclick="saveSettingsToCloud()">حفظ التغييرات سحابياً</button>
+        document.getElementById('gridCategories').innerHTML = (storeData.categories || []).map(c => `
+            <div class="card">
+                <h4>${c.name}</h4>
+                <div class="card-actions">
+                    <button class="btn-sm btn-edit" onclick="openModal('category', '${c.id}')">تعديل</button>
+                    <button class="btn-sm btn-del" onclick="delItem('categories', '${c.id}')">حذف</button>
                 </div>
             </div>
-        </div>
-    </div>
+        `).join('');
 
-    <div class="modal-overlay" id="formModal" onclick="if(event.target===this) closeFormModal()">
-        <div class="modal-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 id="modalTitle">إضافة / تعديل</h3>
-                <button onclick="closeFormModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+        document.getElementById('gridPayments').innerHTML = (storeData.payments || []).map(pay => `
+            <div class="card">
+                <div>
+                    <h4>${pay.title}</h4>
+                    <p style="font-weight:800; color:var(--primary); direction:ltr; text-align:right; margin-top:5px;">${pay.number}</p>
+                    <small style="color:#64748b;">${pay.note || ''}</small>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-sm btn-edit" onclick="openModal('payment', ${pay.id})">تعديل</button>
+                    <button class="btn-sm btn-del" onclick="delItem('payments', ${pay.id})">حذف</button>
+                </div>
             </div>
-            <form id="dynamicForm" onsubmit="saveForm(event)">
-                <div id="formFields"></div>
-                <button type="submit" class="btn-auth-submit" style="margin-top:10px;">حفظ سحابياً</button>
-            </form>
-        </div>
-    </div>
+        `).join('');
 
-    <div class="toast" id="toast">جاري الاتصال بالسحابة...</div>
+        document.getElementById('setName').value = storeData.settings?.storeName || '';
+        document.getElementById('setWa').value = storeData.settings?.whatsapp || '';
+    }
 
-    <script>
-        const SUPABASE_URL = 'https://Aldhmart55-rgb.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsZGhtYXJ0NTUtcmdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0Nzc3NDcsImV4cCI6MjA4NjA1Mzc0N30.7QzU7zU3U3U3U3U3U3U3U3U3U3U3U3U3U3U3U3U3U3U';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    function openModal(type, id = null) {
+        editType = type; editId = id; uploadedImgUrl = '';
+        const f = document.getElementById('mFields');
+        const t = document.getElementById('mTitle');
 
-        let storeData = {
-            settings: { storeName: "متجر صدارة", whatsapp: "967780568507" },
-            categories: [], products: [], payments: [], users: []
-        };
-
-        async function loadCloudData() {
-            try {
-                const { data, error } = await _supabase.from('store_data').select('*').eq('id', 1).maybeSingle();
-                if (data && data.payload) {
-                    storeData = data.payload;
-                }
-                renderAdminUI();
-            } catch (err) {
-                showToast('خطأ في الاتصال بقاعدة البيانات');
-            }
+        if (type === 'product') {
+            if (!storeData.categories || !storeData.categories.length) return showToast('أضف قسماً أولاً قبل إضافة المنتجات!');
+            const item = id ? storeData.products.find(x => x.id === id) : { name: '', code: '', price: '', catId: storeData.categories[0].id, img: '' };
+            uploadedImgUrl = item.img;
+            t.innerText = id ? 'تعديل منتج' : 'منتج جديد';
+            const opts = storeData.categories.map(c => `<option value="${c.id}" ${c.id===item.catId?'selected':''}>${c.name}</option>`).join('');
+            f.innerHTML = `
+                <div class="grp"><label>اسم المنتج</label><input type="text" id="inName" value="${item.name}" required></div>
+                <div class="grp"><label>القسم</label><select id="inCat">${opts}</select></div>
+                <div class="grp"><label>الكود</label><input type="text" id="inCode" value="${item.code}" required></div>
+                <div class="grp"><label>السعر</label><input type="number" id="inPrice" value="${item.price}" required></div>
+                <div class="grp"><label>صورة المنتج</label><input type="file" accept="image/*" onchange="uploadImg(event)"></div>
+                <div class="grp"><label>أو رابط الصورة مباشرة</label><input type="text" id="inImgUrl" value="${item.img}" style="direction:ltr;"></div>`;
+        } else if (type === 'category') {
+            const item = id ? storeData.categories.find(x => x.id === id) : { name: '' };
+            t.innerText = id ? 'تعديل قسم' : 'قسم جديد';
+            f.innerHTML = `<div class="grp"><label>اسم القسم</label><input type="text" id="inCatName" value="${item.name}" required></div>`;
+        } else if (type === 'payment') {
+            const item = id ? storeData.payments.find(x => x.id === id) : { title: '', number: '', note: '' };
+            t.innerText = id ? 'تعديل طريقة دفع' : 'طريقة دفع جديدة';
+            f.innerHTML = `
+                <div class="grp"><label>اسم البنك / المحفظة</label><input type="text" id="inPayTitle" value="${item.title}" required></div>
+                <div class="grp"><label>رقم الحساب</label><input type="text" id="inPayNum" value="${item.number}" required style="direction:ltr;"></div>
+                <div class="grp"><label>ملاحظة (مثل اسم المستلم)</label><input type="text" id="inPayNote" value="${item.note || ''}"></div>`;
         }
+        document.getElementById('formModal').classList.add('open');
+    }
 
-        async function saveCloudData() {
-            showToast('جاري الحفظ في Supabase...');
-            try {
-                const { error } = await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
-                if (error) {
-                    console.error(error);
-                    showToast('فشل الحفظ السحابي!');
-                } else {
-                    showToast('تم الحفظ في السحابة بنجاح!');
-                    renderAdminUI();
-                }
-            } catch (err) {
-                showToast('حدث خطأ أثناء الاتصال!');
-            }
+    async function uploadImg(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        showToast('جاري رفع الصورة...');
+        const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
+        const { error } = await _supabase.storage.from('platform-files').upload(fileName, file);
+        if (error) {
+            alert('فشل رفع الصورة: ' + error.message);
+            return;
         }
+        const { data } = _supabase.storage.from('platform-files').getPublicUrl(fileName);
+        uploadedImgUrl = data.publicUrl;
+        document.getElementById('inImgUrl').value = uploadedImgUrl;
+        showToast('تم رفع الصورة بنجاح ✓');
+    }
 
-        function handleAdminLogin(e) {
-            e.preventDefault();
-            const u = document.getElementById('adminUser').value.trim();
-            const p = document.getElementById('adminPass').value.trim();
-            if (u === 'admin' && p === 'admin2026') {
-                sessionStorage.setItem('isLoggedIn', 'true');
-                checkAuth();
-            } else {
-                showToast('خطأ في اسم المستخدم أو كلمة المرور');
-            }
+    function handleSave(e) {
+        e.preventDefault();
+        if (editType === 'product') {
+            const obj = {
+                id: editId || Date.now(),
+                name: document.getElementById('inName').value,
+                catId: document.getElementById('inCat').value,
+                code: document.getElementById('inCode').value,
+                price: Number(document.getElementById('inPrice').value),
+                img: document.getElementById('inImgUrl').value || 'https://via.placeholder.com/300'
+            };
+            if (editId) storeData.products[storeData.products.findIndex(x => x.id === editId)] = obj;
+            else storeData.products.unshift(obj);
+        } else if (editType === 'category') {
+            const name = document.getElementById('inCatName').value;
+            if (editId) storeData.categories.find(x => x.id === editId).name = name;
+            else storeData.categories.push({ id: 'cat_' + Date.now(), name });
+        } else if (editType === 'payment') {
+            const obj = {
+                id: editId || Date.now(),
+                title: document.getElementById('inPayTitle').value,
+                number: document.getElementById('inPayNum').value,
+                note: document.getElementById('inPayNote').value
+            };
+            if (editId) storeData.payments[storeData.payments.findIndex(x => x.id === editId)] = obj;
+            else storeData.payments.push(obj);
         }
+        closeModal();
+        pushToCloud();
+    }
 
-        function checkAuth() {
-            if (sessionStorage.getItem('isLoggedIn') === 'true') {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('adminWrapper').classList.add('active');
-                loadCloudData();
-            }
-        }
+    function delItem(key, id) {
+        if (!confirm('تأكيد الحذف؟')) return;
+        storeData[key] = storeData[key].filter(x => x.id !== id && String(x.id) !== String(id));
+        pushToCloud();
+    }
 
-        function logoutAdmin() {
-            sessionStorage.removeItem('isLoggedIn');
-            location.reload();
-        }
+    function saveSettings() {
+        storeData.settings.storeName = document.getElementById('setName').value;
+        storeData.settings.whatsapp = document.getElementById('setWa').value;
+        pushToCloud();
+    }
 
-        function switchTab(name, btn) {
-            document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(`panel-${name}`).classList.add('active');
-        }
+    function closeModal() { document.getElementById('formModal').classList.remove('open'); }
+    function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
 
-        function renderAdminUI() {
-            document.getElementById('adminProductsGrid').innerHTML = (storeData.products || []).map(p => `
-                <div class="control-box">
-                    <div>
-                        <div class="control-box-header"><strong>${p.name}</strong><span style="background:#eff6ff; color:#2563eb; padding:2px 8px; border-radius:8px; font-size:0.8rem;">${p.code}</span></div>
-                        <img src="${p.img}" style="width:100%; height:120px; object-fit:cover; border-radius:8px; margin-bottom:8px;" onerror="this.src='https://via.placeholder.com/300'">
-                        <p style="font-weight:800; color:#10b981;">${Number(p.price).toLocaleString()} ريال</p>
-                    </div>
-                    <div class="control-actions">
-                        <button class="btn-edit" onclick="openFormModal('product', ${p.id})"><i class="fas fa-edit"></i> تعديل</button>
-                        <button class="btn-delete" onclick="deleteItem('products', ${p.id})"><i class="fas fa-trash"></i> حذف</button>
-                    </div>
-                </div>
-            `).join('');
-
-            document.getElementById('adminCategoriesGrid').innerHTML = (storeData.categories || []).map(c => `
-                <div class="control-box">
-                    <div><div class="control-box-header"><strong>${c.name}</strong></div></div>
-                    <div class="control-actions">
-                        <button class="btn-edit" onclick="openFormModal('category', '${c.id}')"><i class="fas fa-edit"></i> تعديل</button>
-                        <button class="btn-delete" onclick="deleteItem('categories', '${c.id}')"><i class="fas fa-trash"></i> حذف</button>
-                    </div>
-                </div>
-            `).join('');
-
-            document.getElementById('adminPaymentsGrid').innerHTML = (storeData.payments || []).map(pay => `
-                <div class="control-box">
-                    <div>
-                        <div class="control-box-header"><strong>${pay.title}</strong></div>
-                        <p style="font-weight:800; color:#2563eb; direction:ltr; text-align:right;">${pay.number}</p>
-                    </div>
-                    <div class="control-actions">
-                        <button class="btn-edit" onclick="openFormModal('payment', ${pay.id})"><i class="fas fa-edit"></i> تعديل</button>
-                        <button class="btn-delete" onclick="deleteItem('payments', ${pay.id})"><i class="fas fa-trash"></i> حذف</button>
-                    </div>
-                </div>
-            `).join('');
-
-            document.getElementById('setStoreName').value = storeData.settings?.storeName || '';
-            document.getElementById('setWhatsapp').value = storeData.settings?.whatsapp || '';
-        }
-
-        let currentType = '', currentId = null, tempImageCloudUrl = '';
-
-        function openFormModal(type, id = null) {
-            currentType = type; currentId = id; tempImageCloudUrl = '';
-            const fields = document.getElementById('formFields');
-            const title = document.getElementById('modalTitle');
-            fields.innerHTML = '';
-
-            if (type === 'product') {
-                const item = id ? storeData.products.find(p => p.id === id) : { name: '', code: '', price: '', catId: storeData.categories[0]?.id, img: '' };
-                if (item.img) tempImageCloudUrl = item.img;
-                title.innerText = id ? 'تعديل المنتج' : 'إضافة منتج جديد';
-                let catOptions = (storeData.categories || []).map(c => `<option value="${c.id}" ${c.id === item.catId ? 'selected' : ''}>${c.name}</option>`).join('');
-                
-                fields.innerHTML = `
-                    <div class="form-group"><label>اسم المنتج</label><input type="text" id="f_name" value="${item.name}" required></div>
-                    <div class="form-group"><label>القسم</label><select id="f_catId">${catOptions}</select></div>
-                    <div class="form-group"><label>الكود</label><input type="text" id="f_code" value="${item.code}" required></div>
-                    <div class="form-group"><label>السعر (ريال)</label><input type="number" id="f_price" value="${item.price}" required></div>
-                    <div class="form-group">
-                        <label>صورة المنتج (رفع مباشر لـ Supabase Storage)</label>
-                        <input type="file" accept="image/*" onchange="uploadImageToSupabaseStorage(event)" style="padding:8px;">
-                    </div>`;
-            } else if (type === 'category') {
-                const item = id ? storeData.categories.find(c => c.id === id) : { name: '' };
-                title.innerText = id ? 'تعديل القسم' : 'إضافة قسم جديد';
-                fields.innerHTML = `<div class="form-group"><label>اسم القسم</label><input type="text" id="f_catName" value="${item.name}" required></div>`;
-            } else if (type === 'payment') {
-                const item = id ? storeData.payments.find(p => p.id === id) : { title: '', number: '' };
-                title.innerText = id ? 'تعديل طريقة الدفع' : 'إضافة طريقة دفع';
-                fields.innerHTML = `
-                    <div class="form-group"><label>اسم البنك / المحفظة</label><input type="text" id="f_payTitle" value="${item.title}" required></div>
-                    <div class="form-group"><label>رقم الحساب</label><input type="text" id="f_payNum" value="${item.number}" style="direction:ltr;" required></div>`;
-            }
-            document.getElementById('formModal').classList.add('open');
-        }
-
-        async function uploadImageToSupabaseStorage(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            showToast('جاري رفع الصورة إلى سحابة Supabase...');
-
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}.${fileExt}`;
-
-            const { data, error } = await _supabase.storage
-                .from('platform-files')
-                .upload(fileName, file);
-
-            if (error) {
-                showToast('فشل رفع الصورة سحابياً!');
-                return;
-            }
-
-            const { data: publicURLData } = _supabase.storage
-                .from('platform-files')
-                .getPublicUrl(fileName);
-
-            tempImageCloudUrl = publicURLData.publicUrl;
-            showToast('تم رفع الصورة بنجاح وتوليد الرابط السحابي!');
-        }
-
-        function saveForm(e) {
-            e.preventDefault();
-            if (currentType === 'product') {
-                const data = {
-                    id: currentId || Date.now(),
-                    name: document.getElementById('f_name').value,
-                    catId: document.getElementById('f_catId').value,
-                    code: document.getElementById('f_code').value,
-                    price: Number(document.getElementById('f_price').value),
-                    img: tempImageCloudUrl || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'
-                };
-                if (currentId) storeData.products[storeData.products.findIndex(p => p.id === currentId)] = data;
-                else storeData.products.unshift(data);
-            } else if (currentType === 'category') {
-                const name = document.getElementById('f_catName').value;
-                if (currentId) storeData.categories.find(c => c.id === currentId).name = name;
-                else storeData.categories.push({ id: 'cat_' + Date.now(), name, subs: [] });
-            } else if (currentType === 'payment') {
-                const data = {
-                    id: currentId || Date.now(),
-                    title: document.getElementById('f_payTitle').value,
-                    number: document.getElementById('f_payNum').value,
-                    icon: 'fa-university'
-                };
-                if (currentId) storeData.payments[storeData.payments.findIndex(p => p.id === currentId)] = data;
-                else storeData.payments.push(data);
-            }
-            closeFormModal();
-            saveCloudData();
-        }
-
-        function deleteItem(col, id) {
-            if (!confirm('هل أنت متأكد من الحذف؟')) return;
-            storeData[col] = storeData[col].filter(i => i.id !== id && i.id !== String(id));
-            saveCloudData();
-        }
-
-        function saveSettingsToCloud() {
-            storeData.settings.storeName = document.getElementById('setStoreName').value;
-            storeData.settings.whatsapp = document.getElementById('setWhatsapp').value;
-            saveCloudData();
-        }
-
-        function closeFormModal() { document.getElementById('formModal').classList.remove('open'); }
-        function showToast(msg) {
-            const t = document.getElementById('toast'); t.innerText = msg; t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2500);
-        }
-
-        checkAuth();
-    </script>
+    checkSession();
+</script>
 </body>
 </html>
