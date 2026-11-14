@@ -29,8 +29,7 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
         .card { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; }
         
-        /* جعل الصورة تملأ منطقة العرض بالكامل (cover) في لوحة التحكم */
-        .card-img-wrap { width: 100%; height: 180px; background: #f8fafc; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+        .card-img-wrap { width: 100%; height: 140px; background: #f8fafc; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
         .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
         .card-actions { display: flex; gap: 8px; margin-top: 12px; }
@@ -76,6 +75,7 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('products', this)">المنتجات</button>
             <button class="tab-btn" onclick="switchTab('categories', this)">الأقسام</button>
+            <button class="tab-btn" onclick="switchTab('banners', this)">البنرات الإعلانية</button>
             <button class="tab-btn" onclick="switchTab('payments', this)">طرق الدفع</button>
             <button class="tab-btn" onclick="switchTab('settings', this)">الإعدادات</button>
         </div>
@@ -88,6 +88,11 @@
         <div class="panel" id="p-categories">
             <button class="btn-new" onclick="openModal('category')"><i class="fas fa-plus"></i> إضافة قسم</button>
             <div class="grid" id="gridCategories"></div>
+        </div>
+
+        <div class="panel" id="p-banners">
+            <button class="btn-new" onclick="openModal('banner')"><i class="fas fa-plus"></i> إضافة بنر إعلاني</button>
+            <div class="grid" id="gridBanners"></div>
         </div>
 
         <div class="panel" id="p-payments">
@@ -127,7 +132,7 @@
 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let storeData = { settings: { storeName: "متجر صدارة", whatsapp: "967780568507" }, categories: [], products: [], payments: [], users: [] };
+    let storeData = { settings: { storeName: "متجر صدارة", whatsapp: "967780568507" }, categories: [], products: [], payments: [], banners: [], users: [] };
     let editType = '', editId = null, uploadedImgUrl = '';
 
     async function initCloud() {
@@ -140,7 +145,10 @@
         }
         statusEl.innerText = 'متصل بالسحابة بنجاح ✓';
         statusEl.style.color = '#10b981';
-        if (data && data.payload) { storeData = data.payload; }
+        if (data && data.payload) { 
+            storeData = data.payload; 
+            if(!storeData.banners) storeData.banners = [];
+        }
         renderAdmin();
     }
 
@@ -208,6 +216,19 @@
             </div>
         `).join('');
 
+        document.getElementById('gridBanners').innerHTML = (storeData.banners || []).map(b => `
+            <div class="card">
+                <div>
+                    <div class="card-img-wrap" style="height:120px;"><img src="${b.img}"></div>
+                    <h4>${b.title || 'بنر إعلاني'}</h4>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-sm btn-edit" onclick="openModal('banner', ${b.id})">تعديل</button>
+                    <button class="btn-sm btn-del" onclick="delItem('banners', ${b.id})">حذف</button>
+                </div>
+            </div>
+        `).join('');
+
         document.getElementById('gridPayments').innerHTML = (storeData.payments || []).map(pay => `
             <div class="card">
                 <div>
@@ -242,25 +263,27 @@
                 <div class="grp"><label>القسم</label><select id="inCat">${opts}</select></div>
                 <div class="grp"><label>الكود</label><input type="text" id="inCode" value="${item.code}" required></div>
                 <div class="grp"><label>السعر</label><input type="number" id="inPrice" value="${item.price}" required></div>
-                <div class="grp">
-                    <label>اختر صورة من جهازك (ضغط تلقائي وتوليد رابط)</label>
-                    <input type="file" accept="image/*" onchange="compressAndUploadImg(event)">
-                </div>
-                <div class="grp">
-                    <label>رابط الصورة المولد</label>
-                    <input type="text" id="inImgUrl" value="${item.img}" style="direction:ltr;" required>
-                </div>`;
+                <div class="grp"><label>اختر صورة (ضغط تلقائي وتوليد رابط)</label><input type="file" accept="image/*" onchange="compressAndUploadImg(event)"></div>
+                <div class="grp"><label>رابط الصورة</label><input type="text" id="inImgUrl" value="${item.img}" style="direction:ltr;" required></div>`;
         } else if (type === 'category') {
             const item = id ? storeData.categories.find(x => x.id === id) : { name: '' };
             t.innerText = id ? 'تعديل قسم' : 'قسم جديد';
             f.innerHTML = `<div class="grp"><label>اسم القسم</label><input type="text" id="inCatName" value="${item.name}" required></div>`;
+        } else if (type === 'banner') {
+            const item = id ? storeData.banners.find(x => x.id === id) : { title: '', img: '' };
+            uploadedImgUrl = item.img;
+            t.innerText = id ? 'تعديل بنر إعلاني' : 'بنر إعلاني جديد';
+            f.innerHTML = `
+                <div class="grp"><label>عنوان البنر (اختياري)</label><input type="text" id="inBannerTitle" value="${item.title || ''}"></div>
+                <div class="grp"><label>اختر صورة البنر (ضغط تلقائي)</label><input type="file" accept="image/*" onchange="compressAndUploadImg(event)"></div>
+                <div class="grp"><label>رابط الصورة</label><input type="text" id="inImgUrl" value="${item.img}" style="direction:ltr;" required></div>`;
         } else if (type === 'payment') {
             const item = id ? storeData.payments.find(x => x.id === id) : { title: '', number: '', note: '' };
             t.innerText = id ? 'تعديل طريقة دفع' : 'طريقة دفع جديدة';
             f.innerHTML = `
                 <div class="grp"><label>اسم البنك / المحفظة</label><input type="text" id="inPayTitle" value="${item.title}" required></div>
                 <div class="grp"><label>رقم الحساب</label><input type="text" id="inPayNum" value="${item.number}" required style="direction:ltr;"></div>
-                <div class="grp"><label>ملاحظة (مثل اسم المستلم)</label><input type="text" id="inPayNote" value="${item.note || ''}"></div>`;
+                <div class="grp"><label>ملاحظة</label><input type="text" id="inPayNote" value="${item.note || ''}"></div>`;
         }
         document.getElementById('formModal').classList.add('open');
     }
@@ -279,8 +302,8 @@
                 const canvas = document.createElement('canvas');
                 let width = img.width;
                 let height = img.height;
-                const MAX_WIDTH = 900;
-                const MAX_HEIGHT = 900;
+                const MAX_WIDTH = 1000;
+                const MAX_HEIGHT = 1000;
                 
                 if (width > height) {
                     if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
@@ -306,7 +329,7 @@
                         document.getElementById('inImgUrl').value = uploadedImgUrl;
                         showToast('تم ضغط الصورة وتوليد الرابط بنجاح ✓');
                     }
-                }, 'image/jpeg', 0.8);
+                }, 'image/jpeg', 0.85);
             }
         }
     }
@@ -329,6 +352,15 @@
             const name = document.getElementById('inCatName').value;
             if (editId) storeData.categories.find(x => x.id === editId).name = name;
             else storeData.categories.push({ id: 'cat_' + Date.now(), name });
+        } else if (editType === 'banner') {
+            if(!storeData.banners) storeData.banners = [];
+            const obj = {
+                id: editId || Date.now(),
+                title: document.getElementById('inBannerTitle').value,
+                img: document.getElementById('inImgUrl').value || uploadedImgUrl
+            };
+            if (editId) storeData.banners[storeData.banners.findIndex(x => x.id === editId)] = obj;
+            else storeData.banners.push(obj);
         } else if (editType === 'payment') {
             const obj = {
                 id: editId || Date.now(),
