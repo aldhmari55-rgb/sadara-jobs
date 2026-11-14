@@ -67,6 +67,13 @@
         .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal.open { display: flex; }
         .modal-box { background: #fff; width: 100%; max-width: 400px; border-radius: 24px; padding: 24px; }
+        
+        .auth-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+        .auth-tab { flex: 1; text-align: center; padding: 10px; font-weight: 700; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; }
+        .auth-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+
         .form-grp { margin-bottom: 14px; }
         .form-grp label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
         .form-grp input { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 12px; outline: none; background: #f8fafc; }
@@ -131,7 +138,7 @@
     <div id="sideCatList" style="padding:15px 0;"></div>
 </aside>
 
-<div class="modal" id="authModal" onclick="if(event.target===this) this.classList.remove('open')">
+<div class="modal" id="authModal" onclick="if(event.target===this) document.getElementById('authModal').classList.remove('open')">
     <div class="modal-box" id="authBox"></div>
 </div>
 
@@ -152,8 +159,27 @@
         const { data, error } = await _supabase.from('store_data').select('payload').eq('id', 1).maybeSingle();
         if (data && data.payload) {
             storeData = data.payload;
+            // إذا كان المستخدم مسجلاً، استرجاع سلته المحفوظة سحابياً
+            if (currentUser && currentUser.cart) {
+                cart = currentUser.cart;
+                renderCart();
+            }
             renderUI();
         }
+    }
+
+    async function saveUserCartToCloud() {
+        if (!currentUser) return;
+        currentUser.cart = cart;
+        // تحديث بيانات المستخدم في مصفوفة المستخدمين
+        const idx = storeData.users.findIndex(u => u.email === currentUser.email);
+        if (idx !== -1) {
+            storeData.users[idx] = currentUser;
+        } else {
+            storeData.users.push(currentUser);
+        }
+        localStorage.setItem('sadarah_user', JSON.stringify(currentUser));
+        await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
     }
 
     function renderUI() {
@@ -224,7 +250,8 @@
         const ex = cart.find(x => x.id === id);
         if (ex) ex.qty++; else cart.push({ ...p, qty: 1 });
         renderCart();
-        showToast('تمت الإضافة للسلة');
+        saveUserCartToCloud();
+        showToast('تمت الإضافة للسلة وحفظها في حسابك');
     }
 
     function renderCart() {
@@ -233,7 +260,7 @@
             count += item.qty; total += item.price * item.qty;
             return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f1f5f9;">
                 <div><div style="font-weight:700;">${item.name}</div><small>${item.price} × ${item.qty}</small></div>
-                <button onclick="cart.splice(${idx},1); renderCart();" style="color:var(--danger); background:none; border:none; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                <button onclick="cart.splice(${idx},1); renderCart(); saveUserCartToCloud();" style="color:var(--danger); background:none; border:none; cursor:pointer;"><i class="fas fa-trash"></i></button>
             </div>`;
         }).join('') || '<p style="text-align:center; color:var(--muted); margin-top:30px;">السلة فارغة</p>';
         document.getElementById('cartBadge').innerText = count;
@@ -257,44 +284,103 @@
     function openAuth() {
         const box = document.getElementById('authBox');
         if (currentUser) {
-            box.innerHTML = `<h3 style="margin-bottom:15px;">أهلاً ${currentUser.name}</h3>
-                <p style="margin-bottom:15px; color:var(--muted);">${currentUser.email}</p>
+            // لوحة تحكم العميل الخاصة به
+            box.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3>لوحة تحكم العميل</h3>
+                    <button onclick="document.getElementById('authModal').classList.remove('open')" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+                </div>
+                <div style="background:#f8fafc; padding:15px; border-radius:14px; margin-bottom:15px; border:1px solid var(--border);">
+                    <p style="font-weight:700; margin-bottom:5px; color:var(--primary);">${currentUser.name}</p>
+                    <p style="font-size:0.85rem; color:var(--muted); direction:ltr; text-align:right;">${currentUser.email}</p>
+                </div>
+                <div style="margin-bottom:15px;">
+                    <h4 style="font-size:0.95rem; margin-bottom:8px;">ملخص الحساب:</h4>
+                    <p style="font-size:0.85rem; color:var(--muted);">المنتجات المختارة في السلة: <strong>${cart.length} منتج</strong></p>
+                </div>
                 <button class="btn-submit" style="background:var(--danger);" onclick="logoutUser()">تسجيل الخروج</button>`;
         } else {
-            box.innerHTML = `<h3 style="margin-bottom:15px;">حساب العميل</h3>
-                <form onsubmit="authSubmit(event)">
-                    <div class="form-grp"><label>الاسم (للتسجيل الجديد)</label><input type="text" id="uName"></div>
-                    <div class="form-grp"><label>البريد الإلكتروني</label><input type="email" id="uEmail" required style="direction:ltr;"></div>
-                    <div class="form-grp"><label>كلمة المرور</label><input type="password" id="uPass" required style="direction:ltr;"></div>
-                    <button type="submit" class="btn-submit">دخول / إنشاء حساب</button>
+            // شاشة منفصلة لتسجيل الدخول أو إنشاء حساب جديد مع تبويب
+            box.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3>حساب العميل</h3>
+                    <button onclick="document.getElementById('authModal').classList.remove('open')" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+                </div>
+                <div class="auth-tabs">
+                    <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">تسجيل الدخول</div>
+                    <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">إنشاء حساب جديد</div>
+                </div>
+                
+                <form class="auth-form active" id="formLogin" onsubmit="handleLogin(event)">
+                    <div class="form-grp"><label>البريد الإلكتروني</label><input type="email" id="logEmail" required style="direction:ltr;"></div>
+                    <div class="form-grp"><label>كلمة المرور</label><input type="password" id="logPass" required style="direction:ltr;"></div>
+                    <button type="submit" class="btn-submit">تسجيل الدخول</button>
+                </form>
+
+                <form class="auth-form" id="formRegister" onsubmit="handleRegister(event)">
+                    <div class="form-grp"><label>الاسم الكامل</label><input type="text" id="regName" required></div>
+                    <div class="form-grp"><label>البريد الإلكتروني</label><input type="email" id="regEmail" required style="direction:ltr;"></div>
+                    <div class="form-grp"><label>كلمة المرور</label><input type="password" id="regPass" required style="direction:ltr;"></div>
+                    <button type="submit" class="btn-submit">إنشاء الحساب ودخول لوحة التحكم</button>
                 </form>`;
         }
         document.getElementById('authModal').classList.add('open');
     }
 
-    async function authSubmit(e) {
-        e.preventDefault();
-        const name = document.getElementById('uName').value.trim();
-        const email = document.getElementById('uEmail').value.trim();
-        const pass = document.getElementById('uPass').value.trim();
-        if (!storeData.users) storeData.users = [];
-
-        let user = storeData.users.find(u => u.email === email);
-        if (user) {
-            if (user.pass !== pass) return showToast('كلمة المرور غير صحيحة!');
-        } else {
-            if (!name) return showToast('أدخل اسمك لإنشاء حساب جديد');
-            user = { name, email, pass };
-            storeData.users.push(user);
-            await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
-        }
-        currentUser = user;
-        localStorage.setItem('sadarah_user', JSON.stringify(user));
-        document.getElementById('authModal').classList.remove('open');
-        showToast('تم تسجيل الدخول بنجاح');
+    function switchAuthTab(mode) {
+        document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
+        document.getElementById('tabRegister').classList.toggle('active', mode === 'register');
+        document.getElementById('formLogin').classList.toggle('active', mode === 'login');
+        document.getElementById('formRegister').classList.toggle('active', mode === 'register');
     }
 
-    function logoutUser() { currentUser = null; localStorage.removeItem('sadarah_user'); document.getElementById('authModal').classList.remove('open'); showToast('تم الخروج'); }
+    async function handleRegister(e) {
+        e.preventDefault();
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const pass = document.getElementById('regPass').value.trim();
+        if (!storeData.users) storeData.users = [];
+
+        if (storeData.users.find(u => u.email === email)) return showToast('البريد مسجل مسبقاً!');
+
+        const newUser = { name, email, pass, cart: [] };
+        storeData.users.push(newUser);
+        currentUser = newUser;
+        cart = [];
+        localStorage.setItem('sadarah_user', JSON.stringify(currentUser));
+        await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
+        
+        showToast('تم إنشاء الحساب بنجاح ودخول لوحة التحكم ✓');
+        openAuth();
+    }
+
+    async function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('logEmail').value.trim();
+        const pass = document.getElementById('logPass').value.trim();
+
+        const user = (storeData.users || []).find(u => u.email === email && u.pass === pass);
+        if (user) {
+            currentUser = user;
+            cart = user.cart || [];
+            localStorage.setItem('sadarah_user', JSON.stringify(currentUser));
+            renderCart();
+            showToast('تم تسجيل الدخول بنجاح ✓');
+            openAuth();
+        } else {
+            showToast('البريد أو كلمة المرور غير صحيحة!');
+        }
+    }
+
+    function logoutUser() { 
+        currentUser = null; 
+        cart = [];
+        renderCart();
+        localStorage.removeItem('sadarah_user'); 
+        document.getElementById('authModal').classList.remove('open'); 
+        showToast('تم تسجيل الخروج'); 
+    }
+
     function toggleDrawer(id) { document.getElementById(id).classList.toggle('open'); document.getElementById(id+'Overlay').classList.toggle('open'); }
     function copyTxt(t) { navigator.clipboard.writeText(t).then(() => showToast('تم النسخ: ' + t)); }
     function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
