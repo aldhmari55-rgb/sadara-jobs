@@ -146,7 +146,7 @@
     let editType = '', editId = null, uploadedImgUrl = '';
     let currentProductImgs = [];
 
-    // دالة ذكية لتحديد الحرف الافتراضي للأقسام الموجودة أو الجديدة
+    // دالة ذكية لإرجاع الحرف الخاص بالقسم (مع دعم الحرف المخصص المدخل يدوياً لكل قسم)
     function getCategoryPrefix(cat) {
         if (cat.prefix && cat.prefix.trim()) return cat.prefix.trim().toUpperCase();
         const n = (cat.name || '').trim();
@@ -156,10 +156,15 @@
         if (n.includes('بنات')) return 'G';
         if (n.includes('مواليد') || n.includes('أطفال')) return 'K';
         if (n.includes('الكترون') || n.includes('إلكترون')) return 'E';
-        return 'P';
+        if (n.includes('اكسسوار') || n.includes('إكسسوار')) return 'A';
+        if (n.includes('تجميل') || n.includes('مكياج')) return 'T';
+        if (n.includes('منزل') || n.includes('منزلية')) return 'H';
+        
+        // إذا لم تطابق كلمة مفتاحية، نأخذ أول حرف إنجليزي من اسم القسم أو حرف فريد عشوائي
+        return n.charAt(0).toUpperCase() || 'P';
     }
 
-    // دالة توليد الكود التسلسلي التالي للقسم (من 100 إلى 10000)
+    // توليد الكود التسلسلي التالي للقسم (من 100 إلى 10000)
     function generateNextCode(catId) {
         const cat = (storeData.categories || []).find(c => c.id === catId);
         if (!cat) return 'P100';
@@ -268,7 +273,7 @@
             <div class="card">
                 <div>
                     <h4>${c.name}</h4>
-                    <span class="prefix-badge">نطاق الأكواد: ${pref}100 - ${pref}10,000</span>
+                    <span class="prefix-badge">حرف الكود: (${pref}) - النطاق: ${pref}100 إلى ${pref}10,000</span>
                 </div>
                 <div class="card-actions">
                     <button class="btn-sm btn-edit" onclick="openModal('category', '${c.id}')">تعديل</button>
@@ -325,8 +330,8 @@
             const opts = storeData.categories.map(c => `<option value="${c.id}" ${c.id===item.catId?'selected':''}>${c.name} (${getCategoryPrefix(c)})</option>`).join('');
             f.innerHTML = `
                 <div class="grp"><label>اسم المنتج</label><input type="text" id="inName" value="${item.name}" required></div>
-                <div class="grp"><label>القسم (يتغير الكود تلقائياً حسب القسم)</label><select id="inCat" onchange="onProductCatChange(this.value)">${opts}</select></div>
-                <div class="grp"><label>كود الصنف (تسلسلي تلقائي من 100 إلى 10,000)</label><input type="text" id="inCode" value="${item.code}" style="direction:ltr; font-weight:800; color:var(--primary);" required></div>
+                <div class="grp"><label>القسم (يظهر حرف القسم تلقائياً)</label><select id="inCat" onchange="onProductCatChange(this.value)">${opts}</select></div>
+                <div class="grp"><label>كود الصنف (تسلسلي من 100 إلى 10,000)</label><input type="text" id="inCode" value="${item.code}" style="direction:ltr; font-weight:800; color:var(--primary);" required></div>
                 <div class="grp"><label>السعر</label><input type="number" id="inPrice" value="${item.price}" required></div>
                 <div class="grp">
                     <label>رفع صور المنتج (يمكنك اختيار أكثر من صورة دفعة واحدة)</label>
@@ -346,11 +351,11 @@
             renderProductImgPreviews();
         } else if (type === 'category') {
             const item = id ? storeData.categories.find(x => x.id === id) : { name: '', prefix: '' };
-            const currentPref = id ? getCategoryPrefix(item) : '';
+            const currentPref = id ? (item.prefix || getCategoryPrefix(item)) : '';
             t.innerText = id ? 'تعديل قسم' : 'قسم جديد';
             f.innerHTML = `
-                <div class="grp"><label>اسم القسم</label><input type="text" id="inCatName" value="${item.name}" placeholder="مثال: رجالي، نسائي، ولادي، بناتي" required></div>
-                <div class="grp"><label>الحرف الأولي للكود (مثال: M للرجالي، W للنسائي، B للولادي، G للبناتي)</label><input type="text" id="inCatPrefix" value="${currentPref}" maxlength="4" placeholder="M" style="direction:ltr; text-transform:uppercase; font-weight:800;" required></div>`;
+                <div class="grp"><label>اسم القسم</label><input type="text" id="inCatName" value="${item.name}" placeholder="مثال: اكسسوارات، ادوات منزلية" required></div>
+                <div class="grp"><label>الحرف الخاص بالقسم (مثال: A للأكسسوارات، T للتجميل، H للمنزلية)</label><input type="text" id="inCatPrefix" value="${currentPref}" maxlength="3" placeholder="A" style="direction:ltr; text-transform:uppercase; font-weight:800;" required></div>`;
         } else if (type === 'banner') {
             const item = id ? storeData.banners.find(x => x.id === id) : { title: '', img: '' };
             const existingImg = item.img || item.url || item.image || '';
@@ -377,7 +382,6 @@
         document.getElementById('formModal').classList.add('open');
     }
 
-    // تحديث الكود تلقائياً عند تغيير القسم في نافذة إضافة المنتج
     function onProductCatChange(catId) {
         if (!editId) {
             document.getElementById('inCode').value = generateNextCode(catId);
