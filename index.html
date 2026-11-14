@@ -44,10 +44,10 @@
         .b-dot { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; cursor: pointer; transition: all 0.3s ease; }
         .b-dot.active { width: 24px; border-radius: 6px; background: #2563eb; }
 
-        /* زر اطلب لي من شي إن (تحت السلايدر وقبل الأقسام) */
-        .shein-trigger-section { padding: 0 20px 15px; }
-        .shein-trigger-btn { width: 100%; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; border: none; padding: 16px; border-radius: 20px; font-weight: 800; font-size: 1.05rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 8px 25px rgba(15,23,42,0.15); transition: 0.2s; }
-        .shein-trigger-btn:hover { transform: translateY(-2px); }
+        /* الأزرار البارزة تحت السلايدر (شي إن + الوظائف) */
+        .action-buttons-section { padding: 0 20px 15px; display: flex; flex-direction: column; gap: 10px; }
+        .shein-trigger-btn { width: 100%; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; border: none; padding: 15px; border-radius: 20px; font-weight: 800; font-size: 1.02rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 6px 20px rgba(15,23,42,0.12); transition: 0.2s; }
+        .jobs-trigger-btn { width: 100%; background: linear-gradient(135deg, #065f46 0%, #047857 100%); color: #fff; border: none; padding: 15px; border-radius: 20px; font-weight: 800; font-size: 1.02rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 6px 20px rgba(4,120,87,0.15); text-decoration: none; transition: 0.2s; }
 
         .main-content { padding: 20px; }
         .cat-block { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
@@ -172,11 +172,14 @@
         </div>
     </div>
 
-    <!-- زر اطلب لي من شي إن (يظهر تحت السلايدر مباشرة وقبل الأقسام) -->
-    <div class="shein-trigger-section">
+    <!-- الأزرار البارزة تحت السلايدر مباشرة (شي إن + الوظائف) -->
+    <div class="action-buttons-section">
         <button class="shein-trigger-btn" onclick="openSheinModal()">
             <i class="fas fa-shopping-bag" style="color:#38bdf8;"></i> اطلب لي من شي إن (SHEIN)
         </button>
+        <a href="jobs.html" class="jobs-trigger-btn">
+            <i class="fas fa-briefcase" style="color:#34d399;"></i> بوابة التوظيف والفرص المهنية
+        </a>
     </div>
 
     <main class="main-content" id="mainContent"></main>
@@ -219,7 +222,6 @@
         <button onclick="toggleDrawer('sideDrawer')" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
     </div>
     
-    <!-- زر تتبع الشحنات وزر الوظائف في القائمة الجانبية -->
     <div style="padding: 14px 0; border-bottom: 2px solid var(--border); display: flex; flex-direction: column; gap: 8px;">
         <button onclick="openSheinTracking()" style="width:100%; background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; padding: 12px; border-radius: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
             <i class="fas fa-plane"></i> تتبع شحنات شي إن
