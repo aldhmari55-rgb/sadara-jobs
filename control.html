@@ -46,11 +46,13 @@
         .grp input, .grp select { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; outline: none; }
         .btn-main { width: 100%; padding: 12px; border: none; border-radius: 12px; background: var(--primary); color: #fff; font-weight: 800; cursor: pointer; font-size: 1rem; }
 
-        /* شبكة معاينة الصور المتعددة داخل النافذة */
         .multi-img-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .mini-thumb { position: relative; width: 68px; height: 68px; border-radius: 10px; border: 1px solid var(--border); overflow: hidden; background: #f8fafc; display: flex; align-items: center; justify-content: center; }
         .mini-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .mini-thumb button { position: absolute; top: 2px; right: 2px; background: var(--danger); color: #fff; border: none; width: 18px; height: 18px; border-radius: 50%; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        .banner-preview-box { width: 100%; min-height: 100px; max-height: 180px; border: 1px dashed var(--border); border-radius: 12px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-top: 8px; }
+        .banner-preview-box img { max-width: 100%; max-height: 180px; object-fit: contain; }
 
         .toast { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: #fff; padding: 10px 22px; border-radius: 25px; font-size: 0.9rem; z-index: 9999; transition: 0.3s; }
         .toast.show { transform: translateX(-50%) translateY(0); }
@@ -141,7 +143,7 @@
 
     let storeData = { settings: { storeName: "متجر صدارة", whatsapp: "967780568507" }, categories: [], products: [], payments: [], banners: [], users: [] };
     let editType = '', editId = null, uploadedImgUrl = '';
-    let currentProductImgs = []; // مصفوفة لتخزين صور المنتج المتعددة
+    let currentProductImgs = [];
 
     async function initCloud() {
         const statusEl = document.getElementById('connStatus');
@@ -155,7 +157,7 @@
         statusEl.style.color = '#10b981';
         if (data && data.payload) { 
             storeData = data.payload; 
-            if(!storeData.banners) storeData.banners = [];
+            if(!Array.isArray(storeData.banners)) storeData.banners = [];
         }
         renderAdmin();
     }
@@ -232,18 +234,20 @@
             </div>
         `).join('');
 
-        document.getElementById('gridBanners').innerHTML = (storeData.banners || []).map(b => `
+        document.getElementById('gridBanners').innerHTML = (storeData.banners || []).map(b => {
+            const bImg = b.img || b.url || b.image || '';
+            return `
             <div class="card">
                 <div>
-                    <div class="card-img-wrap" style="height:120px;"><img src="${b.img}"></div>
+                    <div class="card-img-wrap" style="height:130px;"><img src="${bImg}" alt="بنر"></div>
                     <h4>${b.title || 'بنر إعلاني'}</h4>
                 </div>
                 <div class="card-actions">
                     <button class="btn-sm btn-edit" onclick="openModal('banner', ${b.id})">تعديل</button>
                     <button class="btn-sm btn-del" onclick="delItem('banners', ${b.id})">حذف</button>
                 </div>
-            </div>
-        `).join('');
+            </div>`;
+        }).join('');
 
         document.getElementById('gridPayments').innerHTML = (storeData.payments || []).map(pay => `
             <div class="card">
@@ -271,8 +275,6 @@
         if (type === 'product') {
             if (!storeData.categories || !storeData.categories.length) return showToast('أضف قسماً أولاً قبل إضافة المنتجات!');
             const item = id ? storeData.products.find(x => x.id === id) : { name: '', code: '', price: '', catId: storeData.categories[0].id, img: '', imgs: [] };
-            
-            // تجهيز مصفوفة الصور الحالية للمنتج
             currentProductImgs = (item.imgs && item.imgs.length) ? [...item.imgs] : (item.img ? [item.img] : []);
             
             t.innerText = id ? 'تعديل منتج' : 'منتج جديد';
@@ -304,12 +306,19 @@
             f.innerHTML = `<div class="grp"><label>اسم القسم</label><input type="text" id="inCatName" value="${item.name}" required></div>`;
         } else if (type === 'banner') {
             const item = id ? storeData.banners.find(x => x.id === id) : { title: '', img: '' };
-            uploadedImgUrl = item.img;
+            const existingImg = item.img || item.url || item.image || '';
+            uploadedImgUrl = existingImg;
             t.innerText = id ? 'تعديل بنر إعلاني' : 'بنر إعلاني جديد';
             f.innerHTML = `
                 <div class="grp"><label>عنوان البنر (اختياري)</label><input type="text" id="inBannerTitle" value="${item.title || ''}"></div>
-                <div class="grp"><label>اختر صورة البنر (ضغط تلقائي)</label><input type="file" accept="image/*" onchange="compressAndUploadBanner(event)"></div>
-                <div class="grp"><label>رابط الصورة</label><input type="text" id="inImgUrl" value="${item.img}" style="direction:ltr;" required></div>`;
+                <div class="grp"><label>اختر صورة البنر من جهازك</label><input type="file" accept="image/*" onchange="compressAndUploadBanner(event)"></div>
+                <div class="grp"><label>رابط الصورة المباشر</label><input type="text" id="inImgUrl" value="${existingImg}" oninput="updateBannerPreview(this.value)" style="direction:ltr;" required></div>
+                <div class="grp">
+                    <label>معاينة البنر قبل الحفظ:</label>
+                    <div class="banner-preview-box" id="bannerPreviewBox">
+                        ${existingImg ? `<img src="${existingImg}">` : '<small style="color:#64748b;">ستظهر معاينة الصورة هنا</small>'}
+                    </div>
+                </div>`;
         } else if (type === 'payment') {
             const item = id ? storeData.payments.find(x => x.id === id) : { title: '', number: '', note: '' };
             t.innerText = id ? 'تعديل طريقة دفع' : 'طريقة دفع جديدة';
@@ -319,6 +328,12 @@
                 <div class="grp"><label>ملاحظة</label><input type="text" id="inPayNote" value="${item.note || ''}"></div>`;
         }
         document.getElementById('formModal').classList.add('open');
+    }
+
+    function updateBannerPreview(url) {
+        const box = document.getElementById('bannerPreviewBox');
+        if (!box) return;
+        box.innerHTML = url ? `<img src="${url}">` : '<small style="color:#64748b;">ستظهر معاينة الصورة هنا</small>';
     }
 
     function renderProductImgPreviews() {
@@ -348,7 +363,6 @@
         renderProductImgPreviews();
     }
 
-    // رفع وضغط عدة صور للمنتج دفعة واحدة
     async function uploadMultipleProductImgs(e) {
         const files = Array.from(e.target.files);
         if (!files.length) return;
@@ -394,7 +408,7 @@
     function compressAndUploadBanner(e) {
         const file = e.target.files[0];
         if (!file) return;
-        showToast('جاري ضغط الصورة وتوليد الرابط...');
+        showToast('جاري ضغط صورة البنر ورفعها...');
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = function(event) {
@@ -403,23 +417,24 @@
             img.onload = function() {
                 const canvas = document.createElement('canvas');
                 let width = img.width, height = img.height;
-                const MAX = 1000;
+                const MAX = 1200;
                 if (width > height && width > MAX) { height *= MAX / width; width = MAX; }
                 else if (height > MAX) { width *= MAX / height; height = MAX; }
                 canvas.width = width; canvas.height = height;
                 canvas.getContext('2d').drawImage(img, 0, 0, width, height);
                 canvas.toBlob(async (blob) => {
                     const cleanName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
-                    const fileName = `${Date.now()}_${cleanName}`;
+                    const fileName = `banner_${Date.now()}_${cleanName}`;
                     const { error } = await _supabase.storage.from('platform-files').upload(fileName, blob);
                     if (error) { alert('فشل الرفع: ' + error.message); return; }
                     const { data } = _supabase.storage.from('platform-files').getPublicUrl(fileName);
                     if (data && data.publicUrl) {
                         uploadedImgUrl = data.publicUrl;
                         document.getElementById('inImgUrl').value = uploadedImgUrl;
-                        showToast('تم ضغط الصورة وتوليد الرابط بنجاح ✓');
+                        updateBannerPreview(uploadedImgUrl);
+                        showToast('تم رفع البنر وظهرت معاينته ✓');
                     }
-                }, 'image/jpeg', 0.85);
+                }, 'image/jpeg', 0.88);
             };
         };
     }
@@ -434,8 +449,8 @@
                 catId: document.getElementById('inCat').value,
                 code: document.getElementById('inCode').value,
                 price: Number(document.getElementById('inPrice').value),
-                img: finalImgs[0], // الصورة الأساسية للتوافق
-                imgs: finalImgs    // مصفوفة الصور الكاملة
+                img: finalImgs[0],
+                imgs: finalImgs
             };
             if (editId) storeData.products[storeData.products.findIndex(x => x.id === editId)] = obj;
             else storeData.products.unshift(obj);
@@ -444,11 +459,13 @@
             if (editId) storeData.categories.find(x => x.id === editId).name = name;
             else storeData.categories.push({ id: 'cat_' + Date.now(), name });
         } else if (editType === 'banner') {
-            if(!storeData.banners) storeData.banners = [];
+            if (!Array.isArray(storeData.banners)) storeData.banners = [];
+            const finalBannerUrl = document.getElementById('inImgUrl').value.trim() || uploadedImgUrl;
             const obj = {
                 id: editId || Date.now(),
                 title: document.getElementById('inBannerTitle').value,
-                img: document.getElementById('inImgUrl').value || uploadedImgUrl
+                img: finalBannerUrl,
+                url: finalBannerUrl
             };
             if (editId) storeData.banners[storeData.banners.findIndex(x => x.id === editId)] = obj;
             else storeData.banners.push(obj);
