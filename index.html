@@ -73,27 +73,6 @@
         .btn-cart { background: #2563eb; }
         .btn-wa { background: var(--whatsapp); margin-top: 4px; }
 
-        /* قسم اطلب لي من شي إن */
-        .shein-order-section { background: var(--white); padding: 25px 20px; border-top: 1px solid var(--border); }
-        .shein-banner-card { background: #ffffff; border: 1px solid var(--border); border-radius: 20px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        
-        .shein-tabs { display: flex; background: #e2e8f0; border-radius: 30px; padding: 4px; margin-bottom: 20px; }
-        .shein-tab { flex: 1; text-align: center; padding: 11px; border-radius: 26px; font-weight: 700; cursor: pointer; font-size: 0.9rem; color: var(--muted); border: none; background: transparent; transition: 0.2s; }
-        .shein-tab.active { background: #fff; color: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-
-        .product-item-card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 18px; margin-bottom: 16px; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .product-item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .product-item-num { background: #f8fafc; border: 1px solid var(--border); padding: 4px 12px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; }
-        .product-delete-btn { background: #fef2f2; color: var(--danger); border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        .shein-input-group { margin-bottom: 12px; }
-        .shein-input-group label { display: block; font-size: 0.82rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
-        .shein-input-field { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 14px; background: #f8fafc; outline: none; font-size: 0.9rem; direction: ltr; }
-        .shein-row { display: flex; gap: 10px; }
-
-        .btn-add-more { width: 100%; padding: 14px; border: 2px dashed var(--border); border-radius: 18px; background: #fff; font-weight: 800; color: #1e293b; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .btn-submit-order { width: 100%; padding: 15px; border: none; border-radius: 18px; background: #1e293b; color: #fff; font-weight: 800; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
-
         .pay-section { background: var(--white); padding: 25px 20px; border-top: 1px solid var(--border); }
         .pay-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
         .pay-card { border: 1px solid #f1f5f9; border-radius: 18px; padding: 18px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); background: #fff; }
@@ -105,6 +84,17 @@
         .drawer.open { left: 0; }
         .right-drawer { left: auto; right: -380px; }
         .right-drawer.open { right: 0; }
+
+        /* نافذة تتبع شحنات شي إن داخل القائمة الجانبية */
+        .shein-track-modal { position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 4000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .shein-track-modal.open { display: flex; }
+        .shein-track-box { background: #fff; width: 100%; max-width: 500px; max-height: 85vh; border-radius: 24px; padding: 22px; overflow-y: auto; }
+        .shein-card-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
+        .st-review { background: #fef3c7; color: #d97706; }
+        .st-bought { background: #e0f2fe; color: #0284c7; }
+        .st-shipping { background: #ede9fe; color: #7c3aed; }
+        .st-success { background: #dcfce7; color: #15803d; }
 
         .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal.open { display: flex; }
@@ -156,36 +146,41 @@
 
     <main class="main-content" id="mainContent"></main>
 
-    <!-- قسم اطلب لي من شي إن -->
-    <section class="shein-order-section">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 style="font-weight:800; font-size:1.2rem;">🛍️ اطلب لي من شي إن</h3>
-        </div>
-
-        <div class="shein-banner-card">
-            <div style="font-size:0.88rem; line-height:1.6; color:var(--text);">
-                انسخ روابط منتجاتك أو سلتك من شي إن - SHEIN وسنقوم بطلبها وتوصيلها لك.<br>
-                <strong>للتواصل واتساب: <span style="direction:ltr; display:inline-block;" id="uiWaNumber">777900693</span></strong>
-            </div>
-            <div style="background:#dcfce7; color:#15803d; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0;">
-                <i class="fab fa-whatsapp"></i>
-            </div>
-        </div>
-
-        <div class="shein-tabs">
-            <button class="shein-tab active" id="tabCart" onclick="switchSheinType('cart')"><i class="fas fa-shopping-cart"></i> سلة كاملة</button>
-            <button class="shein-tab" id="tabProd" onclick="switchSheinType('prod')"><i class="fas fa-boxes"></i> منتجات محددة</button>
-        </div>
-
-        <div id="sheinFormContainer"></div>
-    </section>
-
     <!-- طرق الدفع الإلكتروني -->
     <section class="pay-section">
         <h3 style="text-align:center; margin-bottom:18px; font-weight:800;">طرق الدفع الإلكتروني</h3>
         <div class="pay-grid" id="payList"></div>
         <p style="text-align:center; font-size:0.82rem; color:var(--muted); margin-top:20px;">© 2026 <span id="uiFooterName">متجر صدارة</span></p>
     </section>
+</div>
+
+<!-- القائمة الجانبية (تحتوي الآن على أقسام المتجر وخيار تتبع شحنات شي إن) -->
+<div class="overlay" id="sideDrawerOverlay" onclick="toggleDrawer('sideDrawer')"></div>
+<aside class="drawer right-drawer" id="sideDrawer">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:15px; border-bottom:1px solid var(--border);">
+        <h3 style="font-size:1.1rem;">أقسام المتجر</h3>
+        <button onclick="toggleDrawer('sideDrawer')" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+    </div>
+    
+    <!-- زر تتبع شحنات شي إن في القائمة الجانبية حصرياً -->
+    <div style="padding: 14px 0; border-bottom: 2px solid var(--border);">
+        <button onclick="openSheinTracking()" style="width:100%; background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; padding: 12px; border-radius: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <i class="fas fa-plane"></i> تتبع شحنات شي إن
+        </button>
+    </div>
+
+    <div id="sideCatList" style="padding:15px 0; overflow-y:auto; flex:1;"></div>
+</aside>
+
+<!-- نافذة تتبع الشحنات المنفتحة من القائمة الجانبية -->
+<div class="shein-track-modal" id="sheinTrackModal" onclick="if(event.target===this) closeSheinTracking()">
+    <div class="shein-track-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+            <h3 style="font-weight:800; font-size:1.1rem; color:#2563eb;"><i class="fas fa-plane"></i> تتبع شحنات شي إن</h3>
+            <button onclick="closeSheinTracking()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+        </div>
+        <div id="sheinShipmentsModalList"></div>
+    </div>
 </div>
 
 <div class="overlay" id="cartDrawerOverlay" onclick="toggleDrawer('cartDrawer')"></div>
@@ -201,15 +196,6 @@
         </div>
         <button class="btn-wa" onclick="checkoutWA()"><i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب</button>
     </div>
-</aside>
-
-<div class="overlay" id="sideDrawerOverlay" onclick="toggleDrawer('sideDrawer')"></div>
-<aside class="drawer right-drawer" id="sideDrawer">
-    <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:15px; border-bottom:1px solid var(--border);">
-        <h3>أقسام المتجر</h3>
-        <button onclick="toggleDrawer('sideDrawer')" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
-    </div>
-    <div id="sideCatList" style="padding:15px 0;"></div>
 </aside>
 
 <div class="modal" id="authModal" onclick="if(event.target===this) document.getElementById('authModal').classList.remove('open')">
@@ -229,9 +215,6 @@
     let activeCat = 'all';
     let currentUser = JSON.parse(localStorage.getItem('sadarah_user')) || null;
     
-    let sheinOrderType = 'cart'; 
-    let sheinProducts = [{ id: 1, link: '', qty: 1, specs: '' }];
-
     let slideIndex = 0;
     let slideTimer = null;
     let prodImgState = {};
@@ -264,134 +247,40 @@
         await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
     }
 
-    function switchSheinType(type) {
-        sheinOrderType = type;
-        document.getElementById('tabCart').classList.toggle('active', type === 'cart');
-        document.getElementById('tabProd').classList.toggle('active', type === 'prod');
-        renderSheinForm();
-    }
+    function openSheinTracking() {
+        toggleDrawer('sideDrawer'); // إغلاق القائمة الجانبية
+        const listEl = document.getElementById('sheinShipmentsModalList');
+        const items = storeData.shein || [];
 
-    function renderSheinForm() {
-        const container = document.getElementById('sheinFormContainer');
-        if (sheinOrderType === 'cart') {
-            container.innerHTML = `
-                <div class="shein-input-group">
-                    <label>رابط سلة شي إن المجمعة:</label>
-                    <input type="text" id="sheinCartLink" class="shein-input-field" placeholder="الصق رابط السلة (Share Cart) هنا...">
-                </div>
-                <div class="shein-input-group">
-                    <label>ملاحظات إضافية:</label>
-                    <textarea id="sheinCartNotes" class="shein-input-field" rows="3" placeholder="اكتب أي تفاصيل أخرى ترغب بإضافتها..."></textarea>
-                </div>
-                <button class="btn-submit-order" onclick="submitSheinCart()"><i class="fab fa-whatsapp"></i> إرسال الطلب للإدارة</button>
-            `;
-        } else {
-            let cardsHtml = sheinProducts.map((p, idx) => `
-                <div class="product-item-card">
-                    <div class="product-item-head">
-                        <span class="product-item-num">منتج رقم ${idx + 1}</span>
-                        ${sheinProducts.length > 1 ? `<button class="product-delete-btn" onclick="removeSheinProd(${p.id})"><i class="far fa-trash-alt"></i></button>` : ''}
+        listEl.innerHTML = items.map(s => {
+            let badgeClass = 'st-review', badgeText = s.status || 'قيد المراجعة والتجميع';
+            if (badgeText.includes('شراء')) badgeClass = 'st-bought';
+            else if (badgeText.includes('طريق')) badgeClass = 'st-shipping';
+            else if (badgeText.includes('تسليم') || badgeText.includes('تم')) badgeClass = 'st-success';
+
+            return `
+            <div class="shein-card-box">
+                <div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;">
+                        <span style="font-weight:800; font-size:0.95rem;">${s.title}</span>
+                        <span class="status-badge ${badgeClass}">${badgeText}</span>
                     </div>
-                    <div class="shein-input-group">
-                        <label>رابط المنتج:</label>
-                        <input type="text" class="shein-input-field prod-link" data-id="${p.id}" value="${p.link}" placeholder="رابط المنتج...">
-                    </div>
-                    <div class="shein-row">
-                        <div class="shein-input-group" style="flex:1;">
-                            <label>الكمية:</label>
-                            <input type="number" class="shein-input-field prod-qty" data-id="${p.id}" value="${p.qty}" min="1">
-                        </div>
-                        <div class="shein-input-group" style="flex:2;">
-                            <label>المقاس / اللون:</label>
-                            <input type="text" class="shein-input-field prod-specs" data-id="${p.id}" value="${p.specs}" placeholder="مثال: M / أسود">
-                        </div>
-                    </div>
+                    <small style="color:var(--muted);"><i class="far fa-calendar-alt"></i> تاريخ رفع السلة: ${s.date}</small>
                 </div>
-            `).join('');
+                <button onclick="alert('تفاصيل الشحنة:\\n- العنوان: ${s.title}\\n- الحالة: ${badgeText}\\n- التاريخ: ${s.date}')" style="background:#2563eb; color:#fff; border:none; padding:6px 12px; border-radius:12px; font-size:0.78rem; font-weight:700; cursor:pointer;">التفاصيل</button>
+            </div>`;
+        }).join('') || '<p style="text-align:center; color:var(--muted); padding:20px;">لا توجد شحنات مسجلة حالياً</p>';
 
-            container.innerHTML = `
-                <div style="font-size:0.9rem; font-weight:800; margin-bottom:12px;">تفاصيل المنتجات المراد طلبها:</div>
-                ${cardsHtml}
-                <button class="btn-add-more" onclick="addSheinProd()"><i class="fas fa-plus-circle"></i> إضافة منتج آخر</button>
-                <div class="shein-input-group">
-                    <label>ملاحظات إضافية:</label>
-                    <textarea id="sheinProdNotes" class="shein-input-field" rows="2" placeholder="اكتب أي تفاصيل أخرى ترغب بإضافتها..."></textarea>
-                </div>
-                <button class="btn-submit-order" onclick="submitSheinProds()"><i class="fab fa-whatsapp"></i> إرسال (${sheinProducts.length} منتجات)</button>
-            `;
-        }
+        document.getElementById('sheinTrackModal').classList.add('open');
     }
 
-    function addSheinProd() {
-        captureProdInputs();
-        sheinProducts.push({ id: Date.now(), link: '', qty: 1, specs: '' });
-        renderSheinForm();
-    }
-
-    function removeSheinProd(id) {
-        captureProdInputs();
-        sheinProducts = sheinProducts.filter(p => p.id !== id);
-        renderSheinForm();
-    }
-
-    function captureProdInputs() {
-        document.querySelectorAll('.prod-link').forEach(input => {
-            const id = Number(input.getAttribute('data-id'));
-            const prod = sheinProducts.find(p => p.id === id);
-            if (prod) prod.link = input.value;
-        });
-        document.querySelectorAll('.prod-qty').forEach(input => {
-            const id = Number(input.getAttribute('data-id'));
-            const prod = sheinProducts.find(p => p.id === id);
-            if (prod) prod.qty = input.value;
-        });
-        document.querySelectorAll('.prod-specs').forEach(input => {
-            const id = Number(input.getAttribute('data-id'));
-            const prod = sheinProducts.find(p => p.id === id);
-            if (prod) prod.specs = input.value;
-        });
-    }
-
-    // رسالة واتساب المخصصة للسلة الكاملة بالشكل المطلوب
-    function submitSheinCart() {
-        const link = document.getElementById('sheinCartLink').value.trim();
-        const notes = document.getElementById('sheinCartNotes').value.trim();
-        if (!link) return showToast('الرجاء إدخال رابط السلة!');
-
-        let msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب سلة شي إن (SHEIN):%0A%0A`;
-        msg += `🛒 نوع الطلب: سلة كاملة%0A`;
-        msg += `🔗 رابط السلة:%0A${encodeURIComponent(link)}%0A`;
-        if (notes) msg += `📝 ملاحظات: ${encodeURIComponent(notes)}%0A`;
-
-        window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
-    }
-
-    // رسالة واتساب المخصصة للمنتجات المحددة (سواء منتج واحد أو عدة منتجات) بالصيغة المرتبة والدقيقة
-    function submitSheinProds() {
-        captureProdInputs();
-        const notes = document.getElementById('sheinProdNotes')?.value.trim() || '';
-        if (sheinProducts.some(p => !p.link)) return showToast('الرجاء إدخال روابط جميع المنتجات!');
-
-        let msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب منتجات محددة من شي إن (SHEIN):%0A%0A`;
-        sheinProducts.forEach((p, idx) => {
-            msg += `*المنتج ${idx + 1}:*%0A`;
-            msg += `- الرابط: ${encodeURIComponent(p.link)}%0A`;
-            msg += `- الكمية: ${p.qty}%0A`;
-            msg += `- المقاس/اللون: ${encodeURIComponent(p.specs || 'بدون')}%0A%0A`;
-        });
-        if (notes) {
-            msg += `📝 ملاحظات عامة: ${encodeURIComponent(notes)}%0A`;
-        }
-
-        window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
+    function closeSheinTracking() {
+        document.getElementById('sheinTrackModal').classList.remove('open');
     }
 
     function renderUI() {
         document.getElementById('uiStoreName').innerText = storeData.settings?.storeName || 'متجر صدارة';
         document.getElementById('uiFooterName').innerText = storeData.settings?.storeName || 'متجر صدارة';
-        if (storeData.settings?.whatsapp) {
-            document.getElementById('uiWaNumber').innerText = storeData.settings.whatsapp;
-        }
 
         const validBanners = (storeData.banners || []).filter(b => b && (b.img || b.url || b.image));
         const bannersSec = document.getElementById('bannersSection');
@@ -666,7 +555,6 @@
     function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
 
     syncCloud();
-    renderSheinForm();
     setInterval(syncCloud, 3000);
 </script>
 </body>
