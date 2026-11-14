@@ -32,6 +32,7 @@
         .card-img-wrap { width: 100%; height: 150px; background: #f8fafc; border-radius: 10px; overflow: hidden; margin-bottom: 12px; position: relative; display: flex; align-items: center; justify-content: center; }
         .card-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .img-count-badge { position: absolute; top: 8px; left: 8px; background: rgba(15,23,42,0.75); color: #fff; font-size: 0.75rem; padding: 3px 8px; border-radius: 8px; font-weight: 700; }
+        .prefix-badge { display: inline-block; background: #eff6ff; color: var(--primary); font-weight: 800; padding: 3px 10px; border-radius: 8px; font-size: 0.85rem; margin-top: 6px; direction: ltr; }
 
         .card-actions { display: flex; gap: 8px; margin-top: 12px; }
         .btn-sm { flex: 1; padding: 8px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
@@ -145,6 +146,43 @@
     let editType = '', editId = null, uploadedImgUrl = '';
     let currentProductImgs = [];
 
+    // دالة ذكية لتحديد الحرف الافتراضي للأقسام الموجودة أو الجديدة
+    function getCategoryPrefix(cat) {
+        if (cat.prefix && cat.prefix.trim()) return cat.prefix.trim().toUpperCase();
+        const n = (cat.name || '').trim();
+        if (n.includes('رجال')) return 'M';
+        if (n.includes('نساء') || n.includes('نسائ')) return 'W';
+        if (n.includes('ولاد') || n.includes('أولاد')) return 'B';
+        if (n.includes('بنات')) return 'G';
+        if (n.includes('مواليد') || n.includes('أطفال')) return 'K';
+        if (n.includes('الكترون') || n.includes('إلكترون')) return 'E';
+        return 'P';
+    }
+
+    // دالة توليد الكود التسلسلي التالي للقسم (من 100 إلى 10000)
+    function generateNextCode(catId) {
+        const cat = (storeData.categories || []).find(c => c.id === catId);
+        if (!cat) return 'P100';
+        const prefix = getCategoryPrefix(cat);
+        const catProds = (storeData.products || []).filter(p => p.catId === catId);
+
+        let maxNum = 99;
+        catProds.forEach(p => {
+            if (p.code) {
+                const match = String(p.code).toUpperCase().match(new RegExp('^' + prefix + '(\\d+)$'));
+                if (match) {
+                    const num = parseInt(match[1], 10);
+                    if (num >= 100 && num <= 10000 && num > maxNum) {
+                        maxNum = num;
+                    }
+                }
+            }
+        });
+
+        const nextNum = maxNum + 1;
+        return prefix + (nextNum > 10000 ? 10000 : nextNum);
+    }
+
     async function initCloud() {
         const statusEl = document.getElementById('connStatus');
         const { data, error } = await _supabase.from('store_data').select('payload').eq('id', 1).maybeSingle();
@@ -214,7 +252,7 @@
                         <img src="${mainImg}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'">
                     </div>
                     <h4>${p.name}</h4>
-                    <small style="color:#64748b;">كود: ${p.code}</small>
+                    <small style="color:#64748b;">كود: <strong style="color:#0f172a;">${p.code}</strong></small>
                     <p style="font-weight:800; color:var(--primary); margin-top:4px;">${Number(p.price).toLocaleString()} ريال</p>
                 </div>
                 <div class="card-actions">
@@ -224,15 +262,20 @@
             </div>`;
         }).join('');
 
-        document.getElementById('gridCategories').innerHTML = (storeData.categories || []).map(c => `
+        document.getElementById('gridCategories').innerHTML = (storeData.categories || []).map(c => {
+            const pref = getCategoryPrefix(c);
+            return `
             <div class="card">
-                <h4>${c.name}</h4>
+                <div>
+                    <h4>${c.name}</h4>
+                    <span class="prefix-badge">نطاق الأكواد: ${pref}100 - ${pref}10,000</span>
+                </div>
                 <div class="card-actions">
                     <button class="btn-sm btn-edit" onclick="openModal('category', '${c.id}')">تعديل</button>
                     <button class="btn-sm btn-del" onclick="delItem('categories', '${c.id}')">حذف</button>
                 </div>
-            </div>
-        `).join('');
+            </div>`;
+        }).join('');
 
         document.getElementById('gridBanners').innerHTML = (storeData.banners || []).map(b => {
             const bImg = b.img || b.url || b.image || '';
@@ -274,15 +317,16 @@
 
         if (type === 'product') {
             if (!storeData.categories || !storeData.categories.length) return showToast('أضف قسماً أولاً قبل إضافة المنتجات!');
-            const item = id ? storeData.products.find(x => x.id === id) : { name: '', code: '', price: '', catId: storeData.categories[0].id, img: '', imgs: [] };
+            const defaultCatId = storeData.categories[0].id;
+            const item = id ? storeData.products.find(x => x.id === id) : { name: '', code: generateNextCode(defaultCatId), price: '', catId: defaultCatId, img: '', imgs: [] };
             currentProductImgs = (item.imgs && item.imgs.length) ? [...item.imgs] : (item.img ? [item.img] : []);
             
             t.innerText = id ? 'تعديل منتج' : 'منتج جديد';
-            const opts = storeData.categories.map(c => `<option value="${c.id}" ${c.id===item.catId?'selected':''}>${c.name}</option>`).join('');
+            const opts = storeData.categories.map(c => `<option value="${c.id}" ${c.id===item.catId?'selected':''}>${c.name} (${getCategoryPrefix(c)})</option>`).join('');
             f.innerHTML = `
                 <div class="grp"><label>اسم المنتج</label><input type="text" id="inName" value="${item.name}" required></div>
-                <div class="grp"><label>القسم</label><select id="inCat">${opts}</select></div>
-                <div class="grp"><label>الكود</label><input type="text" id="inCode" value="${item.code}" required></div>
+                <div class="grp"><label>القسم (يتغير الكود تلقائياً حسب القسم)</label><select id="inCat" onchange="onProductCatChange(this.value)">${opts}</select></div>
+                <div class="grp"><label>كود الصنف (تسلسلي تلقائي من 100 إلى 10,000)</label><input type="text" id="inCode" value="${item.code}" style="direction:ltr; font-weight:800; color:var(--primary);" required></div>
                 <div class="grp"><label>السعر</label><input type="number" id="inPrice" value="${item.price}" required></div>
                 <div class="grp">
                     <label>رفع صور المنتج (يمكنك اختيار أكثر من صورة دفعة واحدة)</label>
@@ -301,9 +345,12 @@
                 </div>`;
             renderProductImgPreviews();
         } else if (type === 'category') {
-            const item = id ? storeData.categories.find(x => x.id === id) : { name: '' };
+            const item = id ? storeData.categories.find(x => x.id === id) : { name: '', prefix: '' };
+            const currentPref = id ? getCategoryPrefix(item) : '';
             t.innerText = id ? 'تعديل قسم' : 'قسم جديد';
-            f.innerHTML = `<div class="grp"><label>اسم القسم</label><input type="text" id="inCatName" value="${item.name}" required></div>`;
+            f.innerHTML = `
+                <div class="grp"><label>اسم القسم</label><input type="text" id="inCatName" value="${item.name}" placeholder="مثال: رجالي، نسائي، ولادي، بناتي" required></div>
+                <div class="grp"><label>الحرف الأولي للكود (مثال: M للرجالي، W للنسائي، B للولادي، G للبناتي)</label><input type="text" id="inCatPrefix" value="${currentPref}" maxlength="4" placeholder="M" style="direction:ltr; text-transform:uppercase; font-weight:800;" required></div>`;
         } else if (type === 'banner') {
             const item = id ? storeData.banners.find(x => x.id === id) : { title: '', img: '' };
             const existingImg = item.img || item.url || item.image || '';
@@ -328,6 +375,13 @@
                 <div class="grp"><label>ملاحظة</label><input type="text" id="inPayNote" value="${item.note || ''}"></div>`;
         }
         document.getElementById('formModal').classList.add('open');
+    }
+
+    // تحديث الكود تلقائياً عند تغيير القسم في نافذة إضافة المنتج
+    function onProductCatChange(catId) {
+        if (!editId) {
+            document.getElementById('inCode').value = generateNextCode(catId);
+        }
     }
 
     function updateBannerPreview(url) {
@@ -447,7 +501,7 @@
                 id: editId || Date.now(),
                 name: document.getElementById('inName').value,
                 catId: document.getElementById('inCat').value,
-                code: document.getElementById('inCode').value,
+                code: document.getElementById('inCode').value.trim().toUpperCase(),
                 price: Number(document.getElementById('inPrice').value),
                 img: finalImgs[0],
                 imgs: finalImgs
@@ -455,9 +509,15 @@
             if (editId) storeData.products[storeData.products.findIndex(x => x.id === editId)] = obj;
             else storeData.products.unshift(obj);
         } else if (editType === 'category') {
-            const name = document.getElementById('inCatName').value;
-            if (editId) storeData.categories.find(x => x.id === editId).name = name;
-            else storeData.categories.push({ id: 'cat_' + Date.now(), name });
+            const name = document.getElementById('inCatName').value.trim();
+            const prefix = document.getElementById('inCatPrefix').value.trim().toUpperCase();
+            if (editId) {
+                const cat = storeData.categories.find(x => x.id === editId);
+                cat.name = name;
+                cat.prefix = prefix;
+            } else {
+                storeData.categories.push({ id: 'cat_' + Date.now(), name, prefix });
+            }
         } else if (editType === 'banner') {
             if (!Array.isArray(storeData.banners)) storeData.banners = [];
             const finalBannerUrl = document.getElementById('inImgUrl').value.trim() || uploadedImgUrl;
