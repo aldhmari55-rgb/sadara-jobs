@@ -35,7 +35,6 @@
         .search-bar input { width: 100%; padding: 11px 45px 11px 15px; border: 1px solid var(--border); border-radius: 14px; background: #f8fafc; outline: none; }
         .search-bar i { position: absolute; right: 35px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
 
-        /* البنرات العائمة */
         .banners-container { padding: 20px 20px 5px; }
         .floating-banner-box { position: relative; width: 100%; background: #ffffff; border-radius: 26px; padding: 10px; box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12); overflow: hidden; }
         .banner-slide { display: none; width: 100%; text-align: center; }
@@ -74,7 +73,7 @@
         .btn-cart { background: #2563eb; }
         .btn-wa { background: var(--whatsapp); margin-top: 4px; }
 
-        /* قسم اطلب لي من شي إن المطابق تماماً للصور */
+        /* قسم اطلب لي من شي إن */
         .shein-order-section { background: var(--white); padding: 25px 20px; border-top: 1px solid var(--border); }
         .shein-banner-card { background: #ffffff; border: 1px solid var(--border); border-radius: 20px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         
@@ -148,7 +147,6 @@
         </div>
     </div>
 
-    <!-- البنرات العائمة -->
     <div class="banners-container" id="bannersSection" style="display:none;">
         <div class="floating-banner-box">
             <div id="slidesWrapper"></div>
@@ -158,7 +156,7 @@
 
     <main class="main-content" id="mainContent"></main>
 
-    <!-- قسم اطلب لي من شي إن (المطابق تماماً للصور) -->
+    <!-- قسم اطلب لي من شي إن -->
     <section class="shein-order-section">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <h3 style="font-weight:800; font-size:1.2rem;">🛍️ اطلب لي من شي إن</h3>
@@ -231,7 +229,7 @@
     let activeCat = 'all';
     let currentUser = JSON.parse(localStorage.getItem('sadarah_user')) || null;
     
-    let sheinOrderType = 'cart'; // 'cart' أو 'prod'
+    let sheinOrderType = 'cart'; 
     let sheinProducts = [{ id: 1, link: '', qty: 1, specs: '' }];
 
     let slideIndex = 0;
@@ -354,28 +352,36 @@
         });
     }
 
+    // رسالة واتساب المخصصة للسلة الكاملة بالشكل المطلوب
     function submitSheinCart() {
         const link = document.getElementById('sheinCartLink').value.trim();
         const notes = document.getElementById('sheinCartNotes').value.trim();
         if (!link) return showToast('الرجاء إدخال رابط السلة!');
 
-        let msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب سلة شي إن كاملة:%0A%0A`;
-        msg += `🔗 رابط السلة:%0A${encodeURIComponent(link)}%0A%0A`;
+        let msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب سلة شي إن (SHEIN):%0A%0A`;
+        msg += `🛒 نوع الطلب: سلة كاملة%0A`;
+        msg += `🔗 رابط السلة:%0A${encodeURIComponent(link)}%0A`;
         if (notes) msg += `📝 ملاحظات: ${encodeURIComponent(notes)}%0A`;
 
         window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
     }
 
+    // رسالة واتساب المخصصة للمنتجات المحددة (سواء منتج واحد أو عدة منتجات) بالصيغة المرتبة والدقيقة
     function submitSheinProds() {
         captureProdInputs();
         const notes = document.getElementById('sheinProdNotes')?.value.trim() || '';
         if (sheinProducts.some(p => !p.link)) return showToast('الرجاء إدخال روابط جميع المنتجات!');
 
-        let msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب منتجات محددة من شي إن (%0A%0A`;
+        let msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب منتجات محددة من شي إن (SHEIN):%0A%0A`;
         sheinProducts.forEach((p, idx) => {
-            msg += `*المنتج ${idx+1}:*%0A- الرابط: ${encodeURIComponent(p.link)}%0A- الكمية: ${p.qty}%0A- المقاس/اللون: ${encodeURIComponent(p.specs || 'بدون')}%0A%0A`;
+            msg += `*المنتج ${idx + 1}:*%0A`;
+            msg += `- الرابط: ${encodeURIComponent(p.link)}%0A`;
+            msg += `- الكمية: ${p.qty}%0A`;
+            msg += `- المقاس/اللون: ${encodeURIComponent(p.specs || 'بدون')}%0A%0A`;
         });
-        if (notes) msg += `📝 ملاحظات عامة: ${encodeURIComponent(notes)}%0A`;
+        if (notes) {
+            msg += `📝 ملاحظات عامة: ${encodeURIComponent(notes)}%0A`;
+        }
 
         window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
     }
