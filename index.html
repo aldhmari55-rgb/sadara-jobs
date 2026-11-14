@@ -35,9 +35,9 @@
         .search-bar input { width: 100%; padding: 11px 45px 11px 15px; border: 1px solid var(--border); border-radius: 14px; background: #f8fafc; outline: none; }
         .search-bar i { position: absolute; right: 35px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
 
-        /* تصميم قسم البنرات الإعلانية في الأعلى */
+        /* تصميم البنرات الإعلانية المتحركة أوتوماتيكياً */
         .banners-container { padding: 15px 20px 5px; }
-        .banner-slider { display: flex; overflow-x: auto; gap: 15px; scrollbar-width: none; scroll-behavior: smooth; }
+        .banner-slider { display: flex; overflow-x: auto; gap: 15px; scrollbar-width: none; scroll-behavior: smooth; border-radius: 16px; }
         .banner-slider::-webkit-scrollbar { display: none; }
         .banner-item { min-width: 100%; height: 180px; border-radius: 16px; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: #fff; }
         .banner-item img { width: 100%; height: 100%; object-fit: cover; }
@@ -119,7 +119,7 @@
         </div>
     </div>
 
-    <!-- حاوية البنرات الإعلانية في الأعلى -->
+    <!-- حاوية البنرات الإعلانية المتحركة أوتوماتيكياً -->
     <div class="banners-container" id="bannersSection" style="display:none;">
         <div class="banner-slider" id="bannerSlider"></div>
     </div>
@@ -173,6 +173,7 @@
     let cart = [];
     let activeCat = 'all';
     let currentUser = JSON.parse(localStorage.getItem('sadarah_user')) || null;
+    let bannerInterval = null;
 
     async function syncCloud() {
         const { data, error } = await _supabase.from('store_data').select('payload').eq('id', 1).maybeSingle();
@@ -200,7 +201,7 @@
         document.getElementById('uiStoreName').innerText = storeData.settings?.storeName || 'متجر صدارة';
         document.getElementById('uiFooterName').innerText = storeData.settings?.storeName || 'متجر صدارة';
 
-        // عرض البنرات الإعلانية في الأعلى إن وجدت
+        // عرض البنرات الإعلانية في الأعلى وتشغيل الحركة التلقائية كل 5-6 ثوانٍ
         const bannersSec = document.getElementById('bannersSection');
         const bannerSlider = document.getElementById('bannerSlider');
         if (storeData.banners && storeData.banners.length > 0) {
@@ -210,8 +211,11 @@
                     <img src="${b.img}" alt="${b.title || 'إعلان'}">
                 </div>
             `).join('');
+            
+            startBannerAutoScroll();
         } else {
             bannersSec.style.display = 'none';
+            if(bannerInterval) clearInterval(bannerInterval);
         }
 
         const catNav = document.getElementById('catNav');
@@ -268,6 +272,24 @@
                 ${pay.note ? `<small style="display:block; margin-top:8px; color:var(--muted);">${pay.note}</small>` : ''}
             </div>
         `).join('');
+    }
+
+    // دالة تحريك البنرات تلقائياً كل 5.5 ثانية
+    function startBannerAutoScroll() {
+        if(bannerInterval) clearInterval(bannerInterval);
+        const slider = document.getElementById('bannerSlider');
+        if(!slider) return;
+
+        let scrollIndex = 0;
+        bannerInterval = setInterval(() => {
+            const items = slider.querySelectorAll('.banner-item');
+            if(!items.length) return;
+            scrollIndex++;
+            if(scrollIndex >= items.length) {
+                scrollIndex = 0; // العودة لأول بنر بعد نهاية القائمة
+            }
+            items[scrollIndex].scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
+        }, 5500); // 5500 ملي ثانية (يعني 5.5 ثانية لكل بنر)
     }
 
     function setCat(id) { activeCat = id; renderUI(); }
