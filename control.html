@@ -174,9 +174,6 @@
                 const { data, error } = await _supabase.from('store_data').select('*').eq('id', 1).maybeSingle();
                 if (data && data.payload) {
                     storeData = data.payload;
-                } else {
-                    // إذا لم يوجد سجل برقم 1، نقوم بإنشائه تلقائياً
-                    await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
                 }
                 renderAdminUI();
             } catch (err) {
@@ -374,7 +371,7 @@
         }
 
         function saveSettingsToCloud() {
-            storeData.settings.storeName = document.getElementById('setStoreName`').value;
+            storeData.settings.storeName = document.getElementById('setStoreName').value;
             storeData.settings.whatsapp = document.getElementById('setWhatsapp').value;
             saveCloudData();
         }
