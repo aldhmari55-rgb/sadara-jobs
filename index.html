@@ -10,8 +10,8 @@
     <style>
         :root {
             --primary: #2563eb; --primary-light: #eff6ff; --whatsapp: #22c55e;
-            --danger: #ef4444; --bg: #f4f6f9; --white: #ffffff;
-            --text: #1e293b; --muted: #64748b; --border: #e2e8f0;
+            --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --info: #8b5cf6;
+            --bg: #f4f6f9; --white: #ffffff; --text: #1e293b; --muted: #64748b; --border: #e2e8f0;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); color: var(--text); }
@@ -35,18 +35,9 @@
         .search-bar input { width: 100%; padding: 11px 45px 11px 15px; border: 1px solid var(--border); border-radius: 14px; background: #f8fafc; outline: none; }
         .search-bar i { position: absolute; right: 35px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
 
-        /* البنرات العائمة والمرنة */
+        /* الأقسام والشحنات */
         .banners-container { padding: 20px 20px 5px; }
-        .floating-banner-box {
-            position: relative;
-            width: 100%;
-            background: #ffffff;
-            border-radius: 26px;
-            padding: 10px;
-            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12), 0 8px 20px rgba(15, 23, 42, 0.06);
-            border: 1px solid #ffffff;
-            overflow: hidden;
-        }
+        .floating-banner-box { position: relative; width: 100%; background: #ffffff; border-radius: 26px; padding: 10px; box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12); overflow: hidden; }
         .banner-slide { display: none; width: 100%; text-align: center; }
         .banner-slide.active { display: block; }
         .banner-slide img { width: 100%; height: auto; max-height: 420px; object-fit: contain; border-radius: 18px; display: block; margin: 0 auto; }
@@ -65,17 +56,13 @@
         .carousel::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
         .prod-card { min-width: 235px; max-width: 235px; border: 1px solid #f1f5f9; border-radius: 16px; overflow: hidden; background: #fff; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.02); flex-shrink: 0; }
-        
         .prod-img { position: relative; width: 100%; height: 215px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; user-select: none; }
         .prod-img img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; transition: opacity 0.25s ease; }
         
         .gal-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); color: var(--text); border: 1px solid var(--border); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1); z-index: 5; }
-        .gal-arrow:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
-        .gal-prev { right: 6px; }
-        .gal-next { left: 6px; }
-        
+        .gal-prev { right: 6px; } .gal-next { left: 6px; }
         .gal-dots { position: absolute; bottom: 6px; left: 0; right: 0; display: flex; justify-content: center; gap: 4px; z-index: 5; }
-        .gal-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(15,23,42,0.25); cursor: pointer; transition: 0.2s; }
+        .gal-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(15,23,42,0.25); cursor: pointer; }
         .gal-dot.active { background: var(--primary); width: 14px; border-radius: 4px; }
 
         .prod-info { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
@@ -87,12 +74,20 @@
         .btn-cart { background: var(--primary); }
         .btn-wa { background: var(--whatsapp); margin-top: 4px; }
 
-        /* قسم سلة شي إن الجديد فوق طرق الدفع */
-        .shein-section { background: var(--white); padding: 25px 20px; border-top: 1px solid var(--border); }
-        .shein-box { background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid #dbeafe; border-radius: 22px; padding: 20px; box-shadow: 0 4px 15px rgba(37,99,235,0.05); }
-        .shein-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .shein-input { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 12px; background: #fff; outline: none; direction: ltr; font-size: 0.9rem; margin-bottom: 12px; }
-        .shein-input:focus { border-color: var(--primary); }
+        /* واجهة طلب وتتبع شحنات شي إن المطابقة للصور */
+        .shein-hub { background: var(--white); padding: 25px 20px; border-top: 1px solid var(--border); }
+        .shein-card-box { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: center; }
+        .shein-form-box { background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid #dbeafe; border-radius: 22px; padding: 20px; margin-bottom: 25px; }
+        
+        .type-toggle { display: flex; background: #e2e8f0; border-radius: 30px; padding: 4px; margin-bottom: 18px; }
+        .type-btn { flex: 1; text-align: center; padding: 10px; border-radius: 26px; font-weight: 700; cursor: pointer; font-size: 0.9rem; color: var(--muted); border: none; background: transparent; }
+        .type-btn.active { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+        .status-badge { padding: 5px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+        .st-review { background: #fef3c7; color: #d97706; }
+        .st-bought { background: #e0f2fe; color: #0284c7; }
+        .st-shipping { background: #ede9fe; color: #7c3aed; }
+        .st-success { background: #dcfce7; color: #15803d; }
 
         .pay-section { background: var(--white); padding: 25px 20px; border-top: 1px solid var(--border); }
         .pay-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
@@ -118,7 +113,7 @@
 
         .form-grp { margin-bottom: 14px; }
         .form-grp label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
-        .form-grp input { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 12px; outline: none; background: #f8fafc; }
+        .form-grp input, .form-grp textarea { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 12px; outline: none; background: #f8fafc; }
         .btn-submit { width: 100%; padding: 12px; border: none; border-radius: 12px; background: var(--primary); color: #fff; font-weight: 800; cursor: pointer; }
 
         .toast { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: #fff; padding: 10px 22px; border-radius: 25px; font-size: 0.9rem; z-index: 9999; transition: 0.3s; }
@@ -147,7 +142,7 @@
         </div>
     </div>
 
-    <!-- البنرات الإعلانية العائمة -->
+    <!-- البنرات الإعلانية -->
     <div class="banners-container" id="bannersSection" style="display:none;">
         <div class="floating-banner-box">
             <div id="slidesWrapper"></div>
@@ -157,14 +152,31 @@
 
     <main class="main-content" id="mainContent"></main>
 
-    <!-- قسم إرسال سلة شي إن عبر متجر صدارة (فوق طرق الدفع مباشرة) -->
-    <section class="shein-section">
-        <div class="shein-box">
-            <div class="shein-title"><i class="fas fa-shopping-bag"></i> إرسال سلة شي إن (SHEIN) عبر متجر صدارة</div>
-            <p style="font-size:0.85rem; color:var(--muted); margin-bottom:12px;">قم بنسخ رابط سلتك من تطبيق SHEIN وألصقه هنا، ثم أرسل الطلب مع سلتك الداخلية مباشرة إلى واتساب المتجر:</p>
-            <input type="text" id="sheinCartUrlInput" class="shein-input" placeholder="الصق رابط سلة شي إن هنا (https://api-shein...)">
-            <button class="btn-wa" onclick="sendSheinCartWA()"><i class="fab fa-whatsapp"></i> إرسال سلة شي إن وطلبk عبر واتساب</button>
+    <!-- قسم طلبات وتتبع شي إن (SHEIN Hub) المطابق للصور -->
+    <section class="shein-hub">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+            <h3 style="font-weight:800; font-size:1.2rem; color:var(--primary);">📦 خدمة اطلب لي من شي إن</h3>
+            <span style="font-size:0.85rem; color:var(--muted);" id="sheinCount">0 شحنة مسجلة</span>
         </div>
+
+        <div class="shein-form-box">
+            <div class="type-toggle">
+                <button class="type-btn active" id="btnCartMode" onclick="setSheinMode('cart')"><i class="fas fa-shopping-cart"></i> سلة كاملة</button>
+                <button class="type-btn" id="btnProdMode" onclick="setSheinMode('prod')"><i class="fas fa-box"></i> منتجات محددة</button>
+            </div>
+            <div class="form-grp">
+                <label id="sheinInputLabel">رابط سلة شي إن (Share Cart):</label>
+                <input type="text" id="sheinInputVal" placeholder="الصق الرابط هنا..." style="direction:ltr;">
+            </div>
+            <div class="form-grp">
+                <label>ملاحظات إضافية (المقاسات، الألوان، التفاصيل):</label>
+                <textarea id="sheinNotes" rows="2" placeholder="اكتب أي تفاصيل ترغب بإضافتها..."></textarea>
+            </div>
+            <button class="btn-wa" onclick="sendSheinOrder()"><i class="fab fa-whatsapp"></i> إرسال الطلب للإدارة عبر واتساب</button>
+        </div>
+
+        <h4 style="font-weight:800; margin-bottom:15px; font-size:1.1rem;">✈️ تتبع شحنات شي إن الأخيرة</h4>
+        <div id="sheinShipmentsList"></div>
     </section>
 
     <!-- طرق الدفع الإلكتروني -->
@@ -211,10 +223,11 @@
 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let storeData = { settings: { storeName: "متجر صدارة", whatsapp: "967780568507" }, categories: [], products: [], payments: [], banners: [], users: [] };
+    let storeData = { settings: { storeName: "متجر صدارة", whatsapp: "967780568507" }, categories: [], products: [], payments: [], banners: [], shein: [], users: [] };
     let cart = [];
     let activeCat = 'all';
     let currentUser = JSON.parse(localStorage.getItem('sadarah_user')) || null;
+    let sheinMode = 'cart';
     
     let slideIndex = 0;
     let slideTimer = null;
@@ -231,6 +244,7 @@
 
             storeData = data.payload;
             if (!Array.isArray(storeData.banners)) storeData.banners = [];
+            if (!Array.isArray(storeData.shein)) storeData.shein = [];
             if (currentUser && currentUser.cart) {
                 cart = currentUser.cart;
                 renderCart();
@@ -248,13 +262,33 @@
         await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
     }
 
+    function setSheinMode(mode) {
+        sheinMode = mode;
+        document.getElementById('btnCartMode').classList.toggle('active', mode === 'cart');
+        document.getElementById('btnProdMode').classList.toggle('active', mode === 'prod');
+        document.getElementById('sheinInputLabel').innerText = mode === 'cart' ? 'رابط سلة شي إن (Share Cart):' : 'روابط المنتجات المطلوبة:';
+        document.getElementById('sheinInputVal').placeholder = mode === 'cart' ? 'الصق رابط السلة هنا...' : 'الصق روابط المنتجات مفصولة بفواصل...';
+    }
+
+    function sendSheinOrder() {
+        const val = document.getElementById('sheinInputVal').value.trim();
+        const notes = document.getElementById('sheinNotes').value.trim();
+        if (!val) return showToast('الرجاء إدخال الرابط أولاً!');
+
+        let msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب عبر خدمة شي إن (SHEIN):%0A%0A`;
+        msg += `📌 نوع الطلب: ${sheinMode === 'cart' ? 'سلة كاملة' : 'منتجات محددة'}%0A`;
+        msg += `🔗 الرابط:%0A${encodeURIComponent(val)}%0A`;
+        if (notes) msg += `📝 ملاحظات: ${encodeURIComponent(notes)}%0A`;
+
+        window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
+    }
+
     function renderUI() {
         document.getElementById('uiStoreName').innerText = storeData.settings?.storeName || 'متجر صدارة';
         document.getElementById('uiFooterName').innerText = storeData.settings?.storeName || 'متجر صدارة';
 
         const validBanners = (storeData.banners || []).filter(b => b && (b.img || b.url || b.image));
         const bannersSec = document.getElementById('bannersSection');
-        
         if (validBanners.length > 0) {
             bannersSec.style.display = 'block';
             setupBanners(validBanners);
@@ -262,6 +296,30 @@
             bannersSec.style.display = 'none';
             if (slideTimer) clearInterval(slideTimer);
         }
+
+        // عرض قائمة شحنات شي إن المطابقة للصورة
+        const sheinList = document.getElementById('sheinShipmentsList');
+        const sheinItems = storeData.shein || [];
+        document.getElementById('sheinCount').innerText = `${sheinItems.length} شحنة مسجلة`;
+
+        sheinList.innerHTML = sheinItems.map(s => {
+            let badgeClass = 'st-review', badgeText = s.status || 'قيد المراجعة والتجميع';
+            if (badgeText.includes('شراء')) badgeClass = 'st-bought';
+            else if (badgeText.includes('طريق')) badgeClass = 'st-shipping';
+            else if (badgeText.includes('تسليم') || badgeText.includes('تم')) badgeClass = 'st-success';
+
+            return `
+            <div class="shein-card-box">
+                <div>
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                        <span style="font-weight:800; font-size:1.05rem;">${s.title}</span>
+                        <span class="status-badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                    <small style="color:var(--muted);"><i class="far fa-calendar-alt"></i> تاريخ رفع السلة: ${s.date}</small>
+                </div>
+                <button class="view-btn" onclick="trackShein('${s.title}', '${badgeText}', '${s.date}')">عرض التتبع <i class="fas fa-angle-left"></i></button>
+            </div>`;
+        }).join('') || '<p style="text-align:center; color:var(--muted); padding:15px;">لا توجد شحنات مسجلة حالياً</p>';
 
         const catNav = document.getElementById('catNav');
         const sideCat = document.getElementById('sideCatList');
@@ -286,21 +344,19 @@
                 const imgs = (p.imgs && p.imgs.length) ? p.imgs : (p.img ? [p.img] : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80']);
                 const curIdx = prodImgState[p.id] || 0;
                 const safeIdx = curIdx < imgs.length ? curIdx : 0;
-                
                 const hasMultiple = imgs.length > 1;
+
                 const controlsHtml = hasMultiple ? `
-                    <button class="gal-arrow gal-prev" onclick="stepProdImg(${p.id}, -1)" aria-label="السابق"><i class="fas fa-chevron-right"></i></button>
-                    <button class="gal-arrow gal-next" onclick="stepProdImg(${p.id}, 1)" aria-label="التالي"><i class="fas fa-chevron-left"></i></button>
+                    <button class="gal-arrow gal-prev" onclick="stepProdImg(${p.id}, -1)"><i class="fas fa-chevron-right"></i></button>
+                    <button class="gal-arrow gal-next" onclick="stepProdImg(${p.id}, 1)"><i class="fas fa-chevron-left"></i></button>
                     <div class="gal-dots" id="dots-${p.id}">
-                        ${imgs.map((_, i) => `<span class="gal-dot ${i === safeIdx ? 'active' : ''}" onclick="setProdImg(${p.id}, ${i})"></span>`).join('')}
+                        ${imgs.map((_, i) => `<span class="gal-dot ${i === safeIdx ? 'active' : ''}" onclick="setProdImg(${p.id},${i})"></span>`).join('')}
                     </div>
                 ` : '';
 
-                const touchAttrs = hasMultiple ? `ontouchstart="touchStartX = event.changedTouches[0].screenX" ontouchend="handleProdSwipe(event, ${p.id})"` : '';
-
                 return `
                 <div class="prod-card">
-                    <div class="prod-img" ${touchAttrs}>
+                    <div class="prod-img">
                         <img id="img-${p.id}" src="${imgs[safeIdx]}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'">
                         ${controlsHtml}
                     </div>
@@ -341,32 +397,23 @@
     function setupBanners(banners) {
         const wrapper = document.getElementById('slidesWrapper');
         const dotsWrapper = document.getElementById('dotsWrapper');
-
         if (slideIndex >= banners.length) slideIndex = 0;
 
-        wrapper.innerHTML = banners.map((b, i) => {
-            const imgSrc = b.img || b.url || b.image;
-            return `
+        wrapper.innerHTML = banners.map((b, i) => `
             <div class="banner-slide ${i === slideIndex ? 'active' : ''}">
-                <img src="${imgSrc}" alt="${b.title || 'إعلان'}" loading="eager">
-            </div>`;
-        }).join('');
+                <img src="${b.img || b.url || b.image}" alt="إعلان" loading="eager">
+            </div>`).join('');
 
         if (banners.length > 1) {
             dotsWrapper.style.display = 'flex';
-            dotsWrapper.innerHTML = banners.map((_, i) => `
-                <span class="b-dot ${i === slideIndex ? 'active' : ''}" onclick="currentSlide(${i})"></span>
-            `).join('');
+            dotsWrapper.innerHTML = banners.map((_, i) => `<span class="b-dot ${i === slideIndex ? 'active' : ''}" onclick="currentSlide(${i})"></span>`).join('');
         } else {
             dotsWrapper.style.display = 'none';
         }
 
         if (slideTimer) clearInterval(slideTimer);
         if (banners.length > 1) {
-            slideTimer = setInterval(() => {
-                slideIndex++;
-                showSlides();
-            }, 5500);
+            slideTimer = setInterval(() => { slideIndex++; showSlides(); }, 5500);
         }
     }
 
@@ -374,49 +421,22 @@
         const slides = document.getElementsByClassName("banner-slide");
         const dots = document.getElementsByClassName("b-dot");
         if (!slides.length) return;
-
         if (slideIndex >= slides.length) slideIndex = 0;
         if (slideIndex < 0) slideIndex = slides.length - 1;
-
         for (let i = 0; i < slides.length; i++) slides[i].classList.remove('active');
         for (let i = 0; i < dots.length; i++) dots[i].classList.remove('active');
-
         slides[slideIndex].classList.add('active');
         if (dots[slideIndex]) dots[slideIndex].classList.add('active');
     }
 
     function currentSlide(n) {
-        slideIndex = n;
-        showSlides();
+        slideIndex = n; showSlides();
         if (slideTimer) clearInterval(slideTimer);
-        slideTimer = setInterval(() => {
-            slideIndex++;
-            showSlides();
-        }, 5500);
+        slideTimer = setInterval(() => { slideIndex++; showSlides(); }, 5500);
     }
 
-    // دالة إرسال سلة شي إن مع محتويات سلة المتجر عبر واتساب
-    function sendSheinCartWA() {
-        const sheinUrl = document.getElementById('sheinCartUrlInput').value.trim();
-        let msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب سلة شي إن (SHEIN) عبر متجر صدارة:%0A%0A`;
-        
-        if (sheinUrl) {
-            msg += `🔗 رابط سلة شي إن:%0A${encodeURIComponent(sheinUrl)}%0A%0A`;
-        }
-
-        if (cart.length > 0) {
-            msg += `🛒 المنتجات المضافة في السلة الداخلية للمتجر:%0A`;
-            let total = 0;
-            cart.forEach((i, idx) => {
-                msg += `${idx+1}. ${i.name} (كود: ${i.code}) × ${i.qty} = ${i.price*i.qty} ريال%0A`;
-                total += i.price * i.qty;
-            });
-            msg += `%0A*إجمالي السلة الداخلية: ${total.toLocaleString()} ريال*`;
-        } else {
-            msg += `*(لم يتم إضافة منتجات من سلة المتجر الداخلية)*`;
-        }
-
-        window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
+    function trackShein(title, status, date) {
+        alert(`تفاصيل الشحنة:\n- العنوان: ${title}\n- الحالة: ${status}\n- تاريخ الرفع: ${date}\n\nيمكنك التواصل مع خدمة العملاء عبر واتساب للمزيد من التفاصيل.`);
     }
 
     function stepProdImg(prodId, dir) {
@@ -424,7 +444,6 @@
         if (!p) return;
         const imgs = (p.imgs && p.imgs.length) ? p.imgs : [p.img];
         if (imgs.length <= 1) return;
-
         let cur = prodImgState[prodId] || 0;
         cur = (cur + dir + imgs.length) % imgs.length;
         setProdImg(prodId, cur);
@@ -435,29 +454,14 @@
         if (!p) return;
         const imgs = (p.imgs && p.imgs.length) ? p.imgs : [p.img];
         prodImgState[prodId] = idx;
-
         const imgEl = document.getElementById(`img-${prodId}`);
         if (imgEl) {
             imgEl.style.opacity = '0.3';
-            setTimeout(() => {
-                imgEl.src = imgs[idx];
-                imgEl.style.opacity = '1';
-            }, 100);
+            setTimeout(() => { imgEl.src = imgs[idx]; imgEl.style.opacity = '1'; }, 100);
         }
-
         const dotsWrap = document.getElementById(`dots-${prodId}`);
         if (dotsWrap) {
-            Array.from(dotsWrap.children).forEach((dot, i) => {
-                dot.classList.toggle('active', i === idx);
-            });
-        }
-    }
-
-    function handleProdSwipe(e, prodId) {
-        const touchEndX = e.changedTouches[0].screenX;
-        const diff = touchStartX - touchEndX;
-        if (Math.abs(diff) > 35) {
-            stepProdImg(prodId, diff > 0 ? 1 : -1);
+            Array.from(dotsWrap.children).forEach((dot, i) => { dot.classList.toggle('active', i === idx); });
         }
     }
 
@@ -468,8 +472,7 @@
         if (!p) return;
         const ex = cart.find(x => x.id === id);
         if (ex) ex.qty++; else cart.push({ ...p, qty: 1 });
-        renderCart();
-        saveUserCartToCloud();
+        renderCart(); saveUserCartToCloud();
         showToast('تمت الإضافة للسلة وحفظها في حسابك');
     }
 
@@ -505,16 +508,12 @@
         if (currentUser) {
             box.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h3>لوحة تحكم العميل</h3>
+                    <h3>حساب العميل</h3>
                     <button onclick="document.getElementById('authModal').classList.remove('open')" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
                 </div>
                 <div style="background:#f8fafc; padding:15px; border-radius:14px; margin-bottom:15px; border:1px solid var(--border);">
-                    <p style="font-weight:700; margin-bottom:5px; color:var(--primary);">${currentUser.name}</p>
-                    <p style="font-size:0.85rem; color:var(--muted); direction:ltr; text-align:right;">${currentUser.email}</p>
-                </div>
-                <div style="margin-bottom:15px;">
-                    <h4 style="font-size:0.95rem; margin-bottom:8px;">ملخص الحساب:</h4>
-                    <p style="font-size:0.85rem; color:var(--muted);">المنتجات المختارة في السلة: <strong>${cart.length} منتج</strong></p>
+                    <p style="font-weight:700; color:var(--primary);">${currentUser.name}</p>
+                    <p style="font-size:0.85rem; color:var(--muted);">${currentUser.email}</p>
                 </div>
                 <button class="btn-submit" style="background:var(--danger);" onclick="logoutUser()">تسجيل الخروج</button>`;
         } else {
@@ -527,18 +526,16 @@
                     <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">تسجيل الدخول</div>
                     <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">إنشاء حساب جديد</div>
                 </div>
-                
                 <form class="auth-form active" id="formLogin" onsubmit="handleLogin(event)">
                     <div class="form-grp"><label>البريد الإلكتروني</label><input type="email" id="logEmail" required style="direction:ltr;"></div>
                     <div class="form-grp"><label>كلمة المرور</label><input type="password" id="logPass" required style="direction:ltr;"></div>
                     <button type="submit" class="btn-submit">تسجيل الدخول</button>
                 </form>
-
                 <form class="auth-form" id="formRegister" onsubmit="handleRegister(event)">
                     <div class="form-grp"><label>الاسم الكامل</label><input type="text" id="regName" required></div>
                     <div class="form-grp"><label>البريد الإلكتروني</label><input type="email" id="regEmail" required style="direction:ltr;"></div>
                     <div class="form-grp"><label>كلمة المرور</label><input type="password" id="regPass" required style="direction:ltr;"></div>
-                    <button type="submit" class="btn-submit">إنشاء الحساب ودخول لوحة التحكم</button>
+                    <button type="submit" class="btn-submit">إنشاء الحساب</button>
                 </form>`;
         }
         document.getElementById('authModal').classList.add('open');
@@ -557,45 +554,33 @@
         const email = document.getElementById('regEmail').value.trim();
         const pass = document.getElementById('regPass').value.trim();
         if (!storeData.users) storeData.users = [];
-
         if (storeData.users.find(u => u.email === email)) return showToast('البريد مسجل مسبقاً!');
-
         const newUser = { name, email, pass, cart: [] };
-        storeData.users.push(newUser);
-        currentUser = newUser;
-        cart = [];
+        storeData.users.push(newUser); currentUser = newUser; cart = [];
         localStorage.setItem('sadarah_user', JSON.stringify(currentUser));
         await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
-        
-        showToast('تم إنشاء الحساب ودخول لوحة التحكم ✓');
-        openAuth();
+        showToast('تم إنشاء الحساب بنجاح ✓'); openAuth();
     }
 
     async function handleLogin(e) {
         e.preventDefault();
         const email = document.getElementById('logEmail').value.trim();
         const pass = document.getElementById('logPass').value.trim();
-
         const user = (storeData.users || []).find(u => u.email === email && u.pass === pass);
         if (user) {
-            currentUser = user;
-            cart = user.cart || [];
+            currentUser = user; cart = user.cart || [];
             localStorage.setItem('sadarah_user', JSON.stringify(currentUser));
-            renderCart();
-            showToast('تم تسجيل الدخول بنجاح ✓');
-            openAuth();
+            renderCart(); showToast('تم تسجيل الدخول بنجاح ✓'); openAuth();
         } else {
             showToast('البريد أو كلمة المرور غير صحيحة!');
         }
     }
 
-    function logoutUser() { 
-        currentUser = null; 
-        cart = [];
-        renderCart();
-        localStorage.removeItem('sadarah_user'); 
-        document.getElementById('authModal').classList.remove('open'); 
-        showToast('تم تسجيل الخروج'); 
+    function logoutUser() {
+        currentUser = null; cart = []; renderCart();
+        localStorage.removeItem('sadarah_user');
+        document.getElementById('authModal').classList.remove('open');
+        showToast('تم تسجيل الخروج');
     }
 
     function toggleDrawer(id) { document.getElementById(id).classList.toggle('open'); document.getElementById(id+'Overlay').classList.toggle('open'); }
