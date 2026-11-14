@@ -117,8 +117,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
-    const SUPABASE_URL = 'https://Aldhmart55-rgb.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsZGhtYXJ0NTUtcmdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0Nzc3NDcsImV4cCI6MjA4NjA1Mzc0N30.7QzU7zU3U3U3U3U3U3U3U3U3U3U3U3U3U3U3U3U3U3U';
+    const SUPABASE_URL = 'https://lvutrzswngpkjfamgact.supabase.co';
+    const SUPABASE_ANON_KEY = 'Sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG';
 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -129,7 +129,7 @@
         const statusEl = document.getElementById('connStatus');
         const { data, error } = await _supabase.from('store_data').select('payload').eq('id', 1).maybeSingle();
         if (error) {
-            statusEl.innerText = 'خطأ اتصال: تأكد من مفاتيح Supabase';
+            statusEl.innerText = 'خطأ اتصال: ' + error.message;
             statusEl.style.color = '#ef4444';
             return;
         }
