@@ -29,9 +29,9 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
         .card { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; }
         
-        /* عرض مرن بالكامل يملأ المكان دون قص */
-        .card-img-wrap { width: 100%; height: 160px; background: #f8fafc; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 12px; padding: 5px; }
-        .card-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
+        /* جعل الصورة تملأ منطقة العرض بالكامل (cover) في لوحة التحكم */
+        .card-img-wrap { width: 100%; height: 180px; background: #f8fafc; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+        .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
         .card-actions { display: flex; gap: 8px; margin-top: 12px; }
         .btn-sm { flex: 1; padding: 8px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
@@ -243,7 +243,7 @@
                 <div class="grp"><label>الكود</label><input type="text" id="inCode" value="${item.code}" required></div>
                 <div class="grp"><label>السعر</label><input type="number" id="inPrice" value="${item.price}" required></div>
                 <div class="grp">
-                    <label>اختر صورة من جهازك (سيتم ضغطها وتوليد الرابط تلقائياً)</label>
+                    <label>اختر صورة من جهازك (ضغط تلقائي وتوليد رابط)</label>
                     <input type="file" accept="image/*" onchange="compressAndUploadImg(event)">
                 </div>
                 <div class="grp">
@@ -265,11 +265,10 @@
         document.getElementById('formModal').classList.add('open');
     }
 
-    // دالة لضغط الصورة برمجياً قبل رفعها لضمان سرعة التحميل الخارقة
     function compressAndUploadImg(e) {
         const file = e.target.files[0];
         if (!file) return;
-        showToast('جاري ضغط الصورة وتحسينها...');
+        showToast('جاري ضغط الصورة وتوليد الرابط...');
 
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -280,21 +279,13 @@
                 const canvas = document.createElement('canvas');
                 let width = img.width;
                 let height = img.height;
-                
-                // تحديد أقصى عرض أو ارتفاع للصورة لتقليل الحجم مع الحفاظ على الوضوح الكامل
                 const MAX_WIDTH = 900;
                 const MAX_HEIGHT = 900;
                 
                 if (width > height) {
-                    if (width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
-                    }
+                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
                 } else {
-                    if (height > MAX_HEIGHT) {
-                        width *= MAX_HEIGHT / height;
-                        height = MAX_HEIGHT;
-                    }
+                    if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
                 }
 
                 canvas.width = width;
@@ -302,17 +293,12 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
 
-                // تحويل الصورة المضغوطة إلى ملف Blob بجودة 80% (لتوفير المساحة وسرعة هائلة في التصفح)
                 canvas.toBlob(async (blob) => {
-                    showToast('جاري رفع الصورة المضغوطة للسحابة...');
                     const cleanName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
                     const fileName = `${Date.now()}_${cleanName}`;
                     
                     const { error } = await _supabase.storage.from('platform-files').upload(fileName, blob);
-                    if (error) { 
-                        alert('فشل الرفع: ' + error.message); 
-                        return; 
-                    }
+                    if (error) { alert('فشل الرفع: ' + error.message); return; }
                     
                     const { data } = _supabase.storage.from('platform-files').getPublicUrl(fileName);
                     if (data && data.publicUrl) {
