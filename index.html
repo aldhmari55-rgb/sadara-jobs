@@ -35,46 +35,61 @@
         .search-bar input { width: 100%; padding: 11px 45px 11px 15px; border: 1px solid var(--border); border-radius: 14px; background: #f8fafc; outline: none; }
         .search-bar i { position: absolute; right: 35px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
 
-        /* تصميم البنرات العائمة المضمونة بنسبة 100% */
-        .banners-container { padding: 20px; }
-        .slideshow-container { 
-            position: relative; 
-            width: 100%; 
-            height: 220px; 
-            border-radius: 24px; 
-            overflow: hidden; 
-            background: #ffffff; 
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 0 5px 15px rgba(0, 0, 0, 0.04);
-            border: 1px solid var(--border);
-        }
-        @media (min-width: 768px) {
-            .slideshow-container { height: 350px; }
-        }
-
-        .mySlides { 
-            position: absolute; 
-            inset: 0; 
-            width: 100%; 
-            height: 100%; 
-            opacity: 0; 
-            transition: opacity 0.8s ease-in-out; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
+        /* البنرات العائمة والمرنة 100% */
+        .banners-container { padding: 20px 20px 5px; }
+        .floating-banner-box {
+            position: relative;
+            width: 100%;
             background: #ffffff;
+            border-radius: 26px;
+            padding: 10px;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12), 0 8px 20px rgba(15, 23, 42, 0.06);
+            border: 1px solid #ffffff;
+            overflow: hidden;
+            transition: transform 0.3s ease;
         }
-        .mySlides.active { opacity: 1; z-index: 2; }
-        
-        .mySlides img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            border-radius: 20px;
+        .banner-slide {
+            display: none;
+            width: 100%;
+            text-align: center;
+            animation: bannerFade 0.6s ease-in-out;
         }
-        
-        .dots-container { text-align: center; position: absolute; bottom: 10px; left: 0; right: 0; z-index: 10; }
-        .dot { cursor: pointer; height: 8px; width: 8px; margin: 0 4px; background-color: rgba(37, 99, 235, 0.3); border-radius: 50%; display: inline-block; transition: all 0.3s ease; }
-        .dot.active, .dot:hover { background-color: var(--primary); width: 22px; border-radius: 4px; }
+        .banner-slide.active {
+            display: block;
+        }
+        .banner-slide img {
+            width: 100%;
+            height: auto;
+            max-height: 420px;
+            object-fit: contain;
+            border-radius: 18px;
+            display: block;
+            margin: 0 auto;
+        }
+        @keyframes bannerFade {
+            from { opacity: 0.3; transform: scale(0.99); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .banner-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding-bottom: 4px;
+        }
+        .b-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .b-dot.active {
+            width: 24px;
+            border-radius: 6px;
+            background: var(--primary);
+        }
 
         .main-content { padding: 20px; }
         .cat-block { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
@@ -91,7 +106,7 @@
         .prod-img { position: relative; width: 100%; height: 215px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; user-select: none; }
         .prod-img img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; transition: opacity 0.25s ease; }
         
-        .gal-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.88); color: var(--text); border: 1px solid var(--border); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1); z-index: 5; }
+        .gal-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); color: var(--text); border: 1px solid var(--border); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1); z-index: 5; }
         .gal-arrow:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
         .gal-prev { right: 6px; }
         .gal-next { left: 6px; }
@@ -162,11 +177,11 @@
         </div>
     </div>
 
-    <!-- قسم البنرات العائمة -->
+    <!-- قسم البنرات الإعلانية العائمة والمرنة -->
     <div class="banners-container" id="bannersSection" style="display:none;">
-        <div class="slideshow-container" id="slideshowContainer">
-            <div id="slidesWrapper" style="width:100%; height:100%; position:relative;"></div>
-            <div class="dots-container" id="dotsWrapper"></div>
+        <div class="floating-banner-box">
+            <div id="slidesWrapper"></div>
+            <div class="banner-dots" id="dotsWrapper"></div>
         </div>
     </div>
 
@@ -234,7 +249,7 @@
             lastDataHash = currentHash;
 
             storeData = data.payload;
-            if(!storeData.banners) storeData.banners = [];
+            if (!Array.isArray(storeData.banners)) storeData.banners = [];
             if (currentUser && currentUser.cart) {
                 cart = currentUser.cart;
                 renderCart();
@@ -256,13 +271,16 @@
         document.getElementById('uiStoreName').innerText = storeData.settings?.storeName || 'متجر صدارة';
         document.getElementById('uiFooterName').innerText = storeData.settings?.storeName || 'متجر صدارة';
 
+        // استخراج البنرات الصالحة فقط (التي تحتوي على رابط صورة)
+        const validBanners = (storeData.banners || []).filter(b => b && (b.img || b.url || b.image));
         const bannersSec = document.getElementById('bannersSection');
-        if (storeData.banners && storeData.banners.length > 0) {
+        
+        if (validBanners.length > 0) {
             bannersSec.style.display = 'block';
-            setupBanners(storeData.banners);
+            setupBanners(validBanners);
         } else {
             bannersSec.style.display = 'none';
-            if(slideTimer) clearInterval(slideTimer);
+            if (slideTimer) clearInterval(slideTimer);
         }
 
         const catNav = document.getElementById('catNav');
@@ -344,42 +362,53 @@
         const wrapper = document.getElementById('slidesWrapper');
         const dotsWrapper = document.getElementById('dotsWrapper');
 
-        wrapper.innerHTML = banners.map((b, i) => `
-            <div class="mySlides ${i === 0 ? 'active' : ''}">
-                <img src="${b.img}" alt="${b.title || 'إعلان'}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80'">
-            </div>
-        `).join('');
+        if (slideIndex >= banners.length) slideIndex = 0;
 
-        dotsWrapper.innerHTML = banners.map((_, i) => `
-            <span class="dot ${i === 0 ? 'active' : ''}" onclick="currentSlide(${i})"></span>
-        `).join('');
+        wrapper.innerHTML = banners.map((b, i) => {
+            const imgSrc = b.img || b.url || b.image;
+            return `
+            <div class="banner-slide ${i === slideIndex ? 'active' : ''}">
+                <img src="${imgSrc}" alt="${b.title || 'إعلان'}" loading="eager">
+            </div>`;
+        }).join('');
 
-        if(slideTimer) clearInterval(slideTimer);
-        slideTimer = setInterval(() => {
-            slideIndex++;
-            showSlides();
-        }, 5500);
+        if (banners.length > 1) {
+            dotsWrapper.style.display = 'flex';
+            dotsWrapper.innerHTML = banners.map((_, i) => `
+                <span class="b-dot ${i === slideIndex ? 'active' : ''}" onclick="currentSlide(${i})"></span>
+            `).join('');
+        } else {
+            dotsWrapper.style.display = 'none';
+        }
+
+        if (slideTimer) clearInterval(slideTimer);
+        if (banners.length > 1) {
+            slideTimer = setInterval(() => {
+                slideIndex++;
+                showSlides();
+            }, 5500);
+        }
     }
 
     function showSlides() {
-        const slides = document.getElementsByClassName("mySlides");
-        const dots = document.getElementsByClassName("dot");
+        const slides = document.getElementsByClassName("banner-slide");
+        const dots = document.getElementsByClassName("b-dot");
         if (!slides.length) return;
-
-        for (let i = 0; i < slides.length; i++) slides[i].classList.remove('active');
-        for (let i = 0; i < dots.length; i++) dots[i].classList.remove('active');
 
         if (slideIndex >= slides.length) slideIndex = 0;
         if (slideIndex < 0) slideIndex = slides.length - 1;
 
+        for (let i = 0; i < slides.length; i++) slides[i].classList.remove('active');
+        for (let i = 0; i < dots.length; i++) dots[i].classList.remove('active');
+
         slides[slideIndex].classList.add('active');
-        if(dots[slideIndex]) dots[slideIndex].classList.add('active');
+        if (dots[slideIndex]) dots[slideIndex].classList.add('active');
     }
 
     function currentSlide(n) {
         slideIndex = n;
         showSlides();
-        if(slideTimer) clearInterval(slideTimer);
+        if (slideTimer) clearInterval(slideTimer);
         slideTimer = setInterval(() => {
             slideIndex++;
             showSlides();
