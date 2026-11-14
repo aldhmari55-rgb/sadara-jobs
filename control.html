@@ -85,7 +85,8 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('products', this)">المنتجات</button>
             <button class="tab-btn" onclick="switchTab('categories', this)">الأقسام</button>
-            <button class="tab-btn" onclick="switchTab('banners', this)">البنرات الإعلانية</button>
+            <button class="tab-btn" onclick="switchTab('shein', this)">شحنات شي إن</button>
+            <button class="tab-btn" onclick="switchTab('banners', this)">البنرات</button>
             <button class="tab-btn" onclick="switchTab('payments', this)">طرق الدفع</button>
             <button class="tab-btn" onclick="switchTab('settings', this)">الإعدادات</button>
         </div>
@@ -98,6 +99,11 @@
         <div class="panel" id="p-categories">
             <button class="btn-new" onclick="openModal('category')"><i class="fas fa-plus"></i> إضافة قسم</button>
             <div class="grid" id="gridCategories"></div>
+        </div>
+
+        <div class="panel" id="p-shein">
+            <button class="btn-new" onclick="openModal('shein')"><i class="fas fa-plus"></i> إضافة شحنة شي إن جديدة</button>
+            <div class="grid" id="gridShein"></div>
         </div>
 
         <div class="panel" id="p-banners">
@@ -114,7 +120,7 @@
             <div class="card" style="max-width:450px;">
                 <h3 style="margin-bottom:15px;">الإعدادات العامة</h3>
                 <div class="grp"><label>اسم المتجر</label><input type="text" id="setName"></div>
-                <div class="grp"><label>رقم الواتساب (مع مفتاح الدولة)</label><input type="text" id="setWa" style="direction:ltr;"></div>
+                <div class="grp"><label>رقم الواتساب</label><input type="text" id="setWa" style="direction:ltr;"></div>
                 <button class="btn-main" onclick="saveSettings()">حفظ الإعدادات</button>
             </div>
         </div>
@@ -142,11 +148,10 @@
 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let storeData = { settings: { storeName: "متجر صدارة", whatsapp: "967780568507" }, categories: [], products: [], payments: [], banners: [], users: [] };
+    let storeData = { settings: { storeName: "متجر صدارة", whatsapp: "967780568507" }, categories: [], products: [], payments: [], banners: [], shein: [], users: [] };
     let editType = '', editId = null, uploadedImgUrl = '';
     let currentProductImgs = [];
 
-    // دالة ذكية لإرجاع الحرف الخاص بالقسم (مع دعم الحرف المخصص المدخل يدوياً لكل قسم)
     function getCategoryPrefix(cat) {
         if (cat.prefix && cat.prefix.trim()) return cat.prefix.trim().toUpperCase();
         const n = (cat.name || '').trim();
@@ -154,36 +159,24 @@
         if (n.includes('نساء') || n.includes('نسائ')) return 'W';
         if (n.includes('ولاد') || n.includes('أولاد')) return 'B';
         if (n.includes('بنات')) return 'G';
-        if (n.includes('مواليد') || n.includes('أطفال')) return 'K';
-        if (n.includes('الكترون') || n.includes('إلكترون')) return 'E';
-        if (n.includes('اكسسوار') || n.includes('إكسسوار')) return 'A';
-        if (n.includes('تجميل') || n.includes('مكياج')) return 'T';
-        if (n.includes('منزل') || n.includes('منزلية')) return 'H';
-        
-        // إذا لم تطابق كلمة مفتاحية، نأخذ أول حرف إنجليزي من اسم القسم أو حرف فريد عشوائي
         return n.charAt(0).toUpperCase() || 'P';
     }
 
-    // توليد الكود التسلسلي التالي للقسم (من 100 إلى 10000)
     function generateNextCode(catId) {
         const cat = (storeData.categories || []).find(c => c.id === catId);
         if (!cat) return 'P100';
         const prefix = getCategoryPrefix(cat);
         const catProds = (storeData.products || []).filter(p => p.catId === catId);
-
         let maxNum = 99;
         catProds.forEach(p => {
             if (p.code) {
                 const match = String(p.code).toUpperCase().match(new RegExp('^' + prefix + '(\\d+)$'));
                 if (match) {
                     const num = parseInt(match[1], 10);
-                    if (num >= 100 && num <= 10000 && num > maxNum) {
-                        maxNum = num;
-                    }
+                    if (num >= 100 && num <= 10000 && num > maxNum) maxNum = num;
                 }
             }
         });
-
         const nextNum = maxNum + 1;
         return prefix + (nextNum > 10000 ? 10000 : nextNum);
     }
@@ -191,16 +184,12 @@
     async function initCloud() {
         const statusEl = document.getElementById('connStatus');
         const { data, error } = await _supabase.from('store_data').select('payload').eq('id', 1).maybeSingle();
-        if (error) {
-            statusEl.innerText = 'خطأ اتصال: ' + error.message;
-            statusEl.style.color = '#ef4444';
-            return;
-        }
-        statusEl.innerText = 'متصل بالسحابة بنجاح ✓';
-        statusEl.style.color = '#10b981';
+        if (error) { statusEl.innerText = 'خطأ اتصال: ' + error.message; statusEl.style.color = '#ef4444'; return; }
+        statusEl.innerText = 'متصل بالسحابة بنجاح ✓'; statusEl.style.color = '#10b981';
         if (data && data.payload) { 
             storeData = data.payload; 
             if(!Array.isArray(storeData.banners)) storeData.banners = [];
+            if(!Array.isArray(storeData.shein)) storeData.shein = [];
         }
         renderAdmin();
     }
@@ -208,22 +197,15 @@
     async function pushToCloud() {
         showToast('جاري الحفظ...');
         const { error } = await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
-        if (error) {
-            alert('فشل الحفظ! السبب التقني: ' + error.message);
-        } else {
-            showToast('تم الحفظ والمزامنة مع المتجر بنجاح ✓');
-            renderAdmin();
-        }
+        if (error) { alert('فشل الحفظ: ' + error.message); } 
+        else { showToast('تم الحفظ والمزامنة بنجاح ✓'); renderAdmin(); }
     }
 
     function adminLogin(e) {
         e.preventDefault();
         if (document.getElementById('aUser').value === 'admin' && document.getElementById('aPass').value === 'admin2026') {
-            sessionStorage.setItem('sadarah_admin', '1');
-            checkSession();
-        } else {
-            showToast('بيانات الدخول غير صحيحة');
-        }
+            sessionStorage.setItem('sadarah_admin', '1'); checkSession();
+        } else { showToast('بيانات الدخول غير صحيحة'); }
     }
 
     function checkSession() {
@@ -247,18 +229,14 @@
         document.getElementById('gridProducts').innerHTML = (storeData.products || []).map(p => {
             const imgs = (p.imgs && p.imgs.length) ? p.imgs : (p.img ? [p.img] : []);
             const mainImg = imgs[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80';
-            const badgeHtml = imgs.length > 1 ? `<span class="img-count-badge"><i class="fas fa-images"></i> ${imgs.length} صور</span>` : '';
-            
+            const badgeHtml = imgs.length > 1 ? `<span class="img-count-badge">${imgs.length} صور</span>` : '';
             return `
             <div class="card">
                 <div>
-                    <div class="card-img-wrap">
-                        ${badgeHtml}
-                        <img src="${mainImg}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'">
-                    </div>
+                    <div class="card-img-wrap">${badgeHtml}<img src="${mainImg}"></div>
                     <h4>${p.name}</h4>
-                    <small style="color:#64748b;">كود: <strong style="color:#0f172a;">${p.code}</strong></small>
-                    <p style="font-weight:800; color:var(--primary); margin-top:4px;">${Number(p.price).toLocaleString()} ريال</p>
+                    <small>كود: <strong>${p.code}</strong></small>
+                    <p style="font-weight:800; color:var(--primary);">${Number(p.price).toLocaleString()} ريال</p>
                 </div>
                 <div class="card-actions">
                     <button class="btn-sm btn-edit" onclick="openModal('product', ${p.id})">تعديل</button>
@@ -267,49 +245,51 @@
             </div>`;
         }).join('');
 
-        document.getElementById('gridCategories').innerHTML = (storeData.categories || []).map(c => {
-            const pref = getCategoryPrefix(c);
-            return `
+        document.getElementById('gridCategories').innerHTML = (storeData.categories || []).map(c => `
             <div class="card">
-                <div>
-                    <h4>${c.name}</h4>
-                    <span class="prefix-badge">حرف الكود: (${pref}) - النطاق: ${pref}100 إلى ${pref}10,000</span>
-                </div>
+                <div><h4>${c.name}</h4><span class="prefix-badge">حرف: ${getCategoryPrefix(c)}</span></div>
                 <div class="card-actions">
                     <button class="btn-sm btn-edit" onclick="openModal('category', '${c.id}')">تعديل</button>
                     <button class="btn-sm btn-del" onclick="delItem('categories', '${c.id}')">حذف</button>
                 </div>
-            </div>`;
-        }).join('');
+            </div>`).join('');
 
-        document.getElementById('gridBanners').innerHTML = (storeData.banners || []).map(b => {
-            const bImg = b.img || b.url || b.image || '';
-            return `
+        document.getElementById('gridShein').innerHTML = (storeData.shein || []).map(s => `
             <div class="card">
                 <div>
-                    <div class="card-img-wrap" style="height:130px;"><img src="${bImg}" alt="بنر"></div>
-                    <h4>${b.title || 'بنر إعلاني'}</h4>
+                    <h4>${s.title}</h4>
+                    <p style="color:var(--primary); font-weight:800; margin-top:5px;">الحالة: ${s.status}</p>
+                    <small style="color:#64748b;">التاريخ: ${s.date}</small>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-sm btn-edit" onclick="openModal('shein', ${s.id})">تعديل</button>
+                    <button class="btn-sm btn-del" onclick="delItem('shein', ${s.id})">حذف</button>
+                </div>
+            </div>`).join('');
+
+        document.getElementById('gridBanners').innerHTML = (storeData.banners || []).map(b => `
+            <div class="card">
+                <div>
+                    <div class="card-img-wrap" style="height:130px;"><img src="${b.img || b.url}"></div>
+                    <h4>${b.title || 'بنر'}</h4>
                 </div>
                 <div class="card-actions">
                     <button class="btn-sm btn-edit" onclick="openModal('banner', ${b.id})">تعديل</button>
                     <button class="btn-sm btn-del" onclick="delItem('banners', ${b.id})">حذف</button>
                 </div>
-            </div>`;
-        }).join('');
+            </div>`).join('');
 
         document.getElementById('gridPayments').innerHTML = (storeData.payments || []).map(pay => `
             <div class="card">
                 <div>
                     <h4>${pay.title}</h4>
-                    <p style="font-weight:800; color:var(--primary); direction:ltr; text-align:right; margin-top:5px;">${pay.number}</p>
-                    <small style="color:#64748b;">${pay.note || ''}</small>
+                    <p style="font-weight:800; color:var(--primary); direction:ltr; text-align:right;">${pay.number}</p>
                 </div>
                 <div class="card-actions">
                     <button class="btn-sm btn-edit" onclick="openModal('payment', ${pay.id})">تعديل</button>
                     <button class="btn-sm btn-del" onclick="delItem('payments', ${pay.id})">حذف</button>
                 </div>
-            </div>
-        `).join('');
+            </div>`).join('');
 
         document.getElementById('setName').value = storeData.settings?.storeName || '';
         document.getElementById('setWa').value = storeData.settings?.whatsapp || '';
@@ -317,234 +297,122 @@
 
     function openModal(type, id = null) {
         editType = type; editId = id; 
-        const f = document.getElementById('mFields');
-        const t = document.getElementById('mTitle');
+        const f = document.getElementById('mFields'); const t = document.getElementById('mTitle');
 
         if (type === 'product') {
-            if (!storeData.categories || !storeData.categories.length) return showToast('أضف قسماً أولاً قبل إضافة المنتجات!');
-            const defaultCatId = storeData.categories[0].id;
-            const item = id ? storeData.products.find(x => x.id === id) : { name: '', code: generateNextCode(defaultCatId), price: '', catId: defaultCatId, img: '', imgs: [] };
+            if (!storeData.categories || !storeData.categories.length) return showToast('أضف قسماً أولاً!');
+            const defCat = storeData.categories[0].id;
+            const item = id ? storeData.products.find(x => x.id === id) : { name: '', code: generateNextCode(defCat), price: '', catId: defCat, imgs: [] };
             currentProductImgs = (item.imgs && item.imgs.length) ? [...item.imgs] : (item.img ? [item.img] : []);
-            
             t.innerText = id ? 'تعديل منتج' : 'منتج جديد';
-            const opts = storeData.categories.map(c => `<option value="${c.id}" ${c.id===item.catId?'selected':''}>${c.name} (${getCategoryPrefix(c)})</option>`).join('');
+            const opts = storeData.categories.map(c => `<option value="${c.id}" ${c.id===item.catId?'selected':''}>${c.name}</option>`).join('');
             f.innerHTML = `
                 <div class="grp"><label>اسم المنتج</label><input type="text" id="inName" value="${item.name}" required></div>
-                <div class="grp"><label>القسم (يظهر حرف القسم تلقائياً)</label><select id="inCat" onchange="onProductCatChange(this.value)">${opts}</select></div>
-                <div class="grp"><label>كود الصنف (تسلسلي من 100 إلى 10,000)</label><input type="text" id="inCode" value="${item.code}" style="direction:ltr; font-weight:800; color:var(--primary);" required></div>
+                <div class="grp"><label>القسم</label><select id="inCat" onchange="onProductCatChange(this.value)">${opts}</select></div>
+                <div class="grp"><label>الكود</label><input type="text" id="inCode" value="${item.code}" style="direction:ltr; font-weight:800;" required></div>
                 <div class="grp"><label>السعر</label><input type="number" id="inPrice" value="${item.price}" required></div>
-                <div class="grp">
-                    <label>رفع صور المنتج (يمكنك اختيار أكثر من صورة دفعة واحدة)</label>
-                    <input type="file" accept="image/*" multiple onchange="uploadMultipleProductImgs(event)">
-                </div>
-                <div class="grp">
-                    <label>أو إضافة رابط صورة يدوياً</label>
-                    <div style="display:flex; gap:6px;">
-                        <input type="text" id="manualImgUrl" placeholder="https://..." style="direction:ltr;">
-                        <button type="button" onclick="addManualImg()" style="background:var(--primary); color:#fff; border:none; padding:0 14px; border-radius:10px; font-weight:700; cursor:pointer;">إضافة</button>
-                    </div>
-                </div>
-                <div class="grp">
-                    <label>الصور المضافة (<span id="imgCounter">0</span>):</label>
-                    <div class="multi-img-list" id="multiImgPreview"></div>
-                </div>`;
+                <div class="grp"><label>رفع صور</label><input type="file" accept="image/*" multiple onchange="uploadMultipleProductImgs(event)"></div>
+                <div class="grp"><label>الصور (<span id="imgCounter">0</span>):</label><div class="multi-img-list" id="multiImgPreview"></div></div>`;
             renderProductImgPreviews();
         } else if (type === 'category') {
             const item = id ? storeData.categories.find(x => x.id === id) : { name: '', prefix: '' };
-            const currentPref = id ? (item.prefix || getCategoryPrefix(item)) : '';
             t.innerText = id ? 'تعديل قسم' : 'قسم جديد';
             f.innerHTML = `
-                <div class="grp"><label>اسم القسم</label><input type="text" id="inCatName" value="${item.name}" placeholder="مثال: اكسسوارات، ادوات منزلية" required></div>
-                <div class="grp"><label>الحرف الخاص بالقسم (مثال: A للأكسسوارات، T للتجميل، H للمنزلية)</label><input type="text" id="inCatPrefix" value="${currentPref}" maxlength="3" placeholder="A" style="direction:ltr; text-transform:uppercase; font-weight:800;" required></div>`;
+                <div class="grp"><label>اسم القسم</label><input type="text" id="inCatName" value="${item.name}" required></div>
+                <div class="grp"><label>الحرف الأولي للكود</label><input type="text" id="inCatPrefix" value="${item.prefix || ''}" maxlength="3" style="direction:ltr; text-transform:uppercase;" required></div>`;
+        } else if (type === 'shein') {
+            const item = id ? (storeData.shein || []).find(x => x.id === id) : { title: '', status: 'قيد المراجعة والتجميع', date: new Date().toISOString().slice(0,10) };
+            t.innerText = id ? 'تعديل شحنة شي إن' : 'شحنة شي إن جديدة';
+            f.innerHTML = `
+                <div class="grp"><label>عنوان الطلبية (مثال: طلبية #تخفيضات نوفمبر)</label><input type="text" id="inSheinTitle" value="${item.title}" required></div>
+                <div class="grp">
+                    <label>حالة الشحنة</label>
+                    <select id="inSheinStatus">
+                        <option value="قيد المراجعة والتجميع" ${item.status==='قيد المراجعة والتجميع'?'selected':''}>قيد المراجعة والتجميع</option>
+                        <option value="تم الشراء" ${item.status==='تم الشراء'?'selected':''}>تم الشراء</option>
+                        <option value="في الطريق إليك" ${item.status==='في الطريق إليك'?'selected':''}>في الطريق إليك</option>
+                        <option value="تم التسليم بنجاح" ${item.status==='تم التسليم بنجاح'?'selected':''}>تم التسليم بنجاح</option>
+                    </select>
+                </div>
+                <div class="grp"><label>تاريخ رفع السلة</label><input type="text" id="inSheinDate" value="${item.date}" required style="direction:ltr;"></div>`;
         } else if (type === 'banner') {
             const item = id ? storeData.banners.find(x => x.id === id) : { title: '', img: '' };
-            const existingImg = item.img || item.url || item.image || '';
-            uploadedImgUrl = existingImg;
-            t.innerText = id ? 'تعديل بنر إعلاني' : 'بنر إعلاني جديد';
+            uploadedImgUrl = item.img || item.url || '';
+            t.innerText = id ? 'تعديل بنر' : 'بنر جديد';
             f.innerHTML = `
-                <div class="grp"><label>عنوان البنر (اختياري)</label><input type="text" id="inBannerTitle" value="${item.title || ''}"></div>
-                <div class="grp"><label>اختر صورة البنر من جهازك</label><input type="file" accept="image/*" onchange="compressAndUploadBanner(event)"></div>
-                <div class="grp"><label>رابط الصورة المباشر</label><input type="text" id="inImgUrl" value="${existingImg}" oninput="updateBannerPreview(this.value)" style="direction:ltr;" required></div>
-                <div class="grp">
-                    <label>معاينة البنر قبل الحفظ:</label>
-                    <div class="banner-preview-box" id="bannerPreviewBox">
-                        ${existingImg ? `<img src="${existingImg}">` : '<small style="color:#64748b;">ستظهر معاينة الصورة هنا</small>'}
-                    </div>
-                </div>`;
+                <div class="grp"><label>عنوان البنر</label><input type="text" id="inBannerTitle" value="${item.title || ''}"></div>
+                <div class="grp"><label>رفع صورة البنر</label><input type="file" accept="image/*" onchange="uploadBannerImg(event)"></div>
+                <div class="grp"><label>رابط الصورة</label><input type="text" id="inImgUrl" value="${uploadedImgUrl}" style="direction:ltr;" required></div>`;
         } else if (type === 'payment') {
             const item = id ? storeData.payments.find(x => x.id === id) : { title: '', number: '', note: '' };
-            t.innerText = id ? 'تعديل طريقة دفع' : 'طريقة دفع جديدة';
+            t.innerText = id ? 'تعديل دفع' : 'طريقة دفع جديدة';
             f.innerHTML = `
-                <div class="grp"><label>اسم البنك / المحفظة</label><input type="text" id="inPayTitle" value="${item.title}" required></div>
-                <div class="grp"><label>رقم الحساب</label><input type="text" id="inPayNum" value="${item.number}" required style="direction:ltr;"></div>
-                <div class="grp"><label>ملاحظة</label><input type="text" id="inPayNote" value="${item.note || ''}"></div>`;
+                <div class="grp"><label>اسم البنك/المحفظة</label><input type="text" id="inPayTitle" value="${item.title}" required></div>
+                <div class="grp"><label>رقم الحساب</label><input type="text" id="inPayNum" value="${item.number}" required style="direction:ltr;"></div>`;
         }
         document.getElementById('formModal').classList.add('open');
     }
 
-    function onProductCatChange(catId) {
-        if (!editId) {
-            document.getElementById('inCode').value = generateNextCode(catId);
-        }
-    }
-
-    function updateBannerPreview(url) {
-        const box = document.getElementById('bannerPreviewBox');
-        if (!box) return;
-        box.innerHTML = url ? `<img src="${url}">` : '<small style="color:#64748b;">ستظهر معاينة الصورة هنا</small>';
-    }
+    function onProductCatChange(catId) { if (!editId) document.getElementById('inCode').value = generateNextCode(catId); }
 
     function renderProductImgPreviews() {
         const container = document.getElementById('multiImgPreview');
-        const counter = document.getElementById('imgCounter');
-        if (!container) return;
-        counter.innerText = currentProductImgs.length;
+        document.getElementById('imgCounter').innerText = currentProductImgs.length;
         container.innerHTML = currentProductImgs.map((url, idx) => `
-            <div class="mini-thumb">
-                <img src="${url}">
-                <button type="button" onclick="removeProductImg(${idx})" title="حذف">&times;</button>
-            </div>
-        `).join('') || '<small style="color:#64748b;">لا توجد صور مضافة بعد</small>';
-    }
-
-    function removeProductImg(idx) {
-        currentProductImgs.splice(idx, 1);
-        renderProductImgPreviews();
-    }
-
-    function addManualImg() {
-        const inp = document.getElementById('manualImgUrl');
-        const val = inp.value.trim();
-        if (!val) return;
-        currentProductImgs.push(val);
-        inp.value = '';
-        renderProductImgPreviews();
+            <div class="mini-thumb"><img src="${url}"><button type="button" onclick="currentProductImgs.splice(${idx},1); renderProductImgPreviews();">&times;</button></div>
+        `).join('');
     }
 
     async function uploadMultipleProductImgs(e) {
         const files = Array.from(e.target.files);
         if (!files.length) return;
-        showToast(`جاري ضغط ورفع ${files.length} صورة...`);
-
+        showToast('جاري رفع الصور...');
         for (const file of files) {
-            await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = function(event) {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width, height = img.height;
-                        const MAX = 900;
-                        if (width > height && width > MAX) { height *= MAX / width; width = MAX; }
-                        else if (height > MAX) { width *= MAX / height; height = MAX; }
-
-                        canvas.width = width; canvas.height = height;
-                        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-
-                        canvas.toBlob(async (blob) => {
-                            const cleanName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
-                            const fileName = `${Date.now()}_${Math.floor(Math.random()*1000)}_${cleanName}`;
-                            const { error } = await _supabase.storage.from('platform-files').upload(fileName, blob);
-                            if (!error) {
-                                const { data } = _supabase.storage.from('platform-files').getPublicUrl(fileName);
-                                if (data && data.publicUrl) {
-                                    currentProductImgs.push(data.publicUrl);
-                                    renderProductImgPreviews();
-                                }
-                            }
-                            resolve();
-                        }, 'image/jpeg', 0.82);
-                    };
-                };
-            });
+            const fileName = `${Date.now()}_${Math.random()}_${file.name}`;
+            const { error } = await _supabase.storage.from('platform-files').upload(fileName, file);
+            if (!error) {
+                const { data } = _supabase.storage.from('platform-files').getPublicUrl(fileName);
+                if (data && data.publicUrl) { currentProductImgs.push(data.publicUrl); renderProductImgPreviews(); }
+            }
         }
-        showToast('تم رفع جميع الصور بنجاح ✓');
+        showToast('تم الرفع ✓');
     }
 
-    function compressAndUploadBanner(e) {
+    async function uploadBannerImg(e) {
         const file = e.target.files[0];
         if (!file) return;
-        showToast('جاري ضغط صورة البنر ورفعها...');
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function(event) {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                let width = img.width, height = img.height;
-                const MAX = 1200;
-                if (width > height && width > MAX) { height *= MAX / width; width = MAX; }
-                else if (height > MAX) { width *= MAX / height; height = MAX; }
-                canvas.width = width; canvas.height = height;
-                canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-                canvas.toBlob(async (blob) => {
-                    const cleanName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
-                    const fileName = `banner_${Date.now()}_${cleanName}`;
-                    const { error } = await _supabase.storage.from('platform-files').upload(fileName, blob);
-                    if (error) { alert('فشل الرفع: ' + error.message); return; }
-                    const { data } = _supabase.storage.from('platform-files').getPublicUrl(fileName);
-                    if (data && data.publicUrl) {
-                        uploadedImgUrl = data.publicUrl;
-                        document.getElementById('inImgUrl').value = uploadedImgUrl;
-                        updateBannerPreview(uploadedImgUrl);
-                        showToast('تم رفع البنر وظهرت معاينته ✓');
-                    }
-                }, 'image/jpeg', 0.88);
-            };
-        };
+        const fileName = `banner_${Date.now()}_${file.name}`;
+        const { error } = await _supabase.storage.from('platform-files').upload(fileName, file);
+        if (!error) {
+            const { data } = _supabase.storage.from('platform-files').getPublicUrl(fileName);
+            if (data && data.publicUrl) { uploadedImgUrl = data.publicUrl; document.getElementById('inImgUrl').value = uploadedImgUrl; showToast('تم الرفع ✓'); }
+        }
     }
 
     function handleSave(e) {
         e.preventDefault();
         if (editType === 'product') {
             const finalImgs = currentProductImgs.length ? currentProductImgs : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'];
-            const obj = {
-                id: editId || Date.now(),
-                name: document.getElementById('inName').value,
-                catId: document.getElementById('inCat').value,
-                code: document.getElementById('inCode').value.trim().toUpperCase(),
-                price: Number(document.getElementById('inPrice').value),
-                img: finalImgs[0],
-                imgs: finalImgs
-            };
-            if (editId) storeData.products[storeData.products.findIndex(x => x.id === editId)] = obj;
-            else storeData.products.unshift(obj);
+            const obj = { id: editId || Date.now(), name: document.getElementById('inName').value, catId: document.getElementById('inCat').value, code: document.getElementById('inCode').value.trim().toUpperCase(), price: Number(document.getElementById('inPrice').value), img: finalImgs[0], imgs: finalImgs };
+            if (editId) storeData.products[storeData.products.findIndex(x => x.id === editId)] = obj; else storeData.products.unshift(obj);
         } else if (editType === 'category') {
             const name = document.getElementById('inCatName').value.trim();
             const prefix = document.getElementById('inCatPrefix').value.trim().toUpperCase();
-            if (editId) {
-                const cat = storeData.categories.find(x => x.id === editId);
-                cat.name = name;
-                cat.prefix = prefix;
-            } else {
-                storeData.categories.push({ id: 'cat_' + Date.now(), name, prefix });
-            }
+            if (editId) { const c = storeData.categories.find(x => x.id === editId); c.name = name; c.prefix = prefix; }
+            else storeData.categories.push({ id: 'cat_' + Date.now(), name, prefix });
+        } else if (editType === 'shein') {
+            if (!Array.isArray(storeData.shein)) storeData.shein = [];
+            const obj = { id: editId || Date.now(), title: document.getElementById('inSheinTitle').value, status: document.getElementById('inSheinStatus').value, date: document.getElementById('inSheinDate').value };
+            if (editId) storeData.shein[storeData.shein.findIndex(x => x.id === editId)] = obj; else storeData.shein.unshift(obj);
         } else if (editType === 'banner') {
             if (!Array.isArray(storeData.banners)) storeData.banners = [];
-            const finalBannerUrl = document.getElementById('inImgUrl').value.trim() || uploadedImgUrl;
-            const obj = {
-                id: editId || Date.now(),
-                title: document.getElementById('inBannerTitle').value,
-                img: finalBannerUrl,
-                url: finalBannerUrl
-            };
-            if (editId) storeData.banners[storeData.banners.findIndex(x => x.id === editId)] = obj;
-            else storeData.banners.push(obj);
+            const obj = { id: editId || Date.now(), title: document.getElementById('inBannerTitle').value, img: uploadedImgUrl, url: uploadedImgUrl };
+            if (editId) storeData.banners[storeData.banners.findIndex(x => x.id === editId)] = obj; else storeData.banners.push(obj);
         } else if (editType === 'payment') {
-            const obj = {
-                id: editId || Date.now(),
-                title: document.getElementById('inPayTitle').value,
-                number: document.getElementById('inPayNum').value,
-                note: document.getElementById('inPayNote').value
-            };
-            if (editId) storeData.payments[storeData.payments.findIndex(x => x.id === editId)] = obj;
-            else storeData.payments.push(obj);
+            const obj = { id: editId || Date.now(), title: document.getElementById('inPayTitle').value, number: document.getElementById('inPayNum').value };
+            if (editId) storeData.payments[storeData.payments.findIndex(x => x.id === editId)] = obj; else storeData.payments.push(obj);
         }
-        closeModal();
-        pushToCloud();
+        closeModal(); pushToCloud();
     }
 
     function delItem(key, id) {
