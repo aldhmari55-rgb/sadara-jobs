@@ -35,12 +35,17 @@
         .search-bar input { width: 100%; padding: 11px 45px 11px 15px; border: 1px solid var(--border); border-radius: 14px; background: #f8fafc; outline: none; }
         .search-bar i { position: absolute; right: 35px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
 
-        /* تصميم البنرات الإعلانية المتحركة أوتوماتيكياً */
+        /* نظام السلايدر الديناميكي الحقيقي للبنرات */
         .banners-container { padding: 15px 20px 5px; }
-        .banner-slider { display: flex; overflow-x: auto; gap: 15px; scrollbar-width: none; scroll-behavior: smooth; border-radius: 16px; }
-        .banner-slider::-webkit-scrollbar { display: none; }
-        .banner-item { min-width: 100%; height: 180px; border-radius: 16px; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: #fff; }
-        .banner-item img { width: 100%; height: 100%; object-fit: cover; }
+        .slideshow-container { position: relative; width: 100%; height: 180px; border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .mySlides { display: none; width: 100%; height: 100%; position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s ease-in-out; }
+        .mySlides.active { display: block; opacity: 1; }
+        .mySlides img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* نقاط التنقل أسفل البنر */
+        .dots-container { text-align: center; position: absolute; bottom: 8px; left: 0; right: 0; z-index: 10; }
+        .dot { cursor: pointer; height: 8px; width: 8px; margin: 0 3px; background-color: rgba(255,255,255,0.6); border-radius: 50%; display: inline-block; transition: background-color 0.3s ease; }
+        .dot.active, .dot:hover { background-color: #fff; width: 20px; border-radius: 4px; }
 
         .main-content { padding: 20px; }
         .cat-block { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
@@ -119,9 +124,12 @@
         </div>
     </div>
 
-    <!-- حاوية البنرات الإعلانية المتحركة أوتوماتيكياً -->
+    <!-- حاوية السلايدر الديناميكي للبنرات -->
     <div class="banners-container" id="bannersSection" style="display:none;">
-        <div class="banner-slider" id="bannerSlider"></div>
+        <div class="slideshow-container" id="slideshowContainer">
+            <div id="slidesWrapper" style="width:100%; height:100%; position:relative;"></div>
+            <div class="dots-container" id="dotsWrapper"></div>
+        </div>
     </div>
 
     <main class="main-content" id="mainContent"></main>
@@ -173,7 +181,10 @@
     let cart = [];
     let activeCat = 'all';
     let currentUser = JSON.parse(localStorage.getItem('sadarah_user')) || null;
-    let bannerInterval = null;
+    
+    // متغيرات نظام السلايدر الديناميكي
+    let slideIndex = 0;
+    let slideTimer = null;
 
     async function syncCloud() {
         const { data, error } = await _supabase.from('store_data').select('payload').eq('id', 1).maybeSingle();
@@ -201,21 +212,14 @@
         document.getElementById('uiStoreName').innerText = storeData.settings?.storeName || 'متجر صدارة';
         document.getElementById('uiFooterName').innerText = storeData.settings?.storeName || 'متجر صدارة';
 
-        // عرض البنرات الإعلانية في الأعلى وتشغيل الحركة التلقائية كل 5-6 ثوانٍ
+        // عرض السلايدر والديناميكية للبنرات
         const bannersSec = document.getElementById('bannersSection');
-        const bannerSlider = document.getElementById('bannerSlider');
         if (storeData.banners && storeData.banners.length > 0) {
             bannersSec.style.display = 'block';
-            bannerSlider.innerHTML = storeData.banners.map(b => `
-                <div class="banner-item">
-                    <img src="${b.img}" alt="${b.title || 'إعلان'}">
-                </div>
-            `).join('');
-            
-            startBannerAutoScroll();
+            setupBanners(storeData.banners);
         } else {
             bannersSec.style.display = 'none';
-            if(bannerInterval) clearInterval(bannerInterval);
+            if(slideTimer) clearInterval(slideTimer);
         }
 
         const catNav = document.getElementById('catNav');
@@ -274,22 +278,56 @@
         `).join('');
     }
 
-    // دالة تحريك البنرات تلقائياً كل 5.5 ثانية
-    function startBannerAutoScroll() {
-        if(bannerInterval) clearInterval(bannerInterval);
-        const slider = document.getElementById('bannerSlider');
-        if(!slider) return;
+    // بناء وتفعيل سلايدر البنرات الديناميكي (كل 5.5 ثانية يتغير تلقائياً)
+    function setupBanners(banners) {
+        const wrapper = document.getElementById('slidesWrapper');
+        const dotsWrapper = document.getElementById('dotsWrapper');
 
-        let scrollIndex = 0;
-        bannerInterval = setInterval(() => {
-            const items = slider.querySelectorAll('.banner-item');
-            if(!items.length) return;
-            scrollIndex++;
-            if(scrollIndex >= items.length) {
-                scrollIndex = 0; // العودة لأول بنر بعد نهاية القائمة
-            }
-            items[scrollIndex].scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
-        }, 5500); // 5500 ملي ثانية (يعني 5.5 ثانية لكل بنر)
+        wrapper.innerHTML = banners.map((b, i) => `
+            <div class="mySlides ${i === 0 ? 'active' : ''}">
+                <img src="${b.img}" alt="${b.title || 'إعلان'}">
+            </div>
+        `).join('');
+
+        dotsWrapper.innerHTML = banners.map((_, i) => `
+            <span class="dot ${i === 0 ? 'active' : ''}" onclick="currentSlide(${i})"></span>
+        `).join('');
+
+        if(slideTimer) clearInterval(slideTimer);
+        slideTimer = setInterval(() => {
+            slideIndex++;
+            showSlides();
+        }, 5500); // الانتقال التلقائي كل 5.5 ثانية
+    }
+
+    function showSlides() {
+        const slides = document.getElementsByClassName("mySlides");
+        const dots = document.getElementsByClassName("dot");
+        if (!slides.length) return;
+
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].classList.remove('active');
+        }
+        for (let i = 0; i < dots.length; i++) {
+            dots[i].classList.remove('active');
+        }
+
+        if (slideIndex >= slides.length) { slideIndex = 0; }
+        if (slideIndex < 0) { slideIndex = slides.length - 1; }
+
+        slides[slideIndex].classList.add('active');
+        if(dots[slideIndex]) dots[slideIndex].classList.add('active');
+    }
+
+    function currentSlide(n) {
+        slideIndex = n;
+        showSlides();
+        // إعادة ضبط المؤقت لكي لا يتداخل مع النقر اليدوي
+        if(slideTimer) clearInterval(slideTimer);
+        slideTimer = setInterval(() => {
+            slideIndex++;
+            showSlides();
+        }, 5500);
     }
 
     function setCat(id) { activeCat = id; renderUI(); }
@@ -404,7 +442,7 @@
 
     async function handleLogin(e) {
         e.preventDefault();
-        const email = document.getElementById('logEmail').value.trim();
+        const email = document.getElementById('logEmail').value.term ? document.getElementById('logEmail').value.trim() : document.getElementById('logEmail').value.trim();
         const pass = document.getElementById('logPass').value.trim();
 
         const user = (storeData.users || []).find(u => u.email === email && u.pass === pass);
