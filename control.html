@@ -29,8 +29,7 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
         .card { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; }
         
-        /* مرونة الصور داخل لوحة التحكم */
-        .card-img-wrap { width: 100%; height: 140px; background: #f8fafc; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 12px; padding: 5px; }
+        .card-img-wrap { width: 100%; height: 160px; background: #f8fafc; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 12px; padding: 5px; }
         .card-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
         .card-actions { display: flex; gap: 8px; margin-top: 12px; }
@@ -186,7 +185,7 @@
         document.getElementById('gridProducts').innerHTML = (storeData.products || []).map(p => `
             <div class="card">
                 <div>
-                    <div class="card-img-wrap"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/300'"></div>
+                    <div class="card-img-wrap"><img src="${p.img}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'"></div>
                     <h4>${p.name}</h4>
                     <small style="color:#64748b;">كود: ${p.code}</small>
                     <p style="font-weight:800; color:var(--primary); margin-top:4px;">${Number(p.price).toLocaleString()} ريال</p>
@@ -227,7 +226,7 @@
     }
 
     function openModal(type, id = null) {
-        editType = type; editId = id; uploadedImgUrl = '';
+        editType = type; editId = id; 
         const f = document.getElementById('mFields');
         const t = document.getElementById('mTitle');
 
@@ -242,8 +241,14 @@
                 <div class="grp"><label>القسم</label><select id="inCat">${opts}</select></div>
                 <div class="grp"><label>الكود</label><input type="text" id="inCode" value="${item.code}" required></div>
                 <div class="grp"><label>السعر</label><input type="number" id="inPrice" value="${item.price}" required></div>
-                <div class="grp"><label>صورة المنتج</label><input type="file" accept="image/*" onchange="uploadImg(event)"></div>
-                <div class="grp"><label>أو رابط الصورة مباشرة</label><input type="text" id="inImgUrl" value="${item.img}" style="direction:ltr;"></div>`;
+                <div class="grp">
+                    <label>اختر صورة من جهازك (سيتم رفعها وتوليد الرابط تلقائياً)</label>
+                    <input type="file" accept="image/*" onchange="uploadImgAuto(event)">
+                </div>
+                <div class="grp">
+                    <label>رابط الصورة المولد (تلقائي أو أدخل رابطاً يدوياً)</label>
+                    <input type="text" id="inImgUrl" value="${item.img}" style="direction:ltr;" required>
+                </div>`;
         } else if (type === 'category') {
             const item = id ? storeData.categories.find(x => x.id === id) : { name: '' };
             t.innerText = id ? 'تعديل قسم' : 'قسم جديد';
@@ -259,29 +264,39 @@
         document.getElementById('formModal').classList.add('open');
     }
 
-    async function uploadImg(e) {
+    // رفع الصورة أوتوماتيكياً وملء حقل الرابط فوراً
+    async function uploadImgAuto(e) {
         const file = e.target.files[0];
         if (!file) return;
-        showToast('جاري رفع الصورة...');
-        const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
+        showToast('جاري رفع الصورة للسحابة وتوليد الرابط...');
+        const cleanName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+        const fileName = `${Date.now()}_${cleanName}`;
+        
         const { error } = await _supabase.storage.from('platform-files').upload(fileName, file);
-        if (error) { alert('فشل رفع الصورة: ' + error.message); return; }
+        if (error) { 
+            alert('فشل رفع الصورة: ' + error.message); 
+            return; 
+        }
+        
         const { data } = _supabase.storage.from('platform-files').getPublicUrl(fileName);
-        uploadedImgUrl = data.publicUrl;
-        document.getElementById('inImgUrl').value = uploadedImgUrl;
-        showToast('تم رفع الصورة بنجاح ✓');
+        if (data && data.publicUrl) {
+            uploadedImgUrl = data.publicUrl;
+            document.getElementById('inImgUrl').value = uploadedImgUrl;
+            showToast('تم توليد رابط الصورة ووضعه تلقائياً ✓');
+        }
     }
 
     function handleSave(e) {
         e.preventDefault();
         if (editType === 'product') {
+            const imgVal = document.getElementById('inImgUrl').value;
             const obj = {
                 id: editId || Date.now(),
                 name: document.getElementById('inName').value,
                 catId: document.getElementById('inCat').value,
                 code: document.getElementById('inCode').value,
                 price: Number(document.getElementById('inPrice').value),
-                img: document.getElementById('inImgUrl').value || 'https://via.placeholder.com/300'
+                img: imgVal || uploadedImgUrl || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'
             };
             if (editId) storeData.products[storeData.products.findIndex(x => x.id === editId)] = obj;
             else storeData.products.unshift(obj);
