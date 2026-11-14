@@ -235,13 +235,13 @@
 
         async function fetchFromSupabase() {
             try {
-                const { data, error } = await _supabase.from('store_data').select('*').eq('id', 1).single();
+                const { data, error } = await _supabase.from('store_data').select('*').eq('id', 1).maybeSingle();
                 if (data && data.payload) {
                     storeData = data.payload;
                     renderStoreUI();
                 }
             } catch (err) {
-                console.log('خطأ في جلب البيانات');
+                console.log('خطأ في مزامنة البيانات');
             }
         }
 
@@ -409,7 +409,7 @@
             currentUser = newUser;
             localStorage.setItem('sadarah_current_user', JSON.stringify(currentUser));
             
-            await _supabase.from('store_data').update({ payload: storeData }).eq('id', 1);
+            await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
             showToast('تم إنشاء الحساب بنجاح!');
             openAuthModal();
         }
@@ -445,7 +445,8 @@
             setTimeout(() => t.classList.remove('show'), 2500);
         }
 
-        setInterval(fetchFromSupabase, 3000);
+        // مزامنة تلقائية لحظية مع السحابة كل 2 ثانية
+        setInterval(fetchFromSupabase, 2000);
         fetchFromSupabase();
         updateCartUI();
     </script>
