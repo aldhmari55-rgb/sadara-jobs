@@ -41,14 +41,15 @@
         .block-title { font-size: 1.2rem; font-weight: 800; }
         .view-btn { background: var(--primary); color: #fff; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
 
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+        /* عرض المنتجات بشكل شبكي (Grid) متناسق للكمبيوتر والجوال */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; }
         
         .prod-card { border: 1px solid #f1f5f9; border-radius: 16px; overflow: hidden; background: #fff; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: 0.2s; }
         .prod-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
         
-        /* ضبط الصورة بمرونة تامة لتأخذ مساحتها وتظهر بحجمها دون قص */
-        .prod-img { width: 100%; height: 180px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 8px; }
-        .prod-img img { width: 100%; height: 100%; object-fit: contain; }
+        /* جعل الصورة تملأ منطقة العرض بالكامل (cover) */
+        .prod-img { width: 100%; height: 200px; background: #f8fafc; overflow: hidden; }
+        .prod-img img { width: 100%; height: 100%; object-fit: cover; }
 
         .prod-info { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
         .prod-name { font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
