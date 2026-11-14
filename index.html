@@ -35,33 +35,18 @@
         .search-bar input { width: 100%; padding: 11px 45px 11px 15px; border: 1px solid var(--border); border-radius: 14px; background: #f8fafc; outline: none; }
         .search-bar i { position: absolute; right: 35px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
 
-        /* تصميم البنرات العائمة بشكل فخم وبارز ومتكيف مع جميع الأجهزة */
+        /* البنرات العائمة */
         .banners-container { padding: 20px; }
         .slideshow-container { 
-            position: relative; 
-            width: 100%; 
-            max-height: 380px; 
-            min-height: 200px;
-            border-radius: 24px; 
-            overflow: hidden; 
-            background: #ffffff; 
-            /* تأثير العوم والظل البارز جداً */
+            position: relative; width: 100%; max-height: 380px; min-height: 200px;
+            border-radius: 24px; overflow: hidden; background: #ffffff; 
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 0 5px 15px rgba(0, 0, 0, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.8);
         }
         .mySlides { display: none; width: 100%; height: 100%; position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s ease-in-out; text-align: center; background: #ffffff; }
         .mySlides.active { display: flex; align-items: center; justify-content: center; opacity: 1; }
+        .mySlides img { width: 100%; height: 100%; max-height: 380px; object-fit: contain; border-radius: 20px; }
         
-        /* جعل الصورة تظهر كاملة تماماً أيا كان مقاسها بدون قص وتملأ المكان بمرونة */
-        .mySlides img { 
-            width: 100%; 
-            height: 100%; 
-            max-height: 380px; 
-            object-fit: contain; 
-            border-radius: 20px;
-        }
-        
-        /* نقاط التنقل العائمة أسفل البنر */
         .dots-container { text-align: center; position: absolute; bottom: 12px; left: 0; right: 0; z-index: 10; }
         .dot { cursor: pointer; height: 8px; width: 8px; margin: 0 4px; background-color: rgba(37, 99, 235, 0.3); border-radius: 50%; display: inline-block; transition: all 0.3s ease; }
         .dot.active, .dot:hover { background-color: var(--primary); width: 22px; border-radius: 4px; }
@@ -76,10 +61,20 @@
         .carousel::-webkit-scrollbar { height: 6px; }
         .carousel::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-        .prod-card { min-width: 230px; max-width: 230px; border: 1px solid #f1f5f9; border-radius: 16px; overflow: hidden; background: #fff; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.02); flex-shrink: 0; }
+        .prod-card { min-width: 235px; max-width: 235px; border: 1px solid #f1f5f9; border-radius: 16px; overflow: hidden; background: #fff; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.02); flex-shrink: 0; }
         
-        .prod-img { width: 100%; height: 210px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; }
-        .prod-img img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+        /* معرض الصور المتعدد داخل بطاقة المنتج */
+        .prod-img { position: relative; width: 100%; height: 215px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; user-select: none; }
+        .prod-img img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; transition: opacity 0.25s ease; }
+        
+        .gal-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.88); color: var(--text); border: 1px solid var(--border); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1); z-index: 5; }
+        .gal-arrow:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .gal-prev { right: 6px; }
+        .gal-next { left: 6px; }
+        
+        .gal-dots { position: absolute; bottom: 6px; left: 0; right: 0; display: flex; justify-content: center; gap: 4px; z-index: 5; }
+        .gal-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(15,23,42,0.25); cursor: pointer; transition: 0.2s; }
+        .gal-dot.active { background: var(--primary); width: 14px; border-radius: 4px; }
 
         .prod-info { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
         .prod-name { font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -143,7 +138,6 @@
         </div>
     </div>
 
-    <!-- قسم البنرات الإعلانية العائمة والديناميكية -->
     <div class="banners-container" id="bannersSection" style="display:none;">
         <div class="slideshow-container" id="slideshowContainer">
             <div id="slidesWrapper" style="width:100%; height:100%; position:relative;"></div>
@@ -203,10 +197,17 @@
     
     let slideIndex = 0;
     let slideTimer = null;
+    let prodImgState = {}; // لحفظ رقم الصورة المعروضة حالياً لكل منتج
+    let touchStartX = 0;
+    let lastDataHash = ''; // لمنع إعادة الرسم غير الضرورية التي قد تعيد ضبط تقليب الصور
 
     async function syncCloud() {
         const { data, error } = await _supabase.from('store_data').select('payload').eq('id', 1).maybeSingle();
         if (data && data.payload) {
+            const currentHash = JSON.stringify(data.payload);
+            if (currentHash === lastDataHash) return; // لا تعيد الرسم إذا لم تتغير البيانات
+            lastDataHash = currentHash;
+
             storeData = data.payload;
             if(!storeData.banners) storeData.banners = [];
             if (currentUser && currentUser.cart) {
@@ -258,9 +259,29 @@
             const prods = (storeData.products || []).filter(p => p.catId === c.id && (p.name.toLowerCase().includes(q) || p.code.toLowerCase().includes(q)));
             if (!prods.length) return;
 
-            const cards = prods.map(p => `
+            const cards = prods.map(p => {
+                const imgs = (p.imgs && p.imgs.length) ? p.imgs : (p.img ? [p.img] : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80']);
+                const curIdx = prodImgState[p.id] || 0;
+                const safeIdx = curIdx < imgs.length ? curIdx : 0;
+                
+                // إظهار الأسهم والنقاط فقط إذا كان هناك أكثر من صورة
+                const hasMultiple = imgs.length > 1;
+                const controlsHtml = hasMultiple ? `
+                    <button class="gal-arrow gal-prev" onclick="stepProdImg(${p.id}, -1)" aria-label="السابق"><i class="fas fa-chevron-right"></i></button>
+                    <button class="gal-arrow gal-next" onclick="stepProdImg(${p.id}, 1)" aria-label="التالي"><i class="fas fa-chevron-left"></i></button>
+                    <div class="gal-dots" id="dots-${p.id}">
+                        ${imgs.map((_, i) => `<span class="gal-dot ${i === safeIdx ? 'active' : ''}" onclick="setProdImg(${p.id}, ${i})"></span>`).join('')}
+                    </div>
+                ` : '';
+
+                const touchAttrs = hasMultiple ? `ontouchstart="touchStartX = event.changedTouches[0].screenX" ontouchend="handleProdSwipe(event, ${p.id})"` : '';
+
+                return `
                 <div class="prod-card">
-                    <div class="prod-img"><img src="${p.img}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'"></div>
+                    <div class="prod-img" ${touchAttrs}>
+                        <img id="img-${p.id}" src="${imgs[safeIdx]}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'">
+                        ${controlsHtml}
+                    </div>
                     <div class="prod-info">
                         <div class="prod-name">${p.name}</div>
                         <div class="prod-meta">
@@ -270,8 +291,8 @@
                         <button class="btn-cart" onclick="addCart(${p.id})">أضف للسلة <i class="fas fa-plus"></i></button>
                         <button class="btn-wa" onclick="orderWA(${p.id})">اطلب واتساب <i class="fab fa-whatsapp"></i></button>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
 
             main.innerHTML += `
                 <div class="cat-block">
@@ -293,6 +314,50 @@
                 ${pay.note ? `<small style="display:block; margin-top:8px; color:var(--muted);">${pay.note}</small>` : ''}
             </div>
         `).join('');
+    }
+
+    // دوال تقليب صور المنتج المتعددة
+    function stepProdImg(prodId, dir) {
+        const p = storeData.products.find(x => x.id === prodId);
+        if (!p) return;
+        const imgs = (p.imgs && p.imgs.length) ? p.imgs : [p.img];
+        if (imgs.length <= 1) return;
+
+        let cur = prodImgState[prodId] || 0;
+        cur = (cur + dir + imgs.length) % imgs.length;
+        setProdImg(prodId, cur);
+    }
+
+    function setProdImg(prodId, idx) {
+        const p = storeData.products.find(x => x.id === prodId);
+        if (!p) return;
+        const imgs = (p.imgs && p.imgs.length) ? p.imgs : [p.img];
+        prodImgState[prodId] = idx;
+
+        const imgEl = document.getElementById(`img-${prodId}`);
+        if (imgEl) {
+            imgEl.style.opacity = '0.3';
+            setTimeout(() => {
+                imgEl.src = imgs[idx];
+                imgEl.style.opacity = '1';
+            }, 100);
+        }
+
+        const dotsWrap = document.getElementById(`dots-${prodId}`);
+        if (dotsWrap) {
+            Array.from(dotsWrap.children).forEach((dot, i) => {
+                dot.classList.toggle('active', i === idx);
+            });
+        }
+    }
+
+    function handleProdSwipe(e, prodId) {
+        const touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 35) {
+            // في الواجهة العربية RTL: السحب لليسار ينقل للصورة التالية
+            stepProdImg(prodId, diff > 0 ? 1 : -1);
+        }
     }
 
     function setupBanners(banners) {
@@ -321,15 +386,11 @@
         const dots = document.getElementsByClassName("dot");
         if (!slides.length) return;
 
-        for (let i = 0; i < slides.length; i++) {
-            slides[i].classList.remove('active');
-        }
-        for (let i = 0; i < dots.length; i++) {
-            dots[i].classList.remove('active');
-        }
+        for (let i = 0; i < slides.length; i++) slides[i].classList.remove('active');
+        for (let i = 0; i < dots.length; i++) dots[i].classList.remove('active');
 
-        if (slideIndex >= slides.length) { slideIndex = 0; }
-        if (slideIndex < 0) { slideIndex = slides.length - 1; }
+        if (slideIndex >= slides.length) slideIndex = 0;
+        if (slideIndex < 0) slideIndex = slides.length - 1;
 
         slides[slideIndex].classList.add('active');
         if(dots[slideIndex]) dots[slideIndex].classList.add('active');
@@ -463,7 +524,7 @@
         const user = (storeData.users || []).find(u => u.email === email && u.pass === pass);
         if (user) {
             currentUser = user;
-            cart = user.cart || null;
+            cart = user.cart || [];
             localStorage.setItem('sadarah_user', JSON.stringify(currentUser));
             renderCart();
             showToast('تم تسجيل الدخول بنجاح ✓');
