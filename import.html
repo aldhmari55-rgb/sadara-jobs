@@ -24,7 +24,7 @@
 <body>
 <div class="box">
     <h2>📦 استيراد وتصنيف منتجات شي إن</h2>
-    <p>سيتم ربط منتجات شي إن تلقائياً بالفئات الرئيسية في متجرك (رجالي، نسائي، إلخ).</p>
+    <p>سيتم قراءة السعر الأصلي وتصنيف المنتجات ضمن فئات المتجر الرئيسية.</p>
     
     <div class="rate-box">
         <label>معامل تحويل السعر (1 سعودي = 140 يمني):</label>
@@ -41,17 +41,15 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2dXRyenN3bmdwa2pmYW1nYWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNTk4MzAsImV4cCI6MjEwNzkzNTgzMH0.fK9eGSy2uv3spG6tynUCoGNivzmRCJnwLEnBFCCgu7g';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // دالة ذكية لتصنيف منتجات شي إن تحت فئات متجرك الأساسية
+    // دالة تصنيف المنتجات تحت فئات المتجر الرئيسية
     function mapCategory(cateName, goodsName) {
         const text = (cateName + ' ' + goodsName).toLowerCase();
-        
-        // يمكنك تعديل أو إضافة كلمات مفتاحية حسب رغبتك
         if (text.includes('men') || text.includes('man') || text.includes('boy')) {
             return { id: 'men', name: 'رجالي' };
-        } else if (text.includes('women') || text.includes('woman') || text.includes('lady') || text.includes('girl') || text.includes('dress') || text.includes( 'skirt')) {
+        } else if (text.includes('women') || text.includes('woman') || text.includes('lady') || text.includes('girl') || text.includes('dress') || text.includes('skirt')) {
             return { id: 'women', name: 'نسائي' };
-        } else if (text.includes('kid') || text.includes('baby')  || text.includes('toddler')) {
-            return { id: 'kids', name: 'ولادي' }; // أو بناتي حسب الرغبة
+        } else if (text.includes('kid') || text.includes('baby') || text.includes('toddler')) {
+            return { id: 'kids', name: 'ولادي' };
         } else if (text.includes('electronic') || text.includes('phone') || text.includes('watch') || text.includes('gadget')) {
             return { id: 'electronics', name: 'إلكترونيات' };
         } else if (text.includes('accessory') || text.includes('glasses') || text.includes('jewelry') || text.includes('bag')) {
@@ -61,8 +59,6 @@
         } else if (text.includes('home') || text.includes('kitchen') || text.includes('decor')) {
             return { id: 'home', name: 'ادوات منزلية' };
         }
-        
-        // الافتراضي في حال لم يتطابق مع شيء
         return { id: 'men', name: 'رجالي' };
     }
 
@@ -94,12 +90,13 @@
 
                     const rawPrice = parseFloat(row['product/retailPrice/amount'] || row['product/salePrice/amount'] || 0);
                     const finalPrice = Math.round(rawPrice * rate);
-
-                    // تصنيف المنتج تلقائياً ضمن فئات المتجر الرئيسية
                     const matchedCat = mapCategory(row['product/cate_name'] || '', name);
+                    const goodsId = String(row['product/goods_id'] || Date.now() + Math.random());
+                    const goodsUrl = `https://www.shein.com/p-${row['product/goods_id']}.html`;
 
+                    // نرسل الأعمدة الأساسية المتوافقة تماماً مع الجدول لتجنب الأخطاء
                     formattedProducts.push({
-                        goods_id: String(row['product/goods_id'] || Date.now() + Math.random()),
+                        goods_id: goodsId,
                         name: name.trim(),
                         code: row['product/goods_sn'] || '',
                         price: finalPrice,
@@ -107,11 +104,11 @@
                         imgs: gallery,
                         cat_id: matchedCat.id,
                         cate_name: matchedCat.name,
-                        goods_url: row['product/goods_url_name'] ? `https://www.shein.com/p-${row['product/goods_id']}.html` : ''
+                        goods_url: goodsUrl
                     });
                 });
 
-                status.innerHTML = `<span style="color:#2563eb;">جاري رفع المنتجات المصنفة للسحابة... ☁️</span>`;
+                status.innerHTML = `<span style="color:#2563eb;">جاري رفع المنتجات للسحابة... ☁️</span>`;
 
                 const { error } = await _supabase
                     .from('products')
@@ -120,7 +117,7 @@
                 if (error) {
                     status.innerHTML = `<span style="color:#ef4444;">خطأ: ${error.message}</span>`;
                 } else {
-                    status.innerHTML = `<span style="color:#10b981;">تم بنجاح تصنيف ورفع ${formattedProducts.length} منتج تحت فئات المتجر الرئيسية! ✓</span>`;
+                    status.innerHTML = `<span style="color:#10b981;">تم بنجاح رفع وتصنيف ${formattedProducts.length} منتج! ✓</span>`;
                 }
             }
         });
