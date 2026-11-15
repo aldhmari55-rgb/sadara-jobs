@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مستورد منتجات شي إن الذكي - صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background: #f4f6f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .box { background: #fff; padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); width: 100%; max-width: 480px; text-align: center; }
+        h2 { color: #1e293b; margin-bottom: 10px; }
+        p { color: #64748b; font-size: 0.9rem; margin-bottom: 20px; }
+        input[type="file"] { display: block; width: 100%; padding: 14px; border: 2px dashed #cbd5e1; border-radius: 16px; margin-bottom: 15px; cursor: pointer; background: #f8fafc; }
+        .rate-box { margin-bottom: 15px; text-align: right; }
+        .rate-box label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; color: #1e293b; }
+        .rate-box input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 12px; box-sizing: border-box; font-family: inherit; }
+        button { width: 100%; padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #1d4ed8; }
+        #status { margin-top: 15px; font-weight: 700; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h2>📦 استيراد منتجات شي إن (CSV)</h2>
+    <p>اختر ملف الـ CSV وسيتم استخراج الأسماء والأسعار والصور ورفعها مباشرة إلى Supabase.</p>
+    
+    <div class="rate-box">
+        <label>معامل تحويل السعر (من الريال السعودي إلى الريال اليمني):</label>
+        <input type="number" id="exchangeRate" value="140" placeholder="مثال: 140">
+    </div>
+
+    <input type="file" id="csvFile" accept=".csv">
+    <button onclick="processAndUpload()">رفع ومزامنة المنتجات الآن 🚀</button>
+    <div id="status"></div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://lvutrzswngpkjfamgact.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2dXRyenN3bmdwa2pmYW1nYWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNTk4MzAsImV4cCI6MjEwNzkzNTgzMH0.fK9eGSy2uv3spG6tynUCoGNivzmRCJnwLEnBFCCgu7g';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function processAndUpload() {
+        const file = document.getElementById('csvFile').files[0];
+        const rate = Number(document.getElementById('exchangeRate').value) || 1;
+        const status = document.getElementById('status');
+
+        if (!file) { status.innerHTML = '<span style="color:#ef4444;">الرجاء اختيار ملف CSV أولاً!</span>'; return; }
+        status.innerHTML = '<span style="color:#2563eb;">جاري قراءة وتجهيز البيانات... ⏳</span>';
+
+        Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: async function(results) {
+                const rows = results.data;
+                const formattedProducts = [];
+
+                rows.forEach(row => {
+                    const name = row['product/goods_name'];
+                    if (!name) return;
+
+                    // تجميع الصور الإضافية للمنتج
+                    let gallery = [];
+                    if (row['product/goods_img']) gallery.push(row['product/goods_img']);
+                    for (let i = 0; i <= 5; i++) {
+                        const dImg = row[`product/detail_image/${i}`];
+                        if (dImg && !gallery.includes(dImg)) gallery.push(dImg);
+                    }
+
+                    const rawPrice = parseFloat(row['product/salePrice/amount'] || row['product/retailPrice/amount'] || 0);
+                    const finalPrice = Math.round(rawPrice * rate);
+
+                    formattedProducts.push({
+                        goods_id: String(row['product/goods_id'] || Date.now() + Math.random()),
+                        name: name.trim(),
+                        code: row['product/goods_sn'] || '',
+                        price: finalPrice,
+                        img: row['product/goods_img'] || '',
+                        imgs: gallery,
+                        cat_id: String(row['product/cat_id'] || 'shein_general'),
+                        cate_name: row['product/cate_name'] || 'منتجات شي إن'
+                    });
+                });
+
+                status.innerHTML = `<span style="color:#2563eb;">تم تجهيز ${formattedProducts.length} منتج، جاري الرفع للسحابة... ☁️</span>`;
+
+                const { error } = await _supabase
+                    .from('products')
+                    .upsert(formattedProducts, { onConflict: 'goods_id' });
+
+                if (error) {
+                    status.innerHTML = `<span style="color:#ef4444;">حدث خطأ: ${error.message}</span>`;
+                } else {
+                    status.innerHTML = `<span style="color:#10b981;">تم رفع ومزامنة ${formattedProducts.length} منتج بنجاح! ✓</span>`;
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
