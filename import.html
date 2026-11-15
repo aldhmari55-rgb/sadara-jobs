@@ -23,8 +23,8 @@
 </head>
 <body>
 <div class="box">
-    <h2>📦 استيراد السعر الأصلي لشي إن (CSV)</h2>
-    <p>سيتم قراءة السعر الأصلي (Retail Price) وحسابه بالريال اليمني ورفع كافة التفاصيل.</p>
+    <h2>📦 استيراد وتصنيف منتجات شي إن</h2>
+    <p>سيتم ربط منتجات شي إن تلقائياً بالفئات الرئيسية في متجرك (رجالي، نسائي، إلخ).</p>
     
     <div class="rate-box">
         <label>معامل تحويل السعر (1 سعودي = 140 يمني):</label>
@@ -32,7 +32,7 @@
     </div>
 
     <input type="file" id="csvFile" accept=".csv">
-    <button onclick="processAndUpload()">رفع ومزامنة السعر الأصلي الآن 🚀</button>
+    <button onclick="processAndUpload()">رفع ومزامنة وتصنيف المنتجات 🚀</button>
     <div id="status"></div>
 </div>
 
@@ -41,13 +41,38 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2dXRyenN3bmdwa2pmYW1nYWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNTk4MzAsImV4cCI6MjEwNzkzNTgzMH0.fK9eGSy2uv3spG6tynUCoGNivzmRCJnwLEnBFCCgu7g';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // دالة ذكية لتصنيف منتجات شي إن تحت فئات متجرك الأساسية
+    function mapCategory(cateName, goodsName) {
+        const text = (cateName + ' ' + goodsName).toLowerCase();
+        
+        // يمكنك تعديل أو إضافة كلمات مفتاحية حسب رغبتك
+        if (text.includes('men') || text.includes('man') || text.includes('boy')) {
+            return { id: 'men', name: 'رجالي' };
+        } else if (text.includes('women') || text.includes('woman') || text.includes('lady') || text.includes('girl') || text.includes('dress') || text.includes( 'skirt')) {
+            return { id: 'women', name: 'نسائي' };
+        } else if (text.includes('kid') || text.includes('baby')  || text.includes('toddler')) {
+            return { id: 'kids', name: 'ولادي' }; // أو بناتي حسب الرغبة
+        } else if (text.includes('electronic') || text.includes('phone') || text.includes('watch') || text.includes('gadget')) {
+            return { id: 'electronics', name: 'إلكترونيات' };
+        } else if (text.includes('accessory') || text.includes('glasses') || text.includes('jewelry') || text.includes('bag')) {
+            return { id: 'accessories', name: 'اكسسوارات' };
+        } else if (text.includes('beauty') || text.includes('makeup') || text.includes('cosmetic')) {
+            return { id: 'beauty', name: 'ادوات تجميل' };
+        } else if (text.includes('home') || text.includes('kitchen') || text.includes('decor')) {
+            return { id: 'home', name: 'ادوات منزلية' };
+        }
+        
+        // الافتراضي في حال لم يتطابق مع شيء
+        return { id: 'men', name: 'رجالي' };
+    }
+
     function processAndUpload() {
         const file = document.getElementById('csvFile').files[0];
         const rate = Number(document.getElementById('exchangeRate').value) || 140;
         const status = document.getElementById('status');
 
         if (!file) { status.innerHTML = '<span style="color:#ef4444;">الرجاء اختيار ملف CSV أولاً!</span>'; return; }
-        status.innerHTML = '<span style="color:#2563eb;">جاري قراءة الملف واستخراج السعر الأصلي... ⏳</span>';
+        status.innerHTML = '<span style="color:#2563eb;">جاري معالجة وتصنيف المنتجات... ⏳</span>';
 
         Papa.parse(file, {
             header: true,
@@ -67,9 +92,11 @@
                         if (dImg && !gallery.includes(dImg)) gallery.push(dImg);
                     }
 
-                    // الاعتماد حصرياً على السعر الأصلي Retail Price
                     const rawPrice = parseFloat(row['product/retailPrice/amount'] || row['product/salePrice/amount'] || 0);
                     const finalPrice = Math.round(rawPrice * rate);
+
+                    // تصنيف المنتج تلقائياً ضمن فئات المتجر الرئيسية
+                    const matchedCat = mapCategory(row['product/cate_name'] || '', name);
 
                     formattedProducts.push({
                         goods_id: String(row['product/goods_id'] || Date.now() + Math.random()),
@@ -78,13 +105,13 @@
                         price: finalPrice,
                         img: row['product/goods_img'] || '',
                         imgs: gallery,
-                        cat_id: String(row['product/cat_id'] || 'shein_cat'),
-                        cate_name: row['product/cate_name'] || 'منتجات شي إن',
+                        cat_id: matchedCat.id,
+                        cate_name: matchedCat.name,
                         goods_url: row['product/goods_url_name'] ? `https://www.shein.com/p-${row['product/goods_id']}.html` : ''
                     });
                 });
 
-                status.innerHTML = `<span style="color:#2563eb;">جاري رفع المنتجات بالسعر الأصلي للسحابة... ☁️</span>`;
+                status.innerHTML = `<span style="color:#2563eb;">جاري رفع المنتجات المصنفة للسحابة... ☁️</span>`;
 
                 const { error } = await _supabase
                     .from('products')
@@ -93,7 +120,7 @@
                 if (error) {
                     status.innerHTML = `<span style="color:#ef4444;">خطأ: ${error.message}</span>`;
                 } else {
-                    status.innerHTML = `<span style="color:#10b981;">تم بنجاح رفع ${formattedProducts.length} منتج بالسعر الأصلي! ✓</span>`;
+                    status.innerHTML = `<span style="color:#10b981;">تم بنجاح تصنيف ورفع ${formattedProducts.length} منتج تحت فئات المتجر الرئيسية! ✓</span>`;
                 }
             }
         });
