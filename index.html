@@ -72,10 +72,11 @@
         .btn-cart { background: #2563eb; }
         .btn-wa { background: var(--whatsapp); margin-top: 4px; }
 
-        /* نافذة تفاصيل المنتج */
+        /* نافذة تفاصيل المنتج المنبثقة */
         .product-modal { position: fixed; inset: 0; background: rgba(15,23,42,0.65); z-index: 6000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
         .product-modal.open { display: flex; }
         .product-modal-box { background: #fff; width: 100%; max-width: 600px; max-height: 90vh; border-radius: 28px; padding: 24px; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position: relative; }
+        
         .modal-gallery { position: relative; width: 100%; height: 320px; background: #f8fafc; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; overflow: hidden; border: 1px solid var(--border); }
         .modal-gallery img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; }
         .m-gal-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; z-index: 10; }
@@ -83,11 +84,14 @@
         .m-thumbs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 20px; }
         .m-thumb { width: 60px; height: 60px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; object-fit: cover; background: #f8fafc; flex-shrink: 0; }
         .m-thumb.active { border-color: #2563eb; }
+
         .modal-details-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
         .modal-prod-title { font-size: 1.15rem; font-weight: 800; line-height: 1.5; color: #1e293b; }
         .modal-prod-info-row { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px 16px; border-radius: 14px; border: 1px solid var(--border); }
-        .link-copy-box { background: #f1f5f9; border: 1px solid var(--border); border-radius: 14px; padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .link-copy-box input { flex: 1; border: none; background: transparent; outline: none; direction: ltr; font-size: 0.85rem; color: var(--muted); }
+        
+        /* زر رابط شي إن المميز */
+        .shein-link-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #0f172a; color: #fff; padding: 8px 16px; border-radius: 12px; font-weight: 700; font-size: 0.88rem; text-decoration: none; transition: 0.2s; }
+        .shein-link-btn:hover { background: #334155; }
 
         .shein-popup-modal, .shein-track-modal, .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .shein-popup-modal.open, .shein-track-modal.open, .modal.open { display: flex; }
@@ -104,16 +108,6 @@
         .drawer.open { left: 0; }
         .right-drawer { left: auto; right: -380px; }
         .right-drawer.open { right: 0; }
-
-        .auth-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
-        .auth-tab { flex: 1; text-align: center; padding: 10px; font-weight: 700; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; }
-        .auth-tab.active { color: #2563eb; border-bottom-color: #2563eb; }
-        .auth-form { display: none; }
-        .auth-form.active { display: block; }
-        .form-grp { margin-bottom: 14px; }
-        .form-grp label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
-        .form-grp input { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 12px; outline: none; background: #f8fafc; }
-        .btn-submit { width: 100%; padding: 12px; border: none; border-radius: 12px; background: #2563eb; color: #fff; font-weight: 800; cursor: pointer; }
 
         .toast { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: #fff; padding: 10px 22px; border-radius: 25px; font-size: 0.9rem; z-index: 9999; transition: 0.3s; }
         .toast.show { transform: translateX(-50%) translateY(0); }
@@ -162,7 +156,7 @@
     <section class="pay-section">
         <h3 style="text-align:center; margin-bottom:18px; font-weight:800;">طرق الدفع الإلكتروني</h3>
         <div class="pay-grid" id="payList"></div>
-        <p style="text-align:center; font-size:0.82rem; color:var(--muted); margin-top:20px;">© 2026 <span id="uiFooterName">متجر صدارة</span></p>
+        <p style="text-align:center; font-size:0.82rem; color:var(--muted); margin-top:20px;">© 2026 متجر صدارة</p>
     </section>
 </div>
 
@@ -171,7 +165,7 @@
     <div class="product-modal-box" id="productModalContent"></div>
 </div>
 
-<!-- نافذة طلب شي إن -->
+<!-- نافذة طلب شي إن العام -->
 <div class="shein-popup-modal" id="sheinPopupModal" onclick="if(event.target===this) closeSheinModal()">
     <div class="shein-popup-box">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -231,7 +225,6 @@
     </div>
 </aside>
 
-<!-- نافذة تسجيل الدخول -->
 <div class="modal" id="authModal" onclick="if(event.target===this) document.getElementById('authModal').classList.remove('open')">
     <div class="modal-box" id="authBox"></div>
 </div>
@@ -368,7 +361,7 @@
             </div>`).join('');
     }
 
-    // النافذة المنبثقة للتفاصيل
+    // النافذة المنبثقة للتفاصيل مع زر "رابط شي إن" بدل الكود
     let modalActiveImgIdx = 0;
     function openProductModal(prodId) {
         const p = allMergedProducts.find(x => String(x.id) === String(prodId));
@@ -403,19 +396,14 @@
             <div class="modal-details-grid">
                 <div class="modal-prod-title">${p.name}</div>
                 <div class="modal-prod-info-row">
-                    <span style="color:var(--muted); font-size:0.9rem;">كود المنتج: <strong>${p.code || '—'}</strong></span>
                     <span style="color:#2563eb; font-size:1.2rem; font-weight:800;">${Number(p.price).toLocaleString()} ريال</span>
+                    ${p.goods_url ? `
+                        <a href="${p.goods_url}" target="_blank" class="shein-link-btn">
+                            <i class="fas fa-external-link-alt"></i> رابط شي إن
+                        </a>
+                    ` : `<span style="color:var(--muted); font-size:0.85rem;">كود: ${p.code || '—'}</span>`}
                 </div>
             </div>
-            ${p.goods_url ? `
-                <div style="margin-bottom:15px;">
-                    <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--muted); margin-bottom:5px;">رابط المنتج الأصلي (شي إن):</label>
-                    <div class="link-copy-box">
-                        <input type="text" id="prodLinkInput" value="${p.goods_url}" readonly>
-                        <button onclick="copyTxt('${p.goods_url}')" style="background:#2563eb; color:#fff; border:none; padding:6px 12px; border-radius:10px; font-weight:700; cursor:pointer; font-size:0.8rem;">نسخ</button>
-                    </div>
-                </div>
-            ` : ''}
             <div style="display:flex; gap:10px;">
                 <button class="btn-cart" onclick="addCart('${p.id}'); closeProductModal();">أضف للسلة <i class="fas fa-plus"></i></button>
                 <button class="btn-wa" onclick="orderWA('${p.id}')">اطلب عبر واتساب <i class="fab fa-whatsapp"></i></button>
@@ -472,14 +460,14 @@
 
     function orderWA(id) {
         const p = allMergedProducts.find(x => String(x.id) === String(id));
-        const msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب:%0A- ${p.name}%0A- الكود: ${p.code}%0A- السعر: ${p.price.toLocaleString()} ريال`;
+        const msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب:%0A- ${p.name}%0A- السعر: ${p.price.toLocaleString()} ريال${p.goods_url ? '%0A- الرابط: ' + p.goods_url : ''}`;
         window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
     }
 
     function checkoutWA() {
         if (!cart.length) return showToast('السلة فارغة!');
         let msg = `مرحباً ${storeData.settings.storeName}، طلب جديد:%0A%0A`, total = 0;
-        cart.forEach((i, idx) => { msg += `${idx+1}. ${i.name} (${i.code}) × ${i.qty} = ${(i.price*i.qty).toLocaleString()} ريال%0A`; total += i.price*i.qty; });
+        cart.forEach((i, idx) => { msg += `${idx+1}. ${i.name} × ${i.qty} = ${(i.price*i.qty).toLocaleString()} ريال%0A`; total += i.price*i.qty; });
         msg += `%0A*الإجمالي: ${total.toLocaleString()} ريال*`;
         window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
     }
