@@ -262,8 +262,8 @@
         if (csvRes) {
             cloudProducts = csvRes.map(p => ({
                 id: 'csv_' + p.id,
-                catId: String(p.cat_id || 'shein_cat'),
-                catName: p.cate_name || 'منتجات شي إن',
+                catId: String(p.cat_id || 'men'),
+                catName: p.cate_name || 'رجالي',
                 name: p.name,
                 code: p.code || '',
                 price: Number(p.price || 0),
@@ -277,16 +277,22 @@
         if (currentHash === lastHash) return;
         lastHash = currentHash;
 
+        // توحيد الأقسام الأساسية فقط لمنع التشتت والتكرار
+        const defaultCategories = [
+            { id: 'men', name: 'رجالي' },
+            { id: 'women', name: 'نسائي' },
+            { id: 'kids', name: 'ولادي' },
+            { id: 'electronics', name: 'إلكترونيات' },
+            { id: 'accessories', name: 'اكسسوارات' },
+            { id: 'beauty', name: 'ادوات تجميل' },
+            { id: 'home', name: 'ادوات منزلية' },
+            { id: 'stationery', name: 'ادوات مكتبية' }
+        ];
+
         const catMap = new Map();
-        // إضافة الأقسام اليدوية
+        defaultCategories.forEach(c => catMap.set(c.id, c.name));
+        // إضافة أي أقسام يدوية إن وجدت
         (storeData.categories || []).forEach(c => catMap.set(String(c.id), c.name));
-        
-        // التأكد من إضافة أقسام منتجات شي إن المستوردة تلقائياً إذا لم تكن موجودة
-        cloudProducts.forEach(p => { 
-            if (!catMap.has(p.catId)) {
-                catMap.set(p.catId, p.catName || 'منتجات شي إن');
-            } 
-        });
 
         allMergedCategories = Array.from(catMap, ([id, name]) => ({ id, name }));
 
@@ -336,16 +342,11 @@
         const q = document.getElementById('searchInput').value.toLowerCase();
         main.innerHTML = '';
 
-        // إذا لم تكن هناك أقسام معرفة ولكن توجد منتجات، نعرضها مباشرة تحت قسم عام
-        let categoriesToDisplay = allMergedCategories;
-        if (categoriesToDisplay.length === 0 && allMergedProducts.length > 0) {
-            categoriesToDisplay = [{ id: 'general', name: 'جميع المنتجات' }];
-            allMergedProducts.forEach(p => p.catId = 'general');
-        }
-
-        categoriesToDisplay.forEach(c => {
+        allMergedCategories.forEach(c => {
             if (activeCat !== 'all' && activeCat !== c.id) return;
-            const prods = allMergedProducts.filter(p => (activeCat === 'all' || p.catId === c.id) && (p.name.toLowerCase().includes(q) || (p.code && p.code.toLowerCase().includes(q))));
+            
+            // فلترة دقيقة وصارمة: عرض منتجات هذا القسم فقط وبدون تكرار في أقسام أخرى
+            const prods = allMergedProducts.filter(p => String(p.catId) === String(c.id) && (p.name.toLowerCase().includes(q) || (p.code && p.code.toLowerCase().includes(q))));
             if (!prods.length) return;
 
             const cards = prods.map(p => `
@@ -375,7 +376,7 @@
         });
 
         if (!main.innerHTML) {
-            main.innerHTML = `<div style="text-align:center; padding:40px; color:var(--muted);">لا توجد منتجات متوفرة حالياً.</div>`;
+            main.innerHTML = `<div style="text-align:center; padding:40px; color:var(--muted);">لا توجد منتجات مطابقة في هذا القسم.</div>`;
         }
 
         document.getElementById('payList').innerHTML = (storeData.payments || []).map(pay => `
@@ -557,7 +558,7 @@
             renderCart(); showToast('تم تسجيل الدخول بنجاح ✓'); openAuth();
         } else { showToast('البريد أو كلمة المرور غير صحيحة!'); }
     }
-    function logoutUser() {
+    logoutUser = function() {
         currentUser = null; cart = []; renderCart();
         localStorage.removeItem('sadarah_user');
         document.getElementById('authModal').classList.remove('open');
