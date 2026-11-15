@@ -23,16 +23,16 @@
 </head>
 <body>
 <div class="box">
-    <h2>📦 استيراد منتجات شي إن (CSV)</h2>
-    <p>اختر ملف الـ CSV وسيتم استخراج الأسماء والأسعار والصور ورفعها مباشرة إلى Supabase.</p>
+    <h2>📦 استيراد السعر الأصلي لشي إن (CSV)</h2>
+    <p>سيتم قراءة السعر الأصلي (Retail Price) وحسابه بالريال اليمني.</p>
     
     <div class="rate-box">
-        <label>معامل تحويل السعر (من الريال السعودي إلى الريال اليمني):</label>
-        <input type="number" id="exchangeRate" value="140" placeholder="مثال: 140">
+        <label>معامل تحويل السعر (1 سعودي = 140 يمني):</label>
+        <input type="number" id="exchangeRate" value="140">
     </div>
 
     <input type="file" id="csvFile" accept=".csv">
-    <button onclick="processAndUpload()">رفع ومزامنة المنتجات الآن 🚀</button>
+    <button onclick="processAndUpload()">رفع ومزامنة السعر الأصلي الآن 🚀</button>
     <div id="status"></div>
 </div>
 
@@ -43,11 +43,11 @@
 
     function processAndUpload() {
         const file = document.getElementById('csvFile').files[0];
-        const rate = Number(document.getElementById('exchangeRate').value) || 1;
+        const rate = Number(document.getElementById('exchangeRate').value) || 140;
         const status = document.getElementById('status');
 
         if (!file) { status.innerHTML = '<span style="color:#ef4444;">الرجاء اختيار ملف CSV أولاً!</span>'; return; }
-        status.innerHTML = '<span style="color:#2563eb;">جاري قراءة وتجهيز البيانات... ⏳</span>';
+        status.innerHTML = '<span style="color:#2563eb;">جاري قراءة الملف واستخراج السعر الأصلي... ⏳</span>';
 
         Papa.parse(file, {
             header: true,
@@ -56,19 +56,19 @@
                 const rows = results.data;
                 const formattedProducts = [];
 
-                rows.forEach(row => {
+                rows.rows ? rows : rows.forEach(row => {
                     const name = row['product/goods_name'];
                     if (!name) return;
 
-                    // تجميع الصور الإضافية للمنتج
                     let gallery = [];
                     if (row['product/goods_img']) gallery.push(row['product/goods_img']);
                     for (let i = 0; i <= 5; i++) {
-                        const dImg = row[`product/detail_image/${i}`];
+                        let dImg = row[`product/detail_image/${i}`];
                         if (dImg && !gallery.includes(dImg)) gallery.push(dImg);
                     }
 
-                    const rawPrice = parseFloat(row['product/salePrice/amount'] || row['product/retailPrice/amount'] || 0);
+                    // الاعتماد حصرياً على السعر الأصلي Retail Price
+                    const rawPrice = parseFloat(row['product/retailPrice/amount'] || row['product/salePrice/amount'] || 0);
                     const finalPrice = Math.round(rawPrice * rate);
 
                     formattedProducts.push({
@@ -78,21 +78,22 @@
                         price: finalPrice,
                         img: row['product/goods_img'] || '',
                         imgs: gallery,
-                        cat_id: String(row['product/cat_id'] || 'shein_general'),
-                        cate_name: row['product/cate_name'] || 'منتجات شي إن'
+                        cat_id: String(row['product/cat_id'] || 'shein_cat'),
+                        cate_name: row['product/cate_name'] || 'منتجات شي إن',
+                        goods_url: row['product/goods_url_name'] ? `https://www.shein.com/p-${row['product/goods_id']}.html` : ''
                     });
                 });
 
-                status.innerHTML = `<span style="color:#2563eb;">تم تجهيز ${formattedProducts.length} منتج، جاري الرفع للسحابة... ☁️</span>`;
+                status.innerHTML = `<span style="color:#2563eb;">جاري رفع المنتجات بالسعر الأصلي للسحابة... ☁️</span>`;
 
                 const { error } = await _supabase
                     .from('products')
                     .upsert(formattedProducts, { onConflict: 'goods_id' });
 
                 if (error) {
-                    status.innerHTML = `<span style="color:#ef4444;">حدث خطأ: ${error.message}</span>`;
+                    status.innerHTML = `<span style="color:#ef4444;">خطأ: ${error.message}</span>`;
                 } else {
-                    status.innerHTML = `<span style="color:#10b981;">تم رفع ومزامنة ${formattedProducts.length} منتج بنجاح! ✓</span>`;
+                    status.innerHTML = `<span style="color:#10b981;">تم بنجاح رفع ${formattedProducts.length} منتج بالسعر الأصلي! ✓</span>`;
                 }
             }
         });
