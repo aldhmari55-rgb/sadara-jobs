@@ -262,12 +262,14 @@
         if (csvRes) {
             cloudProducts = csvRes.map(p => {
                 const numericPrice = Number(p.price || 0);
-                // حساب السعر السعودي تقريبياً عكسياً (تقسيم على معامل التحويل 140 لغرض العرض المزدوج)
                 const sarPrice = (numericPrice / 140).toFixed(1);
-                // استخراج معرف المنتج أو توليد رابط شي إن تلقائياً في حال لم يكن مخزناً
+                
+                // توليد رابط شي إن الصحيح والمضمون (باستخدام البحث أو الرابط الرسمي المباشر)
                 let url = p.goods_url;
-                if (!url && p.goods_id) {
-                    url = `https://www.shein.com/p-${p.goods_id}.html`;
+                if (!url && p.code) {
+                    url = `https://www.shein.com/ar/pdsearch/${p.code}`;
+                } else if (!url && p.goods_id) {
+                    url = `https://www.shein.com/ar/product-p-${p.goods_id}.html`;
                 }
 
                 return {
