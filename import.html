@@ -2,38 +2,47 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مستورد منتجات شي إن الذكي - صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+    <title>مستورد منتجات شي إن - متجر صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
-        body { font-family: 'Tajawal', sans-serif; background: #f4f6f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .box { background: #fff; padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); width: 100%; max-width: 480px; text-align: center; }
-        h2 { color: #1e293b; margin-bottom: 10px; }
-        p { color: #64748b; font-size: 0.9rem; margin-bottom: 20px; }
-        input[type="file"] { display: block; width: 100%; padding: 14px; border: 2px dashed #cbd5e1; border-radius: 16px; margin-bottom: 15px; cursor: pointer; background: #f8fafc; }
-        .rate-box { margin-bottom: 15px; text-align: right; }
-        .rate-box label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; color: #1e293b; }
-        .rate-box input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 12px; box-sizing: border-box; font-family: inherit; }
-        button { width: 100%; padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #1d4ed8; }
-        #status { margin-top: 15px; font-weight: 700; font-size: 0.9rem; }
+        body { font-family: 'Tajawal', sans-serif; background: #f4f6f9; padding: 30px; color: #1e293b; }
+        .box { max-width: 650px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        h2 { margin-bottom: 15px; color: #2563eb; }
+        .grp { margin-bottom: 15px; }
+        label { display: block; font-weight: 700; margin-bottom: 6px; }
+        select, input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; font-family: inherit; }
+        button { width: 100%; padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+        #log { margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 12px; font-size: 0.9rem; white-space: pre-line; }
     </style>
 </head>
 <body>
 <div class="box">
-    <h2>📦 استيراد وتصنيف منتجات شي إن</h2>
-    <p>سيتم قراءة السعر الأصلي وتصنيف المنتجات ضمن فئات المتجر الرئيسية.</p>
-    
-    <div class="rate-box">
-        <label>معامل تحويل السعر (1 سعودي = 140 يمني):</label>
-        <input type="number" id="exchangeRate" value="140">
+    <h2>📥 استيراد منتجات شي إن (بالأسعار الرسمية والروابط الصحيحة)</h2>
+    <div class="grp">
+        <label>اختر القسم المستهدف:</label>
+        <select id="catSelect">
+            <option value="men|رجالي">رجالي</option>
+            <option value="women|نسائي">نسائي</option>
+            <option value="kids|ولادي">ولادي</option>
+            <option value="electronics|إلكترونيات">إلكترونيات</option>
+            <option value="accessories|اكسسوارات">اكسسوارات</option>
+            <option value="beauty|ادوات تجميل">ادوات تجميل</option>
+            <option value="home|ادوات منزلية">ادوات منزلية</option>
+            <option value="stationery|ادوات مكتبية">ادوات مكتبية</option>
+        </select>
     </div>
-
-    <input type="file" id="csvFile" accept=".csv">
-    <button onclick="processAndUpload()">رفع ومزامنة وتصنيف المنتجات 🚀</button>
-    <div id="status"></div>
+    <div class="grp">
+        <label>سعر الصرف (الريال السعودي مقابل اليمني):</label>
+        <input type="number" id="rateInput" value="140">
+    </div>
+    <div class="grp">
+        <label>اختر ملف CSV المستخرج من شي إن:</label>
+        <input type="file" id="csvFile" accept=".csv">
+    </div>
+    <button onclick="processCSV()">بدء الاستيراد والتحديث في السحابة</button>
+    <div id="log">جاهز للاستيراد...</div>
 </div>
 
 <script>
@@ -41,81 +50,82 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2dXRyenN3bmdwa2pmYW1nYWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNTk4MzAsImV4cCI6MjEwNzkzNTgzMH0.fK9eGSy2uv3spG6tynUCoGNivzmRCJnwLEnBFCCgu7g';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // دالة تصنيف المنتجات تحت فئات المتجر الرئيسية
-    function mapCategory(cateName, goodsName) {
-        const text = (cateName + ' ' + goodsName).toLowerCase();
-        if (text.includes('men') || text.includes('man') || text.includes('boy')) {
-            return { id: 'men', name: 'رجالي' };
-        } else if (text.includes('women') || text.includes('woman') || text.includes('lady') || text.includes('girl') || text.includes('dress') || text.includes('skirt')) {
-            return { id: 'women', name: 'نسائي' };
-        } else if (text.includes('kid') || text.includes('baby') || text.includes('toddler')) {
-            return { id: 'kids', name: 'ولادي' };
-        } else if (text.includes('electronic') || text.includes('phone') || text.includes('watch') || text.includes('gadget')) {
-            return { id: 'electronics', name: 'إلكترونيات' };
-        } else if (text.includes('accessory') || text.includes('glasses') || text.includes('jewelry') || text.includes('bag')) {
-            return { id: 'accessories', name: 'اكسسوارات' };
-        } else if (text.includes('beauty') || text.includes('makeup') || text.includes('cosmetic')) {
-            return { id: 'beauty', name: 'ادوات تجميل' };
-        } else if (text.includes('home') || text.includes('kitchen') || text.includes('decor')) {
-            return { id: 'home', name: 'ادوات منزلية' };
-        }
-        return { id: 'men', name: 'رجالي' };
-    }
-
-    function processAndUpload() {
+    function processCSV() {
         const file = document.getElementById('csvFile').files[0];
-        const rate = Number(document.getElementById('exchangeRate').value) || 140;
-        const status = document.getElementById('status');
-
-        if (!file) { status.innerHTML = '<span style="color:#ef4444;">الرجاء اختيار ملف CSV أولاً!</span>'; return; }
-        status.innerHTML = '<span style="color:#2563eb;">جاري معالجة وتصنيف المنتجات... ⏳</span>';
+        if (!file) return alert('الرجاء اختيار ملف CSV أولاً');
+        
+        const [catId, cateName] = document.getElementById('catSelect').value.split('|');
+        const rate = Number(document.getElementById('rateInput').value) || 140;
+        const log = document.getElementById('log');
+        log.innerText = 'جاري قراءة الملف ومعالجة الأسعار والروابط...';
 
         Papa.parse(file, {
             header: true,
             skipEmptyLines: true,
             complete: async function(results) {
                 const rows = results.data;
-                const formattedProducts = [];
+                const formatted = [];
 
-                rows.forEach(row => {
-                    const name = row['product/goods_name'];
-                    if (!name) return;
+                for (const r of rows) {
+                    const goodsId = String(r['product/goods_id'] || '').trim();
+                    const name = String(r['product/goods_name'] || '').trim();
+                    if (!goodsId || !name) continue;
 
-                    let gallery = [];
-                    if (row['product/goods_img']) gallery.push(row['product/goods_img']);
-                    for (let i = 0; i <= 5; i++) {
-                        let dImg = row[`product/detail_image/${i}`];
-                        if (dImg && !gallery.includes(dImg)) gallery.push(dImg);
+                    // 1. استخراج السعر الرسمي (retailPrice) والسعر المخفض الرسمي (salePrice)
+                    const retailSar = parseFloat(r['product/retailPrice/amount']) || 0;
+                    const saleSar = parseFloat(r['product/salePrice/amount']) || retailSar;
+
+                    // تحويلها للريال اليمني
+                    const yerPrice = Math.round(saleSar * rate);
+                    const oldYerPrice = Math.round(retailSar * rate);
+
+                    // 2. بناء رابط شي إن الرسمي الصحيح 100%
+                    const urlName = String(r['product/goods_url_name'] || '').trim();
+                    const sn = String(r['product/goods_sn'] || '').trim();
+                    let sheinUrl = '';
+                    if (urlName && goodsId) {
+                        sheinUrl = `https://ar.shein.com/${urlName}-p-${goodsId}.html`;
+                    } else if (sn) {
+                        sheinUrl = `https://ar.shein.com/pdsearch/${sn}`;
+                    } else {
+                        sheinUrl = `https://ar.shein.com/pdsearch/${goodsId}`;
                     }
 
-                    const rawPrice = parseFloat(row['product/retailPrice/amount'] || row['product/salePrice/amount'] || 0);
-                    const finalPrice = Math.round(rawPrice * rate);
-                    const matchedCat = mapCategory(row['product/cate_name'] || '', name);
-                    const goodsId = String(row['product/goods_id'] || Date.now() + Math.random());
+                    // 3. تجميع الصور
+                    const mainImg = String(r['product/goods_img'] || '').replace(/^http:/, 'https:');
+                    const imgs = [];
+                    if (mainImg) imgs.push(mainImg);
+                    for (let i = 0; i <= 9; i++) {
+                        const extra = r[`product/detail_image/${i}`] || r[`product/productMaterial/col1ImageUI/urls/${i}`];
+                        if (extra) {
+                            const cleanExtra = String(extra).replace(/^http:/, 'https:');
+                            if (!imgs.includes(cleanExtra)) imgs.push(cleanExtra);
+                        }
+                    }
 
-                    // إرسال الأعمدة المتوافقة تماماً مع الجدول الحالي
-                    formattedProducts.push({
+                    formatted.push({
                         goods_id: goodsId,
-                        name: name.trim(),
-                        code: row['product/goods_sn'] || '',
-                        price: finalPrice,
-                        img: row['product/goods_img'] || '',
-                        imgs: gallery,
-                        cat_id: matchedCat.id,
-                        cate_name: matchedCat.name
+                        name: name,
+                        code: sn,
+                        price: yerPrice,
+                        old_price: oldYerPrice,
+                        sar_price: saleSar,
+                        old_sar_price: retailSar,
+                        img: mainImg,
+                        imgs: imgs,
+                        cat_id: catId,
+                        cate_name: cateName,
+                        goods_url: sheinUrl
                     });
-                });
+                }
 
-                status.innerHTML = `<span style="color:#2563eb;">جاري رفع المنتجات للسحابة... ☁️</span>`;
+                log.innerText = `تم تجهيز ${formatted.length} منتج. جاري الرفع إلى Supabase...`;
 
-                const { error } = await _supabase
-                    .from('products')
-                    .upsert(formattedProducts, { onConflict: 'goods_id' });
-
+                const { error } = await _supabase.from('products').upsert(formatted, { onConflict: 'goods_id' });
                 if (error) {
-                    status.innerHTML = `<span style="color:#ef4444;">خطأ: ${error.message}</span>`;
+                    log.innerText = '❌ حدث خطأ أثناء الرفع:\n' + error.message;
                 } else {
-                    status.innerHTML = `<span style="color:#10b981;">تم بنجاح رفع وتصنيف ${formattedProducts.length} منتج! ✓</span>`;
+                    log.innerText = `✅ تم استيراد وتحديث ${formatted.length} منتج بنجاح في قسم (${cateName})!\n- السعر الأصلي (retailPrice) والسعر المخفض (salePrice) تم ربطهما بدقة.\n- تم توليد روابط شي إن المباشرة الصحيحة.`;
                 }
             }
         });
