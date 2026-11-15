@@ -59,17 +59,12 @@
         .carousel::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
         .prod-card { min-width: 235px; max-width: 235px; border: 1px solid #f1f5f9; border-radius: 16px; overflow: hidden; background: #fff; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.02); flex-shrink: 0; }
-        .prod-img { position: relative; width: 100%; height: 215px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; user-select: none; }
-        .prod-img img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; transition: opacity 0.25s ease; }
+        .prod-img { position: relative; width: 100%; height: 215px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; cursor: pointer; }
+        .prod-img img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
         
-        .gal-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); color: var(--text); border: 1px solid var(--border); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; z-index: 5; }
-        .gal-prev { right: 6px; } .gal-next { left: 6px; }
-        .gal-dots { position: absolute; bottom: 6px; left: 0; right: 0; display: flex; justify-content: center; gap: 4px; z-index: 5; }
-        .gal-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(15,23,42,0.25); cursor: pointer; }
-        .gal-dot.active { background: #2563eb; width: 14px; border-radius: 4px; }
-
         .prod-info { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
-        .prod-name { font-weight: 700; font-size: 0.92rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 40px; }
+        .prod-name { font-weight: 700; font-size: 0.92rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 40px; cursor: pointer; }
+        .prod-name:hover { color: #2563eb; }
         .prod-meta { display: flex; justify-content: space-between; align-items: center; }
         .prod-price { font-weight: 800; color: #2563eb; font-size: 1.05rem; }
         
@@ -77,22 +72,23 @@
         .btn-cart { background: #2563eb; }
         .btn-wa { background: var(--whatsapp); margin-top: 4px; }
 
-        .shein-popup-modal, .shein-track-modal, .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .shein-popup-modal.open, .shein-track-modal.open, .modal.open { display: flex; }
-        .shein-popup-box, .shein-track-box, .modal-box { background: #fff; width: 100%; max-width: 500px; max-height: 90vh; border-radius: 26px; padding: 22px; overflow-y: auto; }
+        .product-modal { position: fixed; inset: 0; background: rgba(15,23,42,0.65); z-index: 6000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+        .product-modal.open { display: flex; }
+        .product-modal-box { background: #fff; width: 100%; max-width: 600px; max-height: 90vh; border-radius: 28px; padding: 24px; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.25); position: relative; }
+        
+        .modal-gallery { position: relative; width: 100%; height: 320px; background: #f8fafc; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; overflow: hidden; border: 1px solid var(--border); }
+        .modal-gallery img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; }
+        .m-gal-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; z-index: 10; }
+        .m-prev { right: 10px; } .m-next { left: 10px; }
+        .m-thumbs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 20px; }
+        .m-thumb { width: 60px; height: 60px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; object-fit: cover; background: #f8fafc; flex-shrink: 0; }
+        .m-thumb.active { border-color: #2563eb; }
 
-        .shein-tabs { display: flex; background: #e2e8f0; border-radius: 30px; padding: 4px; margin-bottom: 20px; }
-        .shein-tab { flex: 1; text-align: center; padding: 11px; border-radius: 26px; font-weight: 700; cursor: pointer; font-size: 0.9rem; color: var(--muted); border: none; background: transparent; }
-        .shein-tab.active { background: #fff; color: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-
-        .product-item-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 20px; padding: 16px; margin-bottom: 14px; }
-        .product-item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .shein-input-group { margin-bottom: 12px; }
-        .shein-input-group label { display: block; font-size: 0.82rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
-        .shein-input-field { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 12px; background: #fff; outline: none; font-size: 0.9rem; direction: ltr; }
-        .shein-row { display: flex; gap: 10px; }
-        .btn-add-more { width: 100%; padding: 12px; border: 2px dashed var(--border); border-radius: 16px; background: #fff; font-weight: 800; color: #1e293b; cursor: pointer; margin-bottom: 18px; }
-        .btn-submit-order { width: 100%; padding: 14px; border: none; border-radius: 16px; background: var(--whatsapp); color: #fff; font-weight: 800; cursor: pointer; font-size: 1rem; }
+        .modal-details-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .modal-prod-title { font-size: 1.15rem; font-weight: 800; line-height: 1.5; color: #1e293b; }
+        .modal-prod-info-row { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px 16px; border-radius: 14px; border: 1px solid var(--border); }
+        .link-copy-box { background: #f1f5f9; border: 1px solid var(--border); border-radius: 14px; padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .link-copy-box input { flex: 1; border: none; background: transparent; outline: none; direction: ltr; font-size: 0.85rem; color: var(--muted); }
 
         .pay-section { background: var(--white); padding: 25px 20px; border-top: 1px solid var(--border); }
         .pay-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
@@ -105,16 +101,6 @@
         .drawer.open { left: 0; }
         .right-drawer { left: auto; right: -380px; }
         .right-drawer.open { right: 0; }
-
-        .auth-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
-        .auth-tab { flex: 1; text-align: center; padding: 10px; font-weight: 700; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; }
-        .auth-tab.active { color: #2563eb; border-bottom-color: #2563eb; }
-        .auth-form { display: none; }
-        .auth-form.active { display: block; }
-        .form-grp { margin-bottom: 14px; }
-        .form-grp label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
-        .form-grp input { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 12px; outline: none; background: #f8fafc; }
-        .btn-submit { width: 100%; padding: 12px; border: none; border-radius: 12px; background: #2563eb; color: #fff; font-weight: 800; cursor: pointer; }
 
         .toast { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: #fff; padding: 10px 22px; border-radius: 25px; font-size: 0.9rem; z-index: 9999; transition: 0.3s; }
         .toast.show { transform: translateX(-50%) translateY(0); }
@@ -163,55 +149,28 @@
     <section class="pay-section">
         <h3 style="text-align:center; margin-bottom:18px; font-weight:800;">طرق الدفع الإلكتروني</h3>
         <div class="pay-grid" id="payList"></div>
-        <p style="text-align:center; font-size:0.82rem; color:var(--muted); margin-top:20px;">© 2026 <span id="uiFooterName">متجر صدارة</span></p>
+        <p style="text-align:center; font-size:0.82rem; color:var(--muted); margin-top:20px;">© 2026 متجر صدارة</p>
     </section>
 </div>
 
-<!-- نافذة طلب شي إن -->
-<div class="shein-popup-modal" id="sheinPopupModal" onclick="if(event.target===this) closeSheinModal()">
-    <div class="shein-popup-box">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 style="font-weight:800; font-size:1.15rem; color:#1e293b;">🛍️ اطلب لي من شي إن</h3>
-            <button onclick="closeSheinModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
-        </div>
-        <div class="shein-tabs">
-            <button class="shein-tab active" id="tabCart" onclick="switchSheinType('cart')"><i class="fas fa-shopping-cart"></i> سلة كاملة</button>
-            <button class="shein-tab" id="tabProd" onclick="switchSheinType('prod')"><i class="fas fa-boxes"></i> منتجات محددة</button>
-        </div>
-        <div id="sheinPopupFormContainer"></div>
-    </div>
+<div class="product-modal" id="productModal" onclick="if(event.target===this) closeProductModal()">
+    <div class="product-modal-box" id="productModalContent"></div>
 </div>
 
-<!-- القائمة الجانبية -->
 <div class="overlay" id="sideDrawerOverlay" onclick="toggleDrawer('sideDrawer')"></div>
 <aside class="drawer right-drawer" id="sideDrawer">
     <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:15px; border-bottom:1px solid var(--border);">
         <h3 style="font-size:1.1rem;">أقسام المتجر</h3>
         <button onclick="toggleDrawer('sideDrawer')" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
     </div>
-    <div style="padding: 14px 0; border-bottom: 2px solid var(--border); display: flex; flex-direction: column; gap: 8px;">
-        <button onclick="openSheinTracking()" style="width:100%; background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; padding: 12px; border-radius: 14px; font-weight: 800; cursor: pointer;">
-            <i class="fas fa-plane"></i> تتبع شحنات شي إن
-        </button>
-        <a href="jobs.html" style="width:100%; background: #f0fdf4; color: #15803d; border: 1px solid #dcfce7; padding: 12px; border-radius: 14px; font-weight: 800; text-align:center; text-decoration:none;">
+    <div style="padding: 14px 0; border-bottom: 2px solid var(--border);">
+        <a href="jobs.html" style="width:100%; background: #f0fdf4; color: #15803d; border: 1px solid #dcfce7; padding: 12px; border-radius: 14px; font-weight: 800; display:block; text-align:center; text-decoration:none;">
             <i class="fas fa-briefcase"></i> وظائف صدارة
         </a>
     </div>
     <div id="sideCatList" style="padding:15px 0; overflow-y:auto; flex:1;"></div>
 </aside>
 
-<!-- نافذة تتبع الشحنات -->
-<div class="shein-track-modal" id="sheinTrackModal" onclick="if(event.target===this) closeSheinTracking()">
-    <div class="shein-track-box">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
-            <h3 style="font-weight:800; font-size:1.1rem; color:#2563eb;"><i class="fas fa-plane"></i> تتبع شحنات شي إن</h3>
-            <button onclick="closeSheinTracking()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
-        </div>
-        <div id="sheinShipmentsModalList"></div>
-    </div>
-</div>
-
-<!-- سلة المشتريات -->
 <div class="overlay" id="cartDrawerOverlay" onclick="toggleDrawer('cartDrawer')"></div>
 <aside class="drawer" id="cartDrawer">
     <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:15px; border-bottom:1px solid var(--border);">
@@ -227,10 +186,6 @@
     </div>
 </aside>
 
-<div class="modal" id="authModal" onclick="if(event.target===this) document.getElementById('authModal').classList.remove('open')">
-    <div class="modal-box" id="authBox"></div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -238,26 +193,18 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2dXRyenN3bmdwa2pmYW1nYWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNTk4MzAsImV4cCI6MjEwNzkzNTgzMH0.fK9eGSy2uv3spG6tynUCoGNivzmRCJnwLEnBFCCgu7g';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let storeData = { settings: { storeName: "متجر صدارة", whatsapp: "967780568507" }, categories: [], products: [], payments: [], banners: [], shein: [], users: [] };
+    let storeData = { settings: { storeName: "متجر صدارة", whatsapp: "967780568507" }, payments: [], banners: [], shein: [] };
     let cloudProducts = [];
     let allMergedProducts = [];
     let allMergedCategories = [];
-    
     let cart = [];
     let activeCat = 'all';
-    let currentUser = JSON.parse(localStorage.getItem('sadarah_user')) || null;
-    let sheinOrderType = 'cart';
-    let sheinProducts = [{ id: 1, link: '', qty: 1, specs: '' }];
-    let slideIndex = 0, slideTimer = null, prodImgState = {}, lastHash = '';
+    let lastHash = '';
 
     async function syncCloud() {
-        // 1. جلب بيانات لوحة التحكم اليدوية (store_data)
         const { data: manualRes } = await _supabase.from('store_data').select('payload').eq('id', 1).maybeSingle();
-        if (manualRes && manualRes.payload) {
-            storeData = manualRes.payload;
-        }
+        if (manualRes && manualRes.payload) storeData = manualRes.payload;
 
-        // 2. جلب المنتجات المزامنة من جدول products (ملف CSV)
         const { data: csvRes } = await _supabase.from('products').select('*').order('id', { ascending: false });
         if (csvRes) {
             cloudProducts = csvRes.map(p => ({
@@ -268,7 +215,8 @@
                 code: p.code || '',
                 price: Number(p.price || 0),
                 img: p.img,
-                imgs: Array.isArray(p.imgs) && p.imgs.length ? p.imgs : [p.img]
+                imgs: Array.isArray(p.imgs) && p.imgs.length ? p.imgs : [p.img],
+                goods_url: p.goods_url || ''
             }));
         }
 
@@ -276,29 +224,18 @@
         if (currentHash === lastHash) return;
         lastHash = currentHash;
 
-        // دمج التصنيفات اليدوية + تصنيفات CSV بدون تكرار
         const catMap = new Map();
         (storeData.categories || []).forEach(c => catMap.set(String(c.id), c.name));
-        cloudProducts.forEach(p => {
-            if (!catMap.has(p.catId)) catMap.set(p.catId, p.catName);
-        });
+        cloudProducts.forEach(p => { if (!catMap.has(p.catId)) catMap.set(p.catId, p.catName); });
         allMergedCategories = Array.from(catMap, ([id, name]) => ({ id, name }));
 
-        // دمج المنتجات اليدوية + منتجات CSV
-        const manualProds = (storeData.products || []).map(p => ({ ...p, catId: String(p.catId) }));
+        const manualProds = (storeData.products || []).map(p => ({ ...p, catId: String(p.catId), imgs: p.imgs || [p.img] }));
         allMergedProducts = [...manualProds, ...cloudProducts];
-
-        if (currentUser && currentUser.cart) {
-            cart = currentUser.cart;
-            renderCart();
-        }
         renderUI();
     }
 
     function renderUI() {
         document.getElementById('uiStoreName').innerText = storeData.settings?.storeName || 'متجر صدارة';
-        document.getElementById('uiFooterName').innerText = storeData.settings?.storeName || 'متجر صدارة';
-
         const validBanners = (storeData.banners || []).filter(b => b && (b.img || b.url || b.image));
         const bannersSec = document.getElementById('bannersSection');
         if (validBanners.length > 0) {
@@ -327,28 +264,13 @@
             const prods = allMergedProducts.filter(p => p.catId === c.id && (p.name.toLowerCase().includes(q) || (p.code && p.code.toLowerCase().includes(q))));
             if (!prods.length) return;
 
-            const cards = prods.map(p => {
-                const imgs = (p.imgs && p.imgs.length) ? p.imgs : [p.img];
-                const curIdx = prodImgState[p.id] || 0;
-                const safeIdx = curIdx < imgs.length ? curIdx : 0;
-                const hasMultiple = imgs.length > 1;
-
-                const controlsHtml = hasMultiple ? `
-                    <button class="gal-arrow gal-prev" onclick="stepProdImg('${p.id}', -1)"><i class="fas fa-chevron-right"></i></button>
-                    <button class="gal-arrow gal-next" onclick="stepProdImg('${p.id}', 1)"><i class="fas fa-chevron-left"></i></button>
-                    <div class="gal-dots" id="dots-${p.id}">
-                        ${imgs.map((_, i) => `<span class="gal-dot ${i === safeIdx ? 'active' : ''}" onclick="setProdImg('${p.id}', ${i})"></span>`).join('')}
-                    </div>
-                ` : '';
-
-                return `
+            const cards = prods.map(p => `
                 <div class="prod-card">
-                    <div class="prod-img">
-                        <img id="img-${p.id}" src="${imgs[safeIdx]}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'">
-                        ${controlsHtml}
+                    <div class="prod-img" onclick="openProductModal('${p.id}')">
+                        <img src="${p.img || (p.imgs && p.imgs[0])}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'">
                     </div>
                     <div class="prod-info">
-                        <div class="prod-name" title="${p.name}">${p.name}</div>
+                        <div class="prod-name" title="${p.name}" onclick="openProductModal('${p.id}')">${p.name}</div>
                         <div class="prod-meta">
                             <span style="font-size:0.78rem; color:var(--muted);">كود: ${p.code || '—'}</span>
                             <span class="prod-price">${Number(p.price).toLocaleString()} ريال</span>
@@ -356,8 +278,7 @@
                         <button class="btn-cart" onclick="addCart('${p.id}')">أضف للسلة <i class="fas fa-plus"></i></button>
                         <button class="btn-wa" onclick="orderWA('${p.id}')">اطلب واتساب <i class="fab fa-whatsapp"></i></button>
                     </div>
-                </div>`;
-            }).join('');
+                </div>`).join('');
 
             main.innerHTML += `
                 <div class="cat-block">
@@ -376,8 +297,75 @@
                     <i class="far fa-copy" style="color:var(--muted);"></i>
                     <span style="direction:ltr;">${pay.number}</span>
                 </div>
+            </div>`).join('');
+    }
+
+    let modalActiveImgIdx = 0;
+    function openProductModal(prodId) {
+        const p = allMergedProducts.find(x => String(x.id) === String(prodId));
+        if (!p) return;
+        modalActiveImgIdx = 0;
+        renderProductModalContent(p);
+        document.getElementById('productModal').classList.add('open');
+    }
+
+    function renderProductModalContent(p) {
+        const imgs = (p.imgs && p.imgs.length) ? p.imgs : [p.img];
+        const currentImg = imgs[modalActiveImgIdx] || p.img;
+        const box = document.getElementById('productModalContent');
+
+        box.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="font-size:1.1rem; font-weight:800; color:#2563eb;">تفاصيل المنتج</h3>
+                <button onclick="closeProductModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
             </div>
-        `).join('');
+            <div class="modal-gallery">
+                <img id="modalMainImg" src="${currentImg}">
+                ${imgs.length > 1 ? `
+                    <div class="m-gal-arrow m-prev" onclick="stepModalImg('${p.id}', -1)"><i class="fas fa-chevron-right"></i></div>
+                    <div class="m-gal-arrow m-next" onclick="stepModalImg('${p.id}', 1)"><i class="fas fa-chevron-left"></i></div>
+                ` : ''}
+            </div>
+            ${imgs.length > 1 ? `
+                <div class="m-thumbs">
+                    ${imgs.map((imgUrl, idx) => `<img class="m-thumb ${idx === modalActiveImgIdx ? 'active' : ''}" src="${imgUrl}" onclick="setModalImg('${p.id}', ${idx})">`).join('')}
+                </div>
+            ` : ''}
+            <div class="modal-details-grid">
+                <div class="modal-prod-title">${p.name}</div>
+                <div class="modal-prod-info-row">
+                    <span style="color:var(--muted); font-size:0.9rem;">كود المنتج: <strong>${p.code || '—'}</strong></span>
+                    <span style="color:#2563eb; font-size:1.2rem; font-weight:800;">${Number(p.price).toLocaleString()} ريال</span>
+                </div>
+            </div>
+            ${p.goods_url ? `
+                <div style="margin-bottom:15px;">
+                    <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--muted); margin-bottom:5px;">رابط المنتج الأصلي (شي إن):</label>
+                    <div class="link-copy-box">
+                        <input type="text" id="prodLinkInput" value="${p.goods_url}" readonly>
+                        <button onclick="copyTxt('${p.goods_url}')" style="background:#2563eb; color:#fff; border:none; padding:6px 12px; border-radius:10px; font-weight:700; cursor:pointer; font-size:0.8rem;">نسخ</button>
+                    </div>
+                </div>
+            ` : ''}
+            <div style="display:flex; gap:10px;">
+                <button class="btn-cart" onclick="addCart('${p.id}'); closeProductModal();">أضف للسلة <i class="fas fa-plus"></i></button>
+                <button class="btn-wa" onclick="orderWA('${p.id}')">اطلب عبر واتساب <i class="fab fa-whatsapp"></i></button>
+            </div>
+        `;
+    }
+
+    function closeProductModal() { document.getElementById('productModal').classList.remove('open'); }
+    function stepModalImg(prodId, dir) {
+        const p = allMergedProducts.find(x => String(x.id) === String(prodId));
+        if (!p) return;
+        const imgs = p.imgs || [p.img];
+        modalActiveImgIdx = (modalActiveImgIdx + dir + imgs.length) % imgs.length;
+        renderProductModalContent(p);
+    }
+    function setModalImg(prodId, idx) {
+        modalActiveImgIdx = idx;
+        const p = allMergedProducts.find(x => String(x.id) === String(prodId));
+        if (p) renderProductModalContent(p);
     }
 
     function setupBanners(banners) {
@@ -389,24 +377,8 @@
         dotsWrapper.innerHTML = banners.map((_, i) => `<span class="b-dot ${i === slideIndex ? 'active' : ''}" onclick="currentSlide(${i})"></span>`).join('');
     }
 
-    function stepProdImg(prodId, dir) {
-        const p = allMergedProducts.find(x => String(x.id) === String(prodId));
-        if (!p) return;
-        const imgs = (p.imgs && p.imgs.length) ? p.imgs : [p.img];
-        let cur = ((prodImgState[prodId] || 0) + dir + imgs.length) % imgs.length;
-        setProdImg(prodId, cur);
-    }
-
-    function setProdImg(prodId, idx) {
-        const p = allMergedProducts.find(x => String(x.id) === String(prodId));
-        if (!p) return;
-        const imgs = (p.imgs && p.imgs.length) ? p.imgs : [p.img];
-        prodImgState[prodId] = idx;
-        const imgEl = document.getElementById(`img-${prodId}`);
-        if (imgEl) imgEl.src = imgs[idx];
-    }
-
     function setCat(id) { activeCat = id; renderUI(); }
+    
     function addCart(id) {
         const p = allMergedProducts.find(x => String(x.id) === String(id));
         if (!p) return;
@@ -443,34 +415,13 @@
         window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
     }
 
-    function openSheinModal() { document.getElementById('sheinPopupModal').classList.add('open'); renderSheinPopupForm(); }
-    function closeSheinModal() { document.getElementById('sheinPopupModal').classList.remove('open'); }
-    function switchSheinType(type) { sheinOrderType = type; document.getElementById('tabCart').classList.toggle('active', type==='cart'); document.getElementById('tabProd').classList.toggle('active', type==='prod'); renderSheinPopupForm(); }
-    function renderSheinPopupForm() {
-        const c = document.getElementById('sheinPopupFormContainer');
-        if (sheinOrderType === 'cart') {
-            c.innerHTML = `<div class="shein-input-group"><label>رابط سلة شي إن:</label><input type="text" id="sheinCartLink" class="shein-input-field" placeholder="الصق رابط السلة هنا..."></div><button class="btn-submit-order" onclick="submitSheinCart()"><i class="fab fa-whatsapp"></i> إرسال السلة عبر واتساب</button>`;
-        } else {
-            c.innerHTML = `<div class="shein-input-group"><label>رابط المنتج:</label><input type="text" id="sheinSingleLink" class="shein-input-field" placeholder="رابط المنتج..."></div><button class="btn-submit-order" onclick="submitSheinSingle()"><i class="fab fa-whatsapp"></i> إرسال المنتج عبر واتساب</button>`;
-        }
-    }
-    function submitSheinCart() {
-        const link = document.getElementById('sheinCartLink').value.trim();
-        if (!link) return showToast('أدخل الرابط!');
-        window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${encodeURIComponent('طلب سلة شي إن:\n' + link)}`, '_blank');
-    }
-    function submitSheinSingle() {
-        const link = document.getElementById('sheinSingleLink').value.trim();
-        if (!link) return showToast('أدخل الرابط!');
-        window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${encodeURIComponent('طلب منتج شي إن:\n' + link)}`, '_blank');
-    }
-
     function toggleDrawer(id) { document.getElementById(id).classList.toggle('open'); document.getElementById(id+'Overlay').classList.toggle('open'); }
-    function copyTxt(t) { navigator.clipboard.writeText(t).then(() => showToast('تم النسخ: ' + t)); }
+    function copyTxt(t) { navigator.clipboard.writeText(t).then(() => showToast('تم النسخ بنجاح!')); }
     function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
 
+    let slideIndex = 0;
     syncCloud();
-    setInterval(syncCloud, 4000);
+    setInterval(syncCloud, 5000);
 </script>
 </body>
 </html>
