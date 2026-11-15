@@ -92,9 +92,8 @@
                     const finalPrice = Math.round(rawPrice * rate);
                     const matchedCat = mapCategory(row['product/cate_name'] || '', name);
                     const goodsId = String(row['product/goods_id'] || Date.now() + Math.random());
-                    const goodsUrl = `https://www.shein.com/p-${row['product/goods_id']}.html`;
 
-                    // نرسل الأعمدة الأساسية المتوافقة تماماً مع الجدول لتجنب الأخطاء
+                    // إرسال الأعمدة المتوافقة تماماً مع الجدول الحالي
                     formattedProducts.push({
                         goods_id: goodsId,
                         name: name.trim(),
@@ -103,8 +102,7 @@
                         img: row['product/goods_img'] || '',
                         imgs: gallery,
                         cat_id: matchedCat.id,
-                        cate_name: matchedCat.name,
-                        goods_url: goodsUrl
+                        cate_name: matchedCat.name
                     });
                 });
 
