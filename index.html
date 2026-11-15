@@ -65,8 +65,11 @@
         .prod-info { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
         .prod-name { font-weight: 700; font-size: 0.92rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 40px; cursor: pointer; }
         .prod-name:hover { color: #2563eb; }
+        
         .prod-meta { display: flex; justify-content: space-between; align-items: center; }
-        .prod-price { font-weight: 800; color: #2563eb; font-size: 0.95rem; }
+        .price-box { display: flex; flex-direction: column; }
+        .old-price { font-size: 0.72rem; color: #94a3b8; text-decoration: line-through; font-weight: 700; }
+        .prod-price { font-weight: 800; color: var(--danger); font-size: 0.92rem; }
         
         .btn-cart, .btn-wa { width: 100%; border: none; padding: 10px; border-radius: 20px; font-weight: 700; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.88rem; }
         .btn-cart { background: #2563eb; }
@@ -262,14 +265,16 @@
         if (csvRes) {
             cloudProducts = csvRes.map(p => {
                 const numericPrice = Number(p.price || 0);
-                const sarPrice = (numericPrice / 140).toFixed(1);
+                const oldNumericPrice = Number(p.old_price || numericPrice);
                 
-                // توليد رابط شي إن الصحيح والمضمون (باستخدام البحث أو الرابط الرسمي المباشر)
+                const sarPrice = p.sar_price ? Number(p.sar_price).toFixed(2) : (numericPrice / 140).toFixed(2);
+                const oldSarPrice = p.old_sar_price ? Number(p.old_sar_price).toFixed(2) : (oldNumericPrice / 140).toFixed(2);
+                
                 let url = p.goods_url;
                 if (!url && p.code) {
-                    url = `https://www.shein.com/ar/pdsearch/${p.code}`;
+                    url = `https://ar.shein.com/pdsearch/${p.code}`;
                 } else if (!url && p.goods_id) {
-                    url = `https://www.shein.com/ar/product-p-${p.goods_id}.html`;
+                    url = `https://ar.shein.com/product-p-${p.goods_id}.html`;
                 }
 
                 return {
@@ -279,7 +284,9 @@
                     name: p.name,
                     code: p.code || '',
                     price: numericPrice,
+                    oldPrice: oldNumericPrice,
                     sarPrice: sarPrice,
+                    oldSarPrice: oldSarPrice,
                     img: p.img,
                     imgs: Array.isArray(p.imgs) && p.imgs.length ? p.imgs : [p.img],
                     goods_url: url || ''
@@ -310,11 +317,14 @@
 
         const manualProds = (storeData.products || []).map(p => {
             const numP = Number(p.price || 0);
+            const oldP = Number(p.old_price || numP);
             return {
                 ...p,
                 catId: String(p.catId || 'men'),
                 price: numP,
-                sarPrice: (numP / 140).toFixed(1),
+                oldPrice: oldP,
+                sarPrice: (numP / 140).toFixed(2),
+                oldSarPrice: (oldP / 140).toFixed(2),
                 imgs: p.imgs || [p.img],
                 goods_url: p.goods_url || ''
             };
@@ -371,7 +381,9 @@
             const prods = allMergedProducts.filter(p => String(p.catId) === String(c.id) && (p.name.toLowerCase().includes(q) || (p.code && p.code.toLowerCase().includes(q))));
             if (!prods.length) return;
 
-            const cards = prods.map(p => `
+            const cards = prods.map(p => {
+                const hasDiscount = p.oldPrice > p.price;
+                return `
                 <div class="prod-card">
                     <div class="prod-img" onclick="openProductModal('${p.id}')">
                         <img src="${p.img || (p.imgs && p.imgs[0])}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'">
@@ -379,13 +391,20 @@
                     <div class="prod-info">
                         <div class="prod-name" title="${p.name}" onclick="openProductModal('${p.id}')">${p.name}</div>
                         <div class="prod-meta">
-                            <span style="font-size:0.75rem; color:var(--muted);">SAR ${p.sarPrice}</span>
-                            <span class="prod-price">${Number(p.price).toLocaleString()} ريال</span>
+                            <div class="price-box">
+                                ${hasDiscount ? `<span class="old-price">SAR ${p.oldSarPrice}</span>` : ''}
+                                <span style="font-size:0.75rem; color:${hasDiscount ? 'var(--danger)' : 'var(--muted)'}; font-weight:800;">SAR ${p.sarPrice}</span>
+                            </div>
+                            <div class="price-box" style="text-align:left;">
+                                ${hasDiscount ? `<span class="old-price">${Number(p.oldPrice).toLocaleString()} ر.ي</span>` : ''}
+                                <span class="prod-price" style="color:${hasDiscount ? 'var(--danger)' : '#1e293b'};">${Number(p.price).toLocaleString()} ريال</span>
+                            </div>
                         </div>
                         <button class="btn-cart" onclick="addCart('${p.id}')">أضف للسلة <i class="fas fa-plus"></i></button>
                         <button class="btn-wa" onclick="orderWA('${p.id}')">اطلب واتساب <i class="fab fa-whatsapp"></i></button>
                     </div>
-                </div>`).join('');
+                </div>`;
+            }).join('');
 
             main.innerHTML += `
                 <div class="cat-block">
@@ -424,6 +443,7 @@
         const imgs = (p.imgs && p.imgs.length) ? p.imgs : [p.img];
         const currentImg = imgs[modalActiveImgIdx] || p.img;
         const box = document.getElementById('productModalContent');
+        const hasDiscount = p.oldPrice > p.price;
 
         box.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -446,8 +466,14 @@
                 <div class="modal-prod-title">${p.name}</div>
                 <div class="modal-prod-info-row">
                     <div>
-                        <span style="color:#2563eb; font-size:1.2rem; font-weight:800; display:block;">${Number(p.price).toLocaleString()} ريال يمني</span>
-                        <span style="color:var(--muted); font-size:0.85rem; font-weight:700;">ما يعادل: SAR ${p.sarPrice}</span>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            ${hasDiscount ? `<span class="old-price" style="font-size:0.95rem;">${Number(p.oldPrice).toLocaleString()} ر.ي</span>` : ''}
+                            <span style="color:${hasDiscount ? 'var(--danger)' : '#1e293b'}; font-size:1.2rem; font-weight:800;">${Number(p.price).toLocaleString()} ريال يمني</span>
+                        </div>
+                        <div style="font-size:0.85rem; font-weight:700; margin-top:3px;">
+                            ${hasDiscount ? `<span class="old-price" style="margin-left:6px;">SAR ${p.oldSarPrice}</span>` : ''}
+                            <span style="color:${hasDiscount ? 'var(--danger)' : 'var(--muted)'};">SAR ${p.sarPrice}</span>
+                        </div>
                     </div>
                     ${p.goods_url ? `
                         <a href="${p.goods_url}" target="_blank" class="shein-link-btn">
@@ -512,7 +538,7 @@
 
     function orderWA(id) {
         const p = allMergedProducts.find(x => String(x.id) === String(id));
-        const msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب:%0A- ${p.name}%0A- السعر: ${p.price.toLocaleString()} ريال (${p.sarPrice} SAR)${p.goods_url ? '%0A- رابط شي إن: ' + p.goods_url : ''}`;
+        const msg = `مرحباً ${storeData.settings.storeName}، أرغب بطلب:%0A- ${p.name}%0A- السعر: ${p.price.toLocaleString()} ريال (SAR ${p.sarPrice})${p.goods_url ? '%0A- رابط شي إن: ' + p.goods_url : ''}`;
         window.open(`https://wa.me/${storeData.settings.whatsapp}?text=${msg}`, '_blank');
     }
 
