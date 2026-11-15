@@ -241,7 +241,7 @@
 
 <script>
     const SUPABASE_URL = 'https://lvutrzswngpkjfamgact.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2dXRyenN3bmdwa2pmYW1nYWN0Iiwicm9sZSI6ImFub24iOiJpYXQiOjE3OTIzNTk4MzAsImV4cCI6MjEwNzkzNTgzMH0.fK9eGSy2uv3spG6tynUCoGNivzmRCJnwLEnBFCCgu7g';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2dXRyenN3bmdwa2pmYW1nYWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNTk4MzAsImV4cCI6MjEwNzkzNTgzMH0.fK9eGSy2uv3spG6tynUCoGNivzmRCJnwLEnBFCCgu7g';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let storeData = { settings: { storeName: "متجر صدارة", whatsapp: "967780568507" }, categories: [], products: [], payments: [], banners: [], shein: [], users: [] };
@@ -278,8 +278,16 @@
         lastHash = currentHash;
 
         const catMap = new Map();
+        // إضافة الأقسام اليدوية
         (storeData.categories || []).forEach(c => catMap.set(String(c.id), c.name));
-        cloudProducts.forEach(p => { if (!catMap.has(p.catId)) catMap.set(p.catId, p.catName); });
+        
+        // التأكد من إضافة أقسام منتجات شي إن المستوردة تلقائياً إذا لم تكن موجودة
+        cloudProducts.forEach(p => { 
+            if (!catMap.has(p.catId)) {
+                catMap.set(p.catId, p.catName || 'منتجات شي إن');
+            } 
+        });
+
         allMergedCategories = Array.from(catMap, ([id, name]) => ({ id, name }));
 
         const manualProds = (storeData.products || []).map(p => ({ ...p, catId: String(p.catId), imgs: p.imgs || [p.img] }));
@@ -328,9 +336,16 @@
         const q = document.getElementById('searchInput').value.toLowerCase();
         main.innerHTML = '';
 
-        allMergedCategories.forEach(c => {
+        // إذا لم تكن هناك أقسام معرفة ولكن توجد منتجات، نعرضها مباشرة تحت قسم عام
+        let categoriesToDisplay = allMergedCategories;
+        if (categoriesToDisplay.length === 0 && allMergedProducts.length > 0) {
+            categoriesToDisplay = [{ id: 'general', name: 'جميع المنتجات' }];
+            allMergedProducts.forEach(p => p.catId = 'general');
+        }
+
+        categoriesToDisplay.forEach(c => {
             if (activeCat !== 'all' && activeCat !== c.id) return;
-            const prods = allMergedProducts.filter(p => p.catId === c.id && (p.name.toLowerCase().includes(q) || (p.code && p.code.toLowerCase().includes(q))));
+            const prods = allMergedProducts.filter(p => (activeCat === 'all' || p.catId === c.id) && (p.name.toLowerCase().includes(q) || (p.code && p.code.toLowerCase().includes(q))));
             if (!prods.length) return;
 
             const cards = prods.map(p => `
@@ -358,6 +373,10 @@
                     <div class="carousel">${cards}</div>
                 </div>`;
         });
+
+        if (!main.innerHTML) {
+            main.innerHTML = `<div style="text-align:center; padding:40px; color:var(--muted);">لا توجد منتجات متوفرة حالياً.</div>`;
+        }
 
         document.getElementById('payList').innerHTML = (storeData.payments || []).map(pay => `
             <div class="pay-card">
