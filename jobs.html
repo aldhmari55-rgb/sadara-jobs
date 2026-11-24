@@ -1,51 +1,202 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الوظائف الشاغرة | منصة صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>الوظائف ودليل الكفاءات | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --dark: #0a1324; --gold: #d4af37; --green: #16a34a; --bg: #f4f6fa; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: #0f172a; padding-bottom: 60px; }
-        .top-bar { background: var(--dark); color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
-        .top-bar a { color: var(--gold); text-decoration: none; font-weight: 900; font-size: 13px; }
-        .hero { background: linear-gradient(135deg, var(--dark), var(--primary)); color: #fff; padding: 24px 16px; text-align: center; }
-        .container { max-width: 900px; margin: 16px auto; padding: 0 14px; display: grid; gap: 12px; }
-        .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
-        .btn-apply { display: inline-block; margin-top: 10px; background: var(--green); color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 9px; font-size: 12px; font-weight: 900; }
+        :root {
+            --navy: #0F172A;
+            --royal: #2563EB;
+            --emerald: #0D9488;
+            --green: #10B981;
+            --gold: #F59E0B;
+            --bg-surface: #F8FAFC;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --radius-lg: 20px;
+            --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.04);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; }
+        body { background: var(--bg-surface); color: var(--text-main); line-height: 1.65; }
+
+        .navbar {
+            position: sticky; top: 0; z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-inner {
+            max-width: 1180px; margin: 0 auto; padding: 12px 18px;
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
+        }
+        .btn-icon {
+            background: var(--bg-surface); color: var(--navy); border: 1px solid var(--border);
+            width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 16px;
+        }
+        .logo { text-decoration: none; color: var(--navy); font-weight: 700; font-size: 19px; }
+        .logo span { color: var(--royal); }
+
+        .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); z-index: 2500; }
+        .side-drawer {
+            position: fixed; top: 0; right: -320px; width: 300px; max-width: 86vw; height: 100vh;
+            background: #fff; z-index: 2600; border-left: 1px solid var(--border);
+            padding: 20px 16px; transition: right 0.28s ease;
+        }
+        .side-drawer.open { right: 0; }
+        .drawer-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 11px 12px; border-radius: 12px; text-decoration: none;
+            color: var(--text-main); font-size: 13.5px; font-weight: 600; margin-bottom: 6px;
+        }
+        .drawer-link:hover, .drawer-link.active { background: #EFF6FF; color: var(--royal); }
+
+        .hero {
+            background: linear-gradient(135deg, var(--navy), #1E293B);
+            color: #fff; padding: 30px 18px; text-align: center;
+        }
+        .hero h1 { font-size: 26px; margin-bottom: 6px; }
+        .hero p { color: #CBD5E1; font-size: 14px; }
+
+        .container { max-width: 1180px; margin: 0 auto; padding: 26px 18px 60px; }
+        .search-bar {
+            width: 100%; padding: 11px 15px; border: 1px solid var(--border);
+            border-radius: 14px; background: #fff; font-size: 14px; margin-bottom: 24px;
+        }
+        .sec-title { font-size: 19px; font-weight: 700; color: var(--navy); margin: 18px 0 14px; display: flex; align-items: center; gap: 8px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; }
+
+        .item-card {
+            background: #fff; border: 1px solid var(--border);
+            border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow-sm);
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .btn-wa {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            width: 100%; background: var(--green); color: #fff; text-decoration: none;
+            padding: 9px 12px; border-radius: 11px; font-size: 13px; font-weight: 700; margin-top: 12px;
+        }
     </style>
 </head>
 <body>
-    <header class="top-bar">
-        <a href="index.html"><i class="fa-solid fa-arrow-right"></i> الرئيسية</a>
-        <span>منصة صدارة للوظائف</span>
+
+    <header class="navbar">
+        <div class="nav-inner">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button type="button" class="btn-icon" onclick="toggleDrawer(true)"><i class="fa-solid fa-bars"></i></button>
+                <a href="jobs.html" class="logo">الوظائف والكفاءات <span>صدارة</span></a>
+            </div>
+            <a href="index.html" style="text-decoration:none; font-size:13px; font-weight:700; color:var(--royal);">المتجر الرئيسي ←</a>
+        </div>
     </header>
+
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
+    <aside class="side-drawer" id="sideDrawer">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid var(--border);">
+            <strong style="color:var(--navy);">الأقسام والواجهات</strong>
+            <button onclick="toggleDrawer(false)" style="border:none; background:var(--bg-surface); padding:4px 9px; border-radius:8px; cursor:pointer;">✕</button>
+        </div>
+        <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات (الرئيسية)</a>
+        <a href="courses.html" class="drawer-link"><i class="fa-solid fa-graduation-cap"></i> الدورات التدريبية</a>
+        <a href="affiliate.html" class="drawer-link"><i class="fa-solid fa-handshake"></i> بوابة المسوّقين بالعمولة</a>
+        <a href="jobs.html" class="drawer-link active"><i class="fa-solid fa-briefcase"></i> الوظائف والكفاءات</a>
+        <a href="blog.html" class="drawer-link"><i class="fa-solid fa-newspaper"></i> المدونة والمقالات</a>
+        <a href="control.html" class="drawer-link"><i class="fa-solid fa-sliders"></i> لوحة التحكم والإدارة</a>
+    </aside>
+
     <section class="hero">
-        <h1 style="font-size:18px; font-weight:900;">💼 الوظائف الشاغرة المتاحة</h1>
-        <p style="font-size:12px; color:#cbd5e1; margin-top:4px;">تصفح أحدث الفرص الوظيفية وتواصل مباشرة للتقديم</p>
+        <h1>الوظائف الشاغرة ودليل الكفاءات</h1>
+        <p>تواصل مباشرة مع جهات التوظيف أو استقطب الكفاءات والخبراء المعتمدين</p>
     </section>
-    <div class="container" id="jobsList"><div class="card">جاري تحميل الوظائف...</div></div>
+
+    <main class="container">
+        <input type="text" id="jtSearch" class="search-bar" placeholder="🔍 ابحث بالمسمى الوظيفي، التخصص، المدينة، أو اسم الخبير..." oninput="renderJobsAndTalents()">
+
+        <h2 class="sec-title"><i class="fa-solid fa-briefcase" style="color:var(--royal);"></i> الوظائف الشاغرة</h2>
+        <div class="grid" id="jobsGrid">
+            <div class="item-card">جاري تحميل الوظائف...</div>
+        </div>
+
+        <h2 class="sec-title" style="margin-top:34px;"><i class="fa-solid fa-user-check" style="color:var(--emerald);"></i> دليل الكفاءات والخبراء</h2>
+        <div class="grid" id="talentsGrid">
+            <div class="item-card">جاري تحميل الكفاءات...</div>
+        </div>
+    </main>
+
     <script>
         const db = supabase.createClient("https://lvutrzswngpkjfamgact.supabase.co", "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG");
-        (async () => {
-            const { data } = await db.from('platform_jobs').select('*').order('id', { ascending: false });
-            const list = (data || []).filter(j => j.is_active !== false);
-            const box = document.getElementById('jobsList');
-            if (!list.length) { box.innerHTML = '<div class="card">لا توجد وظائف منشورة حالياً.</div>'; return; }
-            box.innerHTML = list.map(j => `
-                <div class="card">
-                    <h2 style="font-size:15px; color:var(--primary); font-weight:900;">${j.title}</h2>
-                    <div style="font-size:12px; color:#64748b; margin:4px 0;">🏢 ${j.company || 'جهة معلنة'} | 📍 ${j.location || 'اليمن'} | ⏰ ${j.job_type || 'دوام'}</div>
-                    <p style="font-size:12.5px; line-height:1.6; margin-top:6px;">${j.description || ''}</p>
-                    <a class="btn-apply" target="_blank" href="https://wa.me/${String(j.contact_phone || '967780568507').replace(/[^0-9]/g,'')}?text=${encodeURIComponent('مرحباً، أرغب بالتقديم على وظيفة: ' + j.title)}">تقديم عبر واتساب 💬</a>
-                </div>
-            `).join('');
-        })();
+        let jobsList = [];
+        let talentsList = [];
+
+        function toggleDrawer(open) {
+            document.getElementById('drawerOverlay').style.display = open ? 'block' : 'none';
+            document.getElementById('sideDrawer').classList.toggle('open', open);
+        }
+
+        function renderJobsAndTalents() {
+            const q = document.getElementById('jtSearch').value.trim().toLowerCase();
+
+            const fJobs = jobsList.filter(j =>
+                !q ||
+                (j.title || '').toLowerCase().includes(q) ||
+                (j.company || '').toLowerCase().includes(q) ||
+                (j.location || '').toLowerCase().includes(q)
+            );
+            document.getElementById('jobsGrid').innerHTML = fJobs.map(j => {
+                const wa = String(j.contact_phone || '967780568507').replace(/[^0-9]/g, '');
+                return `
+                <div class="item-card">
+                    <div>
+                        <span style="font-size:11.5px; color:var(--royal); font-weight:700;">${j.location || 'اليمن'} • ${j.job_type || 'دوام كامل'}</span>
+                        <h3 style="font-size:16px; color:var(--navy); margin:4px 0;">${j.title}</h3>
+                        <div style="font-size:12.5px; color:var(--text-muted); margin-bottom:8px;">الجهة: <b>${j.company || 'منصة صدارة'}</b></div>
+                        <p style="font-size:13px; color:var(--text-main);">${j.description || ''}</p>
+                    </div>
+                    <a href="https://wa.me/${wa}" target="_blank" class="btn-wa"><i class="fa-brands fa-whatsapp"></i> التقديم المباشر</a>
+                </div>`;
+            }).join('') || '<div class="item-card">لا توجد وظائف مطابقة حالياً.</div>';
+
+            const fTalents = talentsList.filter(t =>
+                !q ||
+                (t.full_name || '').toLowerCase().includes(q) ||
+                (t.specialty || '').toLowerCase().includes(q) ||
+                (t.experience || '').toLowerCase().includes(q)
+            );
+            document.getElementById('talentsGrid').innerHTML = fTalents.map(t => {
+                const wa = String(t.phone || '967780568507').replace(/[^0-9]/g, '');
+                const badge = t.is_verified !== false ? `<i class="fa-solid fa-circle-check" style="color:#1877F2;" title="موثق"></i>` : '';
+                return `
+                <div class="item-card">
+                    <div>
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                            <img src="${t.avatar_url || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:1px solid var(--border);">
+                            <div>
+                                <h3 style="font-size:15.5px; color:var(--navy);">${t.full_name} ${badge}</h3>
+                                <div style="font-size:12.5px; color:var(--emerald); font-weight:700;">${t.specialty || 'خبير مستقل'}</div>
+                            </div>
+                        </div>
+                        <p style="font-size:13px; color:var(--text-muted);">${t.experience || ''}</p>
+                    </div>
+                    <a href="https://wa.me/${wa}" target="_blank" class="btn-wa" style="background:var(--navy);"><i class="fa-brands fa-whatsapp"></i> تواصل مع الخبير</a>
+                </div>`;
+            }).join('') || '<div class="item-card">لا توجد كفاءات مطابقة حالياً.</div>';
+        }
+
+        async function loadData() {
+            const [jRes, tRes] = await Promise.all([
+                db.from('platform_jobs').select('*').order('id', { ascending: false }),
+                db.from('platform_resumes').select('*').order('id', { ascending: false })
+            ]);
+            jobsList = (jRes.data || []).filter(x => x.is_active !== false);
+            talentsList = (tRes.data || []).filter(x => x.is_active !== false);
+            renderJobsAndTalents();
+        }
+
+        window.addEventListener('DOMContentLoaded', loadData);
     </script>
 </body>
 </html>
