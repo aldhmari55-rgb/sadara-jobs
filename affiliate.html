@@ -21,15 +21,13 @@
             --border: #E2E8F0;
             --radius-lg: 20px;
             --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.04);
-            --shadow-md: 0 12px 32px rgba(15, 23, 42, 0.08);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; }
         body { background: var(--bg-surface); color: var(--text-main); line-height: 1.65; }
 
         .navbar {
             position: sticky; top: 0; z-index: 1000;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(14px);
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--border);
         }
         .nav-inner {
@@ -40,52 +38,38 @@
             background: var(--bg-surface); color: var(--navy); border: 1px solid var(--border);
             width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 16px;
         }
-        .logo { text-decoration: none; color: var(--navy); font-weight: 700; font-size: 19px; display: flex; align-items: center; gap: 8px; }
+        .logo { text-decoration: none; color: var(--navy); font-weight: 700; font-size: 19px; }
         .logo span { color: var(--royal); }
 
-        /* القائمة الجانبية الموحدة */
         .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); z-index: 2500; }
         .side-drawer {
             position: fixed; top: 0; right: -320px; width: 300px; max-width: 86vw; height: 100vh;
             background: #fff; z-index: 2600; border-left: 1px solid var(--border);
-            padding: 20px 16px; transition: right 0.28s ease; overflow-y: auto;
+            padding: 20px 16px; transition: right 0.28s ease;
         }
         .side-drawer.open { right: 0; }
         .drawer-link {
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex; align-items: center; gap: 10px;
             padding: 11px 12px; border-radius: 12px; text-decoration: none;
             color: var(--text-main); font-size: 13.5px; font-weight: 600; margin-bottom: 6px;
         }
         .drawer-link:hover, .drawer-link.active { background: #EFF6FF; color: var(--royal); }
 
-        .hero {
-            background: linear-gradient(135deg, var(--navy) 0%, #1E293B 100%);
-            color: #fff; padding: 36px 18px;
-        }
-        .hero-inner {
-            max-width: 1180px; margin: 0 auto;
-            display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; align-items: center;
-        }
+        .hero { background: linear-gradient(135deg, var(--navy) 0%, #1E293B 100%); color: #fff; padding: 36px 18px; }
+        .hero-inner { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; align-items: center; }
         @media (max-width: 860px) { .hero-inner { grid-template-columns: 1fr; } }
 
         .calc-card {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.14);
             border-radius: var(--radius-lg); padding: 20px;
         }
         .calc-card input[type="range"] { width: 100%; accent-color: var(--gold); margin: 6px 0 14px; }
 
         .container { max-width: 1180px; margin: 0 auto; padding: 28px 18px 60px; display: grid; gap: 22px; }
-        .card {
-            background: #fff; border: 1px solid var(--border);
-            border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow-sm);
-        }
+        .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow-sm); }
         .form-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; }
         @media (max-width: 680px) { .form-row { grid-template-columns: 1fr; } }
-        .input-box {
-            width: 100%; padding: 10px 13px; border: 1px solid var(--border);
-            border-radius: 12px; font-size: 13.5px; background: var(--bg-surface);
-        }
+        .input-box { width: 100%; padding: 10px 13px; border: 1px solid var(--border); border-radius: 12px; font-size: 13.5px; background: var(--bg-surface); }
         .btn-primary {
             background: var(--royal); color: #fff; border: none; padding: 10px 20px;
             border-radius: 12px; font-size: 13.5px; font-weight: 700; cursor: pointer;
@@ -94,17 +78,13 @@
 
         .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 16px; }
         @media (max-width: 780px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-        .kpi-box {
-            background: var(--bg-surface); border: 1px solid var(--border);
-            border-radius: 16px; padding: 16px;
-        }
+        .kpi-box { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
         .kpi-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
         .kpi-val { font-size: 21px; font-weight: 700; color: var(--navy); margin-top: 4px; }
 
         .link-copy-bar {
             display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-            background: #EFF6FF; border: 1px solid #BFDBFE;
-            padding: 12px 14px; border-radius: 14px; margin-top: 14px;
+            background: #EFF6FF; border: 1px solid #BFDBFE; padding: 12px 14px; border-radius: 14px; margin-top: 14px;
         }
         .link-copy-bar input {
             flex: 1; min-width: 210px; border: none; background: transparent;
@@ -128,28 +108,24 @@
         </div>
     </header>
 
-    <!-- القائمة الجانبية الموحدة -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
     <aside class="side-drawer" id="sideDrawer">
         <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid var(--border);">
-            <strong style="color:var(--navy);">الأقسام والواجهات</strong>
+            <strong style="color:var(--navy);">أقسام منصة صدارة</strong>
             <button onclick="toggleDrawer(false)" style="border:none; background:var(--bg-surface); padding:4px 9px; border-radius:8px; cursor:pointer;">✕</button>
         </div>
-        <a href="index.html" class="drawer-link"><span><i class="fa-solid fa-store"></i> المتجر والمنتجات (الرئيسية)</span></a>
-        <a href="courses.html" class="drawer-link"><span><i class="fa-solid fa-graduation-cap"></i> الدورات التدريبية</span></a>
-        <a href="affiliate.html" class="drawer-link active"><span><i class="fa-solid fa-handshake"></i> بوابة المسوّقين بالعمولة</span></a>
-        <a href="jobs.html" class="drawer-link"><span><i class="fa-solid fa-briefcase"></i> الوظائف والكفاءات</span></a>
-        <a href="blog.html" class="drawer-link"><span><i class="fa-solid fa-newspaper"></i> المدونة والمقالات</span></a>
-        <a href="control.html" class="drawer-link"><span><i class="fa-solid fa-sliders"></i> لوحة التحكم والإدارة</span></a>
+        <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات (الرئيسية)</a>
+        <a href="courses.html" class="drawer-link"><i class="fa-solid fa-graduation-cap"></i> الدورات التدريبية</a>
+        <a href="affiliate.html" class="drawer-link active"><i class="fa-solid fa-handshake"></i> بوابة المسوّقين بالعمولة</a>
+        <a href="blog.html" class="drawer-link"><i class="fa-solid fa-newspaper"></i> المدونة والمقالات</a>
     </aside>
 
-    <!-- قسم البطل وحاسبة الأرباح -->
     <section class="hero">
         <div class="hero-inner">
             <div>
                 <span style="background:rgba(16,185,129,0.18); color:#6EE7B7; padding:5px 12px; border-radius:99px; font-size:12px; font-weight:700;">نظام شركاء النجاح</span>
                 <h1 style="font-size:28px; margin:10px 0;">ضاعف دخلك عبر التسويق لمنتجات ودورات «صدارة»</h1>
-                <p style="color:#CBD5E1; font-size:14px;">رابط إحالة واحد يمنحك عمولة تلقائية على كل عملية شراء منتج أو اشتراك دورة يتم اعتماده، مع لوحة متابعة وتصفية شهرية واضحة.</p>
+                <p style="color:#CBD5E1; font-size:14px;">رابط إحالة واحد يمنحك عمولة تلقائية على كل عملية شراء منتج أو اشتراك دورة يتم اعتماده، مع لوحة متابعة وتصفية واضحة.</p>
             </div>
 
             <div class="calc-card">
@@ -167,7 +143,6 @@
     </section>
 
     <main class="container">
-        <!-- تسجيل أو فتح لوحة المسوق -->
         <section class="card">
             <h2 style="font-size:18px; color:var(--navy); margin-bottom:6px;">الدخول أو التسجيل الفوري كمسوّق</h2>
             <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">أدخل اسمك ورقم هاتفك لاستخراج رابط الإحالة الخاص بك أو استعراض لوحة أرباحك الحالية.</p>
@@ -185,11 +160,11 @@
 
                 <div class="kpi-grid">
                     <div class="kpi-box">
-                        <div class="kpi-label">المستحقات المعلقة (الشهر الحالي)</div>
+                        <div class="kpi-label">المستحقات المعلقة</div>
                         <div class="kpi-val" style="color:var(--green);" id="kpiPending">0 YER</div>
                     </div>
                     <div class="kpi-box">
-                        <div class="kpi-label">الأرباح المصروفة (المصفّاة)</div>
+                        <div class="kpi-label">الأرباح المصروفة</div>
                         <div class="kpi-val" style="color:var(--royal);" id="kpiSettled">0 YER</div>
                     </div>
                     <div class="kpi-box">
@@ -310,7 +285,7 @@
                     <td>${o.product_title || '-'}</td>
                     <td>${o.customer_name || '-'}</td>
                     <td>${o.total_price || 0} YER</td>
-                    <td><b>${o.status || 'قيد المراجعة'}</b></td>
+                    <td><b>${o.status === 'approved' ? 'معتمد ✅' : (o.status === 'rejected' ? 'مرفوض ❌' : 'قيد المراجعة ⏳')}</b></td>
                 </tr>
             `).join('') || '<tr><td colspan="4">لا توجد طلبات مسجلة عبر رابطك بعد.</td></tr>';
 
