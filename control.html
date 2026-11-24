@@ -3,1115 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم والإدارة المطلقة | منصة صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>بوابة الإدارة والربط المالي | صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --primary: #0f2347;
-            --dark: #0a1324;
-            --gold: #d4af37;
-            --green: #10b981;
-            --red: #ef4444;
-            --orange: #f59e0b;
-            --blue: #0284c7;
-            --bg: #f1f5f9;
-            --card: #ffffff;
-            --border: #e2e8f0;
+            --navy: #0F172A;
+            --royal: #2563EB;
+            --green: #10B981;
+            --red: #EF4444;
+            --gold: #F59E0B;
+            --bg: #F8FAFC;
+            --border: #E2E8F0;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: #0f172a; padding: 14px; padding-bottom: 80px; }
-
-        .admin-header {
-            background: var(--dark);
-            color: #fff;
-            padding: 16px 18px;
-            border-radius: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-            border-bottom: 3px solid var(--gold);
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; }
+        body { background: var(--bg); color: var(--navy); padding: 16px; }
+        .container { max-width: 1120px; margin: 0 auto; display: grid; gap: 18px; }
+        .header {
+            background: var(--navy); color: #fff; padding: 18px 22px; border-radius: 18px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
         }
-        .admin-header h1 { font-size: 16px; font-weight: 900; color: var(--gold); }
-        .store-btn {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            text-decoration: none;
-            padding: 8px 14px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 900;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .tabs-bar {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            margin-bottom: 16px;
-            padding-bottom: 4px;
-        }
-        .tab-btn {
-            background: #fff;
-            border: 1px solid var(--border);
-            color: var(--primary);
-            padding: 9px 14px;
-            border-radius: 11px;
-            font-size: 12px;
-            font-weight: 900;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .tab-btn.active {
-            background: var(--primary);
-            color: var(--gold);
-            border-color: var(--primary);
-        }
-
-        .sections-stack {
-            max-width: 1020px;
-            margin: 0 auto;
-            display: grid;
-            gap: 18px;
-        }
-
-        .section-block {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 18px;
-            box-shadow: 0 4px 14px rgba(15,23,42,0.04);
-        }
-        .section-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 12px;
-            margin-bottom: 14px;
-            border-bottom: 2px solid #f1f5f9;
-        }
-        .section-head h2 {
-            font-size: 15.5px;
-            font-weight: 900;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .count-badge {
-            background: var(--primary);
-            color: var(--gold);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11.5px;
-            font-weight: 900;
-        }
-
-        label { display: block; font-size: 11.5px; font-weight: 900; color: #334155; margin: 8px 0 4px; }
+        .card { background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 18px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
         input, select, textarea {
-            width: 100%;
-            padding: 9px 11px;
-            border: 1px solid #cbd5e1;
-            border-radius: 9px;
-            font-size: 12.5px;
-            font-weight: 700;
-            background: #f8fafc;
-            outline: none;
+            width: 100%; padding: 9px 12px; border: 1px solid var(--border);
+            border-radius: 10px; font-size: 13px; background: var(--bg);
         }
-
-        /* شريط الأزرار الثلاثة الرسمية داخل كل قسم */
-        .crud-toolbar {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 12px;
+        .btn { padding: 9px 14px; border: none; border-radius: 10px; font-weight: 700; font-size: 12.5px; cursor: pointer; }
+        .btn-royal { background: var(--royal); color: #fff; }
+        .btn-green { background: var(--green); color: #fff; }
+        .btn-red { background: var(--red); color: #fff; }
+        .btn-gold { background: var(--gold); color: var(--navy); }
+        .order-row {
+            border: 1px solid var(--border); border-radius: 14px; padding: 14px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+            margin-bottom: 10px; background: #fff;
         }
-        .btn-crud {
-            border: none;
-            padding: 10px 8px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 900;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: 0.2s;
-        }
-        .btn-add { background: var(--green); color: #fff; }
-        .btn-edit-save { background: var(--orange); color: #0f172a; }
-        .btn-del-selected { background: var(--red); color: #fff; }
-
-        .sub-posts-title {
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px dashed #cbd5e1;
-            font-size: 13px;
-            font-weight: 900;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .post-card {
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .post-title { font-size: 13px; font-weight: 900; color: var(--primary); }
-        .post-meta { font-size: 11.5px; color: #475569; line-height: 1.6; }
-
-        .post-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .btn-mini {
-            border: none;
-            padding: 6px 11px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 900;
-            cursor: pointer;
-            color: #fff;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .mini-edit { background: var(--orange); color: #0f172a; }
-        .mini-del { background: var(--red); }
-        .mini-green { background: var(--green); }
-        .mini-blue { background: var(--blue); }
-
-        .receipt-box {
-            background: #fff;
-            border: 1px dashed #94a3b8;
-            border-radius: 10px;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .receipt-thumb {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 1px solid #cbd5e1;
-        }
-
-        .modal-bg {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(10, 19, 36, 0.8);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-        }
-        .modal-box {
-            background: #fff;
-            border-radius: 14px;
-            max-width: 520px;
-            width: 100%;
-            padding: 14px;
-            text-align: center;
-        }
-        .modal-box img { width: 100%; max-height: 75vh; object-fit: contain; border-radius: 10px; }
+        .badge { padding: 3px 10px; border-radius: 99px; font-size: 11.5px; font-weight: 700; }
     </style>
 </head>
 <body>
 
-    <header class="admin-header">
-        <h1><i class="fa-solid fa-bolt"></i> لوحة التحكم والإدارة المطلقة</h1>
-        <a href="index.html" class="store-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
-    </header>
-
-    <div class="tabs-bar">
-        <button class="tab-btn active" onclick="filterBlock('all', this)">الكل</button>
-        <button class="tab-btn" onclick="filterBlock('orders', this)">الطلبات والسندات</button>
-        <button class="tab-btn" onclick="filterBlock('products', this)">المنتجات</button>
-        <button class="tab-btn" onclick="filterBlock('slider', this)">السلايدر</button>
-        <button class="tab-btn" onclick="filterBlock('courses', this)">الدورات</button>
-        <button class="tab-btn" onclick="filterBlock('promos', this)">أكواد الخصم</button>
-        <button class="tab-btn" onclick="filterBlock('jobs', this)">الوظائف</button>
-        <button class="tab-btn" onclick="filterBlock('talents', this)">الكفاءات</button>
-        <button class="tab-btn" onclick="filterBlock('blog', this)">المدونة</button>
-        <button class="tab-btn" onclick="filterBlock('affiliates', this)">المسوقون</button>
-    </div>
-
-    <div class="sections-stack">
-
-        <!-- 1. قسم الطلبات الواردة والمنجزة -->
-        <section class="section-block" data-block="orders">
-            <div class="section-head">
-                <h2><i class="fa-solid fa-cart-shopping"></i> قسم الطلبات والسندات</h2>
-                <span class="count-badge" id="ordersCountBadge">0</span>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1 style="font-size:20px;">لوحة التحكم والربط المالي الآلي — صدارة</h1>
+                <p style="font-size:12.5px; color:#CBD5E1;">إدارة المدفوعات الموحدة (المتجر + الدورات) + احتساب عمولات المسوّقين تلقائياً</p>
             </div>
-            <div class="crud-toolbar">
-                <button type="button" class="btn-crud btn-add" onclick="loadOrders()">تحديث القائمة 🔄</button>
-                <button type="button" class="btn-crud btn-edit-save" onclick="approveAllPending()">اعتماد المحدد/الكل ✅</button>
-                <button type="button" class="btn-crud btn-del-selected" onclick="deleteDoneOrders()">حذف المنجزة 🗑️</button>
-            </div>
-            <div class="sub-posts-title">منشورات الطلبات الواردة والمنجزة:</div>
-            <div id="ordersSectionList">جاري التحميل...</div>
-        </section>
-
-        <!-- 2. قسم المنتجات -->
-        <section class="section-block" data-block="products">
-            <div class="section-head">
-                <h2><i class="fa-solid fa-box-open"></i> قسم المنتجات والخدمات</h2>
-                <span class="count-badge" id="prodCountBadge">0</span>
-            </div>
-            <input type="hidden" id="editProdId">
-            <label>اسم المنتج / الخدمة</label>
-            <input type="text" id="prodTitle" placeholder="مثال: سماعة أذن سلكية">
-            <label>التصنيف</label>
-            <select id="prodCat">
-                <option value="جوالات">جوالات</option>
-                <option value="اكسسوارات">اكسسوارات</option>
-                <option value="إلكترونيات">إلكترونيات</option>
-                <option value="حقائب">حقائب</option>
-                <option value="عطور">عطور</option>
-                <option value="ملابس">ملابس</option>
-            </select>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div><label>السعر الحالي (YER)</label><input type="text" id="prodPrice" placeholder="450"></div>
-                <div><label>السعر السابق (اختياري)</label><input type="text" id="prodOldPrice" placeholder="600"></div>
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div><label>الخصم (مثال: 20%)</label><input type="text" id="prodDiscount" placeholder="20%"></div>
-                <div><label>عمولة المسوق (YER)</label><input type="number" id="prodCommission" placeholder="50"></div>
-            </div>
-            <label>الوصف</label>
-            <textarea id="prodDesc" rows="2" placeholder="تفاصيل المنتج..."></textarea>
-            <label>صورة المنتج</label>
-            <input type="file" id="prodImg" accept="image/*">
-
-            <div class="crud-toolbar">
-                <button type="button" class="btn-crud btn-add" onclick="saveProduct(false)"><i class="fa-solid fa-plus"></i> إضافة</button>
-                <button type="button" class="btn-crud btn-edit-save" onclick="saveProduct(true)"><i class="fa-solid fa-pen"></i> تعديل</button>
-                <button type="button" class="btn-crud btn-del-selected" onclick="deleteActiveOrReset('products')"><i class="fa-solid fa-trash"></i> حذف</button>
-            </div>
-
-            <div class="sub-posts-title">منشورات المنتجات المضافة:</div>
-            <div id="productsSectionList">جاري التحميل...</div>
-        </section>
-
-        <!-- 3. قسم السلايدر -->
-        <section class="section-block" data-block="slider">
-            <div class="section-head">
-                <h2><i class="fa-solid fa-images"></i> قسم السلايدر والبنرات</h2>
-                <span class="count-badge" id="sliderCountBadge">0</span>
-            </div>
-            <input type="hidden" id="editSliderIndex">
-            <label>اختر صورة البنر</label>
-            <input type="file" id="bannerUpload" accept="image/*">
-
-            <div class="crud-toolbar">
-                <button type="button" class="btn-crud btn-add" onclick="saveBanner(false)"><i class="fa-solid fa-plus"></i> إضافة</button>
-                <button type="button" class="btn-crud btn-edit-save" onclick="saveBanner(true)"><i class="fa-solid fa-pen"></i> تعديل</button>
-                <button type="button" class="btn-crud btn-del-selected" onclick="toggleSliderVisibility()"><i class="fa-solid fa-eye-slash"></i> إظهار/إخفاء</button>
-            </div>
-
-            <div class="sub-posts-title">منشورات البنرات في السلايدر:</div>
-            <div id="sliderSectionList">جاري التحميل...</div>
-        </section>
-
-        <!-- 4. قسم الدورات -->
-        <section class="section-block" data-block="courses">
-            <div class="section-head">
-                <h2><i class="fa-solid fa-graduation-cap"></i> قسم الدورات التدريبية</h2>
-                <span class="count-badge" id="coursesCountBadge">0</span>
-            </div>
-            <input type="hidden" id="editCourseId">
-            <label>عنوان الدورة</label>
-            <input type="text" id="courseTitle" placeholder="دبلوم التسويق الرقمي">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div><label>المدرب / الجهة</label><input type="text" id="courseInstructor" placeholder="أكاديمية صدارة"></div>
-                <div><label>السعر (اتركه فارغاً أو 0 أو "مجاني" للمجانية)</label><input type="text" id="coursePrice" placeholder="مجاني أو 5000"></div>
-            </div>
-            <label>رفع فيديو الدورة من الجوال (اختياري)</label>
-            <input type="file" id="courseVideoFile" accept="video/*">
-            <label>أو رابط فيديو يوتيوب / محتوى الدورة (اختياري)</label>
-            <input type="text" id="courseUrl" placeholder="https://www.youtube.com/watch?v=...">
-            <label>وصف الدورة ومحاورها</label>
-            <textarea id="courseDesc" rows="2" placeholder="محاور الدورة..."></textarea>
-            <label>صورة غلاف الدورة</label>
-            <input type="file" id="courseImg" accept="image/*">
-
-            <div class="crud-toolbar">
-                <button type="button" class="btn-crud btn-add" onclick="saveCourse(false)"><i class="fa-solid fa-plus"></i> إضافة</button>
-                <button type="button" class="btn-crud btn-edit-save" onclick="saveCourse(true)"><i class="fa-solid fa-pen"></i> تعديل</button>
-                <button type="button" class="btn-crud btn-del-selected" onclick="deleteActiveOrReset('courses')"><i class="fa-solid fa-trash"></i> حذف</button>
-            </div>
-
-            <div class="sub-posts-title">منشورات الدورات التدريبية:</div>
-            <div id="coursesSectionList">جاري التحميل...</div>
-        </section>
-
-        <!-- 5. قسم أكواد الخصم -->
-        <section class="section-block" data-block="promos">
-            <div class="section-head">
-                <h2><i class="fa-solid fa-ticket"></i> قسم أكواد الخصم والأكواد المجانية الشاملة</h2>
-                <span class="count-badge" id="promosCountBadge">0</span>
-            </div>
-            <input type="hidden" id="editPromoId">
-            <label>رمز الكود</label>
-            <input type="text" id="promoCodeField" placeholder="مثال: FREE2026 أو VIP50" style="text-transform:uppercase;">
-            <label>نوع الكود</label>
-            <select id="promoType">
-                <option value="free">مجاني 100% (يفتح الدورة مجاناً)</option>
-                <option value="percent">خصم نسبة مئوية (%)</option>
-                <option value="fixed">خصم مبلغ ثابت (YER)</option>
-            </select>
-            <label>قيمة الخصم</label>
-            <input type="number" id="promoValue" value="100">
-            <label>الشمولية</label>
-            <select id="promoScope">
-                <option value="all">شامل للدورات والمنتجات</option>
-                <option value="courses">للدورات فقط</option>
-                <option value="products">للمنتجات فقط</option>
-            </select>
-            <label>رقم ID لدورة/منتج محدد (اختياري)</label>
-            <input type="text" id="promoTargetId" placeholder="اتركه فارغاً ليشمل الكل">
-            <label>رقم هاتف عميل دائم (اختياري)</label>
-            <input type="text" id="promoPhone" placeholder="مثال: 780568507">
-
-            <div class="crud-toolbar">
-                <button type="button" class="btn-crud btn-add" onclick="savePromoCode(false)"><i class="fa-solid fa-plus"></i> إضافة</button>
-                <button type="button" class="btn-crud btn-edit-save" onclick="savePromoCode(true)"><i class="fa-solid fa-pen"></i> تعديل</button>
-                <button type="button" class="btn-crud btn-del-selected" onclick="deleteActiveOrReset('promos')"><i class="fa-solid fa-trash"></i> حذف</button>
-            </div>
-
-            <div class="sub-posts-title">منشورات أكواد الخصم:</div>
-            <div id="promosSectionList">جاري التحميل...</div>
-        </section>
-
-        <!-- 6. قسم الوظائف -->
-        <section class="section-block" data-block="jobs">
-            <div class="section-head">
-                <h2><i class="fa-solid fa-briefcase"></i> قسم الوظائف الشاغرة</h2>
-                <span class="count-badge" id="jobsCountBadge">0</span>
-            </div>
-            <input type="hidden" id="editJobId">
-            <label>المسمى الوظيفي</label>
-            <input type="text" id="jobTitle" placeholder="مثال: مصمم جرافيك / محاسب">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div><label>الجهة / الشركة</label><input type="text" id="jobCompany" placeholder="شركة صدارة"></div>
-                <div><label>المدينة / الموقع</label><input type="text" id="jobLocation" placeholder="ذمار"></div>
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div><label>نوع الدوام</label><input type="text" id="jobType" placeholder="دوام كامل / عن بعد"></div>
-                <div><label>رقم التواصل (واتساب)</label><input type="text" id="jobPhone" value="967780568507"></div>
-            </div>
-            <label>تفاصيل الوظيفة</label>
-            <textarea id="jobDesc" rows="2" placeholder="المتطلبات والمهام..."></textarea>
-
-            <div class="crud-toolbar">
-                <button type="button" class="btn-crud btn-add" onclick="saveJob(false)"><i class="fa-solid fa-plus"></i> إضافة</button>
-                <button type="button" class="btn-crud btn-edit-save" onclick="saveJob(true)"><i class="fa-solid fa-pen"></i> تعديل</button>
-                <button type="button" class="btn-crud btn-del-selected" onclick="deleteActiveOrReset('jobs')"><i class="fa-solid fa-trash"></i> حذف</button>
-            </div>
-
-            <div class="sub-posts-title">منشورات الوظائف:</div>
-            <div id="jobsSectionList">جاري التحميل...</div>
-        </section>
-
-        <!-- 7. قسم الكفاءات -->
-        <section class="section-block" data-block="talents">
-            <div class="section-head">
-                <h2><i class="fa-solid fa-users"></i> قسم الكفاءات والخبراء</h2>
-                <span class="count-badge" id="talentsCountBadge">0</span>
-            </div>
-            <input type="hidden" id="editTalentId">
-            <label>الاسم الكامل</label>
-            <input type="text" id="talentName" placeholder="الاسم الكامل">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div><label>التخصص</label><input type="text" id="talentSpec" placeholder="مطور مواقع / تسويق"></div>
-                <div><label>رقم الواتساب</label><input type="text" id="talentPhone" value="967780568507"></div>
-            </div>
-            <label>الشارة الزرقاء</label>
-            <select id="talentVerified">
-                <option value="true">موثق بالشارة الزرقاء ☑️</option>
-                <option value="false">بدون شارة</option>
-            </select>
-            <label>الخبرات</label>
-            <textarea id="talentExp" rows="2" placeholder="نبذة عن الخبرات..."></textarea>
-            <label>الصورة الشخصية (اختياري)</label>
-            <input type="file" id="talentImg" accept="image/*">
-
-            <div class="crud-toolbar">
-                <button type="button" class="btn-crud btn-add" onclick="saveTalent(false)"><i class="fa-solid fa-plus"></i> إضافة</button>
-                <button type="button" class="btn-crud btn-edit-save" onclick="saveTalent(true)"><i class="fa-solid fa-pen"></i> تعديل</button>
-                <button type="button" class="btn-crud btn-del-selected" onclick="deleteActiveOrReset('talents')"><i class="fa-solid fa-trash"></i> حذف</button>
-            </div>
-
-            <div class="sub-posts-title">منشورات الكفاءات:</div>
-            <div id="talentsSectionList">جاري التحميل...</div>
-        </section>
-
-        <!-- 8. قسم المدونة -->
-        <section class="section-block" data-block="blog">
-            <div class="section-head">
-                <h2><i class="fa-solid fa-newspaper"></i> قسم المدونة والمقالات</h2>
-                <span class="count-badge" id="blogCountBadge">0</span>
-            </div>
-            <input type="hidden" id="editArticleId">
-            <label>عنوان المقال</label>
-            <input type="text" id="artTitle" placeholder="عنوان المقال...">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div><label>التصنيف</label><input type="text" id="artCat" placeholder="نصائح مهنية / تقنية"></div>
-                <div><label>ملخص قصير</label><input type="text" id="artSummary" placeholder="نبذة مختصرة"></div>
-            </div>
-            <label>محتوى المقال</label>
-            <textarea id="artContent" rows="3" placeholder="نص المقال بالكامل..."></textarea>
-            <label>صورة المقال</label>
-            <input type="file" id="artImg" accept="image/*">
-
-            <div class="crud-toolbar">
-                <button type="button" class="btn-crud btn-add" onclick="saveArticle(false)"><i class="fa-solid fa-plus"></i> إضافة</button>
-                <button type="button" class="btn-crud btn-edit-save" onclick="saveArticle(true)"><i class="fa-solid fa-pen"></i> تعديل</button>
-                <button type="button" class="btn-crud btn-del-selected" onclick="deleteActiveOrReset('blog')"><i class="fa-solid fa-trash"></i> حذف</button>
-            </div>
-
-            <div class="sub-posts-title">منشورات المدونة:</div>
-            <div id="blogSectionList">جاري التحميل...</div>
-        </section>
-
-        <!-- 9. قسم المسوقين -->
-        <section class="section-block" data-block="affiliates">
-            <div class="section-head">
-                <h2><i class="fa-solid fa-handshake"></i> قسم المسوقين (الأفلييت)</h2>
-                <span class="count-badge" id="affCountBadge">0</span>
-            </div>
-            <input type="hidden" id="editAffId">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div><label>اسم المسوق</label><input type="text" id="affName" placeholder="الاسم الكامل"></div>
-                <div><label>رقم الهاتف</label><input type="text" id="affPhone" placeholder="780568507"></div>
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div><label>كود الإحالة</label><input type="text" id="affCode" placeholder="SDR123"></div>
-                <div><label>الأرباح (YER)</label><input type="number" id="affEarnings" value="0"></div>
-            </div>
-
-            <div class="crud-toolbar">
-                <button type="button" class="btn-crud btn-add" onclick="saveAffiliate(false)"><i class="fa-solid fa-plus"></i> إضافة</button>
-                <button type="button" class="btn-crud btn-edit-save" onclick="saveAffiliate(true)"><i class="fa-solid fa-pen"></i> تعديل</button>
-                <button type="button" class="btn-crud btn-del-selected" onclick="deleteActiveOrReset('affiliates')"><i class="fa-solid fa-trash"></i> حذف</button>
-            </div>
-
-            <div class="sub-posts-title">منشورات المسوقين المسجلين:</div>
-            <div id="affSectionList">جاري التحميل...</div>
-        </section>
-
-    </div>
-
-    <!-- نافذة معاينة السند -->
-    <div class="modal-bg" id="receiptModal" onclick="this.style.display='none'">
-        <div class="modal-box" onclick="event.stopPropagation()">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <b style="font-size:13px; color:var(--primary);">معاينة سند التحويل</b>
-                <button onclick="document.getElementById('receiptModal').style.display='none'" style="border:none; background:#f1f5f9; padding:5px 10px; border-radius:8px; cursor:pointer; font-weight:900;">✕</button>
-            </div>
-            <img id="receiptFullImg" src="" alt="سند التحويل">
+            <button class="btn btn-gold" onclick="refreshAll()">تحديث البيانات 🔄</button>
         </div>
+
+        <!-- 1. باب الدفع الآلي الموحد (طلبات المنتجات واشتراكات الدورات) -->
+        <section class="card">
+            <h2 style="font-size:17px; margin-bottom:12px;">💳 باب الدفع والاعتماد الآلي (المنتجات والدورات)</h2>
+            <div id="unifiedPaymentsList">جاري تحميل المدفوعات...</div>
+        </section>
+
+        <!-- 2. إضافة دورة جديدة (رفع فيديو من الجوال أو رابط يوتيوب) -->
+        <section class="card">
+            <h2 style="font-size:17px; margin-bottom:12px;">🎓 إضافة دورة تدريبية</h2>
+            <div class="grid-2">
+                <input type="text" id="cTitle" placeholder="عنوان الدورة">
+                <input type="text" id="cInstructor" placeholder="اسم المدرب">
+                <select id="cType" onchange="document.getElementById('cPrice').disabled = (this.value==='free')">
+                    <option value="paid">مدفوعة</option>
+                    <option value="free">مجانية</option>
+                </select>
+                <input type="number" id="cPrice" placeholder="السعر بالريال (مثال: 1500)">
+                <input type="text" id="cVideoUrl" placeholder="رابط يوتيوب (اختياري إذا سترفع فيديو من الجوال)">
+                <div>
+                    <label style="font-size:11px; font-weight:700;">رفع فيديو من الجوال (MP4):</label>
+                    <input type="file" id="cVideoFile" accept="video/*">
+                </div>
+                <div>
+                    <label style="font-size:11px; font-weight:700;">صورة غلاف الدورة:</label>
+                    <input type="file" id="cImgFile" accept="image/*">
+                </div>
+                <textarea id="cDesc" placeholder="وصف الدورة..." rows="2"></textarea>
+            </div>
+            <button class="btn btn-royal" style="margin-top:10px;" onclick="saveNewCourse()">حفظ ونشر الدورة ✅</button>
+            <div id="cSaveStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
+        </section>
+
+        <!-- 3. أكواد الخصم والأكواد المجانية -->
+        <section class="card">
+            <h2 style="font-size:17px; margin-bottom:12px;">🎟️ أكواد الخصم والأكواد المجانية للدورات</h2>
+            <div class="grid-2">
+                <input type="text" id="pCode" placeholder="الكود (مثال: FREE2026)" style="text-transform:uppercase;">
+                <select id="pType">
+                    <option value="free">مجاني 100%</option>
+                    <option value="percent">نسبة خصم (%)</option>
+                    <option value="fixed">مبلغ خصم ثابت</option>
+                </select>
+                <input type="number" id="pVal" placeholder="قيمة الخصم (مثال: 50)">
+                <button class="btn btn-green" onclick="createPromoCode()">إنشاء الكود ➕</button>
+            </div>
+        </section>
+
+        <!-- 4. التسوية الشهرية والترحيل السنوي للمسوّقين -->
+        <section class="card">
+            <h2 style="font-size:17px; margin-bottom:12px;">🤝 إدارة المسوّقين والتسوية الشهرية / السنوية</h2>
+            <div id="affiliatesAdminList">جاري تحميل المسوّقين...</div>
+        </section>
     </div>
 
     <script>
-        (function checkAdminPass() {
-            if (localStorage.getItem('sadara_admin_auth') !== 'Sdr@2026Admin') {
-                const p = prompt("أدخل كلمة مرور لوحة التحكم:");
-                if (p === 'Sdr@2026Admin') {
-                    localStorage.setItem('sadara_admin_auth', 'Sdr@2026Admin');
-                } else {
-                    alert("كلمة المرور غير صحيحة!");
-                    window.location.href = 'index.html';
-                }
-            }
-        })();
-
         const db = supabase.createClient("https://lvutrzswngpkjfamgact.supabase.co", "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG");
         const BUCKET = "platform-files";
 
-        let cache = {
-            products: [],
-            courses: [],
-            promos: [],
-            jobs: [],
-            talents: [],
-            articles: [],
-            affiliates: [],
-            sliderImgs: []
-        };
-
-        function filterBlock(sec, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.querySelectorAll('.section-block').forEach(s => {
-                s.style.display = (sec === 'all' || s.dataset.block === sec) ? 'block' : 'none';
-            });
-        }
-
-        function openReceiptModal(url) {
-            document.getElementById('receiptFullImg').src = url;
-            document.getElementById('receiptModal').style.display = 'flex';
-        }
-
-        async function uploadFile(file, folder) {
-            if (!file) return '';
-            const path = `${folder}/${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-            const { error } = await db.storage.from(BUCKET).upload(path, file);
-            if (error) return '';
-            const { data } = db.storage.from(BUCKET).getPublicUrl(path);
-            return data.publicUrl;
-        }
-
-        /* 1. الطلبات */
-        async function loadOrders() {
-            const { data } = await db.from('orders').select('*').order('id', { ascending: false });
-            const orders = data || [];
-            document.getElementById('ordersCountBadge').textContent = orders.length;
-            const box = document.getElementById('ordersSectionList');
-            if (!orders.length) { box.innerHTML = '<p class="post-meta">لا توجد طلبات حالياً.</p>'; return; }
+        async function loadUnifiedPayments() {
+            const { data: orders } = await db.from('orders').select('*').order('id', { ascending: false });
+            const box = document.getElementById('unifiedPaymentsList');
+            if (!orders || !orders.length) { box.innerHTML = '<p>لا توجد طلبات دفع حالياً.</p>'; return; }
 
             box.innerHTML = orders.map(o => {
-                const receipt = o.receipt_url || o.receipt || '';
-                const receiptHtml = receipt
-                    ? `<div class="receipt-box">
-                        <img src="${receipt}" class="receipt-thumb" onclick="openReceiptModal('${receipt}')">
-                        <button type="button" class="btn-mini mini-blue" onclick="openReceiptModal('${receipt}')">معاينة السند 🖼️ </button>
-                       </div>`
-                    : `<div class="post-meta">💳 السند: بدون سند مرفق</div>`;
+                const isCourse = o.item_type === 'course';
+                const statusBadge = o.status === 'approved'
+                    ? '<span class="badge" style="background:#ECFDF5; color:#059669;">مقبول ومفعّل ✅</span>'
+                    : (o.status === 'rejected'
+                        ? '<span class="badge" style="background:#FEF2F2; color:#DC2626;">مرفوض ❌</span>'
+                        : '<span class="badge" style="background:#FFFBEB; color:#B45309;">بانتظار الاعتماد ⏳</span>');
 
                 return `
-                <div class="post-card">
-                    <div class="post-title">📦 ${o.product_title || 'طلب'} (${o.total_price || 0} YER)</div>
-                    <div class="post-meta">👤 العميل: <b>${o.customer_name || ''}</b> (${o.customer_phone || ''}) | الحالة: <b>${o.status || 'قيد التوثيق'}</b> | كود: <b>${o.ref_code || 'مباشر'}</b></div>
-                    ${receiptHtml}
-                    <div class="post-actions">
-                        <a href="https://wa.me/${String(o.customer_phone || '').replace(/[^0-9]/g,'')}" target="_blank" class="btn-mini mini-green">واتساب 💬</a>
-                        <button class="btn-mini mini-green" onclick="approveOrder(${o.id}, '${o.ref_code || ''}')">اعتماد ✅</button>
-                        <button class="btn-mini mini-del" onclick="deleteById('orders', ${o.id}, loadOrders)">حذف 🗑️</button>
+                <div class="order-row">
+                    <div>
+                        <div style="font-weight:700; font-size:14px;">
+                            ${isCourse ? '🎓' : '🛒'} ${o.product_title} — <span style="color:var(--royal);">${o.total_price} YER</span>
+                        </div>
+                        <div style="font-size:12.5px; color:#475569; margin-top:3px;">
+                            العميل: <b>${o.customer_name}</b> | الهاتف: <b>${o.customer_phone}</b>
+                            ${o.ref_code ? ` | كود المسوّق: <b style="color:#0D9488;">${o.ref_code}</b>` : ''}
+                        </div>
+                        <div style="margin-top:6px; display:flex; gap:10px; align-items:center;">
+                            ${statusBadge}
+                            ${o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="font-size:12px; font-weight:700; color:var(--royal);">عرض صورة السند 🧾</a>` : ''}
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn btn-green" onclick="approveUnifiedOrder(${o.id}, '${o.item_type || 'product'}', '${o.item_id || ''}', '${o.customer_phone || ''}', '${o.ref_code || ''}', ${Number(o.total_price || 0)})">قبول وتفعيل آلي ✅</button>
+                        <button class="btn btn-red" onclick="rejectUnifiedOrder(${o.id}, '${o.item_type || 'product'}', '${o.item_id || ''}', '${o.customer_phone || ''}')">رفض ❌</button>
                     </div>
                 </div>`;
             }).join('');
         }
 
-        async function approveOrder(id, refCode) {
-            await db.from('orders').update({ status: 'تم الاعتماد' }).eq('id', id);
-            if (refCode) {
+        async function approveUnifiedOrder(orderId, itemType, itemId, customerPhone, refCode, amount) {
+            // 1. اعتماد الطلب في جدول orders
+            await db.from('orders').update({ status: 'approved' }).eq('id', orderId);
+
+            // 2. إذا كان دورة: فتح الدورة آلياً للطالب في course_enrollments
+            if (itemType === 'course' && itemId && customerPhone) {
+                await db.from('course_enrollments')
+                    .update({ status: 'approved', approved_at: new Date().toISOString() })
+                    .eq('course_id', Number(itemId))
+                    .eq('student_phone', customerPhone);
+            }
+
+            // 3. إذا كان هناك كود مسوّق: إضافة العمولة آلياً لرصيد المسوّق
+            if (refCode && refCode !== 'null' && refCode.trim() !== '') {
                 const { data: aff } = await db.from('affiliates').select('*').eq('ref_code', refCode).maybeSingle();
                 if (aff) {
+                    const commRate = Number(aff.commission_rate || 10) / 100;
+                    const earned = Math.max(100, Math.round(amount * commRate));
                     await db.from('affiliates').update({
-                        total_sales: (aff.total_sales || 0) + 1,
-                        total_earnings: Number(aff.total_earnings || 0) + 100
+                        pending_earnings: Number(aff.pending_earnings || 0) + earned,
+                        total_earnings: Number(aff.total_earnings || 0) + earned,
+                        total_sales: Number(aff.total_sales || 0) + 1
                     }).eq('id', aff.id);
                 }
             }
-            loadOrders();
-            loadAffiliates();
+
+            alert('تم القبول وتفعيل الوصول واحتساب العمولة آلياً ✅');
+            refreshAll();
         }
 
-        async function approveAllPending() {
-            await db.from('orders').update({ status: 'تم الاعتماد' }).neq('status', 'تم الاعتماد');
-            loadOrders();
+        async function rejectUnifiedOrder(orderId, itemType, itemId, customerPhone) {
+            const reason = prompt('سبب الرفض (اختياري):', 'يرجى التأكد من وضوح السند والمبلغ');
+            if (reason === null) return;
+            await db.from('orders').update({ status: 'rejected' }).eq('id', orderId);
+            if (itemType === 'course' && itemId && customerPhone) {
+                await db.from('course_enrollments')
+                    .update({ status: 'rejected', reject_reason: reason })
+                    .eq('course_id', Number(itemId))
+                    .eq('student_phone', customerPhone);
+            }
+            refreshAll();
         }
 
-        async function deleteDoneOrders() {
-            await db.from('orders').delete().eq('status', 'تم الاعتماد');
-            loadOrders();
+        async function saveNewCourse() {
+            const title = document.getElementById('cTitle').value.trim();
+            const instructor = document.getElementById('cInstructor').value.trim() || 'صدارة';
+            const isFree = document.getElementById('cType').value === 'free';
+            const price = isFree ? '0' : (document.getElementById('cPrice').value.trim() || '0');
+            const description = document.getElementById('cDesc').value.trim();
+            let video_url = document.getElementById('cVideoUrl').value.trim();
+            const videoFile = document.getElementById('cVideoFile').files[0];
+            const imgFile = document.getElementById('cImgFile').files[0];
+            const st = document.getElementById('cSaveStatus');
+
+            if (!title) return alert('أدخل عنوان الدورة.');
+            st.textContent = 'جاري الرفع والحفظ...';
+
+            if (videoFile) {
+                const vPath = `courses_videos/v_${Date.now()}_${videoFile.name.replace(/\s+/g, '_')}`;
+                const { error } = await db.storage.from(BUCKET).upload(vPath, videoFile);
+                if (!error) video_url = db.storage.from(BUCKET).getPublicUrl(vPath).data.publicUrl;
+            }
+
+            let image = '';
+            if (imgFile) {
+                const iPath = `courses_images/i_${Date.now()}_${imgFile.name.replace(/\s+/g, '_')}`;
+                const { error } = await db.storage.from(BUCKET).upload(iPath, imgFile);
+                if (!error) image = db.storage.from(BUCKET).getPublicUrl(iPath).data.publicUrl;
+            }
+
+            await db.from('platform_courses').insert([{
+                title, instructor, is_free: isFree, price, description, video_url, image, is_active: true
+            }]);
+
+            st.style.color = 'var(--green)';
+            st.textContent = 'تم نشر الدورة بنجاح! 🎉';
         }
 
-        /* 2. المنتجات */
-        async function loadProducts() {
-            const { data } = await db.from('platform_services').select('*').order('id', { ascending: false });
-            cache.products = data || [];
-            document.getElementById('prodCountBadge').textContent = cache.products.length;
-            document.getElementById('productsSectionList').innerHTML = cache.products.map(p => `
-                <div class="post-card">
-                    <div class="post-title">${p.title} (#${p.id}) — ${p.price} YER</div>
-                    <div class="post-meta">التصنيف: ${p.category || '-'} | الخصم: ${p.discount || '-'}</div>
-                    <div class="post-actions">
-                        <button class="btn-mini mini-edit" onclick="fillProductEdit(${p.id})">تعديل ✏️</button>
-                        <button class="btn-mini mini-del" onclick="deleteById('platform_services', ${p.id}, loadProducts)">حذف 🗑️</button>
+        async function createPromoCode() {
+            const code = document.getElementById('pCode').value.trim().toUpperCase();
+            const discount_type = document.getElementById('pType').value;
+            const discount_value = Number(document.getElementById('pVal').value || 0);
+            if (!code) return alert('أدخل الكود.');
+            await db.from('promo_codes').insert([{ code, discount_type, discount_value, is_active: true }]);
+            alert(`تم إنشاء الكود ${code} ✅`);
+        }
+
+        async function loadAffiliatesAdmin() {
+            const { data: affs } = await db.from('affiliates').select('*').order('pending_earnings', { ascending: false });
+            document.getElementById('affiliatesAdminList').innerHTML = (affs || []).map(a => `
+                <div class="order-row">
+                    <div>
+                        <b>${a.full_name || a.name}</b> (${a.phone}) — كود: <b>${a.ref_code}</b><br>
+                        <span style="font-size:12.5px;">المعلق: <b style="color:var(--green);">${a.pending_earnings || 0} YER</b> | المصروف: <b>${a.settled_earnings || 0} YER</b></span>
                     </div>
+                    <button class="btn btn-royal" onclick="settleAffiliate(${a.id}, '${a.ref_code}', '${a.full_name || a.name}', ${Number(a.pending_earnings || 0)}, ${Number(a.settled_earnings || 0)})">تصفية وصرف المستحقات 💸</button>
                 </div>
-            `).join('') || '<p class="post-meta">لا توجد منتجات.</p>';
+            `).join('') || '<p>لا يوجد مسوقون مسجلون.</p>';
         }
 
-        function fillProductEdit(id) {
-            const p = cache.products.find(x => x.id === id);
-            if (!p) return;
-            document.getElementById('editProdId').value = p.id;
-            document.getElementById('prodTitle').value = p.title || '';
-            document.getElementById('prodCat').value = p.category || 'جوالات';
-            document.getElementById('prodPrice').value = p.price || '';
-            document.getElementById('prodOldPrice').value = p.old_price || '';
-            document.getElementById('prodDiscount').value = p.discount || '';
-            document.getElementById('prodCommission').value = p.affiliate_commission || '';
-            document.getElementById('prodDesc').value = p.description || '';
+        async function settleAffiliate(id, refCode, name, pending, settled) {
+            if (pending <= 0) return alert('لا توجد مستحقات معلقة للتصفية.');
+            if (!confirm(`تصفية وصرف مبلغ ${pending} YER للمسوّق ${name}؟`)) return;
+            await db.from('affiliates').update({ pending_earnings: 0, settled_earnings: settled + pending }).eq('id', id);
+            await db.from('affiliate_settlements').insert([{
+                affiliate_id: id, ref_code: refCode, affiliate_name: name,
+                settled_amount: pending, settlement_type: 'monthly',
+                period_month: new Date().toISOString().slice(0, 7), notes: 'تصفية شهرية معتمدة'
+            }]);
+            refreshAll();
         }
 
-        async function saveProduct(isEdit) {
-            const editId = document.getElementById('editProdId').value;
-            const title = document.getElementById('prodTitle').value.trim();
-            const price = document.getElementById('prodPrice').value.trim();
-            if (!title || !price) return alert('أدخل اسم المنتج والسعر');
-            const imgUrl = await uploadFile(document.getElementById('prodImg').files[0], 'products');
-            const payload = {
-                title,
-                category: document.getElementById('prodCat').value,
-                price,
-                old_price: document.getElementById('prodOldPrice').value.trim(),
-                discount: document.getElementById('prodDiscount').value.trim(),
-                affiliate_commission: Number(document.getElementById('prodCommission').value || 0),
-                description: document.getElementById('prodDesc').value.trim(),
-                is_active: true
-            };
-            if (imgUrl) payload.image = imgUrl;
-
-            if (isEdit && editId) {
-                await db.from('platform_services').update(payload).eq('id', editId);
-            } else {
-                await db.from('platform_services').insert([payload]);
-            }
-            document.getElementById('editProdId').value = '';
-            document.getElementById('prodTitle').value = '';
-            document.getElementById('prodPrice').value = '';
-            document.getElementById('prodOldPrice').value = '';
-            document.getElementById('prodDiscount').value = '';
-            document.getElementById('prodDesc').value = '';
-            loadProducts();
+        function refreshAll() {
+            loadUnifiedPayments();
+            loadAffiliatesAdmin();
         }
 
-        /* 3. السلايدر */
-        async function loadSlider() {
-            const { data } = await db.from('store_settings').select('*');
-            const imgsItem = (data || []).find(s => s.key === 'hero_slider_images');
-            try { cache.sliderImgs = imgsItem && imgsItem.value ? JSON.parse(imgsItem.value) : []; } catch (e) { cache.sliderImgs = []; }
-            document.getElementById('sliderCountBadge').textContent = cache.sliderImgs.length;
-            document.getElementById('sliderSectionList').innerHTML = cache.sliderImgs.map((u, i) => `
-                <div class="post-card">
-                    <img src="${u}" style="max-height:110px; object-fit:contain; border-radius:8px; background:#0a1324;">
-                    <div class="post-actions">
-                        <button class="btn-mini mini-edit" onclick="document.getElementById('editSliderIndex').value=${i}; alert('اختر الصورة الجديدة ثم اضغط تعديل')">تعديل ✏️</button>
-                        <button class="btn-mini mini-del" onclick="removeSliderImg(${i})">حذف 🗑️</button>
-                    </div>
-                </div>
-            `).join('') || '<p class="post-meta">لا توجد بنرات.</p>';
-        }
-
-        async function saveBanner(isEdit) {
-            const file = document.getElementById('bannerUpload').files[0];
-            if (!file) return alert('اختر صورة البنر');
-            const url = await uploadFile(file, 'banners');
-            if (!url) return alert('تعذر رفع الصورة');
-            const idx = Number(document.getElementById('editSliderIndex').value);
-            if (isEdit && !isNaN(idx) && cache.sliderImgs[idx] !== undefined) {
-                cache.sliderImgs[idx] = url;
-            } else {
-                cache.sliderImgs.push(url);
-            }
-            await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(cache.sliderImgs) }, { onConflict: 'key' });
-            document.getElementById('editSliderIndex').value = '';
-            document.getElementById('bannerUpload').value = '';
-            loadSlider();
-        }
-
-        async function removeSliderImg(i) {
-            cache.sliderImgs.splice(i, 1);
-            await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(cache.sliderImgs) }, { onConflict: 'key' });
-            loadSlider();
-        }
-
-        async function toggleSliderVisibility() {
-            const { data } = await db.from('store_settings').select('*').eq('key', 'hero_slider_active').maybeSingle();
-            const current = data ? data.value !== 'false' : true;
-            await db.from('store_settings').upsert({ key: 'hero_slider_active', value: String(!current) }, { onConflict: 'key' });
-            alert(!current ? 'تم إظهار السلايدر' : 'تم إخفاء السلايدر');
-        }
-
-        /* 4. الدورات */
-        async function loadCourses() {
-            const { data } = await db.from('platform_courses').select('*').order('id', { ascending: false });
-            cache.courses = data || [];
-            document.getElementById('coursesCountBadge').textContent = cache.courses.length;
-            document.getElementById('coursesSectionList').innerHTML = cache.courses.map(c => `
-                <div class="post-card">
-                    <div class="post-title">${c.title} (#${c.id}) — ${c.is_free ? 'مجانية' : (c.price || 'مجاني')}</div>
-                    <div class="post-meta">المدرب: ${c.instructor || '-'}</div>
-                    <div class="post-actions">
-                        <button class="btn-mini mini-edit" onclick="fillCourseEdit(${c.id})">تعديل ✏️</button>
-                        <button class="btn-mini mini-del" onclick="deleteById('platform_courses', ${c.id}, loadCourses)">حذف 🗑️</button>
-                    </div>
-                </div>
-            `).join('') || '<p class="post-meta">لا توجد دورات.</p>';
-        }
-
-        function fillCourseEdit(id) {
-            const c = cache.courses.find(x => x.id === id);
-            if (!c) return;
-            document.getElementById('editCourseId').value = c.id;
-            document.getElementById('courseTitle').value = c.title || '';
-            document.getElementById('courseInstructor').value = c.instructor || '';
-            document.getElementById('coursePrice').value = c.is_free ? 'مجاني' : (c.price || '');
-            document.getElementById('courseUrl').value = c.video_url || c.course_url || '';
-            document.getElementById('courseDesc').value = c.description || '';
-        }
-
-        async function saveCourse(isEdit) {
-            const editId = document.getElementById('editCourseId').value;
-            const title = document.getElementById('courseTitle').value.trim();
-            if (!title) return alert('أدخل عنوان الدورة');
-            const rawPrice = document.getElementById('coursePrice').value.trim();
-            const isFree = !rawPrice || rawPrice === '0' || rawPrice.includes('مجاني');
-
-            let videoUrl = document.getElementById('courseUrl').value.trim();
-            const vFile = document.getElementById('courseVideoFile').files[0];
-            if (vFile) {
-                const upVid = await uploadFile(vFile, 'courses_videos');
-                if (upVid) videoUrl = upVid;
-            }
-            const image = await uploadFile(document.getElementById('courseImg').files[0], 'courses');
-
-            const payload = {
-                title,
-                instructor: document.getElementById('courseInstructor').value.trim(),
-                price: isFree ? 'مجاني' : rawPrice,
-                is_free: isFree,
-                video_url: videoUrl,
-                course_url: videoUrl,
-                description: document.getElementById('courseDesc').value.trim(),
-                is_active: true
-            };
-            if (image) payload.image = image;
-
-            if (isEdit && editId) {
-                await db.from('platform_courses').update(payload).eq('id', editId);
-            } else {
-                await db.from('platform_courses').insert([payload]);
-            }
-            document.getElementById('editCourseId').value = '';
-            document.getElementById('courseTitle').value = '';
-            document.getElementById('coursePrice').value = '';
-            document.getElementById('courseUrl').value = '';
-            document.getElementById('courseDesc').value = '';
-            loadCourses();
-        }
-
-        /* 5. أكواد الخصم */
-        async function loadPromos() {
-            const { data } = await db.from('promo_codes').select('*').order('id', { ascending: false });
-            cache.promos = data || [];
-            document.getElementById('promosCountBadge').textContent = cache.promos.length;
-            document.getElementById('promosSectionList').innerHTML = cache.promos.map(pr => `
-                <div class="post-card">
-                    <div class="post-title">🎟️ ${pr.code} (${pr.discount_type === 'free' ? 'مجاني 100%' : pr.discount_value})</div>
-                    <div class="post-meta">الشمولية: ${pr.scope || 'all'} | الاستخدام: ${pr.used_count || 0}/${pr.max_uses || 100}</div>
-                    <div class="post-actions">
-                        <button class="btn-mini mini-edit" onclick="fillPromoEdit(${pr.id})">تعديل ✏️</button>
-                        <button class="btn-mini mini-del" onclick="deleteById('promo_codes', ${pr.id}, loadPromos)">حذف 🗑️</button>
-                    </div>
-                </div>
-            `).join('') || '<p class="post-meta">لا توجد أكواد خصم.</p>';
-        }
-
-        function fillPromoEdit(id) {
-            const pr = cache.promos.find(x => x.id === id);
-            if (!pr) return;
-            document.getElementById('editPromoId').value = pr.id;
-            document.getElementById('promoCodeField').value = pr.code || '';
-            document.getElementById('promoType').value = pr.discount_type || 'free';
-            document.getElementById('promoValue').value = pr.discount_value || 0;
-            document.getElementById('promoScope').value = pr.scope || 'all';
-            document.getElementById('promoTargetId').value = pr.target_id || '';
-            document.getElementById('promoPhone').value = pr.assigned_phone || '';
-        }
-
-        async function savePromoCode(isEdit) {
-            const editId = document.getElementById('editPromoId').value;
-            const code = document.getElementById('promoCodeField').value.trim().toUpperCase();
-            if (!code) return alert('أدخل رمز الكود');
-            const payload = {
-                code,
-                discount_type: document.getElementById('promoType').value,
-                discount_value: Number(document.getElementById('promoValue').value || 0),
-                scope: document.getElementById('promoScope').value,
-                target_id: document.getElementById('promoTargetId').value.trim() || null,
-                assigned_phone: document.getElementById('promoPhone').value.trim() || null,
-                is_active: true
-            };
-            if (isEdit && editId) {
-                await db.from('promo_codes').update(payload).eq('id', editId);
-            } else {
-                await db.from('promo_codes').insert([payload]);
-            }
-            document.getElementById('editPromoId').value = '';
-            document.getElementById('promoCodeField').value = '';
-            loadPromos();
-        }
-
-        /* 6. الوظائف */
-        async function loadJobs() {
-            const { data } = await db.from('platform_jobs').select('*').order('id', { ascending: false });
-            cache.jobs = data || [];
-            document.getElementById('jobsCountBadge').textContent = cache.jobs.length;
-            document.getElementById('jobsSectionList').innerHTML = cache.jobs.map(j => `
-                <div class="post-card">
-                    <div class="post-title">${j.title} — ${j.company || ''}</div>
-                    <div class="post-meta">${j.location || ''} | ${j.job_type || ''}</div>
-                    <div class="post-actions">
-                        <button class="btn-mini mini-edit" onclick="fillJobEdit(${j.id})">تعديل ✏️</button>
-                        <button class="btn-mini mini-del" onclick="deleteById('platform_jobs', ${j.id}, loadJobs)">حذف 🗑️</button>
-                    </div>
-                </div>
-            `).join('') || '<p class="post-meta">لا توجد وظائف.</p>';
-        }
-
-        function fillJobEdit(id) {
-            const j = cache.jobs.find(x => x.id === id);
-            if (!j) return;
-            document.getElementById('editJobId').value = j.id;
-            document.getElementById('jobTitle').value = j.title || '';
-            document.getElementById('jobCompany').value = j.company || '';
-            document.getElementById('jobLocation').value = j.location || '';
-            document.getElementById('jobType').value = j.job_type || '';
-            document.getElementById('jobPhone').value = j.contact_phone || '';
-            document.getElementById('jobDesc').value = j.description || '';
-        }
-
-        async function saveJob(isEdit) {
-            const editId = document.getElementById('editJobId').value;
-            const title = document.getElementById('jobTitle').value.trim();
-            if (!title) return alert('أدخل المسمى الوظيفي');
-            const payload = {
-                title,
-                company: document.getElementById('jobCompany').value.trim(),
-                location: document.getElementById('jobLocation').value.trim(),
-                job_type: document.getElementById('jobType').value.trim(),
-                contact_phone: document.getElementById('jobPhone').value.trim(),
-                description: document.getElementById('jobDesc').value.trim(),
-                is_active: true
-            };
-            if (isEdit && editId) {
-                await db.from('platform_jobs').update(payload).eq('id', editId);
-            } else {
-                await db.from('platform_jobs').insert([payload]);
-            }
-            document.getElementById('editJobId').value = '';
-            document.getElementById('jobTitle').value = '';
-            document.getElementById('jobDesc').value = '';
-            loadJobs();
-        }
-
-        /* 7. الكفاءات */
-        async function loadTalents() {
-            const { data } = await db.from('platform_resumes').select('*').order('id', { ascending: false });
-            cache.talents = data || [];
-            document.getElementById('talentsCountBadge').textContent = cache.talents.length;
-            document.getElementById('talentsSectionList').innerHTML = cache.talents.map(t => `
-                <div class="post-card">
-                    <div class="post-title">${t.full_name} ${t.is_verified ? '☑️' : ''}</div>
-                    <div class="post-meta">${t.specialty || ''} | ${t.phone || ''}</div>
-                    <div class="post-actions">
-                        <button class="btn-mini mini-edit" onclick="fillTalentEdit(${t.id})">تعديل ✏️</button>
-                        <button class="btn-mini mini-del" onclick="deleteById('platform_resumes', ${t.id}, loadTalents)">حذف 🗑️</button>
-                    </div>
-                </div>
-            `).join('') || '<p class="post-meta">لا توجد كفاءات.</p>';
-        }
-
-        function fillTalentEdit(id) {
-            const t = cache.talents.find(x => x.id === id);
-            if (!t) return;
-            document.getElementById('editTalentId').value = t.id;
-            document.getElementById('talentName').value = t.full_name || '';
-            document.getElementById('talentSpec').value = t.specialty || '';
-            document.getElementById('talentPhone').value = t.phone || '';
-            document.getElementById('talentVerified').value = String(t.is_verified !== false);
-            document.getElementById('talentExp').value = t.experience || '';
-        }
-
-        async function saveTalent(isEdit) {
-            const editId = document.getElementById('editTalentId').value;
-            const full_name = document.getElementById('talentName').value.trim();
-            if (!full_name) return alert('أدخل اسم الكفاءة');
-            const avatar_url = await uploadFile(document.getElementById('talentImg').files[0], 'talents');
-            const payload = {
-                full_name,
-                specialty: document.getElementById('talentSpec').value.trim(),
-                phone: document.getElementById('talentPhone').value.trim(),
-                is_verified: document.getElementById('talentVerified').value === 'true',
-                experience: document.getElementById('talentExp').value.trim(),
-                is_active: true
-            };
-            if (avatar_url) payload.avatar_url = avatar_url;
-
-            if (isEdit && editId) {
-                await db.from('platform_resumes').update(payload).eq('id', editId);
-            } else {
-                await db.from('platform_resumes').insert([payload]);
-            }
-            document.getElementById('editTalentId').value = '';
-            document.getElementById('talentName').value = '';
-            document.getElementById('talentExp').value = '';
-            loadTalents();
-        }
-
-        /* 8. المدونة */
-        async function loadArticles() {
-            const { data } = await db.from('platform_articles').select('*').order('id', { ascending: false });
-            cache.articles = data || [];
-            document.getElementById('blogCountBadge').textContent = cache.articles.length;
-            document.getElementById('blogSectionList').innerHTML = cache.articles.map(a => `
-                <div class="post-card">
-                    <div class="post-title">${a.title}</div>
-                    <div class="post-meta">${a.category || 'عام'} | ${a.summary || ''}</div>
-                    <div class="post-actions">
-                        <button class="btn-mini mini-edit" onclick="fillArticleEdit(${a.id})">تعديل ✏️</button>
-                        <button class="btn-mini mini-del" onclick="deleteById('platform_articles', ${a.id}, loadArticles)">حذف 🗑️</button>
-                    </div>
-                </div>
-            `).join('') || '<p class="post-meta">لا توجد مقالات.</p>';
-        }
-
-        function fillArticleEdit(id) {
-            const a = cache.articles.find(x => x.id === id);
-            if (!a) return;
-            document.getElementById('editArticleId').value = a.id;
-            document.getElementById('artTitle').value = a.title || '';
-            document.getElementById('artCat').value = a.category || '';
-            document.getElementById('artSummary').value = a.summary || '';
-            document.getElementById('artContent').value = a.content || '';
-        }
-
-        async function saveArticle(isEdit) {
-            const editId = document.getElementById('editArticleId').value;
-            const title = document.getElementById('artTitle').value.trim();
-            if (!title) return alert('أدخل عنوان المقال');
-            const image = await uploadFile(document.getElementById('artImg').files[0], 'blog');
-            const payload = {
-                title,
-                category: document.getElementById('artCat').value.trim(),
-                summary: document.getElementById('artSummary').value.trim(),
-                content: document.getElementById('artContent').value.trim(),
-                is_active: true
-            };
-            if (image) payload.image = image;
-
-            if (isEdit && editId) {
-                await db.from('platform_articles').update(payload).eq('id', editId);
-            } else {
-                await db.from('platform_articles').insert([payload]);
-            }
-            document.getElementById('editArticleId').value = '';
-            document.getElementById('artTitle').value = '';
-            document.getElementById('artSummary').value = '';
-            document.getElementById('artContent').value = '';
-            loadArticles();
-        }
-
-        /* 9. المسوقون */
-        async function loadAffiliates() {
-            const { data } = await db.from('affiliates').select('*').order('id', { ascending: false });
-            cache.affiliates = data || [];
-            document.getElementById('affCountBadge').textContent = cache.affiliates.length;
-            document.getElementById('affSectionList').innerHTML = cache.affiliates.map(a => `
-                <div class="post-card">
-                    <div class="post-title">${a.full_name || a.name || 'مسوق'} (كود: ${a.ref_code})</div>
-                    <div class="post-meta">الهاتف: ${a.phone} | الأرباح: ${a.total_earnings || 0} YER</div>
-                    <div class="post-actions">
-                        <button class="btn-mini mini-edit" onclick="fillAffEdit(${a.id})">تعديل ✏️</button>
-                        <button class="btn-mini mini-del" onclick="deleteById('affiliates', ${a.id}, loadAffiliates)">حذف 🗑️</button>
-                    </div>
-                </div>
-            `).join('') || '<p class="post-meta">لا يوجد مسوقون.</p>';
-        }
-
-        function fillAffEdit(id) {
-            const a = cache.affiliates.find(x => x.id === id);
-            if (!a) return;
-            document.getElementById('editAffId').value = a.id;
-            document.getElementById('affName').value = a.full_name || a.name || '';
-            document.getElementById('affPhone').value = a.phone || '';
-            document.getElementById('affCode').value = a.ref_code || '';
-            document.getElementById('affEarnings').value = a.total_earnings || 0;
-        }
-
-        async function saveAffiliate(isEdit) {
-            const editId = document.getElementById('editAffId').value;
-            const name = document.getElementById('affName').value.trim();
-            const phone = document.getElementById('affPhone').value.trim();
-            if (!name || !phone) return alert('أدخل اسم المسوق ورقم الهاتف');
-            const payload = {
-                full_name: name,
-                name,
-                phone,
-                ref_code: document.getElementById('affCode').value.trim() || ('SDR' + phone.slice(-4)),
-                total_earnings: Number(document.getElementById('affEarnings').value || 0)
-            };
-            if (isEdit && editId) {
-                await db.from('affiliates').update(payload).eq('id', editId);
-            } else {
-                await db.from('affiliates').insert([payload]);
-            }
-            document.getElementById('editAffId').value = '';
-            document.getElementById('affName').value = '';
-            document.getElementById('affPhone').value = '';
-            loadAffiliates();
-        }
-
-        async function deleteById(table, id, reloadFn) {
-            if (!confirm('تأكيد الحذف؟')) return;
-            await db.from(table).delete().eq('id', id);
-            reloadFn();
-        }
-
-        function deleteActiveOrReset(sec) {
-            const map = {
-                products: { idEl: 'editProdId', table: 'platform_services', fn: loadProducts },
-                courses: { idEl: 'editCourseId', table: 'platform_courses', fn: loadCourses },
-                promos: { idEl: 'editPromoId', table: 'promo_codes', fn: loadPromos },
-                jobs: { idEl: 'editJobId', table: 'platform_jobs', fn: loadJobs },
-                talents: { idEl: 'editTalentId', table: 'platform_resumes', fn: loadTalents },
-                blog: { idEl: 'editArticleId', table: 'platform_articles', fn: loadArticles },
-                affiliates: { idEl: 'editAffId', table: 'affiliates', fn: loadAffiliates }
-            };
-            const cfg = map[sec];
-            if (!cfg) return;
-            const idVal = document.getElementById(cfg.idEl).value;
-            if (!idVal) {
-                alert('اختر عنصراً من المنشورات بالأسفل أو اضغط زر الحذف بجانب العنصر المطلوب.');
-                return;
-            }
-            deleteById(cfg.table, Number(idVal), () => {
-                document.getElementById(cfg.idEl).value = '';
-                cfg.fn();
-            });
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadOrders();
-            loadProducts();
-            loadSlider();
-            loadCourses();
-            loadPromos();
-            loadJobs();
-            loadTalents();
-            loadArticles();
-            loadAffiliates();
-        });
+        window.addEventListener('DOMContentLoaded', refreshAll);
     </script>
 </body>
 </html>
