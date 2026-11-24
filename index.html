@@ -4,14 +4,13 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6392257665418096" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة صدارة | المتجر، الدورات، التسويق بالعمولة، والمدونة</title>
+    <title>متجر منصة صدارة | المنتجات والخدمات</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --navy: #0F172A;
-            --navy-soft: #1E293B;
             --royal: #2563EB;
             --royal-hover: #1D4ED8;
             --emerald: #0D9488;
@@ -29,17 +28,15 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; }
-        html { scroll-behavior: smooth; }
-        body { background: var(--bg-white); color: var(--text-main); line-height: 1.65; }
+        body { background: var(--bg-surface); color: var(--text-main); line-height: 1.65; }
 
-        /* 1. شريط التنقل العلوي الذكي (Glassmorphism) */
+        /* شريط علوي زجاجي */
         .navbar {
             position: sticky;
             top: 0;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.88);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--border);
         }
         .nav-inner {
@@ -49,9 +46,25 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 14px;
+            gap: 12px;
             flex-wrap: wrap;
         }
+        .nav-left { display: flex; align-items: center; gap: 10px; }
+        .drawer-toggle-btn {
+            background: var(--bg-surface);
+            color: var(--navy);
+            border: 1px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            transition: 0.2s;
+        }
+        .drawer-toggle-btn:hover { border-color: var(--royal); color: var(--royal); }
+
         .logo {
             display: flex;
             align-items: center;
@@ -59,48 +72,31 @@
             text-decoration: none;
             color: var(--navy);
             font-weight: 700;
-            font-size: 20px;
+            font-size: 19px;
         }
         .logo-mark {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 11px;
             background: linear-gradient(135deg, var(--navy), var(--royal));
             color: #fff;
             display: grid;
             place-items: center;
-            font-size: 16px;
+            font-size: 15px;
         }
         .logo span { color: var(--royal); }
 
-        .nav-links { display: flex; align-items: center; gap: 18px; }
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-main);
-            font-size: 14px;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-        .nav-links a:hover { color: var(--royal); }
-
-        .search-wrap {
-            position: relative;
-            flex: 1;
-            max-width: 340px;
-            min-width: 210px;
-        }
+        .search-wrap { position: relative; flex: 1; max-width: 360px; min-width: 200px; }
         .search-wrap input {
             width: 100%;
             padding: 9px 36px 9px 14px;
             border-radius: 12px;
             border: 1px solid var(--border);
-            background: var(--bg-surface);
+            background: #fff;
             font-size: 13px;
-            color: var(--text-main);
             outline: none;
-            transition: 0.2s;
         }
-        .search-wrap input:focus { border-color: var(--royal); background: #fff; }
+        .search-wrap input:focus { border-color: var(--royal); }
         .search-wrap i {
             position: absolute;
             right: 12px;
@@ -109,47 +105,6 @@
             color: var(--text-muted);
             font-size: 13px;
         }
-        .search-results-dropdown {
-            display: none;
-            position: absolute;
-            top: calc(100% + 6px);
-            right: 0;
-            left: 0;
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            box-shadow: var(--shadow-md);
-            max-height: 300px;
-            overflow-y: auto;
-            z-index: 1200;
-            padding: 6px;
-        }
-        .search-item {
-            padding: 8px 10px;
-            border-radius: 9px;
-            font-size: 12.5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            text-decoration: none;
-            color: var(--text-main);
-        }
-        .search-item:hover { background: var(--bg-surface); }
-
-        .nav-actions { display: flex; align-items: center; gap: 10px; }
-        .btn-aff-pill {
-            background: #EFF6FF;
-            color: var(--royal);
-            border: 1px solid #BFDBFE;
-            padding: 8px 14px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: 0.2s;
-        }
-        .btn-aff-pill:hover { background: var(--royal); color: #fff; }
 
         .cart-btn {
             position: relative;
@@ -174,210 +129,109 @@
             border-radius: 99px;
         }
 
-        /* 2. قسم البطل التفاعلي (Hero Section) */
-        .hero {
-            background: radial-gradient(circle at 15% 20%, rgba(37, 99, 235, 0.08), transparent 45%),
-                        radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.08), transparent 45%),
-                        var(--bg-surface);
-            border-bottom: 1px solid var(--border);
-            padding: 46px 18px 54px;
+        /* القائمة الجانبية الموحدة لجميع الأقسام والواجهات الفرعية */
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            z-index: 2500;
         }
-        .hero-grid {
-            max-width: 1220px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1.15fr 0.85fr;
-            gap: 32px;
-            align-items: center;
-        }
-        @media (max-width: 880px) {
-            .hero-grid { grid-template-columns: 1fr; }
-            .nav-links { display: none; }
-        }
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+        .side-drawer {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            max-width: 86vw;
+            height: 100vh;
             background: #fff;
-            border: 1px solid var(--border);
-            padding: 6px 14px;
-            border-radius: 99px;
-            font-size: 12.5px;
-            font-weight: 600;
-            color: var(--navy);
-            margin-bottom: 16px;
-            box-shadow: var(--shadow-sm);
-        }
-        .hero-badge i { color: var(--gold); }
-        .hero h1 {
-            font-size: clamp(26px, 4vw, 40px);
-            font-weight: 700;
-            color: var(--navy);
-            line-height: 1.28;
-            margin-bottom: 14px;
-        }
-        .hero h1 span { color: var(--royal); }
-        .hero p {
-            font-size: 15.5px;
-            color: var(--text-muted);
-            max-width: 580px;
-            margin-bottom: 24px;
-        }
-        .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
-        .btn-primary {
-            background: var(--royal);
-            color: #fff;
-            padding: 12px 22px;
-            border-radius: 13px;
-            font-size: 14px;
-            font-weight: 700;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
-        .btn-primary:hover { background: var(--royal-hover); transform: translateY(-1px); }
-        .btn-outline {
-            background: #fff;
-            color: var(--navy);
-            border: 1px solid var(--border);
-            padding: 12px 22px;
-            border-radius: 13px;
-            font-size: 14px;
-            font-weight: 700;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
-        .btn-outline:hover { border-color: var(--navy); }
-
-        /* البطاقة البصرية العائمة */
-        .floating-preview {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 20px;
+            z-index: 2600;
+            border-left: 1px solid var(--border);
             box-shadow: var(--shadow-md);
-            display: grid;
-            gap: 12px;
-        }
-        .preview-row {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 12px 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-        .preview-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 11px;
-            display: grid;
-            place-items: center;
-            font-size: 17px;
-            flex-shrink: 0;
-        }
-        .commission-pill {
-            background: #ECFDF5;
-            color: var(--green);
-            border: 1px solid #A7F3D0;
-            padding: 4px 10px;
-            border-radius: 99px;
-            font-size: 12px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        /* 3. شريط المؤشرات */
-        .stats-bar {
-            max-width: 1220px;
-            margin: -24px auto 0;
-            padding: 0 18px;
-            position: relative;
-            z-index: 10;
-        }
-        .stats-grid {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
-            padding: 18px 22px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            text-align: center;
-        }
-        @media (max-width: 700px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-        .stat-num { font-size: 22px; font-weight: 700; color: var(--navy); }
-        .stat-label { font-size: 12.5px; color: var(--text-muted); font-weight: 500; }
-
-        /* الحاويات والأقسام */
-        .section { max-width: 1220px; margin: 0 auto; padding: 54px 18px; }
-        .section-alt { background: var(--bg-surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-        .sec-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 14px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-        .sec-header h2 { font-size: 23px; font-weight: 700; color: var(--navy); }
-        .sec-header p { font-size: 13.5px; color: var(--text-muted); }
-
-        /* 4. شبكة Bento Grid للأقسام الأربعة */
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-        }
-        @media (max-width: 900px) { .bento-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 520px) { .bento-grid { grid-template-columns: 1fr; } }
-
-        .bento-card {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 22px;
-            box-shadow: var(--shadow-sm);
-            transition: 0.25s;
-            text-decoration: none;
-            color: inherit;
+            padding: 20px 16px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: right 0.28s ease;
+            overflow-y: auto;
         }
-        .bento-card:hover { transform: translateY(-4px); border-color: var(--royal); box-shadow: var(--shadow-md); }
-        .bento-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            display: grid;
-            place-items: center;
-            font-size: 20px;
-            margin-bottom: 16px;
+        .side-drawer.open { right: 0; }
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--border);
         }
-        .bento-card h3 { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
-        .bento-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
-        .bento-link { font-size: 13px; font-weight: 700; color: var(--royal); display: inline-flex; align-items: center; gap: 6px; }
+        .drawer-nav { display: grid; gap: 6px; }
+        .drawer-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .drawer-link:hover, .drawer-link.active {
+            background: #EFF6FF;
+            color: var(--royal);
+        }
+        .drawer-link-left { display: flex; align-items: center; gap: 10px; }
+        .drawer-badge {
+            font-size: 10.5px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 2px 8px;
+            border-radius: 99px;
+            color: var(--text-muted);
+        }
 
-        /* 5. المتجر الإلكتروني */
+        /* ترويسة المتجر الرئيسية */
+        .store-hero {
+            background: linear-gradient(135deg, var(--navy) 0%, #1E293B 100%);
+            color: #fff;
+            padding: 32px 18px;
+            border-bottom: 1px solid var(--border);
+        }
+        .store-hero-inner {
+            max-width: 1220px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .store-hero h1 { font-size: clamp(22px, 3.4vw, 32px); font-weight: 700; margin-bottom: 6px; }
+        .store-hero p { color: #CBD5E1; font-size: 14px; max-width: 560px; }
+        .hero-sub-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .sub-pill-btn {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 9px 15px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .sub-pill-btn:hover { background: var(--royal); border-color: var(--royal); }
+
+        /* منطقة المنتجات */
+        .container { max-width: 1220px; margin: 0 auto; padding: 28px 18px 60px; }
         .filter-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 12px;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
         .cat-pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
         .cat-pill {
@@ -390,10 +244,8 @@
             font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
-            transition: 0.2s;
         }
         .cat-pill.active, .cat-pill:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
-
         .sort-select {
             padding: 8px 12px;
             border-radius: 11px;
@@ -401,10 +253,9 @@
             background: #fff;
             font-size: 13px;
             font-weight: 600;
-            color: var(--text-main);
         }
 
-        .cards-grid {
+        .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 18px;
@@ -423,7 +274,7 @@
         .product-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
         .product-thumb {
             position: relative;
-            height: 190px;
+            height: 195px;
             background: var(--bg-surface);
             display: flex;
             align-items: center;
@@ -445,11 +296,12 @@
         .product-body { padding: 14px 16px 16px; }
         .product-cat { font-size: 11.5px; color: var(--text-muted); font-weight: 600; }
         .product-title { font-size: 15px; font-weight: 700; color: var(--navy); margin: 4px 0 8px; }
+        .product-desc { font-size: 12.5px; color: var(--text-muted); margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
         .price-now { font-size: 17px; font-weight: 700; color: var(--royal); }
         .price-old { font-size: 12.5px; color: var(--text-muted); text-decoration: line-through; }
         .card-actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
-        .btn-buy-now {
+        .btn-buy {
             background: var(--royal);
             color: #fff;
             border: none;
@@ -459,64 +311,24 @@
             font-weight: 700;
             cursor: pointer;
         }
-        .btn-add-cart {
+        .btn-buy:hover { background: var(--royal-hover); }
+        .btn-cart-add {
             background: var(--bg-surface);
             color: var(--navy);
             border: 1px solid var(--border);
             padding: 9px 12px;
             border-radius: 11px;
             font-size: 13px;
-            font-weight: 700;
             cursor: pointer;
         }
 
-        /* 6. المساحة التحفيزية وحاسبة أرباح المسوقين */
-        .affiliate-banner {
-            background: linear-gradient(135deg, var(--navy) 0%, #172554 100%);
-            color: #fff;
-            border-radius: var(--radius-lg);
-            padding: 32px 26px;
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 26px;
-            align-items: center;
-        }
-        @media (max-width: 850px) { .affiliate-banner { grid-template-columns: 1fr; } }
-        .calc-box {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 16px;
-            padding: 20px;
-        }
-        .calc-box label { display: block; font-size: 12.5px; color: #CBD5E1; margin-bottom: 4px; }
-        .calc-box input[type="range"] { width: 100%; accent-color: var(--gold); margin-bottom: 12px; }
-        .calc-result {
-            background: rgba(16, 185, 129, 0.14);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            margin-top: 8px;
-        }
-
-        /* 7. المدونة */
-        .blog-card {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-        }
-        .blog-card img { width: 100%; height: 170px; object-fit: cover; background: var(--bg-surface); }
-        .blog-body { padding: 16px; }
-
-        /* النوافذ المنبثقة */
+        /* نافذة الطلب */
         .modal-backdrop {
             display: none;
             position: fixed;
             inset: 0;
             background: rgba(15, 23, 42, 0.68);
-            z-index: 2000;
+            z-index: 3000;
             align-items: center;
             justify-content: center;
             padding: 16px;
@@ -524,7 +336,7 @@
         .modal-card {
             background: #fff;
             border-radius: var(--radius-lg);
-            max-width: 500px;
+            max-width: 490px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -540,310 +352,142 @@
             font-size: 13px;
             background: var(--bg-surface);
         }
-
-        footer {
-            background: var(--navy);
-            color: #CBD5E1;
-            padding: 40px 18px 24px;
-            margin-top: 40px;
-        }
-        .footer-inner {
-            max-width: 1220px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 24px;
-        }
     </style>
 </head>
 <body>
 
-    <!-- 1. شريط التنقل العلوي الذكي -->
+    <!-- شريط التنقل العلوي -->
     <header class="navbar">
         <div class="nav-inner">
-            <a href="index.html" class="logo">
-                <div class="logo-mark"><i class="fa-solid fa-crown"></i></div>
-                <div>منصة <span>صدارة</span></div>
-            </a>
-
-            <nav class="nav-links">
-                <a href="#store-section">المتجر</a>
-                <a href="courses.html">الدورات</a>
-                <a href="#affiliate-section">التسويق بالعمولة</a>
-                <a href="#blog-section">المدونة</a>
-            </nav>
+            <div class="nav-left">
+                <button type="button" class="drawer-toggle-btn" onclick="toggleDrawer(true)" title="القائمة الجانبية">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <a href="index.html" class="logo">
+                    <div class="logo-mark"><i class="fa-solid fa-crown"></i></div>
+                    <div>متجر <span>صدارة</span></div>
+                </a>
+            </div>
 
             <div class="search-wrap">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="globalSearchInput" placeholder="ابحث في المنتجات، الدورات، المقالات..." oninput="runUnifiedSearch()">
-                <div class="search-results-dropdown" id="searchDropdown"></div>
+                <input type="text" id="storeSearchInput" placeholder="ابحث عن منتج أو خدمة..." oninput="renderProducts()">
             </div>
 
-            <div class="nav-actions">
-                <a href="#affiliate-section" class="btn-aff-pill"><i class="fa-solid fa-handshake"></i> بوابة المسوّقين</a>
-                <button class="cart-btn" onclick="openCartModal()" title="سلة التسوق">
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    <span class="cart-count" id="cartCountBadge">0</span>
-                </button>
-            </div>
+            <button type="button" class="cart-btn" onclick="openCartOrder()" title="سلة المشتريات">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="cart-count" id="cartBadge">0</span>
+            </button>
         </div>
     </header>
 
-    <!-- 2. قسم البطل التفاعلي (Hero Section) -->
-    <section class="hero">
-        <div class="hero-grid">
+    <!-- القائمة الجانبية الموحدة للواجهات والأقسام الفرعية -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
+    <aside class="side-drawer" id="sideDrawer">
+        <div>
+            <div class="drawer-header">
+                <strong style="color:var(--navy); font-size:15px;">أقسام وواجهات منصة صدارة</strong>
+                <button type="button" onclick="toggleDrawer(false)" style="border:none; background:var(--bg-surface); padding:5px 10px; border-radius:8px; cursor:pointer; font-weight:700;">✕</button>
+            </div>
+            <nav class="drawer-nav">
+                <a href="index.html" class="drawer-link active">
+                    <span class="drawer-link-left"><i class="fa-solid fa-store" style="color:var(--royal);"></i> المتجر والمنتجات (الرئيسية)</span>
+                    <span class="drawer-badge">متجر</span>
+                </a>
+                <a href="courses.html" class="drawer-link">
+                    <span class="drawer-link-left"><i class="fa-solid fa-graduation-cap" style="color:var(--emerald);"></i> الدورات التدريبية</span>
+                    <span class="drawer-badge">تعليم</span>
+                </a>
+                <a href="affiliate.html" class="drawer-link">
+                    <span class="drawer-link-left"><i class="fa-solid fa-handshake" style="color:var(--green);"></i> بوابة المسوّقين بالعمولة</span>
+                    <span class="drawer-badge">أرباح</span>
+                </a>
+                <a href="blog.html" class="drawer-link">
+                    <span class="drawer-link-left"><i class="fa-solid fa-newspaper" style="color:var(--gold);"></i> المدونة والمقالات</span>
+                    <span class="drawer-badge">مقالات</span>
+                </a>
+                <a href="control.html" class="drawer-link">
+                    <span class="drawer-link-left"><i class="fa-solid fa-sliders" style="color:var(--navy);"></i> لوحة التحكم والإدارة</span>
+                    <span class="drawer-badge">إدارة</span>
+                </a>
+            </nav>
+        </div>
+        <div style="font-size:11.5px; color:var(--text-muted); border-top:1px solid var(--border); padding-top:12px;">
+            منصة صدارة • واجهة متجر موحدة وقائمة فرعية شاملة
+        </div>
+    </aside>
+
+    <!-- ترويسة المتجر الرئيسية -->
+    <section class="store-hero">
+        <div class="store-hero-inner">
             <div>
-                <div class="hero-badge"><i class="fa-solid fa-sparkles"></i> منظومة رقمية متكاملة للتجارة، التعلم، والأرباح</div>
-                <h1>تسوّق بذكاء، طوّر مهاراتك، وحقّق دخلاً مستمراً في <span>صدارة</span></h1>
-                <p>بيئة واحدة تجمع المتجر الإلكتروني الموثوق، الدورات التدريبية ذات الفتح الآلي، نظام التسويق بالعمولة الشفاف، والمحتوى المعرفي المتخصص.</p>
-                <div class="hero-ctas">
-                    <a href="#store-section" class="btn-primary"><i class="fa-solid fa-store"></i> استكشف المتجر</a>
-                    <a href="courses.html" class="btn-outline"><i class="fa-solid fa-graduation-cap"></i> تصفح الدورات</a>
-                    <a href="#affiliate-section" class="btn-outline"><i class="fa-solid fa-chart-line"></i> ابدأ كمسوّق</a>
-                </div>
+                <h1>المتجر الإلكتروني والخدمات</h1>
+                <p>تصفّح المنتجات والخدمات المتاحة واطلب مباشرة بسهولة، مع تتبّع آلي لرابط المسوّق عند الشراء عبره.</p>
             </div>
-
-            <!-- البطاقة البصرية العائمة -->
-            <div class="floating-preview">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong style="font-size:14px; color:var(--navy);">معاينة حيّة لمنظومة صدارة</strong>
-                    <span style="font-size:11.5px; color:var(--emerald); font-weight:700;">● تحديث مباشر</span>
-                </div>
-                <div class="preview-row">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <div class="preview-icon" style="background:#EFF6FF; color:var(--royal);"><i class="fa-solid fa-bag-shopping"></i></div>
-                        <div>
-                            <div style="font-size:13px; font-weight:700; color:var(--navy);">منتجات وخدمات رقمية</div>
-                            <div style="font-size:11.5px; color:var(--text-muted);">طلب مباشر وتأكيد فوري</div>
-                        </div>
-                    </div>
-                    <span class="commission-pill">عمولة فورية 💰</span>
-                </div>
-                <div class="preview-row">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <div class="preview-icon" style="background:#F0FDFA; color:var(--emerald);"><i class="fa-solid fa-play"></i></div>
-                        <div>
-                            <div style="font-size:13px; font-weight:700; color:var(--navy);">دورات تدريبية احترافية</div>
-                            <div style="font-size:11.5px; color:var(--text-muted);">فتح آلي بعد اعتماد الدفع</div>
-                        </div>
-                    </div>
-                    <span class="commission-pill">أكواد مجانية 🎟️</span>
-                </div>
-                <div class="preview-row">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <div class="preview-icon" style="background:#FFFBEB; color:var(--gold);"><i class="fa-solid fa-link"></i></div>
-                        <div>
-                            <div style="font-size:13px; font-weight:700; color:var(--navy);">مثال ربح مسوّق نشط</div>
-                            <div style="font-size:11.5px; color:var(--text-muted);">رابط إحالة موحد لكل المتجر والدورات</div>
-                        </div>
-                    </div>
-                    <span class="commission-pill">+15,000 YER / شهر</span>
-                </div>
+            <div class="hero-sub-links">
+                <a href="courses.html" class="sub-pill-btn"><i class="fa-solid fa-graduation-cap"></i> الدورات</a>
+                <a href="affiliate.html" class="sub-pill-btn"><i class="fa-solid fa-handshake"></i> بوابة المسوقين</a>
+                <a href="blog.html" class="sub-pill-btn"><i class="fa-solid fa-newspaper"></i> المدونة</a>
             </div>
         </div>
     </section>
 
-    <!-- 3. شريط المؤشرات -->
-    <div class="stats-bar">
-        <div class="stats-grid">
-            <div><div class="stat-num" id="statProducts">+0</div><div class="stat-label">منتج وخدمة متاحة</div></div>
-            <div><div class="stat-num" id="statCourses">+0</div><div class="stat-label">دورة تدريبية</div></div>
-            <div><div class="stat-num">100%</div><div class="stat-label">تتبع آلي للعمولات</div></div>
-            <div><div class="stat-num">24/7</div><div class="stat-label">وصول فوري للدورات</div></div>
+    <!-- محتوى المتجر -->
+    <main class="container">
+        <div class="filter-bar">
+            <div class="cat-pills">
+                <button class="cat-pill active" onclick="selectCategory('الكل', this)">الكل</button>
+                <button class="cat-pill" onclick="selectCategory('جوالات', this)">جوالات</button>
+                <button class="cat-pill" onclick="selectCategory('اكسسوارات', this)">اكسسوارات</button>
+                <button class="cat-pill" onclick="selectCategory('إلكترونيات', this)">إلكترونيات</button>
+                <button class="cat-pill" onclick="selectCategory('حقائب', this)">حقائب</button>
+                <button class="cat-pill" onclick="selectCategory('عطور', this)">عطور</button>
+                <button class="cat-pill" onclick="selectCategory('ملابس', this)">ملابس</button>
+            </div>
+            <select class="sort-select" id="sortSelect" onchange="renderProducts()">
+                <option value="newest">الترتيب: الأحدث</option>
+                <option value="price_asc">السعر: من الأقل للأعلى</option>
+                <option value="price_desc">السعر: من الأعلى للأقل</option>
+            </select>
         </div>
-    </div>
 
-    <!-- 4. شبكة البطاقات التفاعلية للأقسام (Bento Grid) -->
-    <section class="section">
-        <div class="sec-header">
-            <div>
-                <h2>أركان منصة «صدارة» الأربعة</h2>
-                <p>انتقل مباشرة إلى القسم الذي يناسب هدفك الآن</p>
-            </div>
+        <div class="products-grid" id="productsGrid">
+            <div class="product-card" style="padding:20px;">جاري تحميل المنتجات...</div>
         </div>
-        <div class="bento-grid">
-            <a href="#store-section" class="bento-card">
-                <div>
-                    <div class="bento-icon" style="background:#EFF6FF; color:var(--royal);"><i class="fa-solid fa-store"></i></div>
-                    <h3>المتجر الإلكتروني</h3>
-                    <p>تشكيلة منتقاة من المنتجات والإكسسوارات والخدمات الرقمية بأسعار منافسة وتجربة طلب سريعة.</p>
-                </div>
-                <span class="bento-link">تصفح المتجر <i class="fa-solid fa-arrow-left"></i></span>
-            </a>
-            <a href="courses.html" class="bento-card">
-                <div>
-                    <div class="bento-icon" style="background:#F0FDFA; color:var(--emerald);"><i class="fa-solid fa-graduation-cap"></i></div>
-                    <h3>الدورات التدريبية</h3>
-                    <p>مسارات تعليمية مجانية ومدفوعة مع تفعيل فوري عبر أكواد الخصم أو قبول الدفع الآلي.</p>
-                </div>
-                <span class="bento-link">ابدأ التعلّم <i class="fa-solid fa-arrow-left"></i></span>
-            </a>
-            <a href="#affiliate-section" class="bento-card">
-                <div>
-                    <div class="bento-icon" style="background:#ECFDF5; color:var(--green);"><i class="fa-solid fa-coins"></i></div>
-                    <h3>نظام المسوقين بالعمولة</h3>
-                    <p>احصل على رابطك الخاص، شارك المنتجات والدورات، وتابع أرباحك وتسوياتك الشهرية بكل شفافية.</p>
-                </div>
-                <span class="bento-link">احسب أرباحك <i class="fa-solid fa-arrow-left"></i></span>
-            </a>
-            <a href="#blog-section" class="bento-card">
-                <div>
-                    <div class="bento-icon" style="background:#FFFBEB; color:var(--gold);"><i class="fa-solid fa-newspaper"></i></div>
-                    <h3>المدونة والمقالات</h3>
-                    <p>مقالات عملية في التجارة الرقمية، التسويق، وتطوير المهارات المهنية.</p>
-                </div>
-                <span class="bento-link">اقرأ المقالات <i class="fa-solid fa-arrow-left"></i></span>
-            </a>
-        </div>
-    </section>
+    </main>
 
-    <!-- 5. واجهة المتجر الإلكتروني -->
-    <section class="section-alt" id="store-section">
-        <div class="section">
-            <div class="sec-header">
-                <div>
-                    <h2>المتجر الإلكتروني</h2>
-                    <p>تصفية ذكية وطلب مباشر مع دعم أكواد المسوقين</p>
-                </div>
-            </div>
-
-            <div class="filter-bar">
-                <div class="cat-pills" id="categoryPills">
-                    <button class="cat-pill active" onclick="setStoreCategory('الكل', this)">الكل</button>
-                    <button class="cat-pill" onclick="setStoreCategory('جوالات', this)">جوالات</button>
-                    <button class="cat-pill" onclick="setStoreCategory('اكسسوارات', this)">اكسسوارات</button>
-                    <button class="cat-pill" onclick="setStoreCategory('إلكترونيات', this)">إلكترونيات</button>
-                    <button class="cat-pill" onclick="setStoreCategory('حقائب', this)">حقائب</button>
-                    <button class="cat-pill" onclick="setStoreCategory('عطور', this)">عطور</button>
-                    <button class="cat-pill" onclick="setStoreCategory('ملابس', this)">ملابس</button>
-                </div>
-                <select class="sort-select" id="storeSortSelect" onchange="renderStoreProducts()">
-                    <option value="newest">الأحدث أولاً</option>
-                    <option value="price_asc">السعر: من الأقل للأعلى</option>
-                    <option value="price_desc">السعر: من الأعلى للأقل</option>
-                </select>
-            </div>
-
-            <div class="cards-grid" id="storeProductsGrid">
-                <div class="product-card" style="padding:20px;">جاري تحميل المنتجات...</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 6. أبرز الدورات التدريبية -->
-    <section class="section" id="courses-preview">
-        <div class="sec-header">
-            <div>
-                <h2>أحدث الدورات التدريبية</h2>
-                <p>دورات مجانية ومدفوعة بفتح آلي بعد الاعتماد</p>
-            </div>
-            <a href="courses.html" class="btn-outline">عرض جميع الدورات <i class="fa-solid fa-arrow-left"></i></a>
-        </div>
-        <div class="cards-grid" id="homeCoursesGrid">
-            <div class="product-card" style="padding:20px;">جاري تحميل الدورات...</div>
-        </div>
-    </section>
-
-    <!-- 7. نظام المسوقين بالعمولة وحاسبة الأرباح -->
-    <section class="section" id="affiliate-section">
-        <div class="affiliate-banner">
-            <div>
-                <span style="background:rgba(245,158,11,0.18); color:var(--gold); padding:5px 12px; border-radius:99px; font-size:12px; font-weight:700;">برنامج شركاء صدارة</span>
-                <h2 style="font-size:26px; margin:12px 0 10px;">حوّل جمهورك وعلاقاتك إلى مصدر دخل حقيقي</h2>
-                <p style="color:#CBD5E1; font-size:14px; margin-bottom:18px;">سجّل رقمك واحصل فوراً على رابط إحالة موحد لجميع المنتجات والدورات، مع لوحة متابعة لعمولاتك وتصفياتك الشهرية.</p>
-
-                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
-                    <input type="text" id="quickAffName" placeholder="اسمك الكامل" style="padding:10px 12px; border-radius:10px; border:none; font-size:13px; flex:1; min-width:140px;">
-                    <input type="tel" id="quickAffPhone" placeholder="رقم هاتفك (واتساب)" style="padding:10px 12px; border-radius:10px; border:none; font-size:13px; flex:1; min-width:140px;">
-                    <button type="button" class="btn-primary" style="background:var(--green);" onclick="registerOrFetchAffiliate()">استخراج رابطي 🚀</button>
-                </div>
-                <div id="affDashboardMini" style="display:none; background:rgba(255,255,255,0.08); border-radius:12px; padding:12px; font-size:13px;"></div>
-            </div>
-
-            <div class="calc-box">
-                <h3 style="font-size:16px; margin-bottom:12px; color:var(--gold);"><i class="fa-solid fa-calculator"></i> حاسبة الأرباح التفاعلية</h3>
-                <label>عدد المبيعات الشهرية المتوقعة: <b id="salesCountVal">15</b> عملية</label>
-                <input type="range" id="salesRange" min="1" max="100" value="15" oninput="updateProfitCalc()">
-                <label>متوسط عمولة المنتج/الدورة: <b id="avgCommVal">500</b> YER</label>
-                <input type="range" id="commRange" min="100" max="5000" step="100" value="500" oninput="updateProfitCalc()">
-                <div class="calc-result">
-                    <div style="font-size:12px; color:#A7F3D0;">دخلك الشهري المتوقع</div>
-                    <div style="font-size:24px; font-weight:700; color:#fff;" id="calcTotalOutput">7,500 YER</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 8. المدونة والمقالات -->
-    <section class="section-alt" id="blog-section">
-        <div class="section">
-            <div class="sec-header">
-                <div>
-                    <h2>المدونة والمقالات</h2>
-                    <p>محتوى معرفي يربط الفكرة بالتطبيق العملي</p>
-                </div>
-            </div>
-            <div class="cards-grid" id="homeBlogGrid">
-                <div class="blog-card" style="padding:20px;">جاري تحميل المقالات...</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- نافذة إتمام الطلب والسداد -->
+    <!-- نافذة طلب المنتج -->
     <div class="modal-backdrop" id="orderModal" onclick="if(event.target.id==='orderModal') closeOrderModal()">
         <div class="modal-card" onclick="event.stopPropagation()">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                <h3 id="omProductTitle" style="font-size:16px; color:var(--navy);">إتمام الطلب</h3>
+                <h3 id="omTitle" style="font-size:16px; color:var(--navy);">طلب منتج</h3>
                 <button onclick="closeOrderModal()" style="border:none; background:var(--bg-surface); padding:5px 10px; border-radius:8px; cursor:pointer; font-weight:700;">✕</button>
             </div>
             <div style="background:#EFF6FF; padding:10px 12px; border-radius:10px; font-size:13px; font-weight:700; color:var(--royal); margin-bottom:10px;">
                 المبلغ المطلوب: <span id="omPrice">0 YER</span>
             </div>
             <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:10px; padding:10px; font-size:12px; margin-bottom:12px;">
-                <b>حسابات الدفع الرسمية:</b><br>
+                <b>حسابات التحويل المعتمدة:</b><br>
                 • محفظة جيب (Jeeb): <b>780568507</b><br>
                 • نقطة حاسب الكريمي: <b>2628009</b><br>
                 • المستفيد: <b>عبدالرحمن عبدالله صالح الذماري</b>
             </div>
-            <div class="field"><label>الاسم الكامل</label><input type="text" id="custName" placeholder="أدخل اسمك"></div>
-            <div class="field"><label>رقم الهاتف / الواتساب</label><input type="tel" id="custPhone" placeholder="780568507"></div>
-            <div class="field"><label>صورة سند التحويل</label><input type="file" id="custReceipt" accept="image/*"></div>
-            <button type="button" class="btn-primary" style="width:100%; justify-content:center; margin-top:6px;" onclick="submitProductOrder()">تأكيد وإرسال الطلب 🚀</button>
-            <div id="omStatus" style="margin-top:8px; font-size:12.5px; font-weight:700; text-align:center;"></div>
+            <div class="field"><label>الاسم الكامل</label><input type="text" id="buyerName" placeholder="أدخل اسمك"></div>
+            <div class="field"><label>رقم الهاتف / الواتساب</label><input type="tel" id="buyerPhone" placeholder="780568507"></div>
+            <div class="field"><label>صورة سند التحويل</label><input type="file" id="buyerReceipt" accept="image/*"></div>
+            <button type="button" class="btn-buy" style="width:100%; padding:11px; margin-top:6px;" onclick="submitOrder()">إرسال الطلب 🚀</button>
+            <div id="omMsg" style="margin-top:8px; font-size:12.5px; font-weight:700; text-align:center;"></div>
         </div>
     </div>
-
-    <footer>
-        <div class="footer-inner">
-            <div>
-                <h3 style="color:#fff; margin-bottom:6px;">منصة صدارة</h3>
-                <p style="font-size:13px; max-width:360px;">منظومة متكاملة للتجارة الإلكترونية، التدريب الرقمي، والتسويق بالعمولة.</p>
-            </div>
-            <div style="display:flex; gap:18px; align-items:center; font-size:13.5px;">
-                <a href="#store-section" style="color:#CBD5E1; text-decoration:none;">المتجر</a>
-                <a href="courses.html" style="color:#CBD5E1; text-decoration:none;">الدورات</a>
-                <a href="#affiliate-section" style="color:#CBD5E1; text-decoration:none;">المسوقون</a>
-                <a href="control.html" style="color:var(--gold); text-decoration:none;">الإدارة</a>
-            </div>
-        </div>
-        <p style="text-align:center; font-size:12px; color:#94A3B8; margin-top:18px;">© 2026 منصة صدارة — جميع الحقوق محفوظة</p>
-    </footer>
 
     <script>
         const db = supabase.createClient("https://lvutrzswngpkjfamgact.supabase.co", "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG");
         const BUCKET = "platform-files";
 
-        let state = {
-            products: [],
-            courses: [],
-            articles: [],
-            selectedCat: 'الكل',
-            activeOrderItem: null,
-            cart: JSON.parse(localStorage.getItem('sadara_cart') || '[]')
-        };
+        let allProducts = [];
+        let activeCategory = 'الكل';
+        let currentOrderItem = null;
+        let cart = JSON.parse(localStorage.getItem('sadara_cart') || '[]');
 
         (function captureRef() {
             const ref = new URLSearchParams(window.location.search).get('ref');
@@ -854,37 +498,37 @@
             return new URLSearchParams(window.location.search).get('ref') || localStorage.getItem('sadarah_ref_code') || '';
         }
 
+        function toggleDrawer(open) {
+            document.getElementById('drawerOverlay').style.display = open ? 'block' : 'none';
+            document.getElementById('sideDrawer').classList.toggle('open', open);
+        }
+
         function updateCartBadge() {
-            document.getElementById('cartCountBadge').textContent = state.cart.length;
+            document.getElementById('cartBadge').textContent = cart.length;
         }
 
-        function updateProfitCalc() {
-            const s = Number(document.getElementById('salesRange').value);
-            const c = Number(document.getElementById('commRange').value);
-            document.getElementById('salesCountVal').textContent = s;
-            document.getElementById('avgCommVal').textContent = c;
-            document.getElementById('calcTotalOutput').textContent = (s * c).toLocaleString('en-US') + ' YER';
-        }
-
-        function setStoreCategory(cat, btn) {
-            state.selectedCat = cat;
+        function selectCategory(cat, btn) {
+            activeCategory = cat;
             document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
             btn.classList.add('active');
-            renderStoreProducts();
+            renderProducts();
         }
 
-        function renderStoreProducts() {
-            let list = [...state.products];
-            if (state.selectedCat !== 'الكل') {
-                list = list.filter(p => p.category === state.selectedCat);
-            }
-            const sortBy = document.getElementById('storeSortSelect').value;
-            if (sortBy === 'price_asc') list.sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
-            if (sortBy === 'price_desc') list.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
+        function renderProducts() {
+            const q = document.getElementById('storeSearchInput').value.trim().toLowerCase();
+            let list = allProducts.filter(p => {
+                const matchCat = activeCategory === 'الكل' || p.category === activeCategory;
+                const matchQ = !q || (p.title || '').toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q);
+                return matchCat && matchQ;
+            });
 
-            const grid = document.getElementById('storeProductsGrid');
+            const sortVal = document.getElementById('sortSelect').value;
+            if (sortVal === 'price_asc') list.sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
+            if (sortVal === 'price_desc') list.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
+
+            const grid = document.getElementById('productsGrid');
             if (!list.length) {
-                grid.innerHTML = '<div class="product-card" style="padding:20px;">لا توجد منتجات في هذا التصنيف حالياً.</div>';
+                grid.innerHTML = '<div class="product-card" style="padding:20px;">لا توجد منتجات مطابقة حالياً.</div>';
                 return;
             }
             grid.innerHTML = '';
@@ -899,32 +543,33 @@
                     <div class="product-body">
                         <div class="product-cat">${p.category || 'عام'}</div>
                         <div class="product-title">${p.title}</div>
+                        <div class="product-desc">${p.description || ''}</div>
                         <div class="price-row">
                             <span class="price-now">${p.price} YER</span>
                             ${p.old_price ? `<span class="price-old">${p.old_price} YER</span>` : ''}
                         </div>
                         <div class="card-actions">
-                            <button type="button" class="btn-buy-now">اطلب الآن</button>
-                            <button type="button" class="btn-add-cart" title="أضف للسلة"><i class="fa-solid fa-cart-plus"></i></button>
+                            <button type="button" class="btn-buy">اطلب الآن</button>
+                            <button type="button" class="btn-cart-add" title="أضف للسلة"><i class="fa-solid fa-cart-plus"></i></button>
                         </div>
                     </div>
                 `;
-                card.querySelector('.btn-buy-now').onclick = () => openOrderModal(p);
-                card.querySelector('.btn-add-cart').onclick = () => {
-                    state.cart.push(p);
-                    localStorage.setItem('sadara_cart', JSON.stringify(state.cart));
+                card.querySelector('.btn-buy').onclick = () => openOrderModal(p);
+                card.querySelector('.btn-cart-add').onclick = () => {
+                    cart.push(p);
+                    localStorage.setItem('sadara_cart', JSON.stringify(cart));
                     updateCartBadge();
-                    alert('تمت إضافة المنتج إلى السلة ✅');
+                    alert('تمت إضافة المنتج للسلة ✅');
                 };
                 grid.appendChild(card);
             });
         }
 
-        function openOrderModal(product) {
-            state.activeOrderItem = product;
-            document.getElementById('omProductTitle').textContent = `طلب: ${product.title}`;
-            document.getElementById('omPrice').textContent = `${product.price} YER`;
-            document.getElementById('omStatus').textContent = '';
+        function openOrderModal(item) {
+            currentOrderItem = item;
+            document.getElementById('omTitle').textContent = `طلب: ${item.title}`;
+            document.getElementById('omPrice').textContent = `${item.price} YER`;
+            document.getElementById('omMsg').textContent = '';
             document.getElementById('orderModal').style.display = 'flex';
         }
 
@@ -932,23 +577,23 @@
             document.getElementById('orderModal').style.display = 'none';
         }
 
-        function openCartModal() {
-            if (!state.cart.length) return alert('سلة التسوق فارغة حالياً.');
-            const total = state.cart.reduce((sum, item) => sum + Number(item.price || 0), 0);
-            const names = state.cart.map(i => i.title).join(' + ');
-            openOrderModal({ id: state.cart[0].id, title: names, price: total });
+        function openCartOrder() {
+            if (!cart.length) return alert('السلة فارغة حالياً.');
+            const total = cart.reduce((sum, x) => sum + Number(x.price || 0), 0);
+            const names = cart.map(x => x.title).join(' + ');
+            openOrderModal({ id: cart[0].id, title: names, price: total });
         }
 
-        async function submitProductOrder() {
-            if (!state.activeOrderItem) return;
-            const customer_name = document.getElementById('custName').value.trim();
-            const customer_phone = document.getElementById('custPhone').value.trim();
-            const file = document.getElementById('custReceipt').files[0];
-            const statusEl = document.getElementById('omStatus');
+        async function submitOrder() {
+            if (!currentOrderItem) return;
+            const customer_name = document.getElementById('buyerName').value.trim();
+            const customer_phone = document.getElementById('buyerPhone').value.trim();
+            const file = document.getElementById('buyerReceipt').files[0];
+            const msgEl = document.getElementById('omMsg');
 
-            if (!customer_name || !customer_phone) return alert('يرجى إدخال الاسم ورقم الهاتف.');
-            statusEl.style.color = 'var(--royal)';
-            statusEl.textContent = 'جاري إرسال الطلب...';
+            if (!customer_name || !customer_phone) return alert('أدخل الاسم ورقم الهاتف.');
+            msgEl.style.color = 'var(--royal)';
+            msgEl.textContent = 'جاري إرسال الطلب...';
 
             let receipt_url = '';
             if (file) {
@@ -961,126 +606,34 @@
             }
 
             await db.from('orders').insert([{
-                item_id: String(state.activeOrderItem.id),
+                item_id: String(currentOrderItem.id),
                 item_type: 'product',
-                product_title: state.activeOrderItem.title,
+                product_title: currentOrderItem.title,
                 customer_name,
                 customer_phone,
-                total_price: String(state.activeOrderItem.price),
+                total_price: String(currentOrderItem.price),
                 receipt_url,
                 ref_code: getRefCode() || null,
                 status: 'قيد التوثيق'
             }]);
 
-            state.cart = [];
+            cart = [];
             localStorage.setItem('sadara_cart', '[]');
             updateCartBadge();
 
-            statusEl.style.color = 'var(--green)';
-            statusEl.textContent = 'تم إرسال طلبك بنجاح! 🎉';
-            setTimeout(closeOrderModal, 1400);
+            msgEl.style.color = 'var(--green)';
+            msgEl.textContent = 'تم إرسال طلبك بنجاح! 🎉';
+            setTimeout(closeOrderModal, 1300);
         }
 
-        async function registerOrFetchAffiliate() {
-            const name = document.getElementById('quickAffName').value.trim();
-            const phone = document.getElementById('quickAffPhone').value.trim();
-            if (!phone) return alert('أدخل رقم هاتفك.');
-
-            let { data: aff } = await db.from('affiliates').select('*').eq('phone', phone).maybeSingle();
-            if (!aff) {
-                const ref_code = 'SDR' + phone.slice(-4);
-                const { data: inserted } = await db.from('affiliates').insert([{
-                    full_name: name || 'مسوق صدارة',
-                    name: name || 'مسوق صدارة',
-                    phone,
-                    ref_code,
-                    pending_earnings: 0,
-                    total_earnings: 0
-                }]).select().single();
-                aff = inserted;
-            }
-
-            const shareUrl = `${window.location.origin}/index.html?ref=${aff.ref_code}`;
-            const box = document.getElementById('affDashboardMini');
-            box.style.display = 'block';
-            box.innerHTML = `
-                <div>أهلاً <b>${aff.full_name || aff.name}</b> | كودك: <b style="color:var(--gold);">${aff.ref_code}</b></div>
-                <div style="margin:6px 0;">رابطك الموحد: <code style="background:#0F172A; padding:3px 7px; border-radius:6px;">${shareUrl}</code></div>
-                <div>المستحقات المعلقة: <b>${aff.pending_earnings || 0} YER</b> | المصروفة: <b>${aff.settled_earnings || 0} YER</b></div>
-            `;
-        }
-
-        function runUnifiedSearch() {
-            const q = document.getElementById('globalSearchInput').value.trim().toLowerCase();
-            const dd = document.getElementById('searchDropdown');
-            if (!q) { dd.style.display = 'none'; return; }
-
-            const matches = [];
-            state.products.filter(p => (p.title || '').toLowerCase().includes(q)).forEach(p => {
-                matches.push({ label: p.title, tag: `متجر • ${p.price} YER`, href: '#store-section' });
-            });
-            state.courses.filter(c => (c.title || '').toLowerCase().includes(q)).forEach(c => {
-                matches.push({ label: c.title, tag: 'دورة تدريبية', href: 'courses.html' });
-            });
-            state.articles.filter(a => (a.title || '').toLowerCase().includes(q)).forEach(a => {
-                matches.push({ label: a.title, tag: 'مقال', href: '#blog-section' });
-            });
-
-            dd.style.display = 'block';
-            dd.innerHTML = matches.slice(0, 8).map(m => `
-                <a class="search-item" href="${m.href}" onclick="document.getElementById('searchDropdown').style.display='none'">
-                    <span>${m.label}</span>
-                    <span style="font-size:11px; color:var(--royal); font-weight:700;">${m.tag}</span>
-                </a>
-            `).join('') || '<div style="padding:10px; font-size:12px; color:var(--text-muted);">لا توجد نتائج مطابقة</div>';
-        }
-
-        async function initPlatformData() {
+        async function loadStoreData() {
             updateCartBadge();
-            const [prodRes, courseRes, artRes] = await Promise.all([
-                db.from('platform_services').select('*').order('id', { ascending: false }),
-                db.from('platform_courses').select('*').order('id', { ascending: false }),
-                db.from('platform_articles').select('*').order('id', { ascending: false })
-            ]);
-
-            state.products = (prodRes.data || []).filter(p => p.is_active !== false);
-            state.courses = (courseRes.data || []).filter(c => c.is_active !== false);
-            state.articles = (artRes.data || []).filter(a => a.is_active !== false);
-
-            document.getElementById('statProducts').textContent = `+${state.products.length}`;
-            document.getElementById('statCourses').textContent = `+${state.courses.length}`;
-
-            renderStoreProducts();
-
-            const cGrid = document.getElementById('homeCoursesGrid');
-            cGrid.innerHTML = state.courses.slice(0, 4).map(c => `
-                <div class="product-card">
-                    <div class="product-thumb">
-                        <span class="discount-tag" style="background:#ECFDF5; color:var(--green);">${c.is_free ? 'مجانية' : (c.price + ' YER')}</span>
-                        ${c.image ? `<img src="${c.image}" alt="${c.title}">` : `<i class="fa-solid fa-graduation-cap" style="font-size:36px; color:var(--emerald);"></i>`}
-                    </div>
-                    <div class="product-body">
-                        <div class="product-cat">المدرب: ${c.instructor || 'صدارة'}</div>
-                        <div class="product-title">${c.title}</div>
-                        <a href="courses.html" class="btn-primary" style="width:100%; justify-content:center; padding:9px;">دخول الدورة</a>
-                    </div>
-                </div>
-            `).join('') || '<div class="product-card" style="padding:20px;">لا توجد دورات منشورة حالياً.</div>';
-
-            const bGrid = document.getElementById('homeBlogGrid');
-            bGrid.innerHTML = state.articles.slice(0, 3).map(a => `
-                <article class="blog-card">
-                    ${a.image ? `<img src="${a.image}" alt="${a.title}">` : ''}
-                    <div class="blog-body">
-                        <span style="font-size:11.5px; color:var(--royal); font-weight:700;">${a.category || 'مقال'}</span>
-                        <h3 style="font-size:15.5px; color:var(--navy); margin:6px 0;">${a.title}</h3>
-                        <p style="font-size:13px; color:var(--text-muted);">${a.summary || ''}</p>
-                    </div>
-                </article>
-            `).join('') || '<div class="blog-card" style="padding:20px;">لا توجد مقالات منشورة حالياً.</div>';
+            const { data } = await db.from('platform_services').select('*').order('id', { ascending: false });
+            allProducts = (data || []).filter(p => p.is_active !== false);
+            renderProducts();
         }
 
-        window.addEventListener('DOMContentLoaded', initPlatformData);
+        window.addEventListener('DOMContentLoaded', loadStoreData);
     </script>
 </body>
 </html>
