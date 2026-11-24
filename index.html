@@ -289,12 +289,13 @@
             flex: 1;
             background: var(--primary);
             color: #fff;
-            text-decoration: none;
+            border: none;
             text-align: center;
             padding: 8px;
             border-radius: 9px;
             font-size: 11.5px;
             font-weight: 900;
+            cursor: pointer;
             transition: 0.2s;
         }
         .btn-order:hover { background: var(--dark); color: var(--gold); }
@@ -321,7 +322,7 @@
             font-weight: 700;
         }
 
-        /* نافذة المعاينة السريعة */
+        /* نافذة الطلب والسداد */
         .modal-backdrop {
             display: none;
             position: fixed;
@@ -335,7 +336,7 @@
         .modal-card {
             background: var(--card);
             border-radius: 16px;
-            max-width: 460px;
+            max-width: 480px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -351,18 +352,31 @@
             font-size: 11.5px;
             line-height: 1.7;
         }
+        .field-group { margin-bottom: 10px; }
+        .field-group label { display: block; font-size: 11.5px; font-weight: 900; margin-bottom: 4px; color: var(--primary); }
+        .field-group input, .field-group select, .field-group textarea {
+            width: 100%;
+            padding: 9px 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            background: #f8fafc;
+            outline: none;
+        }
         .modal-submit {
             display: block;
             width: 100%;
             text-align: center;
             background: var(--green);
             color: #fff;
-            text-decoration: none;
+            border: none;
             padding: 11px;
             border-radius: 10px;
             font-size: 12.5px;
             font-weight: 900;
-            margin-top: 10px;
+            cursor: pointer;
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -422,15 +436,15 @@
         </div>
     </main>
 
-    <div class="modal-backdrop" id="previewModal" onclick="if(event.target.id==='previewModal') closePreviewModal()">
+    <div class="modal-backdrop" id="orderModal" onclick="if(event.target.id==='orderModal') closeOrderModal()">
         <div class="modal-card" onclick="event.stopPropagation()">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 id="pmTitle" style="font-size:14px; font-weight:900; color:var(--primary);"></h3>
-                <button onclick="closePreviewModal()" style="border:none; background:#f1f5f9; padding:5px 10px; border-radius:8px; font-weight:900; cursor:pointer;">✕</button>
+                <h3 id="omTitle" style="font-size:14px; font-weight:900; color:var(--primary);"></h3>
+                <button onclick="closeOrderModal()" style="border:none; background:#f1f5f9; padding:5px 10px; border-radius:8px; font-weight:900; cursor:pointer;">✕</button>
             </div>
-            <div class="product-media" id="pmMedia" style="max-height:260px;"></div>
-            <div id="pmPrice" style="font-size:14px; font-weight:900; color:var(--red); margin-bottom:6px;"></div>
-            <p id="pmDesc" style="font-size:12px; color:#334155; line-height:1.6;"></p>
+            <div class="product-media" id="omMedia" style="max-height:240px;"></div>
+            <div id="omPrice" style="font-size:14px; font-weight:900; color:var(--red); margin-bottom:6px;"></div>
+            <p id="omDesc" style="font-size:12px; color:#334155; line-height:1.6;"></p>
 
             <div class="payment-box">
                 <b>بيانات الدفع الرسمية:</b><br>
@@ -439,7 +453,32 @@
                 • الاسم المستفيد: <b>عبدالرحمن عبدالله صالح الذماري</b>
             </div>
 
-            <a href="#" id="pmOrderBtn" class="modal-submit">إتمام الطلب ورفع السند 🛒</a>
+            <div class="field-group">
+                <label>الاسم الكامل</label>
+                <input type="text" id="custName" placeholder="أدخل اسمك الكامل">
+            </div>
+            <div class="field-group">
+                <label>رقم الهاتف / الواتساب</label>
+                <input type="tel" id="custPhone" placeholder="مثال: 780568507">
+            </div>
+            <div class="field-group">
+                <label>وسيلة الدفع</label>
+                <select id="payMethod">
+                    <option value="محفظة جيب (Jeeb) - 780568507">محفظة جيب (Jeeb) - 780568507</option>
+                    <option value="نقطة حاسب الكريمي - 2628009">نقطة حاسب الكريمي - 2628009</option>
+                </select>
+            </div>
+            <div class="field-group">
+                <label>صورة سند التحويل (اختياري)</label>
+                <input type="file" id="receiptFile" accept="image/*">
+            </div>
+            <div class="field-group">
+                <label>ملاحظات إضافية (اختياري)</label>
+                <textarea id="orderNotes" rows="2" placeholder="العنوان أو أي تفاصيل إضافية"></textarea>
+            </div>
+
+            <button type="button" id="submitOrderBtn" class="modal-submit" onclick="submitStoreOrder()">إرسال الطلب الآن 🚀</button>
+            <div id="orderStatusMsg" style="margin-top:8px; font-size:11.5px; text-align:center; font-weight:900;"></div>
         </div>
     </div>
 
@@ -447,9 +486,11 @@
         const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const STORAGE_BUCKET = "platform-files";
 
         let allProducts = [];
         let selectedCategory = 'الكل';
+        let selectedProduct = null;
         let sliderTimer = null;
 
         function toEnglishDigits(str) {
@@ -484,14 +525,6 @@
         function getRefCode() {
             const params = new URLSearchParams(window.location.search);
             return params.get('ref') || localStorage.getItem('sadarah_ref_code') || '';
-        }
-
-        function getProductLink(id) {
-            const url = new URL('product.html', window.location.origin);
-            url.searchParams.set('id', id);
-            const ref = getRefCode();
-            if (ref) url.searchParams.set('ref', ref);
-            return url.pathname + url.search;
         }
 
         function renderFallbackBrand() {
@@ -611,28 +644,94 @@
                         </div>
                     </div>
                     <div class="card-actions">
-                        <a href="${getProductLink(p.id)}" class="btn-order">اطلب الآن</a>
+                        <button type="button" class="btn-order">اطلب الآن</button>
                         <button type="button" class="btn-preview" title="معاينة"><i class="fa-solid fa-eye"></i></button>
                     </div>
                 `;
-                card.querySelector('.btn-preview').addEventListener('click', () => openPreview(p));
+                card.querySelector('.btn-order').addEventListener('click', () => openOrderModal(p));
+                card.querySelector('.btn-preview').addEventListener('click', () => openOrderModal(p));
                 grid.appendChild(card);
             });
         }
 
-        function openPreview(p) {
-            document.getElementById('pmTitle').textContent = p.title || '';
-            document.getElementById('pmPrice').textContent = `${toEnglishDigits(p.price || 0)} YER`;
-            document.getElementById('pmDesc').textContent = p.description || 'متوفر للطلب المباشر عبر منصة صدارة.';
-            document.getElementById('pmMedia').innerHTML = p.image
-                ? `<img src="${p.image}" alt="${p.title || ''}" onerror="this.parentElement.innerHTML=renderFallbackBrand()">`
+        function openOrderModal(product) {
+            selectedProduct = product;
+            document.getElementById('omTitle').textContent = product.title || '';
+            document.getElementById('omPrice').textContent = `${toEnglishDigits(product.price || 0)} YER`;
+            document.getElementById('omDesc').textContent = product.description || 'متوفر للطلب المباشر عبر منصة صدارة.';
+            document.getElementById('omMedia').innerHTML = product.image
+                ? `<img src="${product.image}" alt="${product.title || ''}" onerror="this.parentElement.innerHTML=renderFallbackBrand()">`
                 : renderFallbackBrand();
-            document.getElementById('pmOrderBtn').href = getProductLink(p.id);
-            document.getElementById('previewModal').style.display = 'flex';
+
+            document.getElementById('custName').value = '';
+            document.getElementById('custPhone').value = '';
+            document.getElementById('receiptFile').value = '';
+            document.getElementById('orderNotes').value = '';
+            document.getElementById('orderStatusMsg').textContent = '';
+            document.getElementById('orderModal').style.display = 'flex';
         }
 
-        function closePreviewModal() {
-            document.getElementById('previewModal').style.display = 'none';
+        function closeOrderModal() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        async function submitStoreOrder() {
+            if (!selectedProduct) return;
+            const customer_name = document.getElementById('custName').value.trim();
+            const customer_phone = toEnglishDigits(document.getElementById('custPhone').value.trim());
+            const payMethod = document.getElementById('payMethod').value;
+            const notes = document.getElementById('orderNotes').value.trim();
+            const receiptInput = document.getElementById('receiptFile');
+            const statusEl = document.getElementById('orderStatusMsg');
+            const submitBtn = document.getElementById('submitOrderBtn');
+
+            if (!customer_name || !customer_phone) {
+                alert('يرجى إدخال الاسم الكامل ورقم الهاتف / الواتساب.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            statusEl.style.color = 'var(--primary)';
+            statusEl.textContent = 'جاري إرسال الطلب...';
+
+            let receipt_url = '';
+            if (receiptInput.files && receiptInput.files[0]) {
+                const file = receiptInput.files[0];
+                const fileName = `receipts/order_${Date.now()}_${file.name}`;
+                const { data: upData } = await db.storage.from(STORAGE_BUCKET).upload(fileName, file);
+                if (upData) {
+                    const { data: pub } = db.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
+                    receipt_url = pub.publicUrl;
+                }
+            }
+
+            const titleWithNotes = notes
+                ? `${selectedProduct.title} (${payMethod} - ${notes})`
+                : `${selectedProduct.title} (${payMethod})`;
+
+            const { error } = await db.from('orders').insert([{
+                product_title: titleWithNotes,
+                customer_name,
+                customer_phone,
+                total_price: String(toEnglishDigits(selectedProduct.price || 0)),
+                receipt_url,
+                ref_code: getRefCode() || null,
+                status: 'قيد التوثيق'
+            }]);
+
+            submitBtn.disabled = false;
+
+            if (error) {
+                statusEl.style.color = 'var(--red)';
+                statusEl.textContent = 'خطأ أثناء إرسال الطلب: ' + error.message;
+                return;
+            }
+
+            statusEl.style.color = 'var(--green)';
+            statusEl.textContent = 'تم استلام طلبك بنجاح! سنتواصل معك قريباً.';
+            setTimeout(() => {
+                closeOrderModal();
+            }, 1500);
         }
 
         window.addEventListener('DOMContentLoaded', initPage);
