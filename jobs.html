@@ -3,83 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الوظائف ودليل الكفاءات | منصة صدارة</title>
+    <title>الوظائف والكفاءات | منصة صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --navy: #0F172A;
-            --royal: #2563EB;
-            --emerald: #0D9488;
-            --green: #10B981;
-            --gold: #F59E0B;
-            --bg-surface: #F8FAFC;
-            --text-main: #1E293B;
-            --text-muted: #64748B;
-            --border: #E2E8F0;
-            --radius-lg: 20px;
-            --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.04);
+            --navy: #0F172A; --royal: #2563EB; --emerald: #0D9488; --green: #10B981;
+            --gold: #F59E0B; --bg-surface: #F8FAFC; --text-main: #1E293B; --text-muted: #64748B;
+            --border: #E2E8F0; --radius-lg: 20px; --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.04);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; }
-        body { background: var(--bg-surface); color: var(--text-main); line-height: 1.65; }
+        body { background: var(--bg-surface); color: var(--text-main); line-height: 1.7; }
 
-        .navbar {
-            position: sticky; top: 0; z-index: 1000;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--border);
-        }
-        .nav-inner {
-            max-width: 1180px; margin: 0 auto; padding: 12px 18px;
-            display: flex; justify-content: space-between; align-items: center; gap: 12px;
-        }
-        .btn-icon {
-            background: var(--bg-surface); color: var(--navy); border: 1px solid var(--border);
-            width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 16px;
-        }
-        .logo { text-decoration: none; color: var(--navy); font-weight: 700; font-size: 19px; }
+        .navbar { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .btn-icon { background: var(--bg-surface); color: var(--navy); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 16px; }
+        .logo { text-decoration: none; color: var(--navy); font-weight: 700; font-size: clamp(16px, 2.2vw, 19px); }
         .logo span { color: var(--royal); }
 
         .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); z-index: 2500; }
-        .side-drawer {
-            position: fixed; top: 0; right: -320px; width: 300px; max-width: 86vw; height: 100vh;
-            background: #fff; z-index: 2600; border-left: 1px solid var(--border);
-            padding: 20px 16px; transition: right 0.28s ease;
-        }
+        .side-drawer { position: fixed; top: 0; right: -320px; width: 300px; max-width: 86vw; height: 100vh; background: #fff; z-index: 2600; border-left: 1px solid var(--border); padding: 20px 16px; display: flex; flex-direction: column; justify-content: space-between; transition: right 0.28s ease; }
         .side-drawer.open { right: 0; }
-        .drawer-link {
-            display: flex; align-items: center; gap: 10px;
-            padding: 11px 12px; border-radius: 12px; text-decoration: none;
-            color: var(--text-main); font-size: 13.5px; font-weight: 600; margin-bottom: 6px;
-        }
+        .drawer-link { display: flex; align-items: center; justify-content: space-between; padding: 11px 12px; border-radius: 12px; text-decoration: none; color: var(--text-main); font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
         .drawer-link:hover, .drawer-link.active { background: #EFF6FF; color: var(--royal); }
+        .drawer-badge { font-size: 10.5px; background: var(--bg-surface); border: 1px solid var(--border); padding: 2px 8px; border-radius: 99px; color: var(--text-muted); }
 
-        .hero {
-            background: linear-gradient(135deg, var(--navy), #1E293B);
-            color: #fff; padding: 30px 18px; text-align: center;
-        }
-        .hero h1 { font-size: 26px; margin-bottom: 6px; }
-        .hero p { color: #CBD5E1; font-size: 14px; }
+        .hero { background: linear-gradient(135deg, var(--navy), #1E293B); color: #fff; padding: 30px 16px; text-align: center; }
+        .hero h1 { font-size: clamp(21px, 3.2vw, 27px); margin-bottom: 6px; }
+        .hero p { color: #CBD5E1; font-size: 13.5px; }
 
-        .container { max-width: 1180px; margin: 0 auto; padding: 26px 18px 60px; }
-        .search-bar {
-            width: 100%; padding: 11px 15px; border: 1px solid var(--border);
-            border-radius: 14px; background: #fff; font-size: 14px; margin-bottom: 24px;
-        }
-        .sec-title { font-size: 19px; font-weight: 700; color: var(--navy); margin: 18px 0 14px; display: flex; align-items: center; gap: 8px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px 16px 60px; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+        .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tab-btn { background: #fff; border: 1px solid var(--border); color: var(--navy); padding: 9px 15px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .tab-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+        .search-input { flex: 1; max-width: 300px; min-width: 190px; padding: 9px 14px; border-radius: 12px; border: 1px solid var(--border); background: #fff; font-size: 13px; outline: none; }
 
-        .item-card {
-            background: #fff; border: 1px solid var(--border);
-            border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow-sm);
-            display: flex; flex-direction: column; justify-content: space-between;
-        }
-        .btn-wa {
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            width: 100%; background: var(--green); color: #fff; text-decoration: none;
-            padding: 9px 12px; border-radius: 11px; font-size: 13px; font-weight: 700; margin-top: 12px;
-        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)); gap: 18px; }
+        .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between; }
+        .meta-row { font-size: 12px; color: var(--text-muted); margin: 6px 0 10px; display: flex; flex-wrap: wrap; gap: 10px; }
+        .btn-wa { display: inline-flex; align-items: center; justify-content: center; gap: 7px; background: var(--green); color: #fff; text-decoration: none; padding: 9px 14px; border-radius: 11px; font-size: 13px; font-weight: 700; margin-top: 12px; }
+        .talent-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .talent-avatar { width: 56px; height: 56px; border-radius: 14px; object-fit: cover; background: #EFF6FF; border: 1px solid var(--border); }
+        .verified-badge { display: inline-flex; align-items: center; gap: 4px; background: #EFF6FF; color: var(--royal); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+        .review-box { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+        .review-item { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; margin-top: 6px; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -90,113 +59,164 @@
                 <button type="button" class="btn-icon" onclick="toggleDrawer(true)"><i class="fa-solid fa-bars"></i></button>
                 <a href="jobs.html" class="logo">الوظائف والكفاءات <span>صدارة</span></a>
             </div>
-            <a href="index.html" style="text-decoration:none; font-size:13px; font-weight:700; color:var(--royal);">المتجر الرئيسي ←</a>
+            <a href="index.html" style="text-decoration:none; font-size:13px; font-weight:700; color:var(--royal);">العودة للمتجر ←</a>
         </div>
     </header>
 
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
     <aside class="side-drawer" id="sideDrawer">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid var(--border);">
-            <strong style="color:var(--navy);">الأقسام والواجهات</strong>
-            <button onclick="toggleDrawer(false)" style="border:none; background:var(--bg-surface); padding:4px 9px; border-radius:8px; cursor:pointer;">✕</button>
+        <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; margin-bottom:14px; border-bottom:1px solid var(--border);">
+                <strong style="color:var(--navy); font-size:15px;">أقسام وواجهات منصة صدارة</strong>
+                <button type="button" onclick="toggleDrawer(false)" style="border:none; background:var(--bg-surface); padding:5px 10px; border-radius:8px; cursor:pointer; font-weight:700;">✕</button>
+            </div>
+            <nav>
+                <a href="index.html" class="drawer-link"><span><i class="fa-solid fa-store" style="color:var(--royal);"></i> المتجر والمنتجات</span><span class="drawer-badge">متجر</span></a>
+                <a href="courses.html" class="drawer-link"><span><i class="fa-solid fa-graduation-cap" style="color:var(--emerald);"></i> الدورات وكورساتي</span><span class="drawer-badge">تعليم</span></a>
+                <a href="affiliate.html" class="drawer-link"><span><i class="fa-solid fa-handshake" style="color:var(--green);"></i> بوابة المسوّقين بالعمولة</span><span class="drawer-badge">أرباح</span></a>
+                <a href="jobs.html" class="drawer-link active"><span><i class="fa-solid fa-briefcase" style="color:var(--navy);"></i> الوظائف والكفاءات</span><span class="drawer-badge">فرص</span></a>
+                <a href="blog.html" class="drawer-link"><span><i class="fa-solid fa-newspaper" style="color:var(--gold);"></i> المدونة والمقالات</span><span class="drawer-badge">مقالات</span></a>
+            </nav>
         </div>
-        <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات (الرئيسية)</a>
-        <a href="courses.html" class="drawer-link"><i class="fa-solid fa-graduation-cap"></i> الدورات التدريبية</a>
-        <a href="affiliate.html" class="drawer-link"><i class="fa-solid fa-handshake"></i> بوابة المسوّقين بالعمولة</a>
-        <a href="jobs.html" class="drawer-link active"><i class="fa-solid fa-briefcase"></i> الوظائف والكفاءات</a>
-        <a href="blog.html" class="drawer-link"><i class="fa-solid fa-newspaper"></i> المدونة والمقالات</a>
-        <a href="control.html" class="drawer-link"><i class="fa-solid fa-sliders"></i> لوحة التحكم والإدارة</a>
+        <div style="font-size:11.5px; color:var(--text-muted); border-top:1px solid var(--border); padding-top:12px;">جميع الحقوق محفوظة © 2026 منصة صدارة</div>
     </aside>
 
     <section class="hero">
         <h1>الوظائف الشاغرة ودليل الكفاءات</h1>
-        <p>تواصل مباشرة مع جهات التوظيف أو استقطب الكفاءات والخبراء المعتمدين</p>
+        <p>تصفّح أحدث الفرص الوظيفية وتواصل مع الكفاءات والخبراء المعتمدين مباشرة</p>
     </section>
 
     <main class="container">
-        <input type="text" id="jtSearch" class="search-bar" placeholder="🔍 ابحث بالمسمى الوظيفي، التخصص، المدينة، أو اسم الخبير..." oninput="renderJobsAndTalents()">
-
-        <h2 class="sec-title"><i class="fa-solid fa-briefcase" style="color:var(--royal);"></i> الوظائف الشاغرة</h2>
-        <div class="grid" id="jobsGrid">
-            <div class="item-card">جاري تحميل الوظائف...</div>
+        <div class="toolbar">
+            <div class="tabs">
+                <button type="button" class="tab-btn active" id="tabJobsBtn" onclick="switchTab('jobs')"><i class="fa-solid fa-briefcase"></i> الوظائف الشاغرة</button>
+                <button type="button" class="tab-btn" id="tabTalentsBtn" onclick="switchTab('talents')"><i class="fa-solid fa-user-check"></i> دليل الكفاءات والخبراء</button>
+            </div>
+            <input type="text" class="search-input" id="searchInput" placeholder="ابحث عن وظيفة أو تخصص أو خبير..." oninput="renderCurrentTab()">
         </div>
 
-        <h2 class="sec-title" style="margin-top:34px;"><i class="fa-solid fa-user-check" style="color:var(--emerald);"></i> دليل الكفاءات والخبراء</h2>
-        <div class="grid" id="talentsGrid">
-            <div class="item-card">جاري تحميل الكفاءات...</div>
-        </div>
+        <div class="grid" id="contentGrid"><div class="card">جاري تحميل البيانات...</div></div>
     </main>
 
     <script>
         const db = supabase.createClient("https://lvutrzswngpkjfamgact.supabase.co", "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG");
-        let jobsList = [];
-        let talentsList = [];
+
+        let currentTab = 'jobs', jobsList = [], talentsList = [];
 
         function toggleDrawer(open) {
             document.getElementById('drawerOverlay').style.display = open ? 'block' : 'none';
             document.getElementById('sideDrawer').classList.toggle('open', open);
         }
 
-        function renderJobsAndTalents() {
-            const q = document.getElementById('jtSearch').value.trim().toLowerCase();
-
-            const fJobs = jobsList.filter(j =>
-                !q ||
-                (j.title || '').toLowerCase().includes(q) ||
-                (j.company || '').toLowerCase().includes(q) ||
-                (j.location || '').toLowerCase().includes(q)
-            );
-            document.getElementById('jobsGrid').innerHTML = fJobs.map(j => {
-                const wa = String(j.contact_phone || '967780568507').replace(/[^0-9]/g, '');
-                return `
-                <div class="item-card">
-                    <div>
-                        <span style="font-size:11.5px; color:var(--royal); font-weight:700;">${j.location || 'اليمن'} • ${j.job_type || 'دوام كامل'}</span>
-                        <h3 style="font-size:16px; color:var(--navy); margin:4px 0;">${j.title}</h3>
-                        <div style="font-size:12.5px; color:var(--text-muted); margin-bottom:8px;">الجهة: <b>${j.company || 'منصة صدارة'}</b></div>
-                        <p style="font-size:13px; color:var(--text-main);">${j.description || ''}</p>
-                    </div>
-                    <a href="https://wa.me/${wa}" target="_blank" class="btn-wa"><i class="fa-brands fa-whatsapp"></i> التقديم المباشر</a>
-                </div>`;
-            }).join('') || '<div class="item-card">لا توجد وظائف مطابقة حالياً.</div>';
-
-            const fTalents = talentsList.filter(t =>
-                !q ||
-                (t.full_name || '').toLowerCase().includes(q) ||
-                (t.specialty || '').toLowerCase().includes(q) ||
-                (t.experience || '').toLowerCase().includes(q)
-            );
-            document.getElementById('talentsGrid').innerHTML = fTalents.map(t => {
-                const wa = String(t.phone || '967780568507').replace(/[^0-9]/g, '');
-                const badge = t.is_verified !== false ? `<i class="fa-solid fa-circle-check" style="color:#1877F2;" title="موثق"></i>` : '';
-                return `
-                <div class="item-card">
-                    <div>
-                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                            <img src="${t.avatar_url || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:1px solid var(--border);">
-                            <div>
-                                <h3 style="font-size:15.5px; color:var(--navy);">${t.full_name} ${badge}</h3>
-                                <div style="font-size:12.5px; color:var(--emerald); font-weight:700;">${t.specialty || 'خبير مستقل'}</div>
-                            </div>
-                        </div>
-                        <p style="font-size:13px; color:var(--text-muted);">${t.experience || ''}</p>
-                    </div>
-                    <a href="https://wa.me/${wa}" target="_blank" class="btn-wa" style="background:var(--navy);"><i class="fa-brands fa-whatsapp"></i> تواصل مع الخبير</a>
-                </div>`;
-            }).join('') || '<div class="item-card">لا توجد كفاءات مطابقة حالياً.</div>';
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tabJobsBtn').classList.toggle('active', tab === 'jobs');
+            document.getElementById('tabTalentsBtn').classList.toggle('active', tab === 'talents');
+            renderCurrentTab();
         }
 
-        async function loadData() {
-            const [jRes, tRes] = await Promise.all([
+        function cleanPhone(raw) {
+            const eng = String(raw || '967780568507').replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+            return eng.replace(/[^0-9]/g, '');
+        }
+
+        function renderCurrentTab() {
+            const q = document.getElementById('searchInput').value.trim().toLowerCase();
+            const grid = document.getElementById('contentGrid');
+
+            if (currentTab === 'jobs') {
+                const filtered = jobsList.filter(j => !q || (j.title || '').toLowerCase().includes(q) || (j.company || '').toLowerCase().includes(q) || (j.location || '').toLowerCase().includes(q) || (j.description || '').toLowerCase().includes(q));
+                if (!filtered.length) { grid.innerHTML = '<div class="card">لا توجد وظائف مطابقة حالياً.</div>'; return; }
+
+                grid.innerHTML = filtered.map(j => {
+                    const phone = cleanPhone(j.contact_phone);
+                    const waText = encodeURIComponent(`مرحباً، أرغب بالتقديم على وظيفة: ${j.title} عبر منصة صدارة`);
+                    return `
+                        <div class="card">
+                            <div>
+                                <h3 style="font-size:16px; color:var(--navy); font-weight:700;">${j.title}</h3>
+                                <div class="meta-row">
+                                    <span><i class="fa-solid fa-building"></i> ${j.company || 'جهة معلنة'}</span>
+                                    <span><i class="fa-solid fa-location-dot"></i> ${j.location || 'غير محدد'}</span>
+                                    ${j.job_type ? `<span><i class="fa-solid fa-clock"></i> ${j.job_type}</span>` : ''}
+                                    ${j.salary ? `<span><i class="fa-solid fa-coins" style="color:var(--gold);"></i> ${j.salary}</span>` : ''}
+                                </div>
+                                <p style="font-size:13px; color:var(--text-main);">${j.description || ''}</p>
+                            </div>
+                            <a class="btn-wa" target="_blank" href="https://wa.me/${phone}?text=${waText}"><i class="fa-brands fa-whatsapp"></i> تقديم عبر واتساب</a>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                const filtered = talentsList.filter(t => !q || (t.full_name || t.name || '').toLowerCase().includes(q) || (t.specialty || t.job_title || '').toLowerCase().includes(q) || (t.experience || '').toLowerCase().includes(q));
+                if (!filtered.length) { grid.innerHTML = '<div class="card">لا توجد كفاءات مطابقة حالياً.</div>'; return; }
+
+                grid.innerHTML = '';
+                filtered.forEach(t => {
+                    const name = t.full_name || t.name || 'خبير / كفاءة';
+                    const specialty = t.specialty || t.job_title || 'تخصص مهني';
+                    const phone = cleanPhone(t.phone);
+                    const avatar = t.avatar_url || t.image || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+                    const waText = encodeURIComponent(`مرحباً ${name}، تواصلت معك بخصوص (${specialty}) عبر منصة صدارة`);
+
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div>
+                            <div class="talent-top">
+                                <img src="${avatar}" class="talent-avatar" alt="${name}">
+                                <div>
+                                    <div style="font-weight:700; font-size:15px; color:var(--navy);">${name}</div>
+                                    <div style="font-size:12.5px; color:var(--royal); font-weight:600;">${specialty}</div>
+                                    ${t.is_verified ? `<span class="verified-badge" style="margin-top:4px;"><i class="fa-solid fa-circle-check"></i> موثّق</span>` : ''}
+                                </div>
+                            </div>
+                            <p style="font-size:13px; color:var(--text-main);">${t.experience || 'خبرة مهنية وعملية متخصصة.'}</p>
+                            <a class="btn-wa" target="_blank" href="https://wa.me/${phone}?text=${waText}"><i class="fa-brands fa-whatsapp"></i> تواصل مباشر</a>
+                        </div>
+                        <div class="review-box">
+                            <div style="font-size:12px; font-weight:700; color:var(--navy); margin-bottom:6px;">توصيات وآراء العملاء</div>
+                            <div style="display:flex; gap:6px;">
+                                <input type="text" id="revInput_${t.id}" placeholder="أضف توصية أو رأياً..." style="flex:1; padding:7px 10px; border:1px solid var(--border); border-radius:9px; font-size:12px;">
+                                <button type="button" onclick="addTalentReview(${t.id})" style="background:var(--royal); color:#fff; border:none; padding:7px 12px; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer;">إرسال</button>
+                            </div>
+                            <div id="revList_${t.id}" style="margin-top:6px;">جاري التحميل...</div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                    loadTalentReviews(t.id);
+                });
+            }
+        }
+
+        async function addTalentReview(talentId) {
+            const inp = document.getElementById(`revInput_${talentId}`);
+            const comment = inp.value.trim();
+            if (!comment) return;
+            await db.from('reviews').insert([{ item_type: 'resume', item_id: talentId, user_name: 'زائر منصة صدارة', rating: 5, comment }]);
+            inp.value = '';
+            loadTalentReviews(talentId);
+        }
+
+        async function loadTalentReviews(talentId) {
+            const { data } = await db.from('reviews').select('*').eq('item_type', 'resume').eq('item_id', talentId).order('id', { ascending: false }).limit(4);
+            const box = document.getElementById(`revList_${talentId}`);
+            if (!box) return;
+            if (!data || !data.length) { box.innerHTML = '<div style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">لا توجد توصيات بعد.</div>'; return; }
+            box.innerHTML = data.map(r => `<div class="review-item"><b>${r.user_name || 'عميل'}</b>: ${r.comment}</div>`).join('');
+        }
+
+        async function initJobsAndTalents() {
+            const [jobsRes, talentsRes] = await Promise.all([
                 db.from('platform_jobs').select('*').order('id', { ascending: false }),
                 db.from('platform_resumes').select('*').order('id', { ascending: false })
             ]);
-            jobsList = (jRes.data || []).filter(x => x.is_active !== false);
-            talentsList = (tRes.data || []).filter(x => x.is_active !== false);
-            renderJobsAndTalents();
+            jobsList = (jobsRes.data || []).filter(j => j.is_active !== false);
+            talentsList = (talentsRes.data || []).filter(t => t.is_active !== false);
+            renderCurrentTab();
         }
 
-        window.addEventListener('DOMContentLoaded', loadData);
+        window.addEventListener('DOMContentLoaded', initJobsAndTalents);
     </script>
 </body>
 </html>
