@@ -3,434 +3,484 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>لوحة التحكم والإدارة المطلقة | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #2563eb; --danger: #ef4444; --success: #10b981; --bg: #f1f5f9; --border: #e2e8f0; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: #1e293b; }
+        :root { 
+            --primary: #111827;
+            --light: #F3F4F6;
+            --gold: #D4AF37;
+            --btn: #0284C7;
+            --red: #EF4444; 
+            --green: #10B981;
+            --whatsapp: #25D366;
+            --border: #E5E7EB;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--light); padding: 15px; color: var(--primary); padding-bottom: 70px; }
 
-        .login-wrap { position: fixed; inset: 0; background: #0f172a; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-box { background: #fff; width: 100%; max-width: 360px; padding: 28px; border-radius: 22px; text-align: center; }
+        .container { max-width: 950px; margin: 0 auto; }
+        .top-nav { background: var(--primary); padding: 16px 20px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .mini-btn { background: rgba(255,255,255,0.12); color: white; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 1px solid rgba(212,175,55,0.4); }
+
+        .section-box { background: #ffffff; padding: 20px; border-radius: 14px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .section-box h3 { font-size: 14px; margin-bottom: 14px; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--light); padding-bottom: 8px; }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 900; margin-bottom: 6px; color: #374151; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 9px; font-size: 11px; outline: none; background: #F9FAFB; color: #1F2937; font-weight: 700; }
+
+        .submit-btn { background: var(--btn); color: white; border: none; padding: 12px; border-radius: 9px; font-weight: 900; width: 100%; cursor: pointer; font-size: 12px; transition: 0.2s; }
         
-        .admin-header { background: #0f172a; color: #fff; padding: 16px 22px; display: flex; justify-content: space-between; align-items: center; }
-        .container { max-width: 1100px; margin: 22px auto; padding: 0 16px 50px; }
-
-        .tabs { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 5px; scrollbar-width: none; }
-        .tab-btn { background: #fff; border: 1px solid var(--border); padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
-        .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-        .panel { display: none; }
-        .panel.active { display: block; }
-        .btn-new { background: var(--success); color: #fff; border: none; padding: 11px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; margin-bottom: 18px; display: inline-flex; align-items: center; gap: 8px; }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
-        .card { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .data-row { background: #F9FAFB; border: 1px solid var(--border); padding: 12px; border-radius: 9px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .action-btn { border: none; padding: 7px 12px; border-radius: 6px; font-weight: 900; font-size: 10.5px; cursor: pointer; color: white; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+        .btn-delete { background: var(--red); }
+        .btn-green { background: var(--green); }
+        .btn-edit { background: #F59E0B; }
+        .btn-toggle { background: #6366F1; }
+        .btn-whatsapp { background: var(--whatsapp); color: white; }
         
-        .card-img-wrap { width: 100%; height: 150px; background: #f8fafc; border-radius: 10px; overflow: hidden; margin-bottom: 12px; position: relative; display: flex; align-items: center; justify-content: center; }
-        .card-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .img-count-badge { position: absolute; top: 8px; left: 8px; background: rgba(15,23,42,0.75); color: #fff; font-size: 0.75rem; padding: 3px 8px; border-radius: 8px; font-weight: 700; }
-        .prefix-badge { display: inline-block; background: #eff6ff; color: var(--primary); font-weight: 800; padding: 3px 10px; border-radius: 8px; font-size: 0.85rem; margin-top: 6px; direction: ltr; }
-
-        .card-actions { display: flex; gap: 8px; margin-top: 12px; }
-        .btn-sm { flex: 1; padding: 8px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-edit { background: #eff6ff; color: var(--primary); }
-        .btn-del { background: #fef2f2; color: var(--danger); }
-
-        .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal.open { display: flex; }
-        .modal-card { background: #fff; width: 100%; max-width: 440px; border-radius: 22px; padding: 22px; max-height: 90vh; overflow-y: auto; }
-        .grp { margin-bottom: 14px; text-align: right; }
-        .grp label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
-        .grp input, .grp select { width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; outline: none; }
-        .btn-main { width: 100%; padding: 12px; border: none; border-radius: 12px; background: var(--primary); color: #fff; font-weight: 800; cursor: pointer; font-size: 1rem; }
-
-        .multi-img-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .mini-thumb { position: relative; width: 68px; height: 68px; border-radius: 10px; border: 1px solid var(--border); overflow: hidden; background: #f8fafc; display: flex; align-items: center; justify-content: center; }
-        .mini-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .mini-thumb button { position: absolute; top: 2px; right: 2px; background: var(--danger); color: #fff; border: none; width: 18px; height: 18px; border-radius: 50%; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        .banner-preview-box { width: 100%; min-height: 100px; max-height: 180px; border: 1px dashed var(--border); border-radius: 12px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-top: 8px; }
-        .banner-preview-box img { max-width: 100%; max-height: 180px; object-fit: contain; }
-
-        .toast { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: #fff; padding: 10px 22px; border-radius: 25px; font-size: 0.9rem; z-index: 9999; transition: 0.3s; }
-        .toast.show { transform: translateX(-50%) translateY(0); }
+        .product-thumb { width: 80px; height: 50px; border-radius: 6px; object-fit: cover; background: #ffffff; border: 1px solid var(--border); padding: 2px; }
     </style>
 </head>
 <body>
 
-<div class="login-wrap" id="loginWrap">
-    <div class="login-box">
-        <h2 style="margin-bottom:18px;">دخول الإدارة</h2>
-        <form onsubmit="adminLogin(event)">
-            <div class="grp"><label>اسم المستخدم</label><input type="text" id="aUser" required style="direction:ltr;"></div>
-            <div class="grp"><label>كلمة المرور</label><input type="password" id="aPass" required style="direction:ltr;"></div>
-            <button type="submit" class="btn-main">دخول</button>
-        </form>
-    </div>
-</div>
-
-<div id="adminApp" style="display:none;">
-    <header class="admin-header">
-        <div>
-            <h3 style="font-size:1.1rem;">لوحة تحكم صدارة السحابية</h3>
-            <small id="connStatus" style="color:#38bdf8;">جاري التحقق من الاتصال...</small>
-        </div>
-        <button onclick="logout()" style="background:var(--danger); color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:700; cursor:pointer;">خروج</button>
-    </header>
-
     <div class="container">
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('products', this)">المنتجات</button>
-            <button class="tab-btn" onclick="switchTab('categories', this)">الأقسام</button>
-            <button class="tab-btn" onclick="switchTab('shein', this)">شحنات شي إن</button>
-            <button class="tab-btn" onclick="switchTab('banners', this)">البنرات</button>
-            <button class="tab-btn" onclick="switchTab('payments', this)">طرق الدفع</button>
-            <button class="tab-btn" onclick="switchTab('settings', this)">الإعدادات</button>
+        <div class="top-nav">
+            <span style="font-weight:900; font-size:15px; color:var(--gold);">⚡ لوحة التحكم والإدارة المطلقة</span>
+            <a href="index.html" class="mini-btn"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
         </div>
 
-        <div class="panel active" id="p-products">
-            <button class="btn-new" onclick="openModal('product')"><i class="fas fa-plus"></i> إضافة منتج</button>
-            <div class="grid" id="gridProducts"></div>
+        <!-- 1. طلبات الشراء الواردة -->
+        <div class="section-box">
+            <h3>🛒 طلبات الشراء الواردة وسندات التحويل</h3>
+            <div id="ordersAdminList">جاري التحميل...</div>
         </div>
 
-        <div class="panel" id="p-categories">
-            <button class="btn-new" onclick="openModal('category')"><i class="fas fa-plus"></i> إضافة قسم</button>
-            <div class="grid" id="gridCategories"></div>
+        <!-- 2. الطلبيات المنجزة -->
+        <div class="section-box">
+            <h3>✅ الطلبيات المنجزة والمؤكدة</h3>
+            <div id="completedOrdersList">جاري التحميل...</div>
         </div>
 
-        <div class="panel" id="p-shein">
-            <button class="btn-new" onclick="openModal('shein')"><i class="fas fa-plus"></i> إضافة شحنة شي إن جديدة</button>
-            <div class="grid" id="gridShein"></div>
-        </div>
-
-        <div class="panel" id="p-banners">
-            <button class="btn-new" onclick="openModal('banner')"><i class="fas fa-plus"></i> إضافة بنر إعلاني</button>
-            <div class="grid" id="gridBanners"></div>
-        </div>
-
-        <div class="panel" id="p-payments">
-            <button class="btn-new" onclick="openModal('payment')"><i class="fas fa-plus"></i> إضافة طريقة دفع</button>
-            <div class="grid" id="gridPayments"></div>
-        </div>
-
-        <div class="panel" id="p-settings">
-            <div class="card" style="max-width:450px;">
-                <h3 style="margin-bottom:15px;">الإعدادات العامة</h3>
-                <div class="grp"><label>اسم المتجر</label><input type="text" id="setName"></div>
-                <div class="grp"><label>رقم الواتساب</label><input type="text" id="setWa" style="direction:ltr;"></div>
-                <button class="btn-main" onclick="saveSettings()">حفظ الإعدادات</button>
+        <!-- 3. السلايدر المتحرك -->
+        <div class="section-box">
+            <h3>🎞️ إدارة بانرات السلايدر المتحرك (إظهار / إخفاء / حذف)</h3>
+            <div style="margin-bottom:12px; display:flex; gap:10px; align-items:center;">
+                <label style="font-size:11px; font-weight:900;">حالة السلايدر في الواجهة:</label>
+                <button id="sliderToggleBtn" class="action-btn btn-toggle" onclick="toggleSliderVisibility()">جاري التحميل...</button>
             </div>
+            <div class="form-group"><input type="file" id="sliderFileInput" accept="image/*"></div>
+            <button onclick="uploadSliderImage()" class="submit-btn" style="background:var(--primary); color:var(--gold); margin-bottom: 12px;">رفع وإضافة صورة جديدة للسلايدر 🌟</button>
+            <div id="sliderAdminList">جاري التحميل...</div>
+        </div>
+
+        <!-- 4. سياسات المتجر -->
+        <div class="section-box">
+            <h3>📜 إدارة وتعديل سياسات وشروط المتجر</h3>
+            <div class="form-group">
+                <label>اختر القسم</label>
+                <select id="policyKey" onchange="loadPolicyContent()">
+                    <option value="privacy">سياسة الخصوصية</option>
+                    <option value="exchange">سياسة الاستبدال والاسترجاع</option>
+                    <option value="shipping">شروط وسياسة الشحن والتوصيل</option>
+                    <option value="warranty">الضمان وشروط الخدمة</option>
+                </select>
+            </div>
+            <div class="form-group"><textarea id="policyText" rows="4"></textarea></div>
+            <button onclick="savePolicy()" class="submit-btn" style="background:var(--green);">حفظ وتحديث محتوى السياسة 📝</button>
+        </div>
+
+        <!-- 5. إضافة أو تعديل منتج يدوياً -->
+        <div class="section-box">
+            <h3 id="formTitle">➕ إضافة منتج يدوي جديد أو تعديل منتج قائم</h3>
+            <input type="hidden" id="editProductId">
+            <div class="form-group"><label>العنوان</label><input type="text" id="pTitle"></div>
+            <div class="form-group">
+                <label>التصنيف</label>
+                <select id="pCategory">
+                    <option value="جوالات">جوالات</option>
+                    <option value="اكسسوارات">اكسسوارات</option>
+                    <option value="إلكترونيات">إلكترونيات</option>
+                    <option value="حقائب">حقائب</option>
+                    <option value="عطور">عطور</option>
+                    <option value="ملابس">ملابس</option>
+                </select>
+            </div>
+            <div class="form-group"><label>السعر الحالي (YER)</label><input type="text" id="pPrice"></div>
+            <div class="form-group"><label>السعر السابق المشطوب (YER)</label><input type="text" id="pOldPrice"></div>
+            <div class="form-group"><label>شارة الخصم (مثل -20%)</label><input type="text" id="pDiscount"></div>
+            <div class="form-group"><label>عمولة المسوق الخاصة بهذا المنتج (YER - لا تظهر للعملاء)</label><input type="number" id="pAffCommission" placeholder="أدخل مبلغ العمولة بالريال" value="0"></div>
+            <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImage" accept="image/*"></div>
+            <div class="form-group"><label>الوصف</label><textarea id="pDesc" rows="2"></textarea></div>
+            <button onclick="saveProductData()" id="saveBtn" class="submit-btn">نشر / حفظ التعديلات 🚀</button>
+            <button onclick="resetForm()" id="cancelEditBtn" style="display:none; width:100%; background:#F3F4F6; color:var(--primary); border:none; padding:9px; border-radius:9px; margin-top:8px; font-weight:900; cursor:pointer;">إلغاء التعديل</button>
+        </div>
+
+        <!-- 6. قائمة المنتجات -->
+        <div class="section-box">
+            <h3>📦 قائمة المنتجات والخدمات (تعديل، حذف، إظهار/إخفاء)</h3>
+            <div id="productsAdminList">جاري التحميل...</div>
+        </div>
+
+        <!-- 7. المسوقين -->
+        <div class="section-box">
+            <h3>🤝 إدارة المسوقين (تعديل، حذف، وتصفية العمولات)</h3>
+            <div id="affiliatesAdminList">جاري التحميل...</div>
         </div>
     </div>
-</div>
 
-<div class="modal" id="formModal" onclick="if(event.target===this) closeModal()">
-    <div class="modal-card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 id="mTitle">إضافة</h3>
-            <button onclick="closeModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
-        </div>
-        <form onsubmit="handleSave(event)">
-            <div id="mFields"></div>
-            <button type="submit" class="btn-main" style="margin-top:10px;">حفظ في السحابة</button>
-        </form>
-    </div>
-</div>
+    <script>
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const STORAGE_BUCKET = "platform-files";
 
-<div class="toast" id="toast"></div>
+        let globalProducts = [];
+        let globalSettings = [];
 
-<script>
-    const SUPABASE_URL = 'https://lvutrzswngpkjfamgact.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2dXRyenN3bmdwa2pmYW1nYWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNTk4MzAsImV4cCI6MjEwNzkzNTgzMH0.fK9eGSy2uv3spG6tynUCoGNivzmRCJnwLEnBFCCgu7g';
+        function toEnglishDigits(str) {
+            return String(str).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+        }
 
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        function formatPhoneForWhatsapp(phone) {
+            let digits = toEnglishDigits(phone || '').replace(/\D/g, '');
+            if (digits.startsWith('00')) digits = digits.slice(2);
+            if (/^(70|71|73|77|78)\d{7}$/.test(digits)) {
+                digits = '967' + digits;
+            }
+            return digits;
+        }
 
-    let storeData = { settings: { storeName: "متجر صدارة", whatsapp: "967780568507" }, categories: [], products: [], payments: [], banners: [], shein: [], users: [] };
-    let editType = '', editId = null, uploadedImgUrl = '';
-    let currentProductImgs = [];
+        async function loadAdminPanel() {
+            try {
+                let { data: settings } = await db.from('store_settings').select('*');
+                globalSettings = settings || [];
 
-    function getCategoryPrefix(cat) {
-        if (cat.prefix && cat.prefix.trim()) return cat.prefix.trim().toUpperCase();
-        const n = (cat.name || '').trim();
-        if (n.includes('رجال')) return 'M';
-        if (n.includes('نساء') || n.includes('نسائ')) return 'W';
-        if (n.includes('ولاد') || n.includes('أولاد')) return 'B';
-        if (n.includes('بنات')) return 'G';
-        return n.charAt(0).toUpperCase() || 'P';
-    }
+                let sliderStatusSet = globalSettings.find(s => s.key === 'hero_slider_active');
+                let isSliderActive = sliderStatusSet ? sliderStatusSet.value !== 'false' : true;
+                let toggleBtn = document.getElementById('sliderToggleBtn');
+                toggleBtn.textContent = isSliderActive ? '🟢 السلايدر ظاهر (اضغط للإخفاء)' : '🔴 السلايدر مخفي (اضغط للإظهار)';
+                toggleBtn.style.background = isSliderActive ? '#10B981' : '#EF4444';
 
-    function generateNextCode(catId) {
-        const cat = (storeData.categories || []).find(c => c.id === catId);
-        if (!cat) return 'P100';
-        const prefix = getCategoryPrefix(cat);
-        const catProds = (storeData.products || []).filter(p => p.catId === catId);
-        let maxNum = 99;
-        catProds.forEach(p => {
-            if (p.code) {
-                const match = String(p.code).toUpperCase().match(new RegExp('^' + prefix + '(\\d+)$'));
-                if (match) {
-                    const num = parseInt(match[1], 10);
-                    if (num >= 100 && num <= 10000 && num > maxNum) maxNum = num;
+                let { data: orders } = await db.from('orders').select('*').order('id', {ascending: false});
+                let oBox = document.getElementById('ordersAdminList');
+                let cBox = document.getElementById('completedOrdersList');
+                oBox.innerHTML = '';
+                cBox.innerHTML = '';
+
+                let pendingOrders = (orders || []).filter(o => o.status !== 'مكتمل');
+                let completedOrders = (orders || []).filter(o => o.status === 'مكتمل');
+
+                if(pendingOrders.length > 0) {
+                    pendingOrders.forEach(o => {
+                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn); font-weight:bold;">[معاينة السند 📄]</a>` : 'بدون سند';
+                        let refText = o.ref_code ? `<span style="color:var(--gold); font-weight:bold;"> [المسوق: ${o.ref_code}]</span>` : '';
+                        let cleanPhone = formatPhoneForWhatsapp(o.customer_phone);
+                        let waMsg = encodeURIComponent(`مرحباً ${o.customer_name || 'عميلنا الكريم'}، بخصوص طلبك لمنتج (${o.product_title}) في منصة صدارة...`);
+                        
+                        oBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="font-size:11px;">
+                                    📦 <b>${o.product_title}</b> (${o.total_price} YER) ${refText}<br>
+                                    👤 العميل: <b>${o.customer_name}</b> (${o.customer_phone})<br>
+                                    💳 السند: ${receiptLink} | الحالة: <b>${o.status || 'قيد التوثيق'}</b>
+                                </div>
+                                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                    <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="action-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> واتساب 💬</a>
+                                    <button class="action-btn btn-green" onclick="approveOrderWithCommission(${o.id}, '${o.ref_code || ''}', '${o.product_title}')">اعتماد العمولة 💰</button>
+                                    <button class="action-btn btn-edit" onclick="editOrder(${o.id}, '${o.customer_name}', '${o.customer_phone}')">تعديل ✏️</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else { oBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات واردة جديدة.</p>'; }
+
+                if(completedOrders.length > 0) {
+                    completedOrders.forEach(o => {
+                        let receiptLink = o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="color:var(--btn); font-weight:bold;">[معاينة السند 📄]</a>` : 'بدون سند';
+                        let refText = o.ref_code ? `<span style="color:var(--gold); font-weight:bold;"> [المسوق: ${o.ref_code}]</span>` : '';
+                        let cleanPhone = formatPhoneForWhatsapp(o.customer_phone);
+                        let waMsg = encodeURIComponent(`مرحباً ${o.customer_name || 'عميلنا الكريم'}، شكراً لتسوقك من منصة صدارة. طلبك (${o.product_title}) مكتمل ومنجز بنجاح! ⭐`);
+                        
+                        cBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="font-size:11px;">
+                                    ✅ <b>${o.product_title}</b> (${o.total_price} YER) ${refText}<br>
+                                    👤 العميل: <b>${o.customer_name}</b> (${o.customer_phone})<br>
+                                    💳 السند: ${receiptLink} | الحالة: <b style="color:var(--green);">مكتمل ومنجز</b>
+                                </div>
+                                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                    <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="action-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> واتساب 💬</a>
+                                    <button class="action-btn btn-edit" onclick="editOrder(${o.id}, '${o.customer_name}', '${o.customer_phone}')">تعديل ✏️</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('orders', ${o.id})">حذف 🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else { cBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد طلبات منجزة حتى الآن.</p>'; }
+
+                let sBox = document.getElementById('sliderAdminList');
+                sBox.innerHTML = '';
+                let sliderSetting = globalSettings.find(s => s.key === 'hero_slider_images');
+                let sliderImages = [];
+                try { if(sliderSetting && sliderSetting.value) sliderImages = JSON.parse(sliderSetting.value); } catch(e) {}
+                if(sliderImages.length > 0) {
+                    sliderImages.forEach((imgUrl, idx) => {
+                        sBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <img src="${imgUrl}" class="product-thumb">
+                                    <span style="font-size:11px;">صورة سلايدر رقم (${idx + 1})</span>
+                                </div>
+                                <button class="action-btn btn-delete" onclick="removeSliderImage(${idx})">حذف 🗑️</button>
+                            </div>
+                        `;
+                    });
+                } else { sBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا توجد صور مضافة للسلايدر.</p>'; }
+
+                let { data: prods } = await db.from('platform_services').select('*').order('id', {ascending: false});
+                globalProducts = prods || [];
+                let pBox = document.getElementById('productsAdminList');
+                pBox.innerHTML = '';
+                globalProducts.forEach(p => {
+                    let statusText = p.is_active !== false ? '<span style="color:#10B981; font-weight:bold;">[ظاهر في المتجر]</span>' : '<span style="color:#EF4444; font-weight:bold;">[مخفي من المتجر]</span>';
+                    pBox.innerHTML += `
+                        <div class="data-row">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <img src="${p.image || 'images/logo.jpg'}" class="product-thumb">
+                                <div style="font-size:11px;">
+                                    <b>${p.title}</b> ${statusText}<br>
+                                    السعر: ${toEnglishDigits(p.price)} YER | عمولة المسوق (للمدير فقط): <b style="color:var(--green);">${toEnglishDigits(p.affiliate_commission || 0)} YER</b>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                                <button class="action-btn btn-toggle" onclick="toggleProductVisibility(${p.id}, ${p.is_active !== false})">${p.is_active !== false ? 'إخفاء 👁️‍🗨️' : 'إظهار 👁️'}</button>
+                                <button class="action-btn btn-edit" onclick="editProduct(${p.id})">تعديل ✏️</button>
+                                <button class="action-btn btn-delete" onclick="deleteRecord('platform_services', ${p.id})">حذف 🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                let { data: affs } = await db.from('affiliates').select('*').order('id', {ascending: false});
+                let aBox = document.getElementById('affiliatesAdminList');
+                aBox.innerHTML = '';
+                if(affs && affs.length > 0) {
+                    affs.forEach(a => {
+                        aBox.innerHTML += `
+                            <div class="data-row">
+                                <div style="font-size:11px;">
+                                    👤 <b>${a.full_name || 'مسوق'}</b> (${a.phone})<br>
+                                    🔗 الكود: <code>${a.ref_code}</code> | مبيعات: ${toEnglishDigits(a.total_sales || 0)} | أرباح: <b style="color:var(--green);">${toEnglishDigits(a.total_earnings || 0)} YER</b>
+                                </div>
+                                <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                                    <button class="action-btn btn-green" onclick="settleCommission(${a.id}, ${a.total_earnings || 0})">تصفية 💵</button>
+                                    <button class="action-btn btn-edit" onclick="editAffiliate(${a.id}, '${a.full_name || ''}', '${a.phone}')">تعديل ✏️</button>
+                                    <button class="action-btn btn-delete" onclick="deleteRecord('affiliates', ${a.id})">حذف 🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else { aBox.innerHTML = '<p style="font-size:11px; color:#6B7280;">لا يوجد مسوقين.</p>'; }
+
+                loadPolicyContent();
+            } catch(err) { console.error(err); }
+        }
+
+        async function editOrder(id, curName, curPhone) {
+            let newName = prompt('تعديل اسم العميل:', curName);
+            let newPhone = prompt('تعديل رقم هاتف العميل:', curPhone);
+            if(newName !== null && newPhone !== null) {
+                await db.from('orders').update({ customer_name: newName, customer_phone: newPhone }).eq('id', id);
+                alert('تم تحديث بيانات الطلب بنجاح! ✅');
+                loadAdminPanel();
+            }
+        }
+
+        async function editAffiliate(id, curName, curPhone) {
+            let newName = prompt('تعديل اسم المسوق:', curName);
+            let newPhone = prompt('تعديل رقم هاتف المسوق:', curPhone);
+            if(newName !== null && newPhone !== null) {
+                await db.from('affiliates').update({ full_name: newName, phone: newPhone }).eq('id', id);
+                alert('تم تحديث بيانات المسوق بنجاح! ✅');
+                loadAdminPanel();
+            }
+        }
+
+        async function toggleSliderVisibility() {
+            let sliderStatusSet = globalSettings.find(s => s.key === 'hero_slider_active');
+            let currentState = sliderStatusSet ? sliderStatusSet.value !== 'false' : true;
+            let newState = (!currentState).toString();
+            await db.from('store_settings').upsert({ key: 'hero_slider_active', value: newState });
+            alert(newState === 'true' ? 'تم إظهار السلايدر في المتجر بنجاح!' : 'تم إخفاء السلايدر من المتجر بنجاح!');
+            loadAdminPanel();
+        }
+
+        async function toggleProductVisibility(id, currentStatus) {
+            let newStatus = !currentStatus;
+            await db.from('platform_services').update({ is_active: newStatus }).eq('id', id);
+            alert(newStatus ? 'تم إظهار المنتج في المتجر!' : 'تم إخفاء المنتج من المتجر!');
+            loadAdminPanel();
+        }
+
+        async function uploadSliderImage() {
+            let input = document.getElementById('sliderFileInput');
+            let file = input.files[0];
+            if(!file) { alert('اختر صورة أولاً'); return; }
+
+            let fileName = 'slider/slide_' + Date.now() + '_' + file.name;
+            let { data } = await db.storage.from(STORAGE_BUCKET).upload(fileName, file);
+            if(data) {
+                let { data: pub } = db.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
+                let sliderSetting = globalSettings.find(s => s.key === 'hero_slider_images');
+                let imgs = [];
+                try { if(sliderSetting && sliderSetting.value) imgs = JSON.parse(sliderSetting.value); } catch(e) {}
+                imgs.push(pub.publicUrl);
+                await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(imgs) });
+                alert('تمت إضافة الصورة للسلايدر بنجاح!');
+                input.value = '';
+                loadAdminPanel();
+            }
+        }
+
+        async function removeSliderImage(index) {
+            let sliderSetting = globalSettings.find(s => s.key === 'hero_slider_images');
+            let imgs = [];
+            try { if(sliderSetting && sliderSetting.value) imgs = JSON.parse(sliderSetting.value); } catch(e) {}
+            imgs.splice(index, 1);
+            await db.from('store_settings').upsert({ key: 'hero_slider_images', value: JSON.stringify(imgs) });
+            alert('تم حذف الصورة من السلايدر!');
+            loadAdminPanel();
+        }
+
+        async function savePolicy() {
+            let key = 'policy_' + document.getElementById('policyKey').value;
+            let value = document.getElementById('policyText').value.trim();
+            await db.from('store_settings').upsert({ key, value });
+            alert('تم حفظ وتحديث محتوى السياسة بنجاح! 📝');
+        }
+
+        async function loadPolicyContent() {
+            let key = document.getElementById('policyKey').value;
+            let { data } = await db.from('store_settings').select('value').eq('key', key).maybeSingle();
+            document.getElementById('policyText').value = data ? data.value : '';
+        }
+
+        async function saveProductData() {
+            let editId = document.getElementById('editProductId').value;
+            let title = document.getElementById('pTitle').value.trim();
+            let category = document.getElementById('pCategory').value;
+            let price = toEnglishDigits(document.getElementById('pPrice').value.trim());
+            let old_price = toEnglishDigits(document.getElementById('pOldPrice').value.trim());
+            let discount = document.getElementById('pDiscount').value.trim();
+            let affiliate_commission = parseFloat(toEnglishDigits(document.getElementById('pAffCommission').value.trim())) || 0;
+            let description = document.getElementById('pDesc').value.trim();
+            let fileInput = document.getElementById('pImage');
+
+            if(!title || !price) { alert('يرجى إدخال العنوان والسعر على الأقل.'); return; }
+
+            let imageUrl = '';
+            if(fileInput.files[0]) {
+                let file = fileInput.files[0];
+                let fileName = 'products/' + Date.now() + '_' + file.name;
+                let { data } = await db.storage.from(STORAGE_BUCKET).upload(fileName, file);
+                if(data) {
+                    let { data: pub } = db.storage.from(STORAGE_BUCKET).getPublicUrl(fileName);
+                    imageUrl = pub.publicUrl;
                 }
             }
-        });
-        const nextNum = maxNum + 1;
-        return prefix + (nextNum > 10000 ? 10000 : nextNum);
-    }
 
-    async function initCloud() {
-        const statusEl = document.getElementById('connStatus');
-        const { data, error } = await _supabase.from('store_data').select('payload').eq('id', 1).maybeSingle();
-        if (error) { statusEl.innerText = 'خطأ اتصال: ' + error.message; statusEl.style.color = '#ef4444'; return; }
-        statusEl.innerText = 'متصل بالسحابة بنجاح ✓'; statusEl.style.color = '#10b981';
-        if (data && data.payload) { 
-            storeData = data.payload; 
-            if(!Array.isArray(storeData.banners)) storeData.banners = [];
-            if(!Array.isArray(storeData.shein)) storeData.shein = [];
+            let payload = { title, category, price, old_price, discount, affiliate_commission, description };
+            if(imageUrl) payload.image = imageUrl;
+
+            if(editId) {
+                await db.from('platform_services').update(payload).eq('id', editId);
+                alert('تم تحديث المنتج بنجاح! ✅');
+            } else {
+                payload.is_active = true;
+                await db.from('platform_services').insert([payload]);
+                alert('تمت إضافة المنتج بنجاح! 🎉');
+            }
+
+            resetForm();
+            loadAdminPanel();
         }
-        renderAdmin();
-    }
 
-    async function pushToCloud() {
-        showToast('جاري الحفظ...');
-        const { error } = await _supabase.from('store_data').upsert({ id: 1, payload: storeData });
-        if (error) { alert('فشل الحفظ: ' + error.message); } 
-        else { showToast('تم الحفظ والمزامنة بنجاح ✓'); renderAdmin(); }
-    }
-
-    function adminLogin(e) {
-        e.preventDefault();
-        if (document.getElementById('aUser').value === 'admin' && document.getElementById('aPass').value === 'admin2026') {
-            sessionStorage.setItem('sadarah_admin', '1'); checkSession();
-        } else { showToast('بيانات الدخول غير صحيحة'); }
-    }
-
-    function checkSession() {
-        if (sessionStorage.getItem('sadarah_admin') === '1') {
-            document.getElementById('loginWrap').style.display = 'none';
-            document.getElementById('adminApp').style.display = 'block';
-            initCloud();
-        }
-    }
-
-    function logout() { sessionStorage.removeItem('sadarah_admin'); location.reload(); }
-
-    function switchTab(name, btn) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('p-' + name).classList.add('active');
-    }
-
-    function renderAdmin() {
-        document.getElementById('gridProducts').innerHTML = (storeData.products || []).map(p => {
-            const imgs = (p.imgs && p.imgs.length) ? p.imgs : (p.img ? [p.img] : []);
-            const mainImg = imgs[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80';
-            const badgeHtml = imgs.length > 1 ? `<span class="img-count-badge">${imgs.length} صور</span>` : '';
-            return `
-            <div class="card">
-                <div>
-                    <div class="card-img-wrap">${badgeHtml}<img src="${mainImg}"></div>
-                    <h4>${p.name}</h4>
-                    <small>كود: <strong>${p.code}</strong></small>
-                    <p style="font-weight:800; color:var(--primary);">${Number(p.price).toLocaleString()} ريال</p>
-                </div>
-                <div class="card-actions">
-                    <button class="btn-sm btn-edit" onclick="openModal('product', ${p.id})">تعديل</button>
-                    <button class="btn-sm btn-del" onclick="delItem('products', ${p.id})">حذف</button>
-                </div>
-            </div>`;
-        }).join('');
-
-        document.getElementById('gridCategories').innerHTML = (storeData.categories || []).map(c => `
-            <div class="card">
-                <div><h4>${c.name}</h4><span class="prefix-badge">حرف: ${getCategoryPrefix(c)}</span></div>
-                <div class="card-actions">
-                    <button class="btn-sm btn-edit" onclick="openModal('category', '${c.id}')">تعديل</button>
-                    <button class="btn-sm btn-del" onclick="delItem('categories', '${c.id}')">حذف</button>
-                </div>
-            </div>`).join('');
-
-        document.getElementById('gridShein').innerHTML = (storeData.shein || []).map(s => `
-            <div class="card">
-                <div>
-                    <h4>${s.title}</h4>
-                    <p style="color:var(--primary); font-weight:800; margin-top:5px;">الحالة: ${s.status}</p>
-                    <small style="color:#64748b;">التاريخ: ${s.date}</small>
-                </div>
-                <div class="card-actions">
-                    <button class="btn-sm btn-edit" onclick="openModal('shein', ${s.id})">تعديل</button>
-                    <button class="btn-sm btn-del" onclick="delItem('shein', ${s.id})">حذف</button>
-                </div>
-            </div>`).join('');
-
-        document.getElementById('gridBanners').innerHTML = (storeData.banners || []).map(b => `
-            <div class="card">
-                <div>
-                    <div class="card-img-wrap" style="height:130px;"><img src="${b.img || b.url}"></div>
-                    <h4>${b.title || 'بنر'}</h4>
-                </div>
-                <div class="card-actions">
-                    <button class="btn-sm btn-edit" onclick="openModal('banner', ${b.id})">تعديل</button>
-                    <button class="btn-sm btn-del" onclick="delItem('banners', ${b.id})">حذف</button>
-                </div>
-            </div>`).join('');
-
-        document.getElementById('gridPayments').innerHTML = (storeData.payments || []).map(pay => `
-            <div class="card">
-                <div>
-                    <h4>${pay.title}</h4>
-                    <p style="font-weight:800; color:var(--primary); direction:ltr; text-align:right;">${pay.number}</p>
-                </div>
-                <div class="card-actions">
-                    <button class="btn-sm btn-edit" onclick="openModal('payment', ${pay.id})">تعديل</button>
-                    <button class="btn-sm btn-del" onclick="delItem('payments', ${pay.id})">حذف</button>
-                </div>
-            </div>`).join('');
-
-        document.getElementById('setName').value = storeData.settings?.storeName || '';
-        document.getElementById('setWa').value = storeData.settings?.whatsapp || '';
-    }
-
-    function openModal(type, id = null) {
-        editType = type; editId = id; 
-        const f = document.getElementById('mFields'); const t = document.getElementById('mTitle');
-
-        if (type === 'product') {
-            if (!storeData.categories || !storeData.categories.length) return showToast('أضف قسماً أولاً!');
-            const defCat = storeData.categories[0].id;
-            const item = id ? storeData.products.find(x => x.id === id) : { name: '', code: generateNextCode(defCat), price: '', catId: defCat, imgs: [] };
-            currentProductImgs = (item.imgs && item.imgs.length) ? [...item.imgs] : (item.img ? [item.img] : []);
-            t.innerText = id ? 'تعديل منتج' : 'منتج جديد';
-            const opts = storeData.categories.map(c => `<option value="${c.id}" ${c.id===item.catId?'selected':''}>${c.name}</option>`).join('');
-            f.innerHTML = `
-                <div class="grp"><label>اسم المنتج</label><input type="text" id="inName" value="${item.name}" required></div>
-                <div class="grp"><label>القسم</label><select id="inCat" onchange="onProductCatChange(this.value)">${opts}</select></div>
-                <div class="grp"><label>الكود</label><input type="text" id="inCode" value="${item.code}" style="direction:ltr; font-weight:800;" required></div>
-                <div class="grp"><label>السعر</label><input type="number" id="inPrice" value="${item.price}" required></div>
-                <div class="grp"><label>رفع صور</label><input type="file" accept="image/*" multiple onchange="uploadMultipleProductImgs(event)"></div>
-                <div class="grp"><label>الصور (<span id="imgCounter">0</span>):</label><div class="multi-img-list" id="multiImgPreview"></div></div>`;
-            renderProductImgPreviews();
-        } else if (type === 'category') {
-            const item = id ? storeData.categories.find(x => x.id === id) : { name: '', prefix: '' };
-            t.innerText = id ? 'تعديل قسم' : 'قسم جديد';
-            f.innerHTML = `
-                <div class="grp"><label>اسم القسم</label><input type="text" id="inCatName" value="${item.name}" required></div>
-                <div class="grp"><label>الحرف الأولي للكود</label><input type="text" id="inCatPrefix" value="${item.prefix || ''}" maxlength="3" style="direction:ltr; text-transform:uppercase;" required></div>`;
-        } else if (type === 'shein') {
-            const item = id ? (storeData.shein || []).find(x => x.id === id) : { title: '', status: 'قيد المراجعة والتجميع', date: new Date().toISOString().slice(0,10) };
-            t.innerText = id ? 'تعديل شحنة شي إن' : 'شحنة شي إن جديدة';
-            f.innerHTML = `
-                <div class="grp"><label>عنوان الطلبية (مثال: طلبية #تخفيضات نوفمبر)</label><input type="text" id="inSheinTitle" value="${item.title}" required></div>
-                <div class="grp">
-                    <label>حالة الشحنة</label>
-                    <select id="inSheinStatus">
-                        <option value="قيد المراجعة والتجميع" ${item.status==='قيد المراجعة والتجميع'?'selected':''}>قيد المراجعة والتجميع</option>
-                        <option value="تم الشراء" ${item.status==='تم الشراء'?'selected':''}>تم الشراء</option>
-                        <option value="في الطريق إليك" ${item.status==='في الطريق إليك'?'selected':''}>في الطريق إليك</option>
-                        <option value="تم التسليم بنجاح" ${item.status==='تم التسليم بنجاح'?'selected':''}>تم التسليم بنجاح</option>
-                    </select>
-                </div>
-                <div class="grp"><label>تاريخ رفع السلة</label><input type="text" id="inSheinDate" value="${item.date}" required style="direction:ltr;"></div>`;
-        } else if (type === 'banner') {
-            const item = id ? storeData.banners.find(x => x.id === id) : { title: '', img: '' };
-            uploadedImgUrl = item.img || item.url || '';
-            t.innerText = id ? 'تعديل بنر' : 'بنر جديد';
-            f.innerHTML = `
-                <div class="grp"><label>عنوان البنر</label><input type="text" id="inBannerTitle" value="${item.title || ''}"></div>
-                <div class="grp"><label>رفع صورة البنر</label><input type="file" accept="image/*" onchange="uploadBannerImg(event)"></div>
-                <div class="grp"><label>رابط الصورة</label><input type="text" id="inImgUrl" value="${uploadedImgUrl}" style="direction:ltr;" required></div>`;
-        } else if (type === 'payment') {
-            const item = id ? storeData.payments.find(x => x.id === id) : { title: '', number: '', note: '' };
-            t.innerText = id ? 'تعديل دفع' : 'طريقة دفع جديدة';
-            f.innerHTML = `
-                <div class="grp"><label>اسم البنك/المحفظة</label><input type="text" id="inPayTitle" value="${item.title}" required></div>
-                <div class="grp"><label>رقم الحساب</label><input type="text" id="inPayNum" value="${item.number}" required style="direction:ltr;"></div>`;
-        }
-        document.getElementById('formModal').classList.add('open');
-    }
-
-    function onProductCatChange(catId) { if (!editId) document.getElementById('inCode').value = generateNextCode(catId); }
-
-    function renderProductImgPreviews() {
-        const container = document.getElementById('multiImgPreview');
-        document.getElementById('imgCounter').innerText = currentProductImgs.length;
-        container.innerHTML = currentProductImgs.map((url, idx) => `
-            <div class="mini-thumb"><img src="${url}"><button type="button" onclick="currentProductImgs.splice(${idx},1); renderProductImgPreviews();">&times;</button></div>
-        `).join('');
-    }
-
-    async function uploadMultipleProductImgs(e) {
-        const files = Array.from(e.target.files);
-        if (!files.length) return;
-        showToast('جاري رفع الصور...');
-        for (const file of files) {
-            const fileName = `${Date.now()}_${Math.random()}_${file.name}`;
-            const { error } = await _supabase.storage.from('platform-files').upload(fileName, file);
-            if (!error) {
-                const { data } = _supabase.storage.from('platform-files').getPublicUrl(fileName);
-                if (data && data.publicUrl) { currentProductImgs.push(data.publicUrl); renderProductImgPreviews(); }
+        function editProduct(id) {
+            let p = globalProducts.find(x => x.id === id);
+            if(p) {
+                document.getElementById('editProductId').value = p.id;
+                document.getElementById('pTitle').value = p.title || '';
+                document.getElementById('pCategory').value = p.category || 'جوالات';
+                document.getElementById('pPrice').value = p.price || '';
+                document.getElementById('pOldPrice').value = p.old_price || '';
+                document.getElementById('pDiscount').value = p.discount || '';
+                document.getElementById('pAffCommission').value = p.affiliate_commission || 0;
+                document.getElementById('pDesc').value = p.description || '';
+                
+                document.getElementById('formTitle').textContent = '✏️ تعديل المنتج: ' + p.title;
+                document.getElementById('saveBtn').textContent = 'حفظ التعديلات الآن 🔄';
+                document.getElementById('cancelEditBtn').style.display = 'block';
+                window.scrollTo({top:0, behavior:'smooth'});
             }
         }
-        showToast('تم الرفع ✓');
-    }
 
-    async function uploadBannerImg(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const fileName = `banner_${Date.now()}_${file.name}`;
-        const { error } = await _supabase.storage.from('platform-files').upload(fileName, file);
-        if (!error) {
-            const { data } = _supabase.storage.from('platform-files').getPublicUrl(fileName);
-            if (data && data.publicUrl) { uploadedImgUrl = data.publicUrl; document.getElementById('inImgUrl').value = uploadedImgUrl; showToast('تم الرفع ✓'); }
+        function resetForm() {
+            document.getElementById('editProductId').value = '';
+            document.getElementById('pTitle').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('pOldPrice').value = '';
+            document.getElementById('pDiscount').value = '';
+            document.getElementById('pAffCommission').value = '0';
+            document.getElementById('pImage').value = '';
+            document.getElementById('pDesc').value = '';
+            document.getElementById('formTitle').textContent = '➕ إضافة منتج يدوي جديد أو تعديل منتج قائم';
+            document.getElementById('saveBtn').textContent = 'نشر / حفظ التعديلات 🚀';
+            document.getElementById('cancelEditBtn').style.display = 'none';
         }
-    }
 
-    function handleSave(e) {
-        e.preventDefault();
-        if (editType === 'product') {
-            const finalImgs = currentProductImgs.length ? currentProductImgs : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'];
-            const obj = { id: editId || Date.now(), name: document.getElementById('inName').value, catId: document.getElementById('inCat').value, code: document.getElementById('inCode').value.trim().toUpperCase(), price: Number(document.getElementById('inPrice').value), img: finalImgs[0], imgs: finalImgs };
-            if (editId) storeData.products[storeData.products.findIndex(x => x.id === editId)] = obj; else storeData.products.unshift(obj);
-        } else if (editType === 'category') {
-            const name = document.getElementById('inCatName').value.trim();
-            const prefix = document.getElementById('inCatPrefix').value.trim().toUpperCase();
-            if (editId) { const c = storeData.categories.find(x => x.id === editId); c.name = name; c.prefix = prefix; }
-            else storeData.categories.push({ id: 'cat_' + Date.now(), name, prefix });
-        } else if (editType === 'shein') {
-            if (!Array.isArray(storeData.shein)) storeData.shein = [];
-            const obj = { id: editId || Date.now(), title: document.getElementById('inSheinTitle').value, status: document.getElementById('inSheinStatus').value, date: document.getElementById('inSheinDate').value };
-            if (editId) storeData.shein[storeData.shein.findIndex(x => x.id === editId)] = obj; else storeData.shein.unshift(obj);
-        } else if (editType === 'banner') {
-            if (!Array.isArray(storeData.banners)) storeData.banners = [];
-            const obj = { id: editId || Date.now(), title: document.getElementById('inBannerTitle').value, img: uploadedImgUrl, url: uploadedImgUrl };
-            if (editId) storeData.banners[storeData.banners.findIndex(x => x.id === editId)] = obj; else storeData.banners.push(obj);
-        } else if (editType === 'payment') {
-            const obj = { id: editId || Date.now(), title: document.getElementById('inPayTitle').value, number: document.getElementById('inPayNum').value };
-            if (editId) storeData.payments[storeData.payments.findIndex(x => x.id === editId)] = obj; else storeData.payments.push(obj);
+        async function approveOrderWithCommission(orderId, refCode, prodTitle) {
+            let prod = globalProducts.find(p => p.title === prodTitle);
+            let commission = prod ? (parseFloat(prod.affiliate_commission) || 0) : 0;
+
+            if(refCode && refCode !== 'null' && refCode !== '') {
+                let { data: aff } = await db.from('affiliates').select('*').eq('ref_code', refCode).maybeSingle();
+                if(aff) {
+                    await db.from('affiliates').update({
+                        total_sales: (aff.total_sales || 0) + 1,
+                        total_earnings: (aff.total_earnings || 0) + commission
+                    }).eq('id', aff.id);
+                }
+            }
+
+            await db.from('orders').update({ status: 'مكتمل' }).eq('id', orderId);
+            alert(`تم اعتماد الطلب ونقله إلى الطلبيات المنجزة، واحتساب عمولة المسوق (${commission} YER) بنجاح! 🌟`);
+            loadAdminPanel();
         }
-        closeModal(); pushToCloud();
-    }
 
-    function delItem(key, id) {
-        if (!confirm('تأكيد الحذف؟')) return;
-        storeData[key] = storeData[key].filter(x => x.id !== id && String(x.id) !== String(id));
-        pushToCloud();
-    }
+        async function settleCommission(affId, current) {
+            let paid = prompt('أدخل المبلغ المراد تسويته مع المسوق:', current);
+            if(paid !== null) {
+                let remaining = Math.max(0, current - Number(paid));
+                await db.from('affiliates').update({ total_earnings: remaining }).eq('id', affId);
+                alert('تمت التسوية بنجاح!');
+                loadAdminPanel();
+            }
+        }
 
-    function saveSettings() {
-        storeData.settings.storeName = document.getElementById('setName').value;
-        storeData.settings.whatsapp = document.getElementById('setWa').value;
-        pushToCloud();
-    }
+        async function deleteRecord(table, id) {
+            if(confirm('هل أنت متأكد من الحذف النهائي؟')) {
+                await db.from(table).delete().eq('id', id);
+                alert('تم الحذف بنجاح!');
+                loadAdminPanel();
+            }
+        }
 
-    function closeModal() { document.getElementById('formModal').classList.remove('open'); }
-    function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
-
-    checkSession();
-</script>
+        window.addEventListener('DOMContentLoaded', loadAdminPanel);
+    </script>
 </body>
 </html>
