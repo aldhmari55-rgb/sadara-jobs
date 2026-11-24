@@ -9,45 +9,378 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f2347; --dark: #0a1324; --gold: #d4af37; --green: #16a34a; --bg: #f4f6fa; }
+        :root {
+            --primary: #0f2347;
+            --dark: #0a1324;
+            --gold: #d4af37;
+            --green: #16a34a;
+            --red: #e11d48;
+            --bg-light: #f4f6fa;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --muted: #64748b;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: #0f172a; padding-bottom: 60px; }
-        .top-bar { background: var(--dark); color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
-        .top-bar a { color: var(--gold); text-decoration: none; font-weight: 900; font-size: 13px; }
-        .hero { background: linear-gradient(135deg, var(--dark), var(--primary)); color: #fff; padding: 24px 16px; text-align: center; }
-        .container { max-width: 960px; margin: 16px auto; padding: 0 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
-        .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
-        .card img { width: 100%; max-height: 190px; object-fit: contain; border-radius: 10px; margin-bottom: 8px; background: #f8fafc; }
-        .btn-course { display: block; text-align: center; margin-top: 10px; background: var(--primary); color: #fff; text-decoration: none; padding: 9px; border-radius: 9px; font-size: 12px; font-weight: 900; }
+        body { background: var(--bg-light); color: #0f172a; padding-bottom: 70px; }
+
+        .top-navbar {
+            background: var(--dark);
+            color: #fff;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.35);
+        }
+        .brand-title { font-weight: 900; font-size: 14.5px; color: #fff; text-decoration: none; }
+        .brand-title span { color: var(--gold); }
+        .home-pill {
+            background: rgba(212, 175, 55, 0.14);
+            color: var(--gold);
+            border: 1px solid rgba(212, 175, 55, 0.45);
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+            color: #fff;
+            padding: 20px 16px 36px;
+            text-align: center;
+        }
+        .hero-banner h1 { font-size: 18px; font-weight: 900; margin-bottom: 4px; }
+        .hero-banner p { font-size: 12px; color: #cbd5e1; }
+
+        .main-container { max-width: 980px; margin: -22px auto 0; padding: 0 14px; display: grid; grid-template-columns: 1fr; gap: 14px; }
+        @media (min-width: 768px) {
+            .main-container { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        }
+
+        .course-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .course-cover {
+            width: 100%;
+            max-height: 210px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #f8fafc;
+            margin-bottom: 10px;
+        }
+        .badge-free {
+            display: inline-block;
+            background: #dcfce7;
+            color: var(--green);
+            padding: 3px 9px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+        .badge-paid {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 3px 9px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+        .course-title { font-size: 14.5px; font-weight: 900; color: var(--primary); margin-bottom: 4px; }
+        .course-meta { font-size: 11.5px; color: var(--muted); font-weight: 700; margin-bottom: 8px; }
+        .course-desc { font-size: 12px; color: #334155; line-height: 1.6; margin-bottom: 12px; }
+
+        .btn-enroll {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12.5px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        .btn-enroll.free-btn { background: var(--green); }
+
+        /* نافذة فتح الدورة / كود الخصم / الدفع */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 19, 36, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+        }
+        .modal-card {
+            background: var(--card);
+            border-radius: 16px;
+            max-width: 560px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            padding: 18px;
+        }
+        .promo-row { display: flex; gap: 8px; margin: 10px 0; }
+        .promo-row input {
+            flex: 1;
+            padding: 9px 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        .promo-row button {
+            background: var(--gold);
+            color: var(--dark);
+            border: none;
+            padding: 9px 14px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        .media-player-box {
+            margin: 12px 0;
+            background: #0a1324;
+            border-radius: 12px;
+            overflow: hidden;
+            padding: 8px;
+        }
+        .media-player-box video, .media-player-box iframe {
+            width: 100%;
+            min-height: 230px;
+            border-radius: 8px;
+            border: none;
+        }
     </style>
 </head>
 <body>
-    <header class="top-bar">
-        <a href="index.html"><i class="fa-solid fa-arrow-right"></i> الرئيسية</a>
-        <span>أكاديمية ودورات صدارة</span>
+    <header class="top-navbar">
+        <a href="index.html" class="brand-title">منصة <span>صدارة</span></a>
+        <a href="index.html" class="home-pill"><i class="fa-solid fa-store"></i> المتجر الرئيسي</a>
     </header>
-    <section class="hero">
-        <h1 style="font-size:18px; font-weight:900;">🎓 الدورات التدريبية والتأهيلية</h1>
-        <p style="font-size:12px; color:#cbd5e1; margin-top:4px;">طور مهاراتك مع أحدث الدورات التدريبية المتاحة</p>
+
+    <section class="hero-banner">
+        <h1><i class="fa-solid fa-graduation-cap"></i> الدورات التدريبية</h1>
+        <p>دورات مرئية مرفوعة أو عبر يوتيوب — متاحة مجاناً أو برسوم مع إمكانية تطبيق كود خصم أو كود مجاني</p>
     </section>
-    <div class="container" id="coursesList"><div class="card">جاري تحميل الدورات...</div></div>
+
+    <main class="main-container" id="coursesGrid">
+        <div class="course-card">جاري تحميل الدورات...</div>
+    </main>
+
+    <!-- نافذة الدورة وتطبيق كود الخصم / المجانية -->
+    <div class="modal-backdrop" id="courseModal" onclick="if(event.target.id==='courseModal') closeCourseModal()">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 id="cmTitle" style="font-size:15px; font-weight:900; color:var(--primary);"></h3>
+                <button onclick="closeCourseModal()" style="border:none; background:#f1f5f9; padding:5px 10px; border-radius:8px; font-weight:900; cursor:pointer;">✕</button>
+            </div>
+            <p id="cmDesc" style="font-size:12px; color:#334155; line-height:1.6;"></p>
+
+            <div id="promoSection" style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
+                <div style="font-size:12px; font-weight:900; color:var(--primary);">
+                    السعر الحالي: <span id="cmPriceDisplay" style="color:var(--red);"></span>
+                </div>
+                <div class="promo-row">
+                    <input type="text" id="promoCodeInput" placeholder="أدخل كود الخصم أو الكود المجاني هنا...">
+                    <button type="button" onclick="applyPromoToCourse()">تطبيق الكود</button>
+                </div>
+                <div id="promoMsg" style="font-size:11.5px; font-weight:900; margin-bottom:8px;"></div>
+            </div>
+
+            <div id="unlockedContent" style="display:none;">
+                <div style="background:#dcfce7; color:var(--green); padding:8px 12px; border-radius:9px; font-size:12px; font-weight:900; margin-bottom:8px;">
+                    ✅ الدورة متاحة لك الآن! يمكنك مشاهدة الدرس مباشرة:
+                </div>
+                <div class="media-player-box" id="cmPlayer"></div>
+            </div>
+
+            <div id="paidPaymentBox" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:11px; font-size:11.5px; line-height:1.7;">
+                <b>للاشتراك في الدورة المدفوعة:</b><br>
+                • محفظة جيب (Jeeb): <b>780568507</b><br>
+                • نقطة حاسب الكريمي: <b>2628009</b><br>
+                • المستفيد: <b>عبدالرحمن عبدالله صالح الذماري</b><br>
+                <a id="waEnrollLink" href="#" target="_blank" style="display:inline-block; margin-top:8px; background:var(--green); color:#fff; text-decoration:none; padding:7px 14px; border-radius:8px; font-weight:900;">إرسال تأكيد الدفع عبر واتساب 💬</a>
+            </div>
+        </div>
+    </div>
+
     <script>
         const db = supabase.createClient("https://lvutrzswngpkjfamgact.supabase.co", "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG");
-        (async () => {
+        let activeCourse = null;
+
+        function toEng(s) {
+            return String(s || '').replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+        }
+
+        function getYoutubeEmbed(url) {
+            if (!url) return '';
+            const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+            return m ? `https://www.youtube.com/embed/${m[1]}` : '';
+        }
+
+        async function loadCourses() {
             const { data } = await db.from('platform_courses').select('*').order('id', { ascending: false });
             const list = (data || []).filter(c => c.is_active !== false);
-            const box = document.getElementById('coursesList');
-            if (!list.length) { box.innerHTML = '<div class="card">لا توجد دورات منشورة حالياً.</div>'; return; }
-            box.innerHTML = list.map(c => `
-                <div class="card">
-                    ${c.image ? `<img src="${c.image}" alt="${c.title}">` : ''}
-                    <h2 style="font-size:15px; color:var(--primary); font-weight:900;">${c.title}</h2>
-                    <div style="font-size:11.5px; color:#64748b; margin:4px 0;">المدرب: ${c.instructor || 'صدارة'} | الرسوم: <b>${c.price || 'مجاني'}</b></div>
-                    <p style="font-size:12px; color:#334155; line-height:1.6;">${c.description || ''}</p>
-                    <a class="btn-course" target="_blank" href="${c.course_url || 'https://wa.me/967780568507?text=' + encodeURIComponent('أرغب بالتسجيل في دورة: ' + c.title)}">التحاق بالدورة الآن 🚀</a>
-                </div>
-            `).join('');
-        })();
+            const grid = document.getElementById('coursesGrid');
+
+            if (!list.length) {
+                grid.innerHTML = '<div class="course-card">لا توجد دورات منشورة حالياً.</div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            list.forEach(c => {
+                const rawPrice = Number(toEng(c.price || 0)) || 0;
+                const isFree = c.is_free === true || rawPrice <= 0 || String(c.price || '').includes('مجاني');
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.innerHTML = `
+                    <div>
+                        ${c.image ? `<img src="${c.image}" class="course-cover" alt="${c.title}">` : ''}
+                        <span class="${isFree ? 'badge-free' : 'badge-paid'}">${isFree ? 'مجانية 100% 🎁' : `رسوم الدورة: ${rawPrice} YER`}</span>
+                        <div class="course-title">${c.title}</div>
+                        <div class="course-meta">المدرب: ${c.instructor || 'منصة صدارة'}</div>
+                        <div class="course-desc">${c.description || ''}</div>
+                    </div>
+                    <button type="button" class="btn-enroll ${isFree ? 'free-btn' : ''}">${isFree ? 'دخول الدورة مجاناً ▶' : 'دخول الدورة أو إدخال كود خصم 🎟️'}</button>
+                `;
+                card.querySelector('.btn-enroll').addEventListener('click', () => openCourseModal(c, isFree, rawPrice));
+                grid.appendChild(card);
+            });
+        }
+
+        function buildPlayerHtml(course) {
+            const videoSrc = course.video_url || course.course_url || '';
+            const ytEmbed = getYoutubeEmbed(videoSrc);
+            if (ytEmbed) {
+                return `<iframe src="${ytEmbed}" allowfullscreen></iframe>`;
+            }
+            if (videoSrc && (videoSrc.endsWith('.mp4') || videoSrc.endsWith('.webm') || videoSrc.includes('storage/v1/object/public'))) {
+                return `<video src="${videoSrc}" controls playsinline></video>`;
+            }
+            if (videoSrc) {
+                return `<div style="padding:14px; text-align:center; color:#fff; font-size:12px;">
+                    <a href="${videoSrc}" target="_blank" style="color:var(--gold); font-weight:900;">فتح محتوى الدورة / الفيديو ↗</a>
+                </div>`;
+            }
+            return `<div style="padding:14px; text-align:center; color:#cbd5e1; font-size:12px;">سيتم إرسال رابط الدرس / المحاضرات فور التأكيد.</div>`;
+        }
+
+        function openCourseModal(course, isFree, rawPrice) {
+            activeCourse = { ...course, isFree, rawPrice };
+            document.getElementById('cmTitle').textContent = course.title;
+            document.getElementById('cmDesc').textContent = course.description || '';
+            document.getElementById('promoCodeInput').value = '';
+            document.getElementById('promoMsg').textContent = '';
+
+            if (isFree) {
+                document.getElementById('promoSection').style.display = 'none';
+                document.getElementById('paidPaymentBox').style.display = 'none';
+                document.getElementById('unlockedContent').style.display = 'block';
+                document.getElementById('cmPlayer').innerHTML = buildPlayerHtml(course);
+            } else {
+                document.getElementById('promoSection').style.display = 'block';
+                document.getElementById('unlockedContent').style.display = 'none';
+                document.getElementById('paidPaymentBox').style.display = 'block';
+                document.getElementById('cmPriceDisplay').textContent = `${rawPrice} YER`;
+                document.getElementById('waEnrollLink').href = `https://wa.me/967780568507?text=${encodeURIComponent('مرحباً، أرغب بالاشتراك في دورة: ' + course.title + ' بمبلغ ' + rawPrice + ' YER')}`;
+            }
+
+            document.getElementById('courseModal').style.display = 'flex';
+        }
+
+        function closeCourseModal() {
+            document.getElementById('cmPlayer').innerHTML = '';
+            document.getElementById('courseModal').style.display = 'none';
+        }
+
+        async function applyPromoToCourse() {
+            if (!activeCourse) return;
+            const codeVal = document.getElementById('promoCodeInput').value.trim().toUpperCase();
+            const msgEl = document.getElementById('promoMsg');
+            if (!codeVal) {
+                msgEl.style.color = 'var(--red)';
+                msgEl.textContent = 'أدخل كود الخصم أولاً.';
+                return;
+            }
+
+            const { data: promo } = await db.from('promo_codes')
+                .select('*')
+                .ilike('code', codeVal)
+                .eq('is_active', true)
+                .maybeSingle();
+
+            if (!promo) {
+                msgEl.style.color = 'var(--red)';
+                msgEl.textContent = 'كود الخصم غير صحيح أو منتهي الصلاحية.';
+                return;
+            }
+
+            if (promo.scope && promo.scope !== 'all' && promo.scope !== 'courses') {
+                msgEl.style.color = 'var(--red)';
+                msgEl.textContent = 'هذا الكود مخصص لمنتجات أخرى وليس للدورات.';
+                return;
+            }
+
+            if (promo.target_id && String(promo.target_id).trim() !== '' && String(promo.target_id).trim() !== String(activeCourse.id)) {
+                msgEl.style.color = 'var(--red)';
+                msgEl.textContent = 'هذا الكود مخصص لدورة مختلفة.';
+                return;
+            }
+
+            if (promo.max_uses && (promo.used_count || 0) >= promo.max_uses) {
+                msgEl.style.color = 'var(--red)';
+                msgEl.textContent = 'تم استنفاذ الحد الأقصى لاستخدام هذا الكود.';
+                return;
+            }
+
+            await db.from('promo_codes').update({ used_count: (promo.used_count || 0) + 1 }).eq('id', promo.id);
+
+            let finalPrice = activeCourse.rawPrice;
+            if (promo.discount_type === 'free' || Number(promo.discount_value) >= 100 && promo.discount_type === 'percent') {
+                finalPrice = 0;
+            } else if (promo.discount_type === 'percent') {
+                finalPrice = Math.max(0, Math.round(activeCourse.rawPrice * (1 - Number(promo.discount_value || 0) / 100)));
+            } else if (promo.discount_type === 'fixed') {
+                finalPrice = Math.max(0, activeCourse.rawPrice - Number(promo.discount_value || 0));
+            }
+
+            if (finalPrice <= 0) {
+                msgEl.style.color = 'var(--green)';
+                msgEl.textContent = 'تم تطبيق الكود بنجاح! الدورة أصبحت مجانية 100% بالنسبة لك 🎉';
+                document.getElementById('cmPriceDisplay').textContent = 'مجاني 100%';
+                document.getElementById('paidPaymentBox').style.display = 'none';
+                document.getElementById('unlockedContent').style.display = 'block';
+                document.getElementById('cmPlayer').innerHTML = buildPlayerHtml(activeCourse);
+            } else {
+                msgEl.style.color = 'var(--green)';
+                msgEl.textContent = `تم تطبيق الخصم بنجاح! السعر الجديد: ${finalPrice} YER`;
+                document.getElementById('cmPriceDisplay').textContent = `${finalPrice} YER`;
+                document.getElementById('waEnrollLink').href = `https://wa.me/967780568507?text=${encodeURIComponent('مرحباً، أرغب بالاشتراك في دورة: ' + activeCourse.title + ' بكود خصم ' + codeVal + ' بسعر ' + finalPrice + ' YER')}`;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', loadCourses);
     </script>
 </body>
 </html>
