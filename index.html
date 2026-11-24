@@ -249,10 +249,11 @@
             right: 7px;
             background: var(--red);
             color: #fff;
-            font-size: 10px;
+            font-size: 10.5px;
             font-weight: 900;
-            padding: 2px 7px;
-            border-radius: 6px;
+            padding: 3px 8px;
+            border-radius: 7px;
+            box-shadow: 0 2px 6px rgba(225, 29, 72, 0.3);
         }
         .prod-cat { font-size: 10.5px; color: var(--muted); font-weight: 700; }
         .prod-title {
@@ -444,6 +445,18 @@
             return String(str || '').replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
         }
 
+        function formatDiscountBadge(rawDiscount) {
+            if (!rawDiscount) return '';
+            let clean = toEnglishDigits(String(rawDiscount).trim());
+            if (!clean) return '';
+            clean = clean.replace(/خصم/g, '').replace(/^-+/, '').trim();
+            if (!clean) return '';
+            if (!clean.endsWith('%')) {
+                clean = clean + '%';
+            }
+            return `خصم ${clean}`;
+        }
+
         function toggleSidebar(open) {
             document.getElementById('sidebarDrawer').classList.toggle('open', open);
             document.getElementById('drawerOverlay').classList.toggle('open', open);
@@ -565,7 +578,8 @@
             list.forEach(p => {
                 const price = toEnglishDigits(p.price || 0);
                 const oldPrice = p.old_price ? toEnglishDigits(p.old_price) : '';
-                const discountHtml = p.discount ? `<span class="badge-discount">${p.discount}</span>` : '';
+                const formattedDiscount = formatDiscountBadge(p.discount);
+                const discountHtml = formattedDiscount ? `<span class="badge-discount">${formattedDiscount}</span>` : '';
                 const imgContent = p.image
                     ? `<img src="${p.image}" alt="${p.title || ''}" onerror="this.parentElement.innerHTML=renderFallbackBrand()">`
                     : renderFallbackBrand();
