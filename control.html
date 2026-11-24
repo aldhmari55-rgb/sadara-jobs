@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة الإدارة والربط المالي | صدارة</title>
+    <title>بوابة الإدارة والربط المتكامل | صدارة</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -18,7 +18,7 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; }
         body { background: var(--bg); color: var(--navy); padding: 16px; }
-        .container { max-width: 1120px; margin: 0 auto; display: grid; gap: 18px; }
+        .container { max-width: 1140px; margin: 0 auto; display: grid; gap: 18px; }
         .header {
             background: var(--navy); color: #fff; padding: 18px 22px; border-radius: 18px;
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
@@ -34,7 +34,7 @@
         .btn-green { background: var(--green); color: #fff; }
         .btn-red { background: var(--red); color: #fff; }
         .btn-gold { background: var(--gold); color: var(--navy); }
-        .order-row {
+        .row-box {
             border: 1px solid var(--border); border-radius: 14px; padding: 14px;
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
             margin-bottom: 10px; background: #fff;
@@ -47,19 +47,19 @@
     <div class="container">
         <div class="header">
             <div>
-                <h1 style="font-size:20px;">لوحة التحكم والربط المالي الآلي — صدارة</h1>
-                <p style="font-size:12.5px; color:#CBD5E1;">إدارة المدفوعات الموحدة (المتجر + الدورات) + احتساب عمولات المسوّقين تلقائياً</p>
+                <h1 style="font-size:20px;">لوحة التحكم الخارجية المتكاملة — صدارة</h1>
+                <p style="font-size:12.5px; color:#CBD5E1;">إدارة المدفوعات الآلية، الدروس (PDF + صورة + فيديو/صوت)، المدونة، والمسوّقين</p>
             </div>
             <button class="btn btn-gold" onclick="refreshAll()">تحديث البيانات 🔄</button>
         </div>
 
-        <!-- 1. باب الدفع الآلي الموحد (طلبات المنتجات واشتراكات الدورات) -->
+        <!-- 1. باب الدفع والاعتماد الآلي الموحد -->
         <section class="card">
             <h2 style="font-size:17px; margin-bottom:12px;">💳 باب الدفع والاعتماد الآلي (المنتجات والدورات)</h2>
-            <div id="unifiedPaymentsList">جاري تحميل المدفوعات...</div>
+            <div id="unifiedPaymentsList">جاري تحميل الطلبات...</div>
         </section>
 
-        <!-- 2. إضافة دورة جديدة (رفع فيديو من الجوال أو رابط يوتيوب) -->
+        <!-- 2. إضافة دورة تدريبية جديدة -->
         <section class="card">
             <h2 style="font-size:17px; margin-bottom:12px;">🎓 إضافة دورة تدريبية</h2>
             <div class="grid-2">
@@ -70,39 +70,75 @@
                     <option value="free">مجانية</option>
                 </select>
                 <input type="number" id="cPrice" placeholder="السعر بالريال (مثال: 1500)">
-                <input type="text" id="cVideoUrl" placeholder="رابط يوتيوب (اختياري إذا سترفع فيديو من الجوال)">
                 <div>
-                    <label style="font-size:11px; font-weight:700;">رفع فيديو من الجوال (MP4):</label>
-                    <input type="file" id="cVideoFile" accept="video/*">
-                </div>
-                <div>
-                    <label style="font-size:11px; font-weight:700;">صورة غلاف الدورة:</label>
+                    <label style="font-size:11px; font-weight:700;">صورة غلاف الدورة من المعرض:</label>
                     <input type="file" id="cImgFile" accept="image/*">
                 </div>
                 <textarea id="cDesc" placeholder="وصف الدورة..." rows="2"></textarea>
             </div>
-            <button class="btn btn-royal" style="margin-top:10px;" onclick="saveNewCourse()">حفظ ونشر الدورة ✅</button>
+            <button class="btn btn-royal" style="margin-top:10px;" onclick="saveNewCourse()">حفظ الدورة ✅</button>
             <div id="cSaveStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
         </section>
 
-        <!-- 3. أكواد الخصم والأكواد المجانية -->
+        <!-- 3. إضافة درس (ملف PDF + صورة من المعرض + فيديو أو صوت) -->
         <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">🎟️ أكواد الخصم والأكواد المجانية للدورات</h2>
+            <h2 style="font-size:17px; margin-bottom:12px;">📚 إضافة درس إلى دورة (PDF + صورة + فيديو/صوت)</h2>
             <div class="grid-2">
-                <input type="text" id="pCode" placeholder="الكود (مثال: FREE2026)" style="text-transform:uppercase;">
-                <select id="pType">
-                    <option value="free">مجاني 100%</option>
-                    <option value="percent">نسبة خصم (%)</option>
-                    <option value="fixed">مبلغ خصم ثابت</option>
+                <select id="lessonCourseSelect"></select>
+                <input type="number" id="lessonOrder" placeholder="ترتيب الدرس (مثال: 1)" value="1">
+                <input type="text" id="lessonTitle" placeholder="عنوان الدرس (مثال: الدرس الأول - المدخل)">
+                <select id="lessonMediaType">
+                    <option value="video">فيديو</option>
+                    <option value="audio">ملف صوتي</option>
                 </select>
-                <input type="number" id="pVal" placeholder="قيمة الخصم (مثال: 50)">
-                <button class="btn btn-green" onclick="createPromoCode()">إنشاء الكود ➕</button>
+                <div>
+                    <label style="font-size:11px; font-weight:700;">ملف PDF للدرس:</label>
+                    <input type="file" id="lessonPdfFile" accept="application/pdf">
+                </div>
+                <div>
+                    <label style="font-size:11px; font-weight:700;">صورة الدرس من المعرض:</label>
+                    <input type="file" id="lessonImgFile" accept="image/*">
+                </div>
+                <div>
+                    <label style="font-size:11px; font-weight:700;">رفع فيديو أو صوت من الجهاز:</label>
+                    <input type="file" id="lessonMediaFile" accept="video/*,audio/*">
+                </div>
+                <input type="text" id="lessonMediaUrl" placeholder="أو رابط يوتيوب / صوت مباشر (اختياري)">
+                <textarea id="lessonSummary" placeholder="شرح أو ملخص الدرس..." rows="2"></textarea>
             </div>
+            <button class="btn btn-green" style="margin-top:10px;" onclick="saveLesson()">إضافة الدرس للدورة ➕</button>
+            <div id="lessonSaveStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
         </section>
 
-        <!-- 4. التسوية الشهرية والترحيل السنوي للمسوّقين -->
+        <!-- 4. نشر مقال كامل مع صور في البداية والمنتصف والنهاية -->
         <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">🤝 إدارة المسوّقين والتسوية الشهرية / السنوية</h2>
+            <h2 style="font-size:17px; margin-bottom:12px;">📰 إضافة مقال للمدونة (نصوص كاملة + صور بداية/وسط/نهاية)</h2>
+            <div class="grid-2">
+                <input type="text" id="artTitle" placeholder="عنوان المقال">
+                <input type="text" id="artCategory" placeholder="التصنيف (مثال: تجارة، تقنية)">
+                <input type="text" id="artReadTime" placeholder="زمن القراءة (مثال: 4 دقائق)">
+                <input type="text" id="artSummary" placeholder="ملخص مختصر للبطاقة">
+                <div>
+                    <label style="font-size:11px; font-weight:700;">صورة بداية المقال:</label>
+                    <input type="file" id="artImgStart" accept="image/*">
+                </div>
+                <div>
+                    <label style="font-size:11px; font-weight:700;">صورة منتصف المقال:</label>
+                    <input type="file" id="artImgMid" accept="image/*">
+                </div>
+                <div>
+                    <label style="font-size:11px; font-weight:700;">صورة نهاية المقال:</label>
+                    <input type="file" id="artImgEnd" accept="image/*">
+                </div>
+            </div>
+            <textarea id="artContent" placeholder="اكتب نص المقال كاملاً هنا..." rows="5" style="margin-top:10px;"></textarea>
+            <button class="btn btn-royal" style="margin-top:10px;" onclick="saveArticle()">نشر المقال في المدونة ✅</button>
+            <div id="artSaveStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
+        </section>
+
+        <!-- 5. إدارة المسوّقين مركزياً (تعديل الاسم، تعديل الكود/الرابط، وتصفية المستحقات) -->
+        <section class="card">
+            <h2 style="font-size:17px; margin-bottom:12px;">🤝 إدارة المسوّقين مركزياً (الاسم، كود/رابط الإحالة، والتصفية)</h2>
             <div id="affiliatesAdminList">جاري تحميل المسوّقين...</div>
         </section>
     </div>
@@ -111,63 +147,75 @@
         const db = supabase.createClient("https://lvutrzswngpkjfamgact.supabase.co", "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG");
         const BUCKET = "platform-files";
 
+        function normalizePhone(raw) {
+            const eng = String(raw || '').replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+            return eng.replace(/[^0-9]/g, '');
+        }
+
+        async function uploadToBucket(file, folder) {
+            if (!file) return '';
+            const safeName = `${folder}/${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+            const { error } = await db.storage.from(BUCKET).upload(safeName, file);
+            if (error) return '';
+            const { data } = db.storage.from(BUCKET).getPublicUrl(safeName);
+            return data.publicUrl;
+        }
+
         async function loadUnifiedPayments() {
             const { data: orders } = await db.from('orders').select('*').order('id', { ascending: false });
             const box = document.getElementById('unifiedPaymentsList');
-            if (!orders || !orders.length) { box.innerHTML = '<p>لا توجد طلبات دفع حالياً.</p>'; return; }
+            if (!orders || !orders.length) { box.innerHTML = '<p>لا توجد طلبات حالياً.</p>'; return; }
 
             box.innerHTML = orders.map(o => {
                 const isCourse = o.item_type === 'course';
                 const statusBadge = o.status === 'approved'
-                    ? '<span class="badge" style="background:#ECFDF5; color:#059669;">مقبول ومفعّل ✅</span>'
+                    ? '<span class="badge" style="background:#ECFDF5; color:#059669;">مقبول ومفتوح ✅</span>'
                     : (o.status === 'rejected'
                         ? '<span class="badge" style="background:#FEF2F2; color:#DC2626;">مرفوض ❌</span>'
-                        : '<span class="badge" style="background:#FFFBEB; color:#B45309;">بانتظار الاعتماد ⏳</span>');
+                        : '<span class="badge" style="background:#FFFBEB; color:#B45309;">قيد المراجعة ⏳</span>');
 
                 return `
-                <div class="order-row">
+                <div class="row-box">
                     <div>
                         <div style="font-weight:700; font-size:14px;">
                             ${isCourse ? '🎓' : '🛒'} ${o.product_title} — <span style="color:var(--royal);">${o.total_price} YER</span>
                         </div>
                         <div style="font-size:12.5px; color:#475569; margin-top:3px;">
-                            العميل: <b>${o.customer_name}</b> | الهاتف: <b>${o.customer_phone}</b>
+                            العميل: <b>${o.customer_name}</b> | الجوال: <b>${o.customer_phone}</b>
                             ${o.ref_code ? ` | كود المسوّق: <b style="color:#0D9488;">${o.ref_code}</b>` : ''}
                         </div>
                         <div style="margin-top:6px; display:flex; gap:10px; align-items:center;">
                             ${statusBadge}
-                            ${o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="font-size:12px; font-weight:700; color:var(--royal);">عرض صورة السند 🧾</a>` : ''}
+                            ${o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="font-size:12px; font-weight:700; color:var(--royal);">عرض سند التحويل 🧾</a>` : ''}
                         </div>
                     </div>
                     <div style="display:flex; gap:6px;">
-                        <button class="btn btn-green" onclick="approveUnifiedOrder(${o.id}, '${o.item_type || 'product'}', '${o.item_id || ''}', '${o.customer_phone || ''}', '${o.ref_code || ''}', ${Number(o.total_price || 0)})">قبول وتفعيل آلي ✅</button>
-                        <button class="btn btn-red" onclick="rejectUnifiedOrder(${o.id}, '${o.item_type || 'product'}', '${o.item_id || ''}', '${o.customer_phone || ''}')">رفض ❌</button>
+                        <button class="btn btn-green" onclick="approveOrder(${o.id}, '${o.item_type || 'product'}', '${o.item_id || ''}', '${o.customer_phone || ''}', '${o.ref_code || ''}', ${Number(o.total_price || 0)})">قبول وتفعيل ✅</button>
+                        <button class="btn btn-red" onclick="rejectOrder(${o.id}, '${o.item_type || 'product'}', '${o.item_id || ''}', '${o.customer_phone || ''}')">رفض ❌</button>
                     </div>
                 </div>`;
             }).join('');
         }
 
-        async function approveUnifiedOrder(orderId, itemType, itemId, customerPhone, refCode, amount) {
-            // 1. اعتماد الطلب في جدول orders
+        async function approveOrder(orderId, itemType, itemId, customerPhone, refCode, amount) {
+            const cleanPhone = normalizePhone(customerPhone);
             await db.from('orders').update({ status: 'approved' }).eq('id', orderId);
 
-            // 2. إذا كان دورة: فتح الدورة آلياً للطالب في course_enrollments
-            if (itemType === 'course' && itemId && customerPhone) {
+            if (itemType === 'course' && itemId && cleanPhone) {
                 await db.from('course_enrollments')
                     .update({ status: 'approved', approved_at: new Date().toISOString() })
                     .eq('course_id', Number(itemId))
-                    .eq('student_phone', customerPhone);
+                    .eq('student_phone', cleanPhone);
             }
 
-            // 3. إذا كان هناك كود مسوّق: إضافة العمولة آلياً لرصيد المسوّق
             if (refCode && refCode !== 'null' && refCode.trim() !== '') {
                 const { data: aff } = await db.from('affiliates').select('*').eq('ref_code', refCode).maybeSingle();
                 if (aff) {
-                    const commRate = Number(aff.commission_rate || 10) / 100;
-                    const earned = Math.max(100, Math.round(amount * commRate));
+                    const rate = Number(aff.commission_rate || 10) / 100;
+                    const commission = Math.max(100, Math.round(amount * rate));
                     await db.from('affiliates').update({
-                        pending_earnings: Number(aff.pending_earnings || 0) + earned,
-                        total_earnings: Number(aff.total_earnings || 0) + earned,
+                        pending_earnings: Number(aff.pending_earnings || 0) + commission,
+                        total_earnings: Number(aff.total_earnings || 0) + commission,
                         total_sales: Number(aff.total_sales || 0) + 1
                     }).eq('id', aff.id);
                 }
@@ -177,15 +225,16 @@
             refreshAll();
         }
 
-        async function rejectUnifiedOrder(orderId, itemType, itemId, customerPhone) {
-            const reason = prompt('سبب الرفض (اختياري):', 'يرجى التأكد من وضوح السند والمبلغ');
+        async function rejectOrder(orderId, itemType, itemId, customerPhone) {
+            const cleanPhone = normalizePhone(customerPhone);
+            const reason = prompt('سبب الرفض (اختياري):', 'يرجى التأكد من بيانات التحويل والسند');
             if (reason === null) return;
             await db.from('orders').update({ status: 'rejected' }).eq('id', orderId);
-            if (itemType === 'course' && itemId && customerPhone) {
+            if (itemType === 'course' && itemId && cleanPhone) {
                 await db.from('course_enrollments')
                     .update({ status: 'rejected', reject_reason: reason })
                     .eq('course_id', Number(itemId))
-                    .eq('student_phone', customerPhone);
+                    .eq('student_phone', cleanPhone);
             }
             refreshAll();
         }
@@ -196,72 +245,131 @@
             const isFree = document.getElementById('cType').value === 'free';
             const price = isFree ? '0' : (document.getElementById('cPrice').value.trim() || '0');
             const description = document.getElementById('cDesc').value.trim();
-            let video_url = document.getElementById('cVideoUrl').value.trim();
-            const videoFile = document.getElementById('cVideoFile').files[0];
             const imgFile = document.getElementById('cImgFile').files[0];
             const st = document.getElementById('cSaveStatus');
 
             if (!title) return alert('أدخل عنوان الدورة.');
-            st.textContent = 'جاري الرفع والحفظ...';
-
-            if (videoFile) {
-                const vPath = `courses_videos/v_${Date.now()}_${videoFile.name.replace(/\s+/g, '_')}`;
-                const { error } = await db.storage.from(BUCKET).upload(vPath, videoFile);
-                if (!error) video_url = db.storage.from(BUCKET).getPublicUrl(vPath).data.publicUrl;
-            }
-
-            let image = '';
-            if (imgFile) {
-                const iPath = `courses_images/i_${Date.now()}_${imgFile.name.replace(/\s+/g, '_')}`;
-                const { error } = await db.storage.from(BUCKET).upload(iPath, imgFile);
-                if (!error) image = db.storage.from(BUCKET).getPublicUrl(iPath).data.publicUrl;
-            }
+            st.textContent = 'جاري حفظ الدورة...';
+            const image = await uploadToBucket(imgFile, 'courses_covers');
 
             await db.from('platform_courses').insert([{
-                title, instructor, is_free: isFree, price, description, video_url, image, is_active: true
+                title, instructor, is_free: isFree, price, description, image, is_active: true
             }]);
 
             st.style.color = 'var(--green)';
-            st.textContent = 'تم نشر الدورة بنجاح! 🎉';
+            st.textContent = 'تم حفظ الدورة بنجاح! يمكنك الآن إضافة دروسها بالأسفل.';
+            await loadCoursesDropdown();
         }
 
-        async function createPromoCode() {
-            const code = document.getElementById('pCode').value.trim().toUpperCase();
-            const discount_type = document.getElementById('pType').value;
-            const discount_value = Number(document.getElementById('pVal').value || 0);
-            if (!code) return alert('أدخل الكود.');
-            await db.from('promo_codes').insert([{ code, discount_type, discount_value, is_active: true }]);
-            alert(`تم إنشاء الكود ${code} ✅`);
+        async function loadCoursesDropdown() {
+            const { data } = await db.from('platform_courses').select('id, title').order('id', { ascending: false });
+            const sel = document.getElementById('lessonCourseSelect');
+            sel.innerHTML = (data || []).map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+        }
+
+        async function saveLesson() {
+            const course_id = Number(document.getElementById('lessonCourseSelect').value);
+            const lesson_order = Number(document.getElementById('lessonOrder').value || 1);
+            const title = document.getElementById('lessonTitle').value.trim();
+            const media_type = document.getElementById('lessonMediaType').value;
+            const summary = document.getElementById('lessonSummary').value.trim();
+            const pdfFile = document.getElementById('lessonPdfFile').files[0];
+            const imgFile = document.getElementById('lessonImgFile').files[0];
+            const mediaFile = document.getElementById('lessonMediaFile').files[0];
+            let media_url = document.getElementById('lessonMediaUrl').value.trim();
+            const st = document.getElementById('lessonSaveStatus');
+
+            if (!course_id || !title) return alert('اختر الدورة وأدخل عنوان الدرس.');
+            st.textContent = 'جاري رفع ملفات الدرس...';
+
+            const pdf_url = await uploadToBucket(pdfFile, 'lessons_pdf');
+            const image_url = await uploadToBucket(imgFile, 'lessons_images');
+            if (mediaFile) {
+                media_url = await uploadToBucket(mediaFile, 'lessons_media');
+            }
+
+            await db.from('course_lessons').insert([{
+                course_id, lesson_order, title, summary, pdf_url, image_url, media_url, media_type
+            }]);
+
+            st.style.color = 'var(--green)';
+            st.textContent = 'تمت إضافة الدرس بكافة مرفقاته بنجاح ✅';
+        }
+
+        async function saveArticle() {
+            const title = document.getElementById('artTitle').value.trim();
+            const category = document.getElementById('artCategory').value.trim() || 'مقال';
+            const read_time = document.getElementById('artReadTime').value.trim() || '3 دقائق';
+            const summary = document.getElementById('artSummary').value.trim();
+            const content = document.getElementById('artContent').value.trim();
+            const st = document.getElementById('artSaveStatus');
+
+            if (!title || !content) return alert('أدخل عنوان المقال ونصه الكامل.');
+            st.textContent = 'جاري رفع صور المقال ونشره...';
+
+            const image_start = await uploadToBucket(document.getElementById('artImgStart').files[0], 'blog_images');
+            const image_middle = await uploadToBucket(document.getElementById('artImgMid').files[0], 'blog_images');
+            const image_end = await uploadToBucket(document.getElementById('artImgEnd').files[0], 'blog_images');
+
+            await db.from('platform_articles').insert([{
+                title, category, read_time, summary: summary || content.slice(0, 120),
+                content, image: image_start, image_start, image_middle: image_middle, image_end: image_end,
+                is_active: true
+            }]);
+
+            st.style.color = 'var(--green)';
+            st.textContent = 'تم نشر المقال مع الصور في المدونة بنجاح ✅';
         }
 
         async function loadAffiliatesAdmin() {
-            const { data: affs } = await db.from('affiliates').select('*').order('pending_earnings', { ascending: false });
-            document.getElementById('affiliatesAdminList').innerHTML = (affs || []).map(a => `
-                <div class="order-row">
+            const { data: affs } = await db.from('affiliates').select('*').order('id', { ascending: false });
+            document.getElementById('affiliatesAdminList').innerHTML = (affs || []).map(a => {
+                const displayName = a.full_name || a.name || 'مسوّق';
+                return `
+                <div class="row-box">
                     <div>
-                        <b>${a.full_name || a.name}</b> (${a.phone}) — كود: <b>${a.ref_code}</b><br>
+                        <b>${displayName}</b> (${a.phone}) — كود الإحالة: <b style="color:var(--royal);">${a.ref_code}</b><br>
+                        <span style="font-size:12px; color:#475569;">رابط المتجر: ?ref=${a.ref_code} | رابط الدورات: ?ref=${a.ref_code}</span><br>
                         <span style="font-size:12.5px;">المعلق: <b style="color:var(--green);">${a.pending_earnings || 0} YER</b> | المصروف: <b>${a.settled_earnings || 0} YER</b></span>
                     </div>
-                    <button class="btn btn-royal" onclick="settleAffiliate(${a.id}, '${a.ref_code}', '${a.full_name || a.name}', ${Number(a.pending_earnings || 0)}, ${Number(a.settled_earnings || 0)})">تصفية وصرف المستحقات 💸</button>
-                </div>
-            `).join('') || '<p>لا يوجد مسوقون مسجلون.</p>';
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <button class="btn btn-gold" onclick="editAffiliateInfo(${a.id}, '${displayName.replace(/'/g, "\\'")}', '${a.ref_code}')">تعديل الاسم / الكود ✏️</button>
+                        <button class="btn btn-royal" onclick="settleAffiliate(${a.id}, '${a.ref_code}', '${displayName.replace(/'/g, "\\'")}', ${Number(a.pending_earnings || 0)}, ${Number(a.settled_earnings || 0)})">تصفية الحساب 💸</button>
+                    </div>
+                </div>`;
+            }).join('') || '<p>لا يوجد مسوقون مسجلون حالياً.</p>';
+        }
+
+        async function editAffiliateInfo(id, oldName, oldCode) {
+            const newName = prompt('تعديل اسم المسوّق:', oldName);
+            if (!newName) return;
+            const newCode = prompt('تعديل كود الإحالة (يحدّث روابط الإحالة تلقائياً):', oldCode);
+            if (!newCode) return;
+
+            await db.from('affiliates').update({
+                full_name: newName.trim(),
+                name: newName.trim(),
+                ref_code: newCode.trim().toUpperCase()
+            }).eq('id', id);
+
+            alert('تم تحديث بيانات المسوّق وكود إحالته بنجاح ✅');
+            loadAffiliatesAdmin();
         }
 
         async function settleAffiliate(id, refCode, name, pending, settled) {
             if (pending <= 0) return alert('لا توجد مستحقات معلقة للتصفية.');
-            if (!confirm(`تصفية وصرف مبلغ ${pending} YER للمسوّق ${name}؟`)) return;
+            if (!confirm(`تصفية وصرف ${pending} YER للمسوّق ${name}؟`)) return;
             await db.from('affiliates').update({ pending_earnings: 0, settled_earnings: settled + pending }).eq('id', id);
             await db.from('affiliate_settlements').insert([{
                 affiliate_id: id, ref_code: refCode, affiliate_name: name,
                 settled_amount: pending, settlement_type: 'monthly',
-                period_month: new Date().toISOString().slice(0, 7), notes: 'تصفية شهرية معتمدة'
+                period_month: new Date().toISOString().slice(0, 7), notes: 'تصفية معتمدة من الإدارة'
             }]);
-            refreshAll();
+            loadAffiliatesAdmin();
         }
 
-        function refreshAll() {
-            loadUnifiedPayments();
-            loadAffiliatesAdmin();
+        async function refreshAll() {
+            await Promise.all([loadUnifiedPayments(), loadCoursesDropdown(), loadAffiliatesAdmin()]);
         }
 
         window.addEventListener('DOMContentLoaded', refreshAll);
