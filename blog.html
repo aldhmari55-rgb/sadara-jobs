@@ -52,10 +52,7 @@
         }
         .drawer-link:hover, .drawer-link.active { background: #EFF6FF; color: var(--royal); }
 
-        .hero {
-            background: linear-gradient(135deg, var(--navy), #1E293B);
-            color: #fff; padding: 30px 18px; text-align: center;
-        }
+        .hero { background: linear-gradient(135deg, var(--navy), #1E293B); color: #fff; padding: 30px 18px; text-align: center; }
         .hero h1 { font-size: 26px; margin-bottom: 6px; }
         .hero p { color: #CBD5E1; font-size: 14px; }
 
@@ -92,14 +89,13 @@
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
     <aside class="side-drawer" id="sideDrawer">
         <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid var(--border);">
-            <strong style="color:var(--navy);">الأقسام الفرعية</strong>
+            <strong style="color:var(--navy);">أقسام منصة صدارة</strong>
             <button onclick="toggleDrawer(false)" style="border:none; background:var(--bg-surface); padding:4px 9px; border-radius:8px; cursor:pointer;">✕</button>
         </div>
-        <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات</a>
+        <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات (الرئيسية)</a>
         <a href="courses.html" class="drawer-link"><i class="fa-solid fa-graduation-cap"></i> الدورات التدريبية</a>
-        <a href="affiliate.html" class="drawer-link"><i class="fa-solid fa-handshake"></i> بوابة المسوّقين</a>
+        <a href="affiliate.html" class="drawer-link"><i class="fa-solid fa-handshake"></i> بوابة المسوّقين بالعمولة</a>
         <a href="blog.html" class="drawer-link active"><i class="fa-solid fa-newspaper"></i> المدونة والمقالات</a>
-        <a href="control.html" class="drawer-link"><i class="fa-solid fa-sliders"></i> لوحة التحكم</a>
     </aside>
 
     <section class="hero">
@@ -136,9 +132,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function closeReader() {
-            document.getElementById('articleReader').style.display = 'none';
-        }
+        function closeReader() { document.getElementById('articleReader').style.display = 'none'; }
 
         async function loadArticles() {
             const { data } = await db.from('platform_articles').select('*').order('id', { ascending: false });
