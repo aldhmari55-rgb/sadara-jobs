@@ -3,43 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة الإدارة والربط المتكامل | صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>لوحة التحكم الخارجية الشاملة | صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --navy: #0F172A;
-            --royal: #2563EB;
-            --green: #10B981;
-            --red: #EF4444;
-            --gold: #F59E0B;
-            --bg: #F8FAFC;
-            --border: #E2E8F0;
+            --navy: #0F172A; --royal: #2563EB; --green: #10B981;
+            --red: #EF4444; --gold: #F59E0B; --bg: #F8FAFC; --border: #E2E8F0;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; }
-        body { background: var(--bg); color: var(--navy); padding: 16px; }
-        .container { max-width: 1140px; margin: 0 auto; display: grid; gap: 18px; }
-        .header {
-            background: var(--navy); color: #fff; padding: 18px 22px; border-radius: 18px;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
-        }
+        body { background: var(--bg); color: var(--navy); padding: 14px; line-height: 1.65; }
+        .container { max-width: 1180px; margin: 0 auto; display: grid; gap: 18px; }
+        .header { background: var(--navy); color: #fff; padding: 18px 20px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .card { background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 18px; }
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
-        input, select, textarea {
-            width: 100%; padding: 9px 12px; border: 1px solid var(--border);
-            border-radius: 10px; font-size: 13px; background: var(--bg);
-        }
-        .btn { padding: 9px 14px; border: none; border-radius: 10px; font-weight: 700; font-size: 12.5px; cursor: pointer; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+        input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px; background: var(--bg); }
+        .btn { padding: 8px 13px; border: none; border-radius: 10px; font-weight: 700; font-size: 12.5px; cursor: pointer; }
         .btn-royal { background: var(--royal); color: #fff; }
         .btn-green { background: var(--green); color: #fff; }
         .btn-red { background: var(--red); color: #fff; }
         .btn-gold { background: var(--gold); color: var(--navy); }
-        .row-box {
-            border: 1px solid var(--border); border-radius: 14px; padding: 14px;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
-            margin-bottom: 10px; background: #fff;
-        }
+        .row-box { border: 1px solid var(--border); border-radius: 14px; padding: 13px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; background: #fff; }
         .badge { padding: 3px 10px; border-radius: 99px; font-size: 11.5px; font-weight: 700; }
+        .item-thumb { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); background: var(--bg); }
     </style>
 </head>
 <body>
@@ -47,21 +33,41 @@
     <div class="container">
         <div class="header">
             <div>
-                <h1 style="font-size:20px;">لوحة التحكم الخارجية المتكاملة — صدارة</h1>
-                <p style="font-size:12.5px; color:#CBD5E1;">إدارة المدفوعات الآلية، الدروس (PDF + صورة + فيديو/صوت)، المدونة، والمسوّقين</p>
+                <h1 style="font-size:clamp(18px, 2.5vw, 22px);">لوحة التحكم الخارجية المتكاملة — صدارة</h1>
+                <p style="font-size:12.5px; color:#CBD5E1;">إضافة، تعديل، حذف، قبول، ورفض لكافة أقسام المنصة مع ربط لحظي</p>
             </div>
-            <button class="btn btn-gold" onclick="refreshAll()">تحديث البيانات 🔄</button>
+            <button class="btn btn-gold" onclick="refreshAll()">تحديث شامل 🔄</button>
         </div>
 
-        <!-- 1. باب الدفع والاعتماد الآلي الموحد -->
+        <!-- 1. المدفوعات والطلبات الموحدة (قبول / رفض / حذف) -->
         <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">💳 باب الدفع والاعتماد الآلي (المنتجات والدورات)</h2>
-            <div id="unifiedPaymentsList">جاري تحميل الطلبات...</div>
+            <h2 style="font-size:17px; margin-bottom:12px;">💳 المدفوعات والطلبات (قبول، رفض، حذف)</h2>
+            <div id="unifiedPaymentsList">جاري التحميل...</div>
         </section>
 
-        <!-- 2. إضافة دورة تدريبية جديدة -->
+        <!-- 2. إدارة منتجات المتجر (إضافة / تعديل / حذف) -->
         <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">🎓 إضافة دورة تدريبية</h2>
+            <h2 style="font-size:17px; margin-bottom:12px;">🛒 إدارة منتجات المتجر</h2>
+            <div class="grid-2">
+                <input type="text" id="pTitle" placeholder="اسم المنتج">
+                <input type="text" id="pCat" placeholder="التصنيف (مثال: جوالات)">
+                <input type="number" id="pPrice" placeholder="السعر الحالي (YER)">
+                <input type="number" id="pOldPrice" placeholder="السعر السابق (اختياري)">
+                <input type="text" id="pDiscount" placeholder="شارة خصم (مثال: 15%)">
+                <div>
+                    <label style="font-size:11px; font-weight:700;">صورة المنتج (مرونة في المقاس والضغط):</label>
+                    <input type="file" id="pImgFile" accept="image/*">
+                </div>
+                <textarea id="pDesc" placeholder="وصف المنتج..." rows="2"></textarea>
+            </div>
+            <button class="btn btn-royal" style="margin-top:10px;" onclick="saveProduct()">حفظ المنتج ونشره ✅</button>
+            <div id="pStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
+            <div id="productsManageList" style="margin-top:14px;"></div>
+        </section>
+
+        <!-- 3. إدارة الدورات والدروس (إضافة دورة + إضافة درس PDF/صورة/فيديو/صوت + حذف) -->
+        <section class="card">
+            <h2 style="font-size:17px; margin-bottom:12px;">🎓 إدارة الدورات والدروس متعددة الوسائط</h2>
             <div class="grid-2">
                 <input type="text" id="cTitle" placeholder="عنوان الدورة">
                 <input type="text" id="cInstructor" placeholder="اسم المدرب">
@@ -69,77 +75,82 @@
                     <option value="paid">مدفوعة</option>
                     <option value="free">مجانية</option>
                 </select>
-                <input type="number" id="cPrice" placeholder="السعر بالريال (مثال: 1500)">
+                <input type="number" id="cPrice" placeholder="السعر بالريال">
                 <div>
-                    <label style="font-size:11px; font-weight:700;">صورة غلاف الدورة من المعرض:</label>
+                    <label style="font-size:11px; font-weight:700;">غلاف الدورة من المعرض:</label>
                     <input type="file" id="cImgFile" accept="image/*">
                 </div>
                 <textarea id="cDesc" placeholder="وصف الدورة..." rows="2"></textarea>
             </div>
             <button class="btn btn-royal" style="margin-top:10px;" onclick="saveNewCourse()">حفظ الدورة ✅</button>
             <div id="cSaveStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
-        </section>
 
-        <!-- 3. إضافة درس (ملف PDF + صورة من المعرض + فيديو أو صوت) -->
-        <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">📚 إضافة درس إلى دورة (PDF + صورة + فيديو/صوت)</h2>
-            <div class="grid-2">
+            <div class="grid-2" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
                 <select id="lessonCourseSelect"></select>
-                <input type="number" id="lessonOrder" placeholder="ترتيب الدرس (مثال: 1)" value="1">
-                <input type="text" id="lessonTitle" placeholder="عنوان الدرس (مثال: الدرس الأول - المدخل)">
+                <input type="number" id="lessonOrder" placeholder="ترتيب الدرس" value="1">
+                <input type="text" id="lessonTitle" placeholder="عنوان الدرس (مثال: الدرس الأول)">
                 <select id="lessonMediaType">
                     <option value="video">فيديو</option>
                     <option value="audio">ملف صوتي</option>
                 </select>
-                <div>
-                    <label style="font-size:11px; font-weight:700;">ملف PDF للدرس:</label>
-                    <input type="file" id="lessonPdfFile" accept="application/pdf">
-                </div>
-                <div>
-                    <label style="font-size:11px; font-weight:700;">صورة الدرس من المعرض:</label>
-                    <input type="file" id="lessonImgFile" accept="image/*">
-                </div>
-                <div>
-                    <label style="font-size:11px; font-weight:700;">رفع فيديو أو صوت من الجهاز:</label>
-                    <input type="file" id="lessonMediaFile" accept="video/*,audio/*">
-                </div>
-                <input type="text" id="lessonMediaUrl" placeholder="أو رابط يوتيوب / صوت مباشر (اختياري)">
-                <textarea id="lessonSummary" placeholder="شرح أو ملخص الدرس..." rows="2"></textarea>
+                <div><label style="font-size:11px; font-weight:700;">ملف PDF للدرس:</label><input type="file" id="lessonPdfFile" accept="application/pdf"></div>
+                <div><label style="font-size:11px; font-weight:700;">صورة الدرس من المعرض:</label><input type="file" id="lessonImgFile" accept="image/*"></div>
+                <div><label style="font-size:11px; font-weight:700;">فيديو أو صوت من الجهاز:</label><input type="file" id="lessonMediaFile" accept="video/*,audio/*"></div>
+                <input type="text" id="lessonMediaUrl" placeholder="أو رابط يوتيوب / صوت مباشر">
+                <textarea id="lessonSummary" placeholder="ملخص الدرس..." rows="2"></textarea>
             </div>
-            <button class="btn btn-green" style="margin-top:10px;" onclick="saveLesson()">إضافة الدرس للدورة ➕</button>
+            <button class="btn btn-green" style="margin-top:10px;" onclick="saveLesson()">إضافة الدرس ➕</button>
             <div id="lessonSaveStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
+            <div id="coursesManageList" style="margin-top:14px;"></div>
         </section>
 
-        <!-- 4. نشر مقال كامل مع صور في البداية والمنتصف والنهاية -->
+        <!-- 4. إدارة المدونة (نصوص كاملة + صور بداية/وسط/نهاية + تعديل/حذف) -->
         <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">📰 إضافة مقال للمدونة (نصوص كاملة + صور بداية/وسط/نهاية)</h2>
+            <h2 style="font-size:17px; margin-bottom:12px;">📰 إدارة المدونة والمقالات</h2>
             <div class="grid-2">
                 <input type="text" id="artTitle" placeholder="عنوان المقال">
-                <input type="text" id="artCategory" placeholder="التصنيف (مثال: تجارة، تقنية)">
+                <input type="text" id="artCategory" placeholder="التصنيف">
                 <input type="text" id="artReadTime" placeholder="زمن القراءة (مثال: 4 دقائق)">
-                <input type="text" id="artSummary" placeholder="ملخص مختصر للبطاقة">
-                <div>
-                    <label style="font-size:11px; font-weight:700;">صورة بداية المقال:</label>
-                    <input type="file" id="artImgStart" accept="image/*">
-                </div>
-                <div>
-                    <label style="font-size:11px; font-weight:700;">صورة منتصف المقال:</label>
-                    <input type="file" id="artImgMid" accept="image/*">
-                </div>
-                <div>
-                    <label style="font-size:11px; font-weight:700;">صورة نهاية المقال:</label>
-                    <input type="file" id="artImgEnd" accept="image/*">
-                </div>
+                <input type="text" id="artSummary" placeholder="ملخص مختصر">
+                <div><label style="font-size:11px; font-weight:700;">صورة بداية المقال:</label><input type="file" id="artImgStart" accept="image/*"></div>
+                <div><label style="font-size:11px; font-weight:700;">صورة منتصف المقال:</label><input type="file" id="artImgMid" accept="image/*"></div>
+                <div><label style="font-size:11px; font-weight:700;">صورة نهاية المقال:</label><input type="file" id="artImgEnd" accept="image/*"></div>
             </div>
             <textarea id="artContent" placeholder="اكتب نص المقال كاملاً هنا..." rows="5" style="margin-top:10px;"></textarea>
-            <button class="btn btn-royal" style="margin-top:10px;" onclick="saveArticle()">نشر المقال في المدونة ✅</button>
+            <button class="btn btn-royal" style="margin-top:10px;" onclick="saveArticle()">نشر المقال ✅</button>
             <div id="artSaveStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
+            <div id="articlesManageList" style="margin-top:14px;"></div>
         </section>
 
-        <!-- 5. إدارة المسوّقين مركزياً (تعديل الاسم، تعديل الكود/الرابط، وتصفية المستحقات) -->
+        <!-- 5. إدارة الوظائف والكفاءات (إضافة + حذف) -->
         <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">🤝 إدارة المسوّقين مركزياً (الاسم، كود/رابط الإحالة، والتصفية)</h2>
-            <div id="affiliatesAdminList">جاري تحميل المسوّقين...</div>
+            <h2 style="font-size:17px; margin-bottom:12px;">💼 إدارة الوظائف الشاغرة والكفاءات</h2>
+            <div class="grid-2">
+                <input type="text" id="jTitle" placeholder="المسمى الوظيفي">
+                <input type="text" id="jCompany" placeholder="اسم الجهة">
+                <input type="text" id="jLocation" placeholder="الموقع">
+                <input type="text" id="jSalary" placeholder="الراتب (اختياري)">
+                <input type="tel" id="jPhone" placeholder="رقم التواصل / واتساب">
+                <input type="text" id="jDesc" placeholder="تفاصيل الوظيفة">
+            </div>
+            <button class="btn btn-royal" style="margin-top:10px;" onclick="saveJobItem()">نشر الوظيفة ✅</button>
+
+            <div class="grid-2" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+                <input type="text" id="tName" placeholder="اسم الخبير أو الكفاءة">
+                <input type="text" id="tSpecialty" placeholder="التخصص">
+                <input type="tel" id="tPhone" placeholder="رقم الواتساب">
+                <div><label style="font-size:11px; font-weight:700;">صورة الخبير:</label><input type="file" id="tAvatarFile" accept="image/*"></div>
+                <input type="text" id="tExp" placeholder="نبذة عن الخبرات">
+            </div>
+            <button class="btn btn-green" style="margin-top:10px;" onclick="saveTalentItem()">إضافة الكفاءة ✅</button>
+            <div id="jtSaveStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
+            <div id="jobsTalentsManageList" style="margin-top:14px;"></div>
+        </section>
+
+        <!-- 6. إدارة المسوّقين مركزياً (تعديل الاسم والكود وتصفية الحساب وحذف) -->
+        <section class="card">
+            <h2 style="font-size:17px; margin-bottom:12px;">🤝 إدارة المسوّقين مركزياً</h2>
+            <div id="affiliatesAdminList">جاري التحميل...</div>
         </section>
     </div>
 
@@ -152,13 +163,38 @@
             return eng.replace(/[^0-9]/g, '');
         }
 
+        async function prepareFlexibleImage(file, maxSide = 1280, quality = 0.82) {
+            if (!file || !file.type.startsWith('image/')) return file;
+            return new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = new Image();
+                    img.onload = () => {
+                        let w = img.width, h = img.height;
+                        if (w > maxSide || h > maxSide) {
+                            if (w >= h) { h = Math.round(h * maxSide / w); w = maxSide; }
+                            else { w = Math.round(w * maxSide / h); h = maxSide; }
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        canvas.toBlob(blob => resolve(blob ? new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }) : file), 'image/jpeg', quality);
+                    };
+                    img.onerror = () => resolve(file);
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => resolve(file);
+                reader.readAsDataURL(file);
+            });
+        }
+
         async function uploadToBucket(file, folder) {
             if (!file) return '';
-            const safeName = `${folder}/${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-            const { error } = await db.storage.from(BUCKET).upload(safeName, file);
+            const processed = file.type.startsWith('image/') ? await prepareFlexibleImage(file, 1280, 0.82) : file;
+            const safeName = `${folder}/${Date.now()}_${processed.name.replace(/\s+/g, '_')}`;
+            const { error } = await db.storage.from(BUCKET).upload(safeName, processed);
             if (error) return '';
-            const { data } = db.storage.from(BUCKET).getPublicUrl(safeName);
-            return data.publicUrl;
+            return db.storage.from(BUCKET).getPublicUrl(safeName).data.publicUrl;
         }
 
         async function loadUnifiedPayments() {
@@ -177,21 +213,20 @@
                 return `
                 <div class="row-box">
                     <div>
-                        <div style="font-weight:700; font-size:14px;">
-                            ${isCourse ? '🎓' : '🛒'} ${o.product_title} — <span style="color:var(--royal);">${o.total_price} YER</span>
-                        </div>
+                        <div style="font-weight:700; font-size:14px;">${isCourse ? '🎓' : '🛒'} ${o.product_title} — <span style="color:var(--royal);">${o.total_price} YER</span></div>
                         <div style="font-size:12.5px; color:#475569; margin-top:3px;">
                             العميل: <b>${o.customer_name}</b> | الجوال: <b>${o.customer_phone}</b>
                             ${o.ref_code ? ` | كود المسوّق: <b style="color:#0D9488;">${o.ref_code}</b>` : ''}
                         </div>
-                        <div style="margin-top:6px; display:flex; gap:10px; align-items:center;">
+                        <div style="margin-top:6px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                             ${statusBadge}
-                            ${o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="font-size:12px; font-weight:700; color:var(--royal);">عرض سند التحويل 🧾</a>` : ''}
+                            ${o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="font-size:12px; font-weight:700; color:var(--royal);">عرض السند 🧾</a>` : ''}
                         </div>
                     </div>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn btn-green" onclick="approveOrder(${o.id}, '${o.item_type || 'product'}', '${o.item_id || ''}', '${o.customer_phone || ''}', '${o.ref_code || ''}', ${Number(o.total_price || 0)})">قبول وتفعيل ✅</button>
-                        <button class="btn btn-red" onclick="rejectOrder(${o.id}, '${o.item_type || 'product'}', '${o.item_id || ''}', '${o.customer_phone || ''}')">رفض ❌</button>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <button class="btn btn-green" onclick="approveOrder(${o.id}, '${o.item_type || 'product'}', '${o.item_id || ''}', '${o.customer_phone || ''}', '${o.ref_code || ''}', ${Number(o.total_price || 0)})">قبول ✅</button>
+                        <button class="btn btn-gold" onclick="rejectOrder(${o.id}, '${o.item_type || 'product'}', '${o.item_id || ''}', '${o.customer_phone || ''}')">رفض ❌</button>
+                        <button class="btn btn-red" onclick="deleteRow('orders', ${o.id})">حذف 🗑️</button>
                     </div>
                 </div>`;
             }).join('');
@@ -200,14 +235,9 @@
         async function approveOrder(orderId, itemType, itemId, customerPhone, refCode, amount) {
             const cleanPhone = normalizePhone(customerPhone);
             await db.from('orders').update({ status: 'approved' }).eq('id', orderId);
-
             if (itemType === 'course' && itemId && cleanPhone) {
-                await db.from('course_enrollments')
-                    .update({ status: 'approved', approved_at: new Date().toISOString() })
-                    .eq('course_id', Number(itemId))
-                    .eq('student_phone', cleanPhone);
+                await db.from('course_enrollments').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('course_id', Number(itemId)).eq('student_phone', cleanPhone);
             }
-
             if (refCode && refCode !== 'null' && refCode.trim() !== '') {
                 const { data: aff } = await db.from('affiliates').select('*').eq('ref_code', refCode).maybeSingle();
                 if (aff) {
@@ -220,105 +250,197 @@
                     }).eq('id', aff.id);
                 }
             }
-
-            alert('تم القبول وتفعيل الوصول واحتساب العمولة آلياً ✅');
+            alert('تم القبول والتفعيل واحتساب العمولة آلياً ✅');
             refreshAll();
         }
 
         async function rejectOrder(orderId, itemType, itemId, customerPhone) {
             const cleanPhone = normalizePhone(customerPhone);
-            const reason = prompt('سبب الرفض (اختياري):', 'يرجى التأكد من بيانات التحويل والسند');
+            const reason = prompt('سبب الرفض (اختياري):', 'يرجى التأكد من وضوح السند والمبلغ');
             if (reason === null) return;
             await db.from('orders').update({ status: 'rejected' }).eq('id', orderId);
             if (itemType === 'course' && itemId && cleanPhone) {
-                await db.from('course_enrollments')
-                    .update({ status: 'rejected', reject_reason: reason })
-                    .eq('course_id', Number(itemId))
-                    .eq('student_phone', cleanPhone);
+                await db.from('course_enrollments').update({ status: 'rejected', reject_reason: reason }).eq('course_id', Number(itemId)).eq('student_phone', cleanPhone);
             }
             refreshAll();
         }
 
+        async function deleteRow(table, id) {
+            if (!confirm('تأكيد حذف هذا العنصر نهائياً؟')) return;
+            await db.from(table).delete().eq('id', id);
+            refreshAll();
+        }
+
+        async function saveProduct() {
+            const title = document.getElementById('pTitle').value.trim();
+            const price = document.getElementById('pPrice').value.trim();
+            if (!title || !price) return alert('أدخل اسم المنتج وسعره.');
+            document.getElementById('pStatus').textContent = 'جاري حفظ المنتج...';
+            const image = await uploadToBucket(document.getElementById('pImgFile').files[0], 'products');
+            await db.from('platform_services').insert([{
+                title, category: document.getElementById('pCat').value.trim() || 'عام', price,
+                old_price: document.getElementById('pOldPrice').value.trim(),
+                discount: document.getElementById('pDiscount').value.trim(),
+                description: document.getElementById('pDesc').value.trim(),
+                image, is_active: true
+            }]);
+            document.getElementById('pStatus').style.color = 'var(--green)';
+            document.getElementById('pStatus').textContent = 'تم حفظ المنتج بنجاح ✅';
+            loadProductsManage();
+        }
+
+        async function loadProductsManage() {
+            const { data } = await db.from('platform_services').select('*').order('id', { ascending: false });
+            document.getElementById('productsManageList').innerHTML = (data || []).map(p => `
+                <div class="row-box">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        ${p.image ? `<img src="${p.image}" class="item-thumb" alt="">` : ''}
+                        <div><b>${p.title}</b> — <span style="color:var(--royal);">${p.price} YER</span> (${p.category || 'عام'})</div>
+                    </div>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn btn-gold" onclick="editProduct(${p.id}, '${p.title.replace(/'/g, "\\'")}', '${p.price}', '${(p.discount || '').replace(/'/g, "\\'")}')">تعديل ✏️</button>
+                        <button class="btn btn-red" onclick="deleteRow('platform_services', ${p.id})">حذف 🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function editProduct(id, oldTitle, oldPrice, oldDiscount) {
+            const title = prompt('اسم المنتج:', oldTitle); if (!title) return;
+            const price = prompt('السعر (YER):', oldPrice); if (!price) return;
+            const discount = prompt('شارة الخصم (اتركه فارغاً لإزالته):', oldDiscount);
+            await db.from('platform_services').update({ title: title.trim(), price: price.trim(), discount: (discount || '').trim() }).eq('id', id);
+            loadProductsManage();
+        }
+
         async function saveNewCourse() {
             const title = document.getElementById('cTitle').value.trim();
-            const instructor = document.getElementById('cInstructor').value.trim() || 'صدارة';
+            if (!title) return alert('أدخل عنوان الدورة.');
             const isFree = document.getElementById('cType').value === 'free';
             const price = isFree ? '0' : (document.getElementById('cPrice').value.trim() || '0');
-            const description = document.getElementById('cDesc').value.trim();
-            const imgFile = document.getElementById('cImgFile').files[0];
-            const st = document.getElementById('cSaveStatus');
-
-            if (!title) return alert('أدخل عنوان الدورة.');
-            st.textContent = 'جاري حفظ الدورة...';
-            const image = await uploadToBucket(imgFile, 'courses_covers');
-
+            const image = await uploadToBucket(document.getElementById('cImgFile').files[0], 'courses_covers');
             await db.from('platform_courses').insert([{
-                title, instructor, is_free: isFree, price, description, image, is_active: true
+                title, instructor: document.getElementById('cInstructor').value.trim() || 'صدارة',
+                is_free: isFree, price, description: document.getElementById('cDesc').value.trim(), image, is_active: true
             }]);
-
-            st.style.color = 'var(--green)';
-            st.textContent = 'تم حفظ الدورة بنجاح! يمكنك الآن إضافة دروسها بالأسفل.';
-            await loadCoursesDropdown();
+            document.getElementById('cSaveStatus').style.color = 'var(--green)';
+            document.getElementById('cSaveStatus').textContent = 'تم حفظ الدورة بنجاح ✅';
+            await Promise.all([loadCoursesDropdown(), loadCoursesManage()]);
         }
 
         async function loadCoursesDropdown() {
             const { data } = await db.from('platform_courses').select('id, title').order('id', { ascending: false });
-            const sel = document.getElementById('lessonCourseSelect');
-            sel.innerHTML = (data || []).map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+            document.getElementById('lessonCourseSelect').innerHTML = (data || []).map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+        }
+
+        async function loadCoursesManage() {
+            const { data } = await db.from('platform_courses').select('*').order('id', { ascending: false });
+            document.getElementById('coursesManageList').innerHTML = (data || []).map(c => `
+                <div class="row-box">
+                    <div><b>${c.title}</b> — ${c.is_free ? 'مجانية' : `${c.price} YER`}</div>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn btn-gold" onclick="editCourse(${c.id}, '${c.title.replace(/'/g, "\\'")}', '${c.price || '0'}')">تعديل ✏️</button>
+                        <button class="btn btn-red" onclick="deleteRow('platform_courses', ${c.id})">حذف 🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function editCourse(id, oldTitle, oldPrice) {
+            const title = prompt('عنوان الدورة:', oldTitle); if (!title) return;
+            const price = prompt('السعر (0 للمجانية):', oldPrice);
+            await db.from('platform_courses').update({ title: title.trim(), price: (price || '0').trim(), is_free: Number(price || 0) <= 0 }).eq('id', id);
+            loadCoursesManage();
         }
 
         async function saveLesson() {
             const course_id = Number(document.getElementById('lessonCourseSelect').value);
-            const lesson_order = Number(document.getElementById('lessonOrder').value || 1);
             const title = document.getElementById('lessonTitle').value.trim();
-            const media_type = document.getElementById('lessonMediaType').value;
-            const summary = document.getElementById('lessonSummary').value.trim();
-            const pdfFile = document.getElementById('lessonPdfFile').files[0];
-            const imgFile = document.getElementById('lessonImgFile').files[0];
-            const mediaFile = document.getElementById('lessonMediaFile').files[0];
-            let media_url = document.getElementById('lessonMediaUrl').value.trim();
-            const st = document.getElementById('lessonSaveStatus');
-
             if (!course_id || !title) return alert('اختر الدورة وأدخل عنوان الدرس.');
-            st.textContent = 'جاري رفع ملفات الدرس...';
+            document.getElementById('lessonSaveStatus').textContent = 'جاري رفع ملفات الدرس...';
 
-            const pdf_url = await uploadToBucket(pdfFile, 'lessons_pdf');
-            const image_url = await uploadToBucket(imgFile, 'lessons_images');
-            if (mediaFile) {
-                media_url = await uploadToBucket(mediaFile, 'lessons_media');
-            }
+            const pdf_url = await uploadToBucket(document.getElementById('lessonPdfFile').files[0], 'lessons_pdf');
+            const image_url = await uploadToBucket(document.getElementById('lessonImgFile').files[0], 'lessons_images');
+            const mediaFile = document.getElementById('lessonMediaFile').files[0];
+            const media_url = mediaFile ? await uploadToBucket(mediaFile, 'lessons_media') : document.getElementById('lessonMediaUrl').value.trim();
 
             await db.from('course_lessons').insert([{
-                course_id, lesson_order, title, summary, pdf_url, image_url, media_url, media_type
+                course_id, lesson_order: Number(document.getElementById('lessonOrder').value || 1),
+                title, summary: document.getElementById('lessonSummary').value.trim(),
+                pdf_url, image_url, media_url, media_type: document.getElementById('lessonMediaType').value
             }]);
-
-            st.style.color = 'var(--green)';
-            st.textContent = 'تمت إضافة الدرس بكافة مرفقاته بنجاح ✅';
+            document.getElementById('lessonSaveStatus').style.color = 'var(--green)';
+            document.getElementById('lessonSaveStatus').textContent = 'تمت إضافة الدرس بنجاح ✅';
         }
 
         async function saveArticle() {
             const title = document.getElementById('artTitle').value.trim();
-            const category = document.getElementById('artCategory').value.trim() || 'مقال';
-            const read_time = document.getElementById('artReadTime').value.trim() || '3 دقائق';
-            const summary = document.getElementById('artSummary').value.trim();
             const content = document.getElementById('artContent').value.trim();
-            const st = document.getElementById('artSaveStatus');
-
             if (!title || !content) return alert('أدخل عنوان المقال ونصه الكامل.');
-            st.textContent = 'جاري رفع صور المقال ونشره...';
+            document.getElementById('artSaveStatus').textContent = 'جاري رفع صور المقال ونشره...';
 
             const image_start = await uploadToBucket(document.getElementById('artImgStart').files[0], 'blog_images');
             const image_middle = await uploadToBucket(document.getElementById('artImgMid').files[0], 'blog_images');
             const image_end = await uploadToBucket(document.getElementById('artImgEnd').files[0], 'blog_images');
 
             await db.from('platform_articles').insert([{
-                title, category, read_time, summary: summary || content.slice(0, 120),
-                content, image: image_start, image_start, image_middle: image_middle, image_end: image_end,
-                is_active: true
+                title, category: document.getElementById('artCategory').value.trim() || 'مقال',
+                read_time: document.getElementById('artReadTime').value.trim() || '3 دقائق',
+                summary: document.getElementById('artSummary').value.trim() || content.slice(0, 120),
+                content, image: image_start, image_start, image_middle, image_end, is_active: true
             }]);
+            document.getElementById('artSaveStatus').style.color = 'var(--green)';
+            document.getElementById('artSaveStatus').textContent = 'تم نشر المقال بنجاح ✅';
+            loadArticlesManage();
+        }
 
-            st.style.color = 'var(--green)';
-            st.textContent = 'تم نشر المقال مع الصور في المدونة بنجاح ✅';
+        async function loadArticlesManage() {
+            const { data } = await db.from('platform_articles').select('*').order('id', { ascending: false });
+            document.getElementById('articlesManageList').innerHTML = (data || []).map(a => `
+                <div class="row-box">
+                    <div><b>${a.title}</b> (${a.category || 'مقال'})</div>
+                    <button class="btn btn-red" onclick="deleteRow('platform_articles', ${a.id})">حذف 🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        async function saveJobItem() {
+            const title = document.getElementById('jTitle').value.trim();
+            if (!title) return alert('أدخل المسمى الوظيفي.');
+            await db.from('platform_jobs').insert([{
+                title, company: document.getElementById('jCompany').value.trim() || 'جهة معلنة',
+                location: document.getElementById('jLocation').value.trim() || 'اليمن',
+                salary: document.getElementById('jSalary').value.trim(),
+                contact_phone: normalizePhone(document.getElementById('jPhone').value) || '967780568507',
+                description: document.getElementById('jDesc').value.trim(), is_active: true
+            }]);
+            document.getElementById('jtSaveStatus').style.color = 'var(--green)';
+            document.getElementById('jtSaveStatus').textContent = 'تم نشر الوظيفة بنجاح ✅';
+            loadJobsTalentsManage();
+        }
+
+        async function saveTalentItem() {
+            const full_name = document.getElementById('tName').value.trim();
+            if (!full_name) return alert('أدخل اسم الخبير أو الكفاءة.');
+            const avatar_url = await uploadToBucket(document.getElementById('tAvatarFile').files[0], 'talents');
+            await db.from('platform_resumes').insert([{
+                full_name, specialty: document.getElementById('tSpecialty').value.trim() || 'تخصص عام',
+                phone: normalizePhone(document.getElementById('tPhone').value) || '967780568507',
+                experience: document.getElementById('tExp').value.trim(), avatar_url, is_verified: true, is_active: true
+            }]);
+            document.getElementById('jtSaveStatus').style.color = 'var(--green)';
+            document.getElementById('jtSaveStatus').textContent = 'تمت إضافة الكفاءة بنجاح ✅';
+            loadJobsTalentsManage();
+        }
+
+        async function loadJobsTalentsManage() {
+            const [jRes, tRes] = await Promise.all([
+                db.from('platform_jobs').select('*').order('id', { ascending: false }),
+                db.from('platform_resumes').select('*').order('id', { ascending: false })
+            ]);
+            const jHtml = (jRes.data || []).map(j => `<div class="row-box"><div>💼 <b>${j.title}</b> — ${j.company || ''}</div><button class="btn btn-red" onclick="deleteRow('platform_jobs', ${j.id})">حذف 🗑️</button></div>`).join('');
+            const tHtml = (tRes.data || []).map(t => `<div class="row-box"><div>👨‍💻 <b>${t.full_name || t.name}</b> — ${t.specialty || ''}</div><button class="btn btn-red" onclick="deleteRow('platform_resumes', ${t.id})">حذف 🗑️</button></div>`).join('');
+            document.getElementById('jobsTalentsManageList').innerHTML = jHtml + tHtml;
         }
 
         async function loadAffiliatesAdmin() {
@@ -329,30 +451,21 @@
                 <div class="row-box">
                     <div>
                         <b>${displayName}</b> (${a.phone}) — كود الإحالة: <b style="color:var(--royal);">${a.ref_code}</b><br>
-                        <span style="font-size:12px; color:#475569;">رابط المتجر: ?ref=${a.ref_code} | رابط الدورات: ?ref=${a.ref_code}</span><br>
                         <span style="font-size:12.5px;">المعلق: <b style="color:var(--green);">${a.pending_earnings || 0} YER</b> | المصروف: <b>${a.settled_earnings || 0} YER</b></span>
                     </div>
                     <div style="display:flex; gap:6px; flex-wrap:wrap;">
                         <button class="btn btn-gold" onclick="editAffiliateInfo(${a.id}, '${displayName.replace(/'/g, "\\'")}', '${a.ref_code}')">تعديل الاسم / الكود ✏️</button>
                         <button class="btn btn-royal" onclick="settleAffiliate(${a.id}, '${a.ref_code}', '${displayName.replace(/'/g, "\\'")}', ${Number(a.pending_earnings || 0)}, ${Number(a.settled_earnings || 0)})">تصفية الحساب 💸</button>
+                        <button class="btn btn-red" onclick="deleteRow('affiliates', ${a.id})">حذف 🗑️</button>
                     </div>
                 </div>`;
             }).join('') || '<p>لا يوجد مسوقون مسجلون حالياً.</p>';
         }
 
         async function editAffiliateInfo(id, oldName, oldCode) {
-            const newName = prompt('تعديل اسم المسوّق:', oldName);
-            if (!newName) return;
-            const newCode = prompt('تعديل كود الإحالة (يحدّث روابط الإحالة تلقائياً):', oldCode);
-            if (!newCode) return;
-
-            await db.from('affiliates').update({
-                full_name: newName.trim(),
-                name: newName.trim(),
-                ref_code: newCode.trim().toUpperCase()
-            }).eq('id', id);
-
-            alert('تم تحديث بيانات المسوّق وكود إحالته بنجاح ✅');
+            const newName = prompt('تعديل اسم المسوّق:', oldName); if (!newName) return;
+            const newCode = prompt('تعديل كود الإحالة:', oldCode); if (!newCode) return;
+            await db.from('affiliates').update({ full_name: newName.trim(), name: newName.trim(), ref_code: newCode.trim().toUpperCase() }).eq('id', id);
             loadAffiliatesAdmin();
         }
 
@@ -361,15 +474,17 @@
             if (!confirm(`تصفية وصرف ${pending} YER للمسوّق ${name}؟`)) return;
             await db.from('affiliates').update({ pending_earnings: 0, settled_earnings: settled + pending }).eq('id', id);
             await db.from('affiliate_settlements').insert([{
-                affiliate_id: id, ref_code: refCode, affiliate_name: name,
-                settled_amount: pending, settlement_type: 'monthly',
-                period_month: new Date().toISOString().slice(0, 7), notes: 'تصفية معتمدة من الإدارة'
+                affiliate_id: id, ref_code: refCode, affiliate_name: name, settled_amount: pending,
+                settlement_type: 'monthly', period_month: new Date().toISOString().slice(0, 7), notes: 'تصفية معتمدة من الإدارة'
             }]);
             loadAffiliatesAdmin();
         }
 
         async function refreshAll() {
-            await Promise.all([loadUnifiedPayments(), loadCoursesDropdown(), loadAffiliatesAdmin()]);
+            await Promise.all([
+                loadUnifiedPayments(), loadProductsManage(), loadCoursesDropdown(),
+                loadCoursesManage(), loadArticlesManage(), loadJobsTalentsManage(), loadAffiliatesAdmin()
+            ]);
         }
 
         window.addEventListener('DOMContentLoaded', refreshAll);
