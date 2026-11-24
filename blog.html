@@ -9,68 +9,38 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --navy: #0F172A;
-            --royal: #2563EB;
-            --emerald: #0D9488;
-            --green: #10B981;
-            --gold: #F59E0B;
-            --bg-surface: #F8FAFC;
-            --text-main: #1E293B;
-            --text-muted: #64748B;
-            --border: #E2E8F0;
-            --radius-lg: 20px;
-            --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.04);
+            --navy: #0F172A; --royal: #2563EB; --emerald: #0D9488; --green: #10B981;
+            --gold: #F59E0B; --bg-surface: #F8FAFC; --text-main: #1E293B; --text-muted: #64748B;
+            --border: #E2E8F0; --radius-lg: 20px; --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.04);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; }
         body { background: var(--bg-surface); color: var(--text-main); line-height: 1.8; }
 
-        .navbar {
-            position: sticky; top: 0; z-index: 1000;
-            background: rgba(255,255,255,0.92); backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--border);
-        }
-        .nav-inner {
-            max-width: 1120px; margin: 0 auto; padding: 12px 18px;
-            display: flex; justify-content: space-between; align-items: center; gap: 12px;
-        }
-        .btn-icon {
-            background: var(--bg-surface); color: var(--navy); border: 1px solid var(--border);
-            width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 16px;
-        }
-        .logo { text-decoration: none; color: var(--navy); font-weight: 700; font-size: 18px; }
+        .navbar { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.92); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+        .nav-inner { max-width: 1140px; margin: 0 auto; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .btn-icon { background: var(--bg-surface); color: var(--navy); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 16px; }
+        .logo { text-decoration: none; color: var(--navy); font-weight: 700; font-size: clamp(16px, 2.2vw, 19px); }
         .logo span { color: var(--royal); }
 
         .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.55); z-index: 2500; }
-        .side-drawer {
-            position: fixed; top: 0; right: -320px; width: 300px; max-width: 86vw; height: 100vh;
-            background: #fff; z-index: 2600; padding: 20px 16px; transition: right 0.28s ease;
-        }
+        .side-drawer { position: fixed; top: 0; right: -320px; width: 300px; max-width: 86vw; height: 100vh; background: #fff; z-index: 2600; padding: 20px 16px; transition: right 0.28s ease; }
         .side-drawer.open { right: 0; }
-        .drawer-link {
-            display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px;
-            text-decoration: none; color: var(--text-main); font-size: 13.5px; font-weight: 600; margin-bottom: 6px;
-        }
+        .drawer-link { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; text-decoration: none; color: var(--text-main); font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
         .drawer-link:hover, .drawer-link.active { background: #EFF6FF; color: var(--royal); }
 
-        .hero { background: linear-gradient(135deg, var(--navy), #1E293B); color: #fff; padding: 30px 18px; text-align: center; }
-        .hero h1 { font-size: 26px; margin-bottom: 6px; }
-        .hero p { color: #CBD5E1; font-size: 14px; }
+        .hero { background: linear-gradient(135deg, var(--navy), #1E293B); color: #fff; padding: 30px 16px; text-align: center; }
+        .hero h1 { font-size: clamp(21px, 3.2vw, 27px); margin-bottom: 6px; }
+        .hero p { color: #CBD5E1; font-size: 13.5px; }
 
-        .container { max-width: 1120px; margin: 0 auto; padding: 26px 18px 60px; display: grid; gap: 22px; }
-        .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; }
-        .article-card {
-            background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
-            overflow: hidden; box-shadow: var(--shadow-sm); cursor: pointer; transition: 0.2s;
-        }
+        .container { max-width: 1140px; margin: 0 auto; padding: 24px 16px 60px; display: grid; gap: 22px; }
+        .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+        .article-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); cursor: pointer; transition: 0.2s; }
         .article-card:hover { transform: translateY(-3px); border-color: var(--royal); }
-        .article-card img { width: 100%; height: 180px; object-fit: cover; background: #E2E8F0; }
+        .article-card img { width: 100%; height: 185px; object-fit: cover; background: #E2E8F0; }
         .article-body { padding: 16px; }
 
-        .reader-box {
-            display: none; background: #fff; border: 1px solid var(--border);
-            border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm);
-        }
-        .reader-img { width: 100%; max-height: 360px; object-fit: cover; border-radius: 14px; margin: 14px 0; }
+        .reader-box { display: none; background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow-sm); }
+        .reader-img { width: 100%; max-height: 380px; object-fit: contain; background: var(--bg-surface); border-radius: 14px; margin: 14px 0; }
     </style>
 </head>
 <body>
@@ -93,6 +63,7 @@
         <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات</a>
         <a href="courses.html" class="drawer-link"><i class="fa-solid fa-graduation-cap"></i> الدورات وكورساتي</a>
         <a href="affiliate.html" class="drawer-link"><i class="fa-solid fa-handshake"></i> بوابة المسوّقين بالعمولة</a>
+        <a href="jobs.html" class="drawer-link"><i class="fa-solid fa-briefcase"></i> الوظائف والكفاءات</a>
         <a href="blog.html" class="drawer-link active"><i class="fa-solid fa-newspaper"></i> المدونة والمقالات</a>
     </aside>
 
@@ -104,14 +75,12 @@
     <main class="container">
         <div class="reader-box" id="articleReader">
             <button onclick="closeReader()" style="border:none; background:var(--bg-surface); padding:6px 12px; border-radius:9px; font-weight:700; cursor:pointer; margin-bottom:14px;">← العودة لقائمة المقالات</button>
-            <h2 id="readTitle" style="font-size:22px; color:var(--navy); margin-bottom:6px;"></h2>
+            <h2 id="readTitle" style="font-size:clamp(19px, 3vw, 23px); color:var(--navy); margin-bottom:6px;"></h2>
             <div id="readMeta" style="font-size:12.5px; color:var(--text-muted); margin-bottom:12px;"></div>
             <div id="readBody"></div>
         </div>
 
-        <div class="articles-grid" id="articlesGrid">
-            <div class="article-card" style="padding:20px;">جاري تحميل المقالات...</div>
-        </div>
+        <div class="articles-grid" id="articlesGrid"><div class="article-card" style="padding:20px;">جاري تحميل المقالات...</div></div>
     </main>
 
     <script>
@@ -149,18 +118,14 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function closeReader() {
-            document.getElementById('articleReader').style.display = 'none';
-        }
+        function closeReader() { document.getElementById('articleReader').style.display = 'none'; }
 
         async function loadArticles() {
             const { data } = await db.from('platform_articles').select('*').order('id', { ascending: false });
             const list = (data || []).filter(a => a.is_active !== false);
             const grid = document.getElementById('articlesGrid');
-            if (!list.length) {
-                grid.innerHTML = '<div class="article-card" style="padding:20px;">لا توجد مقالات منشورة حالياً.</div>';
-                return;
-            }
+            if (!list.length) { grid.innerHTML = '<div class="article-card" style="padding:20px;">لا توجد مقالات منشورة حالياً.</div>'; return; }
+
             grid.innerHTML = '';
             list.forEach(a => {
                 const cover = a.image_start || a.image || a.image_middle || a.image_end || '';
