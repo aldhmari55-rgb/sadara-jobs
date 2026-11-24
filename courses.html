@@ -54,10 +54,7 @@
         }
         .drawer-link:hover, .drawer-link.active { background: #EFF6FF; color: var(--royal); }
 
-        .hero {
-            background: linear-gradient(135deg, var(--navy), #1E293B);
-            color: #fff; padding: 30px 18px; text-align: center;
-        }
+        .hero { background: linear-gradient(135deg, var(--navy), #1E293B); color: #fff; padding: 30px 18px; text-align: center; }
         .hero h1 { font-size: 26px; margin-bottom: 6px; }
         .hero p { color: #CBD5E1; font-size: 14px; }
 
@@ -107,15 +104,13 @@
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
     <aside class="side-drawer" id="sideDrawer">
         <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid var(--border);">
-            <strong style="color:var(--navy);">الأقسام والواجهات</strong>
+            <strong style="color:var(--navy);">أقسام منصة صدارة</strong>
             <button onclick="toggleDrawer(false)" style="border:none; background:var(--bg-surface); padding:4px 9px; border-radius:8px; cursor:pointer;">✕</button>
         </div>
         <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات (الرئيسية)</a>
         <a href="courses.html" class="drawer-link active"><i class="fa-solid fa-graduation-cap"></i> الدورات التدريبية</a>
         <a href="affiliate.html" class="drawer-link"><i class="fa-solid fa-handshake"></i> بوابة المسوّقين بالعمولة</a>
-        <a href="jobs.html" class="drawer-link"><i class="fa-solid fa-briefcase"></i> الوظائف والكفاءات</a>
         <a href="blog.html" class="drawer-link"><i class="fa-solid fa-newspaper"></i> المدونة والمقالات</a>
-        <a href="control.html" class="drawer-link"><i class="fa-solid fa-sliders"></i> لوحة التحكم والإدارة</a>
     </aside>
 
     <section class="hero">
@@ -232,7 +227,7 @@
             });
         }
 
-        function openCourseModal(course, isFree, rawPrice) {
+        async function openCourseModal(course, isFree, rawPrice) {
             activeCourse = { ...course, isFree, rawPrice, finalPrice: rawPrice };
             appliedPromoCode = '';
             document.getElementById('cmTitle').textContent = course.title;
@@ -240,7 +235,8 @@
             document.getElementById('promoCodeInput').value = '';
             document.getElementById('promoMsg').textContent = '';
             document.getElementById('enrollStatusMsg').textContent = '';
-            document.getElementById('stPhone').value = localStorage.getItem('sadara_student_phone') || '';
+            const savedPhone = localStorage.getItem('sadara_student_phone') || '';
+            document.getElementById('stPhone').value = savedPhone;
 
             if (isFree) {
                 document.getElementById('paidCourseBox').style.display = 'none';
@@ -250,6 +246,15 @@
                 document.getElementById('paidCourseBox').style.display = 'block';
                 document.getElementById('unlockedContent').style.display = 'none';
                 document.getElementById('cmPriceDisplay').textContent = `${rawPrice} YER`;
+                if (savedPhone) {
+                    const { data } = await db.from('course_enrollments')
+                        .select('status').eq('course_id', course.id).eq('student_phone', savedPhone)
+                        .eq('status', 'approved').limit(1).maybeSingle();
+                    if (data) {
+                        document.getElementById('unlockedContent').style.display = 'block';
+                        document.getElementById('cmPlayer').innerHTML = buildPlayerHtml(course);
+                    }
+                }
             }
             document.getElementById('courseModal').style.display = 'flex';
         }
@@ -333,7 +338,7 @@
                 total_price: String(activeCourse.finalPrice),
                 receipt_url,
                 ref_code: refCode,
-                status: 'قيد التوثيق'
+                status: 'pending'
             }]);
 
             statusEl.style.color = 'var(--green)';
@@ -345,6 +350,7 @@
             const phone = toEng(document.getElementById('stPhone').value.trim()) || localStorage.getItem('sadara_student_phone') || '';
             const statusEl = document.getElementById('enrollStatusMsg');
             if (!phone) return alert('أدخل رقم الهاتف.');
+            localStorage.setItem('sadara_student_phone', phone);
 
             const { data } = await db.from('course_enrollments')
                 .select('*').eq('course_id', activeCourse.id).eq('student_phone', phone)
@@ -358,7 +364,7 @@
                 document.getElementById('cmPlayer').innerHTML = buildPlayerHtml(activeCourse);
             } else if (data.status === 'rejected') {
                 statusEl.style.color = '#E11D48';
-                statusEl.textContent = `تم رفض الطلب: ${data.reject_reason || 'يرجى مراجعة الإدارة'}`;
+                statusEl.textContent = `تم رفض الطلب: ${data.reject_reason || 'يرجى مراجعة الدعم'}`;
             } else {
                 statusEl.style.color = 'var(--royal)';
                 statusEl.textContent = 'طلبك لا يزال قيد المراجعة.';
