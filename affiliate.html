@@ -9,90 +9,51 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --navy: #0F172A;
-            --royal: #2563EB;
-            --royal-hover: #1D4ED8;
-            --emerald: #0D9488;
-            --green: #10B981;
-            --gold: #F59E0B;
-            --bg-surface: #F8FAFC;
-            --text-main: #1E293B;
-            --text-muted: #64748B;
-            --border: #E2E8F0;
-            --radius-lg: 20px;
-            --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.04);
+            --navy: #0F172A; --royal: #2563EB; --royal-hover: #1D4ED8; --emerald: #0D9488;
+            --green: #10B981; --gold: #F59E0B; --bg-surface: #F8FAFC; --text-main: #1E293B;
+            --text-muted: #64748B; --border: #E2E8F0; --radius-lg: 20px; --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.04);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; }
         body { background: var(--bg-surface); color: var(--text-main); line-height: 1.65; }
 
-        .navbar {
-            position: sticky; top: 0; z-index: 1000;
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--border);
-        }
-        .nav-inner {
-            max-width: 1180px; margin: 0 auto; padding: 12px 18px;
-            display: flex; justify-content: space-between; align-items: center; gap: 12px;
-        }
-        .btn-icon {
-            background: var(--bg-surface); color: var(--navy); border: 1px solid var(--border);
-            width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 16px;
-        }
-        .logo { text-decoration: none; color: var(--navy); font-weight: 700; font-size: 19px; }
+        .navbar { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .btn-icon { background: var(--bg-surface); color: var(--navy); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 16px; }
+        .logo { text-decoration: none; color: var(--navy); font-weight: 700; font-size: clamp(16px, 2.2vw, 19px); }
         .logo span { color: var(--royal); }
 
         .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); z-index: 2500; }
-        .side-drawer {
-            position: fixed; top: 0; right: -320px; width: 300px; max-width: 86vw; height: 100vh;
-            background: #fff; z-index: 2600; border-left: 1px solid var(--border);
-            padding: 20px 16px; transition: right 0.28s ease;
-        }
+        .side-drawer { position: fixed; top: 0; right: -320px; width: 300px; max-width: 86vw; height: 100vh; background: #fff; z-index: 2600; border-left: 1px solid var(--border); padding: 20px 16px; transition: right 0.28s ease; }
         .side-drawer.open { right: 0; }
-        .drawer-link {
-            display: flex; align-items: center; gap: 10px;
-            padding: 11px 12px; border-radius: 12px; text-decoration: none;
-            color: var(--text-main); font-size: 13.5px; font-weight: 600; margin-bottom: 6px;
-        }
+        .drawer-link { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; text-decoration: none; color: var(--text-main); font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
         .drawer-link:hover, .drawer-link.active { background: #EFF6FF; color: var(--royal); }
 
-        .hero { background: linear-gradient(135deg, var(--navy) 0%, #1E293B 100%); color: #fff; padding: 36px 18px; }
-        .hero-inner { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; align-items: center; }
+        .hero { background: linear-gradient(135deg, var(--navy) 0%, #1E293B 100%); color: #fff; padding: 34px 16px; }
+        .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 22px; align-items: center; }
         @media (max-width: 860px) { .hero-inner { grid-template-columns: 1fr; } }
 
-        .calc-card {
-            background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: var(--radius-lg); padding: 20px;
-        }
+        .calc-card { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: var(--radius-lg); padding: 20px; }
         .calc-card input[type="range"] { width: 100%; accent-color: var(--gold); margin: 6px 0 14px; }
 
-        .container { max-width: 1180px; margin: 0 auto; padding: 28px 18px 60px; display: grid; gap: 22px; }
-        .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow-sm); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 26px 16px 60px; display: grid; gap: 22px; }
+        .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); }
         .form-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; }
         @media (max-width: 680px) { .form-row { grid-template-columns: 1fr; } }
         .input-box { width: 100%; padding: 10px 13px; border: 1px solid var(--border); border-radius: 12px; font-size: 13.5px; background: var(--bg-surface); }
-        .btn-primary {
-            background: var(--royal); color: #fff; border: none; padding: 10px 20px;
-            border-radius: 12px; font-size: 13.5px; font-weight: 700; cursor: pointer;
-        }
+        .btn-primary { background: var(--royal); color: #fff; border: none; padding: 10px 20px; border-radius: 12px; font-size: 13.5px; font-weight: 700; cursor: pointer; }
         .btn-primary:hover { background: var(--royal-hover); }
 
         .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 16px; }
         @media (max-width: 780px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-        .kpi-box { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+        .kpi-box { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 15px; }
         .kpi-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
-        .kpi-val { font-size: 21px; font-weight: 700; color: var(--navy); margin-top: 4px; }
+        .kpi-val { font-size: clamp(17px, 2.4vw, 21px); font-weight: 700; color: var(--navy); margin-top: 4px; }
 
-        .link-copy-bar {
-            display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-            background: #EFF6FF; border: 1px solid #BFDBFE; padding: 12px 14px; border-radius: 14px; margin-top: 14px;
-        }
-        .link-copy-bar input {
-            flex: 1; min-width: 210px; border: none; background: transparent;
-            font-size: 13px; font-weight: 700; color: var(--navy); direction: ltr;
-        }
+        .link-copy-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: #EFF6FF; border: 1px solid #BFDBFE; padding: 12px 14px; border-radius: 14px; margin-top: 14px; }
+        .link-copy-bar input { flex: 1; min-width: 190px; border: none; background: transparent; font-size: 13px; font-weight: 700; color: var(--navy); direction: ltr; }
         .table-wrap { overflow-x: auto; margin-top: 14px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: right; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
         th { background: var(--bg-surface); color: var(--navy); font-weight: 700; }
     </style>
 </head>
@@ -114,9 +75,10 @@
             <strong style="color:var(--navy);">أقسام منصة صدارة</strong>
             <button onclick="toggleDrawer(false)" style="border:none; background:var(--bg-surface); padding:4px 9px; border-radius:8px; cursor:pointer;">✕</button>
         </div>
-        <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات (الرئيسية)</a>
-        <a href="courses.html" class="drawer-link"><i class="fa-solid fa-graduation-cap"></i> الدورات التدريبية</a>
+        <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات</a>
+        <a href="courses.html" class="drawer-link"><i class="fa-solid fa-graduation-cap"></i> الدورات وكورساتي</a>
         <a href="affiliate.html" class="drawer-link active"><i class="fa-solid fa-handshake"></i> بوابة المسوّقين بالعمولة</a>
+        <a href="jobs.html" class="drawer-link"><i class="fa-solid fa-briefcase"></i> الوظائف والكفاءات</a>
         <a href="blog.html" class="drawer-link"><i class="fa-solid fa-newspaper"></i> المدونة والمقالات</a>
     </aside>
 
@@ -124,8 +86,8 @@
         <div class="hero-inner">
             <div>
                 <span style="background:rgba(16,185,129,0.18); color:#6EE7B7; padding:5px 12px; border-radius:99px; font-size:12px; font-weight:700;">نظام شركاء النجاح</span>
-                <h1 style="font-size:28px; margin:10px 0;">ضاعف دخلك عبر التسويق لمنتجات ودورات «صدارة»</h1>
-                <p style="color:#CBD5E1; font-size:14px;">رابط إحالة واحد يمنحك عمولة تلقائية على كل عملية شراء منتج أو اشتراك دورة يتم اعتماده، مع لوحة متابعة وتصفية واضحة.</p>
+                <h1 style="font-size:clamp(22px, 3.2vw, 28px); margin:10px 0;">ضاعف دخلك عبر التسويق لمنتجات ودورات «صدارة»</h1>
+                <p style="color:#CBD5E1; font-size:13.5px;">رابط إحالة واحد يمنحك عمولة تلقائية على كل عملية شراء منتج أو اشتراك دورة يتم اعتماده.</p>
             </div>
 
             <div class="calc-card">
@@ -145,10 +107,10 @@
     <main class="container">
         <section class="card">
             <h2 style="font-size:18px; color:var(--navy); margin-bottom:6px;">الدخول أو التسجيل الفوري كمسوّق</h2>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">أدخل اسمك ورقم هاتفك لاستخراج رابط الإحالة الخاص بك أو استعراض لوحة أرباحك الحالية.</p>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">أدخل اسمك ورقم جوالك لاستخراج روابط الإحالة الخاصة بك أو استعراض لوحة أرباحك.</p>
             <div class="form-row">
                 <input type="text" id="affNameInput" class="input-box" placeholder="الاسم الكامل">
-                <input type="tel" id="affPhoneInput" class="input-box" placeholder="رقم الهاتف (مثال: 780568507)">
+                <input type="tel" id="affPhoneInput" class="input-box" placeholder="رقم الجوال (مثال: 780568507)">
                 <button type="button" class="btn-primary" onclick="openAffiliateDashboard()">عرض لوحتي ورابطي 🚀</button>
             </div>
 
@@ -159,22 +121,10 @@
                 </div>
 
                 <div class="kpi-grid">
-                    <div class="kpi-box">
-                        <div class="kpi-label">المستحقات المعلقة</div>
-                        <div class="kpi-val" style="color:var(--green);" id="kpiPending">0 YER</div>
-                    </div>
-                    <div class="kpi-box">
-                        <div class="kpi-label">الأرباح المصروفة</div>
-                        <div class="kpi-val" style="color:var(--royal);" id="kpiSettled">0 YER</div>
-                    </div>
-                    <div class="kpi-box">
-                        <div class="kpi-label">إجمالي الأرباح التراكمي</div>
-                        <div class="kpi-val" id="kpiTotal">0 YER</div>
-                    </div>
-                    <div class="kpi-box">
-                        <div class="kpi-label">عدد المبيعات الناجحة</div>
-                        <div class="kpi-val" id="kpiSales">0</div>
-                    </div>
+                    <div class="kpi-box"><div class="kpi-label">المستحقات المعلقة</div><div class="kpi-val" style="color:var(--green);" id="kpiPending">0 YER</div></div>
+                    <div class="kpi-box"><div class="kpi-label">الأرباح المصروفة</div><div class="kpi-val" style="color:var(--royal);" id="kpiSettled">0 YER</div></div>
+                    <div class="kpi-box"><div class="kpi-label">إجمالي الأرباح التراكمي</div><div class="kpi-val" id="kpiTotal">0 YER</div></div>
+                    <div class="kpi-box"><div class="kpi-label">عدد المبيعات الناجحة</div><div class="kpi-val" id="kpiSales">0</div></div>
                 </div>
 
                 <div class="link-copy-bar">
@@ -192,29 +142,15 @@
                 <h4 style="font-size:15px; color:var(--navy); margin-top:20px;">سجل الطلبات والعمولات المرتبطة بكودك</h4>
                 <div class="table-wrap">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>المنتج / الدورة</th>
-                                <th>العميل</th>
-                                <th>المبلغ</th>
-                                <th>الحالة</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>المنتج / الدورة</th><th>العميل</th><th>المبلغ</th><th>الحالة</th></tr></thead>
                         <tbody id="affOrdersTable"></tbody>
                     </table>
                 </div>
 
-                <h4 style="font-size:15px; color:var(--navy); margin-top:20px;">سجل التسويات والترحيل الشهري والسنوي</h4>
+                <h4 style="font-size:15px; color:var(--navy); margin-top:20px;">سجل التسويات</h4>
                 <div class="table-wrap">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>نوع التسوية</th>
-                                <th>المبلغ المصفّى</th>
-                                <th>الفترة</th>
-                                <th>ملاحظات</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>النوع</th><th>المبلغ المصفّى</th><th>الفترة</th><th>ملاحظات</th></tr></thead>
                         <tbody id="affSettlementsTable"></tbody>
                     </table>
                 </div>
@@ -224,6 +160,11 @@
 
     <script>
         const db = supabase.createClient("https://lvutrzswngpkjfamgact.supabase.co", "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG");
+
+        function normalizePhone(raw) {
+            const eng = String(raw || '').replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+            return eng.replace(/[^0-9]/g, '');
+        }
 
         function toggleDrawer(open) {
             document.getElementById('drawerOverlay').style.display = open ? 'block' : 'none';
@@ -247,22 +188,16 @@
 
         async function openAffiliateDashboard() {
             const name = document.getElementById('affNameInput').value.trim();
-            const phone = document.getElementById('affPhoneInput').value.trim();
-            if (!phone) return alert('يرجى إدخال رقم الهاتف.');
+            const phone = normalizePhone(document.getElementById('affPhoneInput').value);
+            if (!phone) return alert('يرجى إدخال رقم الجوال.');
 
             localStorage.setItem('sadara_aff_phone', phone);
             let { data: aff } = await db.from('affiliates').select('*').eq('phone', phone).maybeSingle();
             if (!aff) {
                 const ref_code = 'SDR' + phone.slice(-4);
                 const { data: created } = await db.from('affiliates').insert([{
-                    full_name: name || 'مسوّق صدارة',
-                    name: name || 'مسوّق صدارة',
-                    phone,
-                    ref_code,
-                    pending_earnings: 0,
-                    settled_earnings: 0,
-                    total_earnings: 0,
-                    total_sales: 0
+                    full_name: name || 'مسوّق صدارة', name: name || 'مسوّق صدارة', phone, ref_code,
+                    pending_earnings: 0, settled_earnings: 0, total_earnings: 0, total_sales: 0
                 }]).select().single();
                 aff = created;
             }
@@ -292,7 +227,7 @@
             const { data: sets } = await db.from('affiliate_settlements').select('*').eq('ref_code', aff.ref_code).order('id', { ascending: false });
             document.getElementById('affSettlementsTable').innerHTML = (sets || []).map(s => `
                 <tr>
-                    <td>${s.settlement_type === 'yearly_rollover' ? 'ترحيل سنوي' : 'تسوية شهرية'}</td>
+                    <td>${s.settlement_type === 'yearly_rollover' ? 'ترحيل سنوي' : 'تسوية'}</td>
                     <td><b>${s.settled_amount || 0} YER</b></td>
                     <td>${s.period_month || s.period_year || '-'}</td>
                     <td>${s.notes || '-'}</td>
