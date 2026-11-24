@@ -216,7 +216,7 @@
         <button class="tab-btn" onclick="filterSection('store', this)">المنتجات والسلايدر</button>
         <button class="tab-btn" onclick="filterSection('jobs', this)">الوظائف</button>
         <button class="tab-btn" onclick="filterSection('talents', this)">الكفاءات</button>
-        <button class="tab-btn" onclick="filterSection('courses', this)">الدورات</button>
+        <button class="tab-btn" onclick="filterSection('courses', this)">الدورات وأكواد الخصم</button>
         <button class="tab-btn" onclick="filterSection('blog', this)">المدونة</button>
         <button class="tab-btn" onclick="filterSection('affiliates', this)">المسوقون</button>
     </div>
@@ -357,12 +357,14 @@
                     <input type="text" id="courseInstructor" placeholder="أكاديمية صدارة">
                 </div>
                 <div>
-                    <label>الرسوم (أو مجاني)</label>
-                    <input type="text" id="coursePrice" placeholder="مجاني / 5000 YER">
+                    <label>الرسوم (اتركه فارغاً أو 0 أو "مجاني" للمجانية)</label>
+                    <input type="text" id="coursePrice" placeholder="مجاني أو 5000">
                 </div>
             </div>
-            <label>رابط الدورة أو التسجيل (اختياري)</label>
-            <input type="text" id="courseUrl" placeholder="https://...">
+            <label>رفع فيديو الدورة من الجوال (اختياري)</label>
+            <input type="file" id="courseVideoFile" accept="video/*">
+            <label>أو رابط فيديو يوتيوب / محتوى الدورة (اختياري)</label>
+            <input type="text" id="courseUrl" placeholder="https://www.youtube.com/watch?v=... أو رابط خارجي">
             <label>وصف الدورة ومحاورها</label>
             <textarea id="courseDesc" rows="2" placeholder="محاور الدورة..."></textarea>
             <label>صورة غلاف الدورة</label>
@@ -371,7 +373,34 @@
             <div class="list-scroll" id="coursesAdminList"></div>
         </div>
 
-        <!-- 8. إدارة المدونة والمقالات -->
+        <!-- 8. إدارة أكواد الخصم والأكواد المجانية الشاملة -->
+        <div class="panel-card" data-sec="courses">
+            <h2><span><i class="fa-solid fa-ticket"></i> أكواد الخصم والأكواد المجانية الشاملة</span><span id="promoCount">0</span></h2>
+            <label>رمز الكود (مثال: FREE2026 أو VIP50)</label>
+            <input type="text" id="promoCodeField" placeholder="أدخل رمز الكود" style="text-transform:uppercase;">
+            <label>نوع الكود</label>
+            <select id="promoType">
+                <option value="free">مجاني 100% (يفتح الدورة مجاناً)</option>
+                <option value="percent">خصم نسبة مئوية (%)</option>
+                <option value="fixed">خصم مبلغ ثابت (YER)</option>
+            </select>
+            <label>قيمة الخصم (في حال النسبة أو المبلغ الثابت)</label>
+            <input type="number" id="promoValue" value="100">
+            <label>نطاق شمولية الكود</label>
+            <select id="promoScope">
+                <option value="all">شامل للدورات والمنتجات</option>
+                <option value="courses">للدورات فقط</option>
+                <option value="products">للمنتجات فقط</option>
+            </select>
+            <label>رقم ID لدورة أو منتج معين (اختياري - اتركه فارغاً ليشمل الكل)</label>
+            <input type="text" id="promoTargetId" placeholder="مثال: 3 أو اتركه فارغاً">
+            <label>رقم هاتف عميل دائم مخصص له الكود (اختياري)</label>
+            <input type="text" id="promoPhone" placeholder="مثال: 780568507">
+            <button type="button" class="btn-main gold" onclick="savePromoCode()">إنشاء وحفظ الكود 🎟️</button>
+            <div class="list-scroll" id="promoAdminList"></div>
+        </div>
+
+        <!-- 9. إدارة المدونة والمقالات -->
         <div class="panel-card" data-sec="blog">
             <h2><span><i class="fa-solid fa-newspaper"></i> إدارة المدونة والمقالات</span><span id="articlesCount">0</span></h2>
             <input type="hidden" id="editArticleId">
@@ -389,8 +418,8 @@
             <div class="list-scroll" id="articlesAdminList"></div>
         </div>
 
-        <!-- 9. إدارة المسوقين -->
-        <div class="panel-card full-span" data-sec="affiliates">
+        <!-- 10. إدارة المسوقين -->
+        <div class="panel-card" data-sec="affiliates">
             <h2><span><i class="fa-solid fa-handshake"></i> المسوقون المسجلون والأرباح</span><span id="affCount">0</span></h2>
             <div class="list-scroll" id="affiliatesAdminList"></div>
         </div>
@@ -676,8 +705,8 @@
             document.getElementById('coursesCount').textContent = list.length;
             document.getElementById('coursesAdminList').innerHTML = list.map(c => `
                 <div class="item-box">
-                    <div class="item-title">${c.title}</div>
-                    <div class="item-meta">${c.instructor || ''} | ${c.price || 'مجاني'}</div>
+                    <div class="item-title">${c.title} (#${c.id})</div>
+                    <div class="item-meta">${c.instructor || ''} | ${c.is_free ? 'مجانية' : (c.price || 'مجاني')}</div>
                     <div class="actions-row">
                         <button class="btn-sm bg-red" onclick="deleteRow('platform_courses', ${c.id}, loadCoursesAdmin)">حذف 🗑️</button>
                     </div>
@@ -688,22 +717,75 @@
         async function saveCourse() {
             const title = document.getElementById('courseTitle').value.trim();
             if (!title) return alert('أدخل عنوان الدورة');
+
+            const coursePriceRaw = document.getElementById('coursePrice').value.trim();
+            const isFree = !coursePriceRaw || coursePriceRaw === '0' || coursePriceRaw.includes('مجاني');
+
+            const videoFileInput = document.getElementById('courseVideoFile');
+            let videoUrl = document.getElementById('courseUrl').value.trim();
+
+            if (videoFileInput && videoFileInput.files && videoFileInput.files[0]) {
+                const uploadedVideo = await uploadFile(videoFileInput.files[0], 'courses_videos');
+                if (uploadedVideo) videoUrl = uploadedVideo;
+            }
+
             const image = await uploadFile(document.getElementById('courseImg').files[0], 'courses');
+
             await db.from('platform_courses').insert([{
                 title,
                 instructor: document.getElementById('courseInstructor').value.trim(),
-                price: document.getElementById('coursePrice').value.trim() || 'مجاني',
-                course_url: document.getElementById('courseUrl').value.trim(),
+                price: isFree ? 'مجاني' : coursePriceRaw,
+                is_free: isFree,
+                video_url: videoUrl,
+                course_url: videoUrl,
                 description: document.getElementById('courseDesc').value.trim(),
                 image,
                 is_active: true
             }]);
+
             document.getElementById('courseTitle').value = '';
+            document.getElementById('coursePrice').value = '';
+            document.getElementById('courseUrl').value = '';
+            if (videoFileInput) videoFileInput.value = '';
             document.getElementById('courseDesc').value = '';
             loadCoursesAdmin();
         }
 
-        /* 7. المدونة */
+        /* 7. أكواد الخصم والأكواد المجانية الشاملة */
+        async function savePromoCode() {
+            const code = document.getElementById('promoCodeField').value.trim().toUpperCase();
+            if (!code) return alert('أدخل رمز الكود');
+            await db.from('promo_codes').insert([{
+                code,
+                discount_type: document.getElementById('promoType').value,
+                discount_value: Number(document.getElementById('promoValue').value || 0),
+                scope: document.getElementById('promoScope').value,
+                target_id: document.getElementById('promoTargetId').value.trim() || null,
+                assigned_phone: document.getElementById('promoPhone').value.trim() || null,
+                is_active: true
+            }]);
+            document.getElementById('promoCodeField').value = '';
+            document.getElementById('promoTargetId').value = '';
+            document.getElementById('promoPhone').value = '';
+            loadPromoCodesAdmin();
+        }
+
+        async function loadPromoCodesAdmin() {
+            const { data } = await db.from('promo_codes').select('*').order('id', { ascending: false });
+            const list = data || [];
+            document.getElementById('promoCount').textContent = list.length;
+            document.getElementById('promoAdminList').innerHTML = list.map(pr => `
+                <div class="item-box">
+                    <div class="item-title">🎟️ ${pr.code} (${pr.discount_type === 'free' ? 'مجاني 100%' : pr.discount_value})</div>
+                    <div class="item-meta">الشمولية: ${pr.scope || 'الكل'} | الاستخدام: ${pr.used_count || 0}/${pr.max_uses || 100}</div>
+                    <div class="actions-row">
+                        <button class="btn-sm bg-red" onclick="deleteRow('promo_codes', ${pr.id}, loadPromoCodesAdmin)">حذف 🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* 8. المدونة */
         async function loadArticlesAdmin() {
             const { data } = await db.from('platform_articles').select('*').order('id', { ascending: false });
             const list = data || [];
@@ -737,7 +819,7 @@
             loadArticlesAdmin();
         }
 
-        /* 8. المسوقون */
+        /* 9. المسوقون */
         async function loadAffiliates() {
             const { data } = await db.from('affiliates').select('*').order('id', { ascending: false });
             const list = data || [];
@@ -763,6 +845,7 @@
             loadJobsAdmin();
             loadTalentsAdmin();
             loadCoursesAdmin();
+            loadPromoCodesAdmin();
             loadArticlesAdmin();
             loadAffiliates();
         });
