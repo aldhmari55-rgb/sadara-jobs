@@ -3,245 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الدورات وكورساتي | منصة صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>الدورات التدريبية وكورساتي | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --navy: #0F172A; --royal: #2563EB; --emerald: #0D9488;
-            --green: #10B981; --gold: #F59E0B; --bg-surface: #F8FAFC;
-            --text-main: #1E293B; --text-muted: #64748B; --border: #E2E8F0;
-            --radius-lg: 20px; --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.04);
+            --navy: #0F172A; --royal: #2563EB; --emerald: #0D9488; --green: #10B981;
+            --gold: #F59E0B; --bg: #F8FAFC; --surface: #FFFFFF; --border: #E2E8F0;
+            --text: #1E293B; --muted: #64748B;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; }
-        body { background: var(--bg-surface); color: var(--text-main); line-height: 1.65; }
-
-        .navbar { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
-        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-        .btn-icon { background: var(--bg-surface); color: var(--navy); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 16px; }
-        .logo { text-decoration: none; color: var(--navy); font-weight: 700; font-size: clamp(16px, 2.2vw, 19px); }
-        .logo span { color: var(--royal); }
-
-        .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); z-index: 2500; }
-        .side-drawer { position: fixed; top: 0; right: -320px; width: 300px; max-width: 86vw; height: 100vh; background: #fff; z-index: 2600; border-left: 1px solid var(--border); padding: 20px 16px; transition: right 0.28s ease; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 50px; }
+        .topbar {
+            background: var(--navy); color: #fff; padding: 14px 18px;
+            display: flex; justify-content: space-between; align-items: center; gap: 10px;
+            position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--emerald);
+        }
+        .brand { font-size: 17px; font-weight: 900; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .drawer-backdrop { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 1100; }
+        .side-drawer {
+            position: fixed; top: 0; right: -300px; width: 280px; height: 100%;
+            background: #fff; z-index: 1200; padding: 18px; transition: 0.25s ease;
+            box-shadow: -8px 0 28px rgba(15,23,42,0.15);
+        }
         .side-drawer.open { right: 0; }
-        .drawer-link { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; text-decoration: none; color: var(--text-main); font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
-        .drawer-link:hover, .drawer-link.active { background: #EFF6FF; color: var(--royal); }
-
-        .hero { background: linear-gradient(135deg, var(--navy), #1E293B); color: #fff; padding: 30px 16px; text-align: center; }
-        .hero h1 { font-size: clamp(21px, 3.2vw, 27px); margin-bottom: 6px; }
-        .hero p { color: #CBD5E1; font-size: 13.5px; }
-
-        .container { max-width: 1200px; margin: 0 auto; padding: 24px 16px 60px; display: grid; gap: 24px; }
-        .my-courses-bar { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow-sm); }
-        .phone-login-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-        .phone-login-row input { flex: 1; min-width: 200px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 11px; font-size: 13.5px; background: var(--bg-surface); }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 18px; }
-        .course-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between; }
-        .course-thumb { height: 175px; background: #EFF6FF; display: flex; align-items: center; justify-content: center; padding: 10px; }
-        .course-thumb img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
+        .drawer-link {
+            display: flex; align-items: center; gap: 10px; padding: 11px 12px;
+            color: var(--text); text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 13.5px; margin-bottom: 6px;
+        }
+        .drawer-link:hover { background: #F1F5F9; color: var(--emerald); }
+        .container { max-width: 1100px; margin: 22px auto; padding: 0 14px; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-bottom: 20px; box-shadow: 0 6px 20px rgba(15,23,42,0.04); }
+        .phone-login-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+        .courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; margin-top: 14px; }
+        .course-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
         .course-body { padding: 15px; }
-        .badge-free { background: #ECFDF5; color: var(--green); padding: 3px 10px; border-radius: 99px; font-size: 11.5px; font-weight: 700; }
-        .badge-paid { background: #FFFBEB; color: #B45309; padding: 3px 10px; border-radius: 99px; font-size: 11.5px; font-weight: 700; }
-        .badge-owned { background: #EFF6FF; color: var(--royal); padding: 3px 10px; border-radius: 99px; font-size: 11.5px; font-weight: 700; }
-        .btn-enter { width: 100%; background: var(--royal); color: #fff; border: none; padding: 10px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 12px; }
-
-        .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.72); z-index: 3000; align-items: center; justify-content: center; padding: 14px; }
-        .modal-card { background: #fff; border-radius: var(--radius-lg); max-width: 660px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 20px; }
-        .lesson-item { border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; background: var(--bg-surface); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .lesson-item.active { border-color: var(--royal); background: #EFF6FF; font-weight: 700; }
-        .field { margin-bottom: 10px; }
-        .field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
-        .field input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px; background: var(--bg-surface); }
+        .badge-owned { display: inline-block; background: #ECFDF5; color: #059669; padding: 4px 10px; border-radius: 99px; font-size: 11.5px; font-weight: 700; }
+        .btn-enter { width: 100%; background: var(--royal); color: #fff; border: none; padding: 10px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; margin-top: 10px; }
+        .modal-bg { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.65); z-index: 2000; align-items: center; justify-content: center; padding: 14px; }
+        .modal-box { background: #fff; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; border-radius: 20px; padding: 20px; }
+        .field { margin-bottom: 11px; }
+        .field label { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 4px; }
+        .field input { width: 100%; padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 10px; font-size: 13px; }
     </style>
 </head>
 <body>
-
-    <header class="navbar">
-        <div class="nav-inner">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <button type="button" class="btn-icon" onclick="toggleDrawer(true)"><i class="fa-solid fa-bars"></i></button>
-                <a href="courses.html" class="logo">أكاديمية <span>صدارة</span></a>
-            </div>
-            <a href="index.html" style="text-decoration:none; font-size:13px; font-weight:700; color:var(--royal);">المتجر الرئيسي ←</a>
-        </div>
-    </header>
-
-    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
+    <div class="drawer-backdrop" id="drawerBackdrop" onclick="toggleDrawer(false)"></div>
     <aside class="side-drawer" id="sideDrawer">
         <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid var(--border);">
             <strong style="color:var(--navy);">أقسام منصة صدارة</strong>
-            <button onclick="toggleDrawer(false)" style="border:none; background:var(--bg-surface); padding:4px 9px; border-radius:8px; cursor:pointer;">✕</button>
+            <button type="button" onclick="toggleDrawer(false)" style="border:none; background:#F1F5F9; padding:4px 9px; border-radius:8px; cursor:pointer;">✕</button>
         </div>
-        <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات</a>
-        <a href="courses.html" class="drawer-link active"><i class="fa-solid fa-graduation-cap"></i> الدورات وكورساتي</a>
+        <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات (الرئيسية)</a>
+        <a href="courses.html" class="drawer-link"><i class="fa-solid fa-graduation-cap"></i> الدورات التدريبية</a>
         <a href="affiliate.html" class="drawer-link"><i class="fa-solid fa-handshake"></i> بوابة المسوّقين بالعمولة</a>
         <a href="jobs.html" class="drawer-link"><i class="fa-solid fa-briefcase"></i> الوظائف والكفاءات</a>
         <a href="blog.html" class="drawer-link"><i class="fa-solid fa-newspaper"></i> المدونة والمقالات</a>
     </aside>
 
-    <section class="hero">
-        <h1>الدورات التدريبية وقسم «كورساتي»</h1>
-        <p>ادخل برقم جوالك لتبقى دوراتك المعتمدة مفتوحة دائماً وتتابع دروسك في أي وقت</p>
-    </section>
+    <header class="topbar">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <button type="button" onclick="toggleDrawer(true)" style="background:rgba(255,255,255,0.12); color:#fff; border:none; padding:8px 11px; border-radius:10px; cursor:pointer;">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="courses.html" class="brand"><i class="fa-solid fa-graduation-cap" style="color:#5EEAD4;"></i> صدارة — الدورات وكورساتي</a>
+        </div>
+        <button type="button" data-sadara-auth-btn class="sa-pill-btn" onclick="SadaraAuth.openModal('login', loadMyCourses)">🔐 دخول / حساب جديد</button>
+    </header>
 
     <main class="container">
-        <section class="my-courses-bar">
+        <section class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                <h2 style="font-size:18px; color:var(--navy);"><i class="fa-solid fa-folder-open" style="color:var(--emerald);"></i> كورساتي (المفتوحة برقم جوالك)</h2>
-                <span id="myCoursesStatus" style="font-size:12.5px; font-weight:700; color:var(--text-muted);">أدخل رقم جوالك لعرض دوراتك</span>
+                <div>
+                    <h1 style="font-size:19px; color:var(--navy); font-weight:900;">قسم «كورساتي» الدائم</h1>
+                    <p id="myCoursesStatus" style="font-size:13px; color:var(--muted); margin-top:4px;">سجّل الدخول بالاسم أو الجوال + الرمز الرباعي لعرض دوراتك المفتوحة</p>
+                </div>
             </div>
             <div class="phone-login-row">
-                <input type="tel" id="studentAccountPhone" placeholder="رقم الجوال (مثال: 780568507)">
-                <button type="button" onclick="loadMyCourses()" style="background:var(--navy); color:#fff; border:none; padding:9px 18px; border-radius:11px; font-weight:700; cursor:pointer;">فتح كورساتي 🔓</button>
+                <button type="button" onclick="SadaraAuth.openModal('login', loadMyCourses)" style="background:var(--navy); color:#fff; border:none; padding:9px 18px; border-radius:11px; font-weight:700; cursor:pointer;">دخول حسابي 🔓</button>
+                <button type="button" onclick="SadaraAuth.openModal('register', loadMyCourses)" style="background:var(--emerald); color:#fff; border:none; padding:9px 18px; border-radius:11px; font-weight:700; cursor:pointer;">إنشاء حساب جديد 🚀</button>
+                <button type="button" onclick="SadaraAuth.logout(); location.reload();" style="background:#fff; color:#E11D48; border:1px solid var(--border); padding:9px 14px; border-radius:11px; font-weight:700; cursor:pointer;">خروج</button>
             </div>
-            <div class="grid" id="myCoursesGrid" style="margin-top:16px;"></div>
+            <div class="courses-grid" id="myCoursesGrid"></div>
         </section>
 
-        <section>
-            <h2 style="font-size:18px; color:var(--navy); margin-bottom:14px;"><i class="fa-solid fa-graduation-cap" style="color:var(--royal);"></i> جميع الدورات المتاحة</h2>
-            <div class="grid" id="coursesGrid">
-                <div class="course-card" style="padding:20px;">جاري تحميل الدورات...</div>
-            </div>
+        <section class="card">
+            <h2 style="font-size:18px; color:var(--navy); font-weight:900;">جميع الدورات التدريبية المتاحة</h2>
+            <div class="courses-grid" id="allCoursesGrid">جاري تحميل الدورات...</div>
         </section>
     </main>
 
-    <div class="modal-backdrop" id="courseModal" onclick="if(event.target.id==='courseModal') closeCourseModal()">
-        <div class="modal-card" onclick="event.stopPropagation()">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 id="cmTitle" style="font-size:17px; color:var(--navy);"></h3>
-                <button onclick="closeCourseModal()" style="border:none; background:var(--bg-surface); padding:5px 10px; border-radius:8px; cursor:pointer; font-weight:700;">✕</button>
-            </div>
-            <p id="cmDesc" style="font-size:13px; color:var(--text-muted); margin-bottom:12px;"></p>
-
-            <div id="unlockedContent" style="display:none;">
-                <div style="background:#ECFDF5; color:var(--green); padding:8px 12px; border-radius:10px; font-size:12.5px; font-weight:700; margin-bottom:12px;">
-                    ✅ الدورة مفتوحة لك دائماً برقم جوالك
-                </div>
-                <div id="lessonViewerBox" style="background:var(--bg-surface); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:14px;"></div>
-                <h4 style="font-size:14px; color:var(--navy); margin-bottom:8px;">قائمة دروس الدورة</h4>
-                <div id="lessonsListBox"></div>
-            </div>
-
-            <div id="paidCourseBox" style="display:none; padding-top:12px; border-top:1px solid var(--border);">
-                <div style="font-size:13.5px; font-weight:700; margin-bottom:8px;">
-                    الرسوم المطلوبة: <span id="cmPriceDisplay" style="color:var(--royal);"></span>
-                </div>
-
-                <div style="display:flex; gap:8px; margin-bottom:8px;">
-                    <input type="text" id="promoCodeInput" placeholder="أدخل كود خصم أو كود مجاني..." style="flex:1; padding:9px 12px; border:1px solid var(--border); border-radius:10px; text-transform:uppercase;">
-                    <button type="button" onclick="applyPromoToCourse()" style="background:var(--gold); color:var(--navy); border:none; padding:9px 14px; border-radius:10px; font-weight:700; cursor:pointer;">تطبيق</button>
-                </div>
-                <div id="promoMsg" style="font-size:12px; font-weight:700; margin-bottom:8px;"></div>
-
-                <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:10px; padding:10px; font-size:12px; margin-bottom:10px;">
-                    <b>بيانات التحويل الرسمية:</b><br>
-                    • محفظة جيب (Jeeb): <b>780568507</b><br>
-                    • نقطة حاسب الكريمي: <b>2628009</b><br>
-                    • المستفيد: <b>عبدالرحمن عبدالله صالح الذماري</b>
-                </div>
-
-                <div class="field"><label>اسم المتدرب الكامل</label><input type="text" id="stName" placeholder="الاسم الكامل"></div>
-                <div class="field"><label>رقم الجوال / الواتساب</label><input type="tel" id="stPhone" placeholder="780568507"></div>
-                <div class="field"><label>صورة سند التحويل</label><input type="file" id="stReceipt" accept="image/*"></div>
-
-                <button type="button" onclick="submitCourseEnrollment()" style="width:100%; background:var(--green); color:#fff; border:none; padding:10px; border-radius:11px; font-weight:700; cursor:pointer;">إرسال طلب الدفع 🚀</button>
-                <div id="enrollStatusMsg" style="margin-top:8px; font-size:12px; font-weight:700; text-align:center;"></div>
-            </div>
-        </div>
+    <div class="modal-bg" id="courseModal" onclick="if(event.target.id==='courseModal') this.style.display='none'">
+        <div class="modal-box" id="courseModalContent"></div>
     </div>
 
+    <script src="sadara-auth.js"></script>
     <script>
-        const db = supabase.createClient("https://lvutrzswngpkjfamgact.supabase.co", "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG");
-        const BUCKET = "platform-files";
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let allCourses = [];
         let approvedCourseIds = new Set();
-        let activeCourse = null;
-        let currentLessons = [];
-        let appliedPromoCode = '';
-
-        function normalizePhone(raw) {
-            const eng = String(raw || '').replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
-            return eng.replace(/[^0-9]/g, '');
-        }
-
-        async function prepareFlexibleImage(file, maxSide = 1280, quality = 0.82) {
-            if (!file || !file.type.startsWith('image/')) return file;
-            return new Promise(resolve => {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const img = new Image();
-                    img.onload = () => {
-                        let w = img.width, h = img.height;
-                        if (w > maxSide || h > maxSide) {
-                            if (w >= h) { h = Math.round(h * maxSide / w); w = maxSide; }
-                            else { w = Math.round(w * maxSide / h); h = maxSide; }
-                        }
-                        const canvas = document.createElement('canvas');
-                        canvas.width = w; canvas.height = h;
-                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        canvas.toBlob(blob => resolve(blob ? new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }) : file), 'image/jpeg', quality);
-                    };
-                    img.onerror = () => resolve(file);
-                    img.src = e.target.result;
-                };
-                reader.onerror = () => resolve(file);
-                reader.readAsDataURL(file);
-            });
-        }
-
-        (function captureRef() {
-            const ref = new URLSearchParams(window.location.search).get('ref');
-            if (ref && ref.trim()) localStorage.setItem('sadarah_ref_code', ref.trim());
-        })();
 
         function toggleDrawer(open) {
-            document.getElementById('drawerOverlay').style.display = open ? 'block' : 'none';
-            document.getElementById('sideDrawer').classList.toggle('open', open);
+            document.getElementById("sideDrawer").classList.toggle("open", open);
+            document.getElementById("drawerBackdrop").style.display = open ? "block" : "none";
         }
 
-        function isCourseFree(c) {
-            const rawPrice = Number(normalizePhone(c.price || 0)) || 0;
-            return c.is_free === true || rawPrice <= 0 || String(c.price || '').includes('مجاني');
+        async function initCoursesPage() {
+            const { data: courses } = await db.from("courses").select("*").order("id", { ascending: false });
+            allCourses = (courses || []).filter(c => c.is_active !== false);
+            await loadMyCourses();
         }
 
         async function loadMyCourses() {
-            const inputPhone = normalizePhone(document.getElementById('studentAccountPhone').value) || normalizePhone(localStorage.getItem('sadara_student_phone'));
-            if (!inputPhone) return;
+            const user = window.SadaraAuth ? window.SadaraAuth.getUser() : null;
+            const myGrid = document.getElementById("myCoursesGrid");
+            const statusEl = document.getElementById("myCoursesStatus");
 
-            localStorage.setItem('sadara_student_phone', inputPhone);
-            document.getElementById('studentAccountPhone').value = inputPhone;
-            document.getElementById('stPhone').value = inputPhone;
+            if (!user || !user.phone) {
+                approvedCourseIds = new Set();
+                statusEl.textContent = "سجّل الدخول بالاسم أو الجوال + الرمز الرباعي لعرض دوراتك";
+                myGrid.innerHTML = "";
+                renderAllCourses();
+                return;
+            }
 
-            const { data: enrollments } = await db.from('course_enrollments').select('*').eq('student_phone', inputPhone);
+            const { data: enrollments } = await db.from("course_enrollments").select("*").eq("student_phone", user.phone);
             approvedCourseIds = new Set();
-            (enrollments || []).forEach(e => { if (e.status === 'approved') approvedCourseIds.add(String(e.course_id)); });
+            (enrollments || []).forEach(e => {
+                if (e.status === "approved") approvedCourseIds.add(String(e.course_id));
+            });
 
             const ownedList = allCourses.filter(c => approvedCourseIds.has(String(c.id)));
-            const myGrid = document.getElementById('myCoursesGrid');
-            const statusEl = document.getElementById('myCoursesStatus');
-
             if (!ownedList.length) {
-                statusEl.textContent = `رقم ${inputPhone}: لا توجد دورات معتمدة بعد`;
-                myGrid.innerHTML = '<div style="font-size:13px; color:var(--text-muted);">بمجرد اعتماد طلبك من الإدارة ستظهر دورتك هنا وتبقى مفتوحة دائماً برقم جوالك.</div>';
+                statusEl.textContent = `حساب ${user.full_name} (${user.phone}): لا توجد دورات معتمدة بعد`;
+                myGrid.innerHTML = '<div style="font-size:13px; color:var(--muted);">بمجرد اعتماد اشتراكك ستظهر الدورة هنا وتبقى مفتوحة لحسابك دائماً.</div>';
             } else {
-                statusEl.textContent = `تم فتح ${ownedList.length} دورة لرقم ${inputPhone} ✅`;
-                myGrid.innerHTML = '';
+                statusEl.textContent = `تم فتح ${ownedList.length} دورة لحساب ${user.full_name} ✅`;
+                myGrid.innerHTML = "";
                 ownedList.forEach(c => {
-                    const card = document.createElement('div');
-                    card.className = 'course-card';
+                    const card = document.createElement("div");
+                    card.className = "course-card";
                     card.innerHTML = `
                         <div class="course-body">
-                            <span class="badge-owned">مفتوحة دائماً في كورساتي</span>
-                            <h3 style="font-size:15.5px; color:var(--navy); margin:6px 0 4px;">${c.title}</h3>
-                            <div style="font-size:12px; color:var(--text-muted);">المدرب: ${c.instructor || 'صدارة'}</div>
+                            <span class="badge-owned">مفتوحة لحسابك</span>
+                            <h3 style="font-size:15.5px; color:var(--navy); margin:8px 0 4px;">${c.title}</h3>
+                            <div style="font-size:12px; color:var(--muted);">المدرب: ${c.instructor || "صدارة"}</div>
                             <button type="button" class="btn-enter" style="background:var(--emerald);">متابعة الدروس ▶</button>
                         </div>
                     `;
-                    card.querySelector('.btn-enter').onclick = () => openCourseModal(c);
+                    card.querySelector(".btn-enter").onclick = () => openCourseModal(c);
                     myGrid.appendChild(card);
                 });
             }
@@ -249,184 +163,96 @@
         }
 
         function renderAllCourses() {
-            const grid = document.getElementById('coursesGrid');
-            if (!allCourses.length) { grid.innerHTML = '<div class="course-card" style="padding:20px;">لا توجد دورات متاحة حالياً.</div>'; return; }
-            grid.innerHTML = '';
+            const grid = document.getElementById("allCoursesGrid");
+            if (!allCourses.length) {
+                grid.innerHTML = "<p>لا توجد دورات متاحة حالياً.</p>";
+                return;
+            }
+            grid.innerHTML = "";
             allCourses.forEach(c => {
-                const free = isCourseFree(c);
-                const owned = free || approvedCourseIds.has(String(c.id));
-                const rawPrice = Number(normalizePhone(c.price || 0)) || 0;
-
-                const card = document.createElement('div');
-                card.className = 'course-card';
+                const owned = approvedCourseIds.has(String(c.id));
+                const card = document.createElement("div");
+                card.className = "course-card";
                 card.innerHTML = `
-                    <div>
-                        <div class="course-thumb">
-                            ${c.image ? `<img src="${c.image}" alt="${c.title}">` : `<i class="fa-solid fa-graduation-cap" style="font-size:38px; color:var(--royal);"></i>`}
-                        </div>
-                        <div class="course-body">
-                            <span class="${owned ? 'badge-owned' : (free ? 'badge-free' : 'badge-paid')}">
-                                ${owned ? 'مفتوحة لك ✅' : (free ? 'مجانية 100%' : `${rawPrice} YER`)}
-                            </span>
-                            <h3 style="font-size:16px; color:var(--navy); margin:6px 0 4px;">${c.title}</h3>
-                            <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">المدرب: ${c.instructor || 'صدارة'}</div>
-                            <p style="font-size:13px; color:var(--text-main);">${c.description || ''}</p>
-                            <button type="button" class="btn-enter">${owned ? 'دخول الدورة الآن ▶' : 'اشتراك / دفع / كود خصم 🎟️'}</button>
-                        </div>
+                    <div class="course-body">
+                        <span class="badge-owned" style="background:${owned ? "#ECFDF5" : "#EFF6FF"}; color:${owned ? "#059669" : "#2563EB"};">
+                            ${owned ? "مفتوحة لك ✅" : (c.price ? c.price + " YER" : "مجانية / اشتراك")}
+                        </span>
+                        <h3 style="font-size:16px; color:var(--navy); margin:8px 0 6px;">${c.title}</h3>
+                        <p style="font-size:13px; color:var(--muted);">${c.description || ""}</p>
+                        <button type="button" class="btn-enter">${owned ? "دخول الدورة ▶" : "اشتراك / فتح الدورة"}</button>
                     </div>
                 `;
-                card.querySelector('.btn-enter').onclick = () => openCourseModal(c);
+                card.querySelector(".btn-enter").onclick = () => openCourseModal(c);
                 grid.appendChild(card);
             });
         }
 
-        async function openCourseModal(course) {
-            const free = isCourseFree(course);
-            const rawPrice = Number(normalizePhone(course.price || 0)) || 0;
-            const owned = free || approvedCourseIds.has(String(course.id));
-
-            activeCourse = { ...course, isFree: free, rawPrice, finalPrice: rawPrice };
-            appliedPromoCode = '';
-
-            document.getElementById('cmTitle').textContent = course.title;
-            document.getElementById('cmDesc').textContent = course.description || '';
-            document.getElementById('promoCodeInput').value = '';
-            document.getElementById('promoMsg').textContent = '';
-            document.getElementById('enrollStatusMsg').textContent = '';
-            document.getElementById('stPhone').value = localStorage.getItem('sadara_student_phone') || '';
+        function openCourseModal(course) {
+            const owned = approvedCourseIds.has(String(course.id));
+            const box = document.getElementById("courseModalContent");
+            const lessons = Array.isArray(course.lessons) ? course.lessons : [];
 
             if (owned) {
-                document.getElementById('paidCourseBox').style.display = 'none';
-                document.getElementById('unlockedContent').style.display = 'block';
-                await loadCourseLessons(course.id);
+                box.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <h3 style="font-size:17px; color:var(--navy);">${course.title}</h3>
+                        <button type="button" onclick="document.getElementById('courseModal').style.display='none'" style="border:none; background:#F1F5F9; padding:5px 10px; border-radius:8px; cursor:pointer;">✕</button>
+                    </div>
+                    <p style="font-size:13px; color:var(--muted); margin-bottom:14px;">${course.description || ""}</p>
+                    ${lessons.length ? lessons.map((l, idx) => `
+                        <div style="border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px; background:#F8FAFC;">
+                            <b>${idx + 1}.${l.title || "درس"}</b>
+                            ${l.video_url ? `<div style="margin-top:8px;"><a href="${l.video_url}" target="_blank" style="color:var(--royal); font-weight:700; font-size:13px;">مشاهدة الدرس ↗</a></div>` : ""}
+                            ${l.pdf_url ? `<div style="margin-top:6px;"><a href="${l.pdf_url}" target="_blank" style="color:var(--emerald); font-weight:700; font-size:13px;">تحميل ملف PDF ↗</a></div>` : ""}
+                        </div>
+                    `).join("") : "<p style='font-size:13px;'>الدورة مفعلة لحسابك وسيتم عرض الدروس المضافة فيها.</p>"}
+                `;
             } else {
-                document.getElementById('paidCourseBox').style.display = 'block';
-                document.getElementById('unlockedContent').style.display = 'none';
-                document.getElementById('cmPriceDisplay').textContent = `${rawPrice} YER`;
+                const user = window.SadaraAuth ? window.SadaraAuth.getUser() : null;
+                box.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <h3 style="font-size:17px; color:var(--navy);">طلب اشتراك في: ${course.title}</h3>
+                        <button type="button" onclick="document.getElementById('courseModal').style.display='none'" style="border:none; background:#F1F5F9; padding:5px 10px; border-radius:8px; cursor:pointer;">✕</button>
+                    </div>
+                    <div class="field"><label>الاسم الكامل</label><input type="text" id="enrollName" value="${user ? user.full_name : ""}" placeholder="اسمك الكامل"></div>
+                    <div class="field"><label>رقم الجوال / الواتساب</label><input type="tel" id="enrollPhone" value="${user ? user.phone : ""}" placeholder="780568507"></div>
+                    <button type="button" class="btn-enter" style="background:var(--emerald);" onclick="submitCourseEnrollment(${course.id}, '${course.title.replace(/'/g, "\\'")}')">إرسال طلب الاشتراك ✅</button>
+                    <div id="enrollMsg" style="margin-top:10px; font-size:12.5px; font-weight:700;"></div>
+                `;
             }
-            document.getElementById('courseModal').style.display = 'flex';
+            document.getElementById("courseModal").style.display = "flex";
         }
 
-        async function loadCourseLessons(courseId) {
-            const { data: lessons } = await db.from('course_lessons').select('*').eq('course_id', courseId).order('lesson_order', { ascending: true });
-            currentLessons = lessons || [];
-            const listBox = document.getElementById('lessonsListBox');
-
-            if (!currentLessons.length) {
-                listBox.innerHTML = '<div style="font-size:13px; color:var(--text-muted);">جاري تجهيز دروس هذه الدورة.</div>';
-                document.getElementById('lessonViewerBox').innerHTML = '';
+        async function submitCourseEnrollment(courseId, courseTitle) {
+            const name = document.getElementById("enrollName").value.trim();
+            const phone = window.SadaraAuth ? window.SadaraAuth.normalizePhone(document.getElementById("enrollPhone").value) : document.getElementById("enrollPhone").value.trim();
+            const msg = document.getElementById("enrollMsg");
+            if (!name || phone.length < 7) {
+                msg.style.color = "#DC2626";
+                msg.textContent = "يرجى إدخال الاسم ورقم الجوال الصحيح.";
                 return;
             }
-
-            listBox.innerHTML = '';
-            currentLessons.forEach((ls, idx) => {
-                const div = document.createElement('div');
-                div.className = 'lesson-item' + (idx === 0 ? ' active' : '');
-                div.innerHTML = `<span>${idx + 1}. ${ls.title}</span><span style="font-size:11.5px; color:var(--royal);">فتح الدرس</span>`;
-                div.onclick = () => {
-                    document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('active'));
-                    div.classList.add('active');
-                    renderLessonViewer(ls);
-                };
-                listBox.appendChild(div);
-            });
-            renderLessonViewer(currentLessons[0]);
-        }
-
-        function renderLessonViewer(ls) {
-            let mediaHtml = '';
-            if (ls.media_url) {
-                const yt = ls.media_url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
-                if (yt) mediaHtml = `<iframe src="https://www.youtube.com/embed/${yt[1]}" style="width:100%; min-height:220px; border:none; border-radius:10px; margin-bottom:10px;" allowfullscreen></iframe>`;
-                else if (ls.media_type === 'audio' || ls.media_url.match(/\.(mp3|wav|ogg|m4a)/i)) mediaHtml = `<audio src="${ls.media_url}" controls style="width:100%; margin-bottom:10px;"></audio>`;
-                else mediaHtml = `<video src="${ls.media_url}" controls playsinline style="width:100%; max-height:250px; border-radius:10px; margin-bottom:10px; background:#000;"></video>`;
-            }
-            const imgHtml = ls.image_url ? `<img src="${ls.image_url}" style="width:100%; max-height:220px; object-fit:contain; border-radius:10px; margin-bottom:10px;">` : '';
-            const pdfHtml = ls.pdf_url ? `<div style="margin-top:8px;"><a href="${ls.pdf_url}" target="_blank" style="display:inline-flex; align-items:center; gap:6px; background:var(--navy); color:#fff; padding:8px 14px; border-radius:10px; text-decoration:none; font-size:12.5px; font-weight:700;"><i class="fa-solid fa-file-pdf"></i> عرض / تحميل ملف PDF المرفق</a></div>` : '';
-
-            document.getElementById('lessonViewerBox').innerHTML = `
-                <h4 style="font-size:15px; color:var(--navy); margin-bottom:6px;">${ls.title}</h4>
-                <p style="font-size:13px; color:var(--text-main); margin-bottom:10px;">${ls.summary || ''}</p>
-                ${mediaHtml}${imgHtml}${pdfHtml}
-            `;
-        }
-
-        function closeCourseModal() { document.getElementById('lessonViewerBox').innerHTML = ''; document.getElementById('courseModal').style.display = 'none'; }
-
-        async function applyPromoToCourse() {
-            if (!activeCourse) return;
-            const codeVal = document.getElementById('promoCodeInput').value.trim().toUpperCase();
-            const msgEl = document.getElementById('promoMsg');
-            if (!codeVal) return;
-
-            const { data: promo } = await db.from('promo_codes').select('*').ilike('code', codeVal).eq('is_active', true).maybeSingle();
-            if (!promo) { msgEl.style.color = '#E11D48'; msgEl.textContent = 'الكود غير صحيح أو غير مفعل.'; return; }
-
-            let finalPrice = activeCourse.rawPrice;
-            if (promo.discount_type === 'free' || (promo.discount_type === 'percent' && Number(promo.discount_value) >= 100)) finalPrice = 0;
-            else if (promo.discount_type === 'percent') finalPrice = Math.max(0, Math.round(activeCourse.rawPrice * (1 - Number(promo.discount_value || 0) / 100)));
-            else if (promo.discount_type === 'fixed') finalPrice = Math.max(0, activeCourse.rawPrice - Number(promo.discount_value || 0));
-
-            activeCourse.finalPrice = finalPrice;
-            appliedPromoCode = codeVal;
-            await db.from('promo_codes').update({ used_count: (promo.used_count || 0) + 1 }).eq('id', promo.id);
-
-            if (finalPrice <= 0) {
-                msgEl.style.color = 'var(--green)'; msgEl.textContent = 'تم فتح الدورة مجاناً بالكود! 🎉';
-                document.getElementById('cmPriceDisplay').textContent = 'مجاني 100%';
-                document.getElementById('paidCourseBox').style.display = 'none';
-                document.getElementById('unlockedContent').style.display = 'block';
-                await loadCourseLessons(activeCourse.id);
+            const refCode = new URLSearchParams(window.location.search).get("ref") || "";
+            const { error } = await db.from("course_enrollments").insert([{
+                course_id: courseId,
+                course_title: courseTitle,
+                student_name: name,
+                student_phone: phone,
+                ref_code: refCode,
+                status: "pending"
+            }]);
+            if (error) {
+                msg.style.color = "#DC2626";
+                msg.textContent = "تعذر إرسال الطلب، حاول مرة أخرى.";
             } else {
-                msgEl.style.color = 'var(--green)'; msgEl.textContent = `تم تطبيق الخصم! السعر الجديد: ${finalPrice} YER`;
-                document.getElementById('cmPriceDisplay').textContent = `${finalPrice} YER`;
+                msg.style.color = "#059669";
+                msg.textContent = "تم إرسال طلب الاشتراك بنجاح! ستظهر الدورة تلقائياً في «كورساتي» فور اعتمادها.";
             }
         }
 
-        async function submitCourseEnrollment() {
-            if (!activeCourse) return;
-            const student_name = document.getElementById('stName').value.trim();
-            const student_phone = normalizePhone(document.getElementById('stPhone').value);
-            const rawReceipt = document.getElementById('stReceipt').files[0];
-            const statusEl = document.getElementById('enrollStatusMsg');
-
-            if (!student_name || !student_phone) return alert('أدخل الاسم ورقم الجوال.');
-            localStorage.setItem('sadara_student_phone', student_phone);
-            document.getElementById('studentAccountPhone').value = student_phone;
-            statusEl.textContent = 'جاري إرسال طلب الاشتراك...';
-
-            let receipt_url = '';
-            if (rawReceipt) {
-                const file = await prepareFlexibleImage(rawReceipt, 1280, 0.82);
-                const path = `course_receipts/c_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-                const { error } = await db.storage.from(BUCKET).upload(path, file);
-                if (!error) receipt_url = db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
-            }
-
-            const refCode = new URLSearchParams(window.location.search).get('ref') || localStorage.getItem('sadarah_ref_code') || null;
-            await db.from('course_enrollments').insert([{
-                course_id: activeCourse.id, course_title: activeCourse.title, student_name, student_phone,
-                paid_amount: activeCourse.finalPrice, promo_code: appliedPromoCode || null, receipt_url, ref_code: refCode, status: 'pending'
-            }]);
-
-            await db.from('orders').insert([{
-                item_id: String(activeCourse.id), item_type: 'course', product_title: `دورة: ${activeCourse.title}`,
-                customer_name: student_name, customer_phone: student_phone, total_price: String(activeCourse.finalPrice),
-                receipt_url, ref_code: refCode, status: 'pending'
-            }]);
-
-            statusEl.style.color = 'var(--green)';
-            statusEl.textContent = 'تم إرسال طلبك! فور اعتماد الإدارة ستظهر الدورة في «كورساتي» برقم جوالك.';
-        }
-
-        async function initCoursesPage() {
-            const { data } = await db.from('platform_courses').select('*').order('id', { ascending: false });
-            allCourses = (data || []).filter(c => c.is_active !== false);
-            renderAllCourses();
-            if (localStorage.getItem('sadara_student_phone')) await loadMyCourses();
-        }
-
-        window.addEventListener('DOMContentLoaded', initCoursesPage);
+        window.addEventListener("DOMContentLoaded", initCoursesPage);
+        window.addEventListener("sadara:auth-changed", loadMyCourses);
     </script>
 </body>
 </html>
