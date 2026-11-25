@@ -1,247 +1,112 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة المسوّقين بالعمولة | منصة صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-            --navy: #0F172A; --royal: #2563EB; --royal-hover: #1D4ED8; --emerald: #0D9488;
-            --green: #10B981; --gold: #F59E0B; --bg-surface: #F8FAFC; --text-main: #1E293B;
-            --text-muted: #64748B; --border: #E2E8F0; --radius-lg: 20px; --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.04);
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; }
-        body { background: var(--bg-surface); color: var(--text-main); line-height: 1.65; }
-
-        .navbar { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
-        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-        .btn-icon { background: var(--bg-surface); color: var(--navy); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 16px; }
-        .logo { text-decoration: none; color: var(--navy); font-weight: 700; font-size: clamp(16px, 2.2vw, 19px); }
-        .logo span { color: var(--royal); }
-
-        .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); z-index: 2500; }
-        .side-drawer { position: fixed; top: 0; right: -320px; width: 300px; max-width: 86vw; height: 100vh; background: #fff; z-index: 2600; border-left: 1px solid var(--border); padding: 20px 16px; transition: right 0.28s ease; }
-        .side-drawer.open { right: 0; }
-        .drawer-link { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; text-decoration: none; color: var(--text-main); font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
-        .drawer-link:hover, .drawer-link.active { background: #EFF6FF; color: var(--royal); }
-
-        .hero { background: linear-gradient(135deg, var(--navy) 0%, #1E293B 100%); color: #fff; padding: 34px 16px; }
-        .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 22px; align-items: center; }
-        @media (max-width: 860px) { .hero-inner { grid-template-columns: 1fr; } }
-
-        .calc-card { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: var(--radius-lg); padding: 20px; }
-        .calc-card input[type="range"] { width: 100%; accent-color: var(--gold); margin: 6px 0 14px; }
-
-        .container { max-width: 1200px; margin: 0 auto; padding: 26px 16px 60px; display: grid; gap: 22px; }
-        .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; }
-        @media (max-width: 680px) { .form-row { grid-template-columns: 1fr; } }
-        .input-box { width: 100%; padding: 10px 13px; border: 1px solid var(--border); border-radius: 12px; font-size: 13.5px; background: var(--bg-surface); }
-        .btn-primary { background: var(--royal); color: #fff; border: none; padding: 10px 20px; border-radius: 12px; font-size: 13.5px; font-weight: 700; cursor: pointer; }
-        .btn-primary:hover { background: var(--royal-hover); }
-
-        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 16px; }
-        @media (max-width: 780px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-        .kpi-box { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 15px; }
-        .kpi-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
-        .kpi-val { font-size: clamp(17px, 2.4vw, 21px); font-weight: 700; color: var(--navy); margin-top: 4px; }
-
-        .link-copy-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: #EFF6FF; border: 1px solid #BFDBFE; padding: 12px 14px; border-radius: 14px; margin-top: 14px; }
-        .link-copy-bar input { flex: 1; min-width: 190px; border: none; background: transparent; font-size: 13px; font-weight: 700; color: var(--navy); direction: ltr; }
-        .table-wrap { overflow-x: auto; margin-top: 14px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
-        th { background: var(--bg-surface); color: var(--navy); font-weight: 700; }
-    </style>
-</head>
-<body>
-
-    <header class="navbar">
-        <div class="nav-inner">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <button type="button" class="btn-icon" onclick="toggleDrawer(true)"><i class="fa-solid fa-bars"></i></button>
-                <a href="affiliate.html" class="logo">بوابة المسوّقين <span>صدارة</span></a>
-            </div>
-            <a href="index.html" style="text-decoration:none; font-size:13px; font-weight:700; color:var(--royal);">المتجر الرئيسي ←</a>
+<!-- داخل <main class="container"> في affiliate.html -->
+<section class="card" id="affAuthCard">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+            <h2 style="font-size:18px; color:var(--navy);">الدخول أو إنشاء حساب مسوّق بالعمولة</h2>
+            <p style="font-size:13px; color:var(--text-muted);">نفس حساب المنصة: الاسم أو رقم الجوال + رمز سريع من 4 أرقام أو حروف</p>
         </div>
-    </header>
-
-    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
-    <aside class="side-drawer" id="sideDrawer">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid var(--border);">
-            <strong style="color:var(--navy);">أقسام منصة صدارة</strong>
-            <button onclick="toggleDrawer(false)" style="border:none; background:var(--bg-surface); padding:4px 9px; border-radius:8px; cursor:pointer;">✕</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn-primary" onclick="SadaraAuth.openModal('login', syncAffiliateFromAuth)">تسجيل الدخول 🔓</button>
+            <button type="button" class="btn-primary" style="background:var(--green);" onclick="SadaraAuth.openModal('register', syncAffiliateFromAuth)">إنشاء حساب جديد 🚀</button>
         </div>
-        <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات</a>
-        <a href="courses.html" class="drawer-link"><i class="fa-solid fa-graduation-cap"></i> الدورات وكورساتي</a>
-        <a href="affiliate.html" class="drawer-link active"><i class="fa-solid fa-handshake"></i> بوابة المسوّقين بالعمولة</a>
-        <a href="jobs.html" class="drawer-link"><i class="fa-solid fa-briefcase"></i> الوظائف والكفاءات</a>
-        <a href="blog.html" class="drawer-link"><i class="fa-solid fa-newspaper"></i> المدونة والمقالات</a>
-    </aside>
+    </div>
 
-    <section class="hero">
-        <div class="hero-inner">
-            <div>
-                <span style="background:rgba(16,185,129,0.18); color:#6EE7B7; padding:5px 12px; border-radius:99px; font-size:12px; font-weight:700;">نظام شركاء النجاح</span>
-                <h1 style="font-size:clamp(22px, 3.2vw, 28px); margin:10px 0;">ضاعف دخلك عبر التسويق لمنتجات ودورات «صدارة»</h1>
-                <p style="color:#CBD5E1; font-size:13.5px;">رابط إحالة واحد يمنحك عمولة تلقائية على كل عملية شراء منتج أو اشتراك دورة يتم اعتماده.</p>
-            </div>
-
-            <div class="calc-card">
-                <h3 style="font-size:15.5px; color:var(--gold); margin-bottom:10px;"><i class="fa-solid fa-calculator"></i> حاسبة الأرباح التفاعلية</h3>
-                <label style="font-size:12.5px; color:#CBD5E1;">عدد المبيعات الشهرية: <b id="sVal">20</b> عملية</label>
-                <input type="range" id="sRange" min="1" max="100" value="20" oninput="calcAffProfit()">
-                <label style="font-size:12.5px; color:#CBD5E1;">متوسط العمولة للعملية: <b id="cVal">500</b> YER</label>
-                <input type="range" id="cRange" min="100" max="5000" step="100" value="500" oninput="calcAffProfit()">
-                <div style="background:rgba(16,185,129,0.16); border:1px solid rgba(16,185,129,0.4); border-radius:12px; padding:12px; text-align:center;">
-                    <div style="font-size:12px; color:#A7F3D0;">الربح الشهري المتوقع</div>
-                    <div style="font-size:24px; font-weight:700;" id="totalProfitBox">10,000 YER</div>
-                </div>
+    <div id="affDashboardArea" style="display:none; margin-top:20px; padding-top:18px; border-top:1px solid var(--border);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <h3 id="affWelcomeTitle" style="font-size:17px; color:var(--navy);"></h3>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <span id="affCodeBadge" style="background:#FFFBEB; color:#B45309; border:1px solid #FDE68A; padding:4px 12px; border-radius:99px; font-size:12.5px; font-weight:700;"></span>
+                <button type="button" onclick="SadaraAuth.logout(); location.reload();" style="border:1px solid var(--border); background:#fff; color:#E11D48; padding:5px 10px; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer;">خروج</button>
             </div>
         </div>
-    </section>
 
-    <main class="container">
-        <section class="card">
-            <h2 style="font-size:18px; color:var(--navy); margin-bottom:6px;">الدخول أو التسجيل الفوري كمسوّق</h2>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">أدخل اسمك ورقم جوالك لاستخراج روابط الإحالة الخاصة بك أو استعراض لوحة أرباحك.</p>
-            <div class="form-row">
-                <input type="text" id="affNameInput" class="input-box" placeholder="الاسم الكامل">
-                <input type="tel" id="affPhoneInput" class="input-box" placeholder="رقم الجوال (مثال: 780568507)">
-                <button type="button" class="btn-primary" onclick="openAffiliateDashboard()">عرض لوحتي ورابطي 🚀</button>
-            </div>
+        <div class="kpi-grid">
+            <div class="kpi-box"><div class="kpi-label">المستحقات المعلقة</div><div class="kpi-val" style="color:var(--green);" id="kpiPending">0 YER</div></div>
+            <div class="kpi-box"><div class="kpi-label">الأرباح المصروفة</div><div class="kpi-val" style="color:var(--royal);" id="kpiSettled">0 YER</div></div>
+            <div class="kpi-box"><div class="kpi-label">إجمالي الأرباح التراكمي</div><div class="kpi-val" id="kpiTotal">0 YER</div></div>
+            <div class="kpi-box"><div class="kpi-label">عدد المبيعات الناجحة</div><div class="kpi-val" id="kpiSales">0</div></div>
+        </div>
 
-            <div id="affDashboardArea" style="display:none; margin-top:20px; padding-top:18px; border-top:1px solid var(--border);">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                    <h3 id="affWelcomeTitle" style="font-size:17px; color:var(--navy);"></h3>
-                    <span id="affCodeBadge" style="background:#FFFBEB; color:#B45309; border:1px solid #FDE68A; padding:4px 12px; border-radius:99px; font-size:12.5px; font-weight:700;"></span>
-                </div>
+        <div class="link-copy-bar">
+            <span style="font-size:12.5px; font-weight:700; color:var(--royal);">رابط المتجر الموحد:</span>
+            <input type="text" id="storeRefLink" readonly>
+            <button type="button" class="btn-primary" style="padding:7px 14px; font-size:12.5px;" onclick="copyInput('storeRefLink')">نسخ الرابط 📋</button>
+        </div>
 
-                <div class="kpi-grid">
-                    <div class="kpi-box"><div class="kpi-label">المستحقات المعلقة</div><div class="kpi-val" style="color:var(--green);" id="kpiPending">0 YER</div></div>
-                    <div class="kpi-box"><div class="kpi-label">الأرباح المصروفة</div><div class="kpi-val" style="color:var(--royal);" id="kpiSettled">0 YER</div></div>
-                    <div class="kpi-box"><div class="kpi-label">إجمالي الأرباح التراكمي</div><div class="kpi-val" id="kpiTotal">0 YER</div></div>
-                    <div class="kpi-box"><div class="kpi-label">عدد المبيعات الناجحة</div><div class="kpi-val" id="kpiSales">0</div></div>
-                </div>
+        <div class="link-copy-bar" style="background:#F0FDFA; border-color:#99F6E4;">
+            <span style="font-size:12.5px; font-weight:700; color:var(--emerald);">رابط الدورات التدريبية:</span>
+            <input type="text" id="coursesRefLink" readonly>
+            <button type="button" class="btn-primary" style="background:var(--emerald); padding:7px 14px; font-size:12.5px;" onclick="copyInput('coursesRefLink')">نسخ الرابط 📋</button>
+        </div>
 
-                <div class="link-copy-bar">
-                    <span style="font-size:12.5px; font-weight:700; color:var(--royal);">رابط المتجر الموحد:</span>
-                    <input type="text" id="storeRefLink" readonly>
-                    <button type="button" class="btn-primary" style="padding:7px 14px; font-size:12.5px;" onclick="copyInput('storeRefLink')">نسخ الرابط 📋</button>
-                </div>
+        <h4 style="font-size:15px; color:var(--navy); margin-top:20px;">سجل الطلبات والعمولات المرتبطة بكودك</h4>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>المنتج / الدورة</th><th>العميل</th><th>المبلغ</th><th>الحالة</th></tr></thead>
+                <tbody id="affOrdersTable"></tbody>
+            </table>
+        </div>
 
-                <div class="link-copy-bar" style="background:#F0FDFA; border-color:#99F6E4;">
-                    <span style="font-size:12.5px; font-weight:700; color:var(--emerald);">رابط الدورات التدريبية:</span>
-                    <input type="text" id="coursesRefLink" readonly>
-                    <button type="button" class="btn-primary" style="background:var(--emerald); padding:7px 14px; font-size:12.5px;" onclick="copyInput('coursesRefLink')">نسخ الرابط 📋</button>
-                </div>
+        <h4 style="font-size:15px; color:var(--navy); margin-top:20px;">سجل التسويات</h4>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>النوع</th><th>المبلغ المصفّى</th><th>الفترة</th><th>ملاحظات</th></tr></thead>
+                <tbody id="affSettlementsTable"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
 
-                <h4 style="font-size:15px; color:var(--navy); margin-top:20px;">سجل الطلبات والعمولات المرتبطة بكودك</h4>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>المنتج / الدورة</th><th>العميل</th><th>المبلغ</th><th>الحالة</th></tr></thead>
-                        <tbody id="affOrdersTable"></tbody>
-                    </table>
-                </div>
+<script>
+    async function syncAffiliateFromAuth() {
+        const user = window.SadaraAuth ? window.SadaraAuth.getUser() : null;
+        if (!user) return;
+        const promoted = await window.SadaraAuth.promoteToAffiliate();
+        if (!promoted) return;
 
-                <h4 style="font-size:15px; color:var(--navy); margin-top:20px;">سجل التسويات</h4>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>النوع</th><th>المبلغ المصفّى</th><th>الفترة</th><th>ملاحظات</th></tr></thead>
-                        <tbody id="affSettlementsTable"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        const db = supabase.createClient("https://lvutrzswngpkjfamgact.supabase.co", "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG");
-
-        function normalizePhone(raw) {
-            const eng = String(raw || '').replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
-            return eng.replace(/[^0-9]/g, '');
+        let { data: aff } = await db.from("affiliates").select("*").eq("phone", promoted.phone).maybeSingle();
+        if (!aff) {
+            const { data: created } = await db.from("affiliates").insert([{
+                full_name: promoted.full_name, name: promoted.full_name, phone: promoted.phone,
+                ref_code: promoted.ref_code, pending_earnings: 0, settled_earnings: 0, total_earnings: 0, total_sales: 0
+            }]).select().single();
+            aff = created;
         }
 
-        function toggleDrawer(open) {
-            document.getElementById('drawerOverlay').style.display = open ? 'block' : 'none';
-            document.getElementById('sideDrawer').classList.toggle('open', open);
-        }
+        document.getElementById("affDashboardArea").style.display = "block";
+        document.getElementById("affWelcomeTitle").textContent = `لوحة المسوّق: ${aff.full_name || aff.name}`;
+        document.getElementById("affCodeBadge").textContent = `كود الإحالة: ${aff.ref_code}`;
+        document.getElementById("kpiPending").textContent = `${aff.pending_earnings || 0} YER`;
+        document.getElementById("kpiSettled").textContent = `${aff.settled_earnings || 0} YER`;
+        document.getElementById("kpiTotal").textContent = `${aff.total_earnings || 0} YER`;
+        document.getElementById("kpiSales").textContent = aff.total_sales || 0;
 
-        function calcAffProfit() {
-            const s = Number(document.getElementById('sRange').value);
-            const c = Number(document.getElementById('cRange').value);
-            document.getElementById('sVal').textContent = s;
-            document.getElementById('cVal').textContent = c;
-            document.getElementById('totalProfitBox').textContent = (s * c).toLocaleString('en-US') + ' YER';
-        }
+        const origin = window.location.origin;
+        document.getElementById("storeRefLink").value = `${origin}/index.html?ref=${aff.ref_code}`;
+        document.getElementById("coursesRefLink").value = `${origin}/courses.html?ref=${aff.ref_code}`;
 
-        function copyInput(id) {
-            const el = document.getElementById(id);
-            el.select();
-            navigator.clipboard.writeText(el.value);
-            alert('تم نسخ رابط الإحالة بنجاح ✅');
-        }
+        const { data: orders } = await db.from("orders").select("*").eq("ref_code", aff.ref_code).order("id", { ascending: false });
+        document.getElementById("affOrdersTable").innerHTML = (orders || []).map(o => `
+            <tr>
+                <td>${o.product_title || "-"}</td>
+                <td>${o.customer_name || "-"}</td>
+                <td>${o.total_price || 0} YER</td>
+                <td><b>${o.status === "approved" ? "معتمد ✅" : (o.status === "rejected" ? "مرفوض ❌" : "قيد المراجعة ⏳")}</b></td>
+            </tr>
+        `).join("") || '<tr><td colspan="4">لا توجد طلبات مسجلة عبر رابطك بعد.</td></tr>';
 
-        async function openAffiliateDashboard() {
-            const name = document.getElementById('affNameInput').value.trim();
-            const phone = normalizePhone(document.getElementById('affPhoneInput').value);
-            if (!phone) return alert('يرجى إدخال رقم الجوال.');
+        const { data: sets } = await db.from("affiliate_settlements").select("*").eq("ref_code", aff.ref_code).order("id", { ascending: false });
+        document.getElementById("affSettlementsTable").innerHTML = (sets || []).map(s => `
+            <tr>
+                <td>${s.settlement_type === "yearly_rollover" ? "ترحيل سنوي" : "تسوية"}</td>
+                <td><b>${s.settled_amount || 0} YER</b></td>
+                <td>${s.period_month || s.period_year || "-"}</td>
+                <td>${s.notes || "-"}</td>
+            </tr>
+        `).join("") || '<tr><td colspan="4">لا توجد تسويات مسجلة بعد.</td></tr>';
+    }
 
-            localStorage.setItem('sadara_aff_phone', phone);
-            let { data: aff } = await db.from('affiliates').select('*').eq('phone', phone).maybeSingle();
-            if (!aff) {
-                const ref_code = 'SDR' + phone.slice(-4);
-                const { data: created } = await db.from('affiliates').insert([{
-                    full_name: name || 'مسوّق صدارة', name: name || 'مسوّق صدارة', phone, ref_code,
-                    pending_earnings: 0, settled_earnings: 0, total_earnings: 0, total_sales: 0
-                }]).select().single();
-                aff = created;
-            }
-
-            document.getElementById('affDashboardArea').style.display = 'block';
-            document.getElementById('affWelcomeTitle').textContent = `لوحة المسوّق: ${aff.full_name || aff.name}`;
-            document.getElementById('affCodeBadge').textContent = `كود الإحالة: ${aff.ref_code}`;
-            document.getElementById('kpiPending').textContent = `${aff.pending_earnings || 0} YER`;
-            document.getElementById('kpiSettled').textContent = `${aff.settled_earnings || 0} YER`;
-            document.getElementById('kpiTotal').textContent = `${aff.total_earnings || 0} YER`;
-            document.getElementById('kpiSales').textContent = aff.total_sales || 0;
-
-            const origin = window.location.origin;
-            document.getElementById('storeRefLink').value = `${origin}/index.html?ref=${aff.ref_code}`;
-            document.getElementById('coursesRefLink').value = `${origin}/courses.html?ref=${aff.ref_code}`;
-
-            const { data: orders } = await db.from('orders').select('*').eq('ref_code', aff.ref_code).order('id', { ascending: false });
-            document.getElementById('affOrdersTable').innerHTML = (orders || []).map(o => `
-                <tr>
-                    <td>${o.product_title || '-'}</td>
-                    <td>${o.customer_name || '-'}</td>
-                    <td>${o.total_price || 0} YER</td>
-                    <td><b>${o.status === 'approved' ? 'معتمد ✅' : (o.status === 'rejected' ? 'مرفوض ❌' : 'قيد المراجعة ⏳')}</b></td>
-                </tr>
-            `).join('') || '<tr><td colspan="4">لا توجد طلبات مسجلة عبر رابطك بعد.</td></tr>';
-
-            const { data: sets } = await db.from('affiliate_settlements').select('*').eq('ref_code', aff.ref_code).order('id', { ascending: false });
-            document.getElementById('affSettlementsTable').innerHTML = (sets || []).map(s => `
-                <tr>
-                    <td>${s.settlement_type === 'yearly_rollover' ? 'ترحيل سنوي' : 'تسوية'}</td>
-                    <td><b>${s.settled_amount || 0} YER</b></td>
-                    <td>${s.period_month || s.period_year || '-'}</td>
-                    <td>${s.notes || '-'}</td>
-                </tr>
-            `).join('') || '<tr><td colspan="4">لا توجد تسويات مسجلة بعد.</td></tr>';
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedPhone = localStorage.getItem('sadara_aff_phone');
-            if (savedPhone) {
-                document.getElementById('affPhoneInput').value = savedPhone;
-                openAffiliateDashboard();
-            }
-        });
-    </script>
-</body>
-</html>
+    window.addEventListener("DOMContentLoaded", () => {
+        if (window.SadaraAuth && window.SadaraAuth.getUser()) syncAffiliateFromAuth();
+    });
+</script>
