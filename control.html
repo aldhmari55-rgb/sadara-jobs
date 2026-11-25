@@ -389,4 +389,39 @@
                 msg.textContent = "تم نشر الدورة بنجاح ✅";
                 document.getElementById("courseTitle").value = "";
                 document.getElementById("courseDesc").value = "";
-                document.getElementById("lessonTitle").
+                document.getElementById("lessonTitle").value = "";
+                document.getElementById("lessonUrl").value = "";
+                loadCoursesAdmin();
+            }
+        }
+
+        async function loadCoursesAdmin() {
+            const { data: list } = await db.from("courses").select("*").order("id", { ascending: false });
+            document.getElementById("coursesAdminList").innerHTML = (list || []).map(c => `
+                <div class="row-box">
+                    <div><b>${c.title}</b> — ${c.price ? c.price + " YER" : "مجانية"}</div>
+                    <button type="button" class="btn btn-red" onclick="deleteRecord('courses', ${c.id})">حذف 🗑️</button>
+                </div>
+            `).join("");
+        }
+
+        async function deleteRecord(table, id) {
+            if (!confirm("هل أنت متأكد من الحذف؟")) return;
+            await db.from(table).delete().eq("id", id);
+            refreshAll();
+        }
+
+        async function refreshAll() {
+            await Promise.all([
+                loadUsersAdmin(),
+                loadOrdersAdmin(),
+                loadAffiliatesAdmin(),
+                loadServicesAdmin(),
+                loadCoursesAdmin()
+            ]);
+        }
+
+        window.addEventListener("DOMContentLoaded", refreshAll);
+    </script>
+</body>
+</html>
