@@ -1,112 +1,226 @@
-<!-- داخل <main class="container"> في affiliate.html -->
-<section class="card" id="affAuthCard">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <div>
-            <h2 style="font-size:18px; color:var(--navy);">الدخول أو إنشاء حساب مسوّق بالعمولة</h2>
-            <p style="font-size:13px; color:var(--text-muted);">نفس حساب المنصة: الاسم أو رقم الجوال + رمز سريع من 4 أرقام أو حروف</p>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة المسوّقين بالعمولة | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --navy: #0F172A; --royal: #2563EB; --emerald: #0D9488; --green: #10B981;
+            --gold: #F59E0B; --bg: #F8FAFC; --surface: #FFFFFF; --border: #E2E8F0;
+            --text: #1E293B; --muted: #64748B;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 50px; }
+        .topbar {
+            background: var(--navy); color: #fff; padding: 14px 18px;
+            display: flex; justify-content: space-between; align-items: center; gap: 10px;
+            position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--gold);
+        }
+        .brand { font-size: 17px; font-weight: 900; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .top-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .drawer-backdrop { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 1100; }
+        .side-drawer {
+            position: fixed; top: 0; right: -300px; width: 280px; height: 100%;
+            background: #fff; z-index: 1200; padding: 18px; transition: 0.25s ease;
+            box-shadow: -8px 0 28px rgba(15,23,42,0.15);
+        }
+        .side-drawer.open { right: 0; }
+        .drawer-link {
+            display: flex; align-items: center; gap: 10px; padding: 11px 12px;
+            color: var(--text); text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 13.5px; margin-bottom: 6px;
+        }
+        .drawer-link:hover { background: #F1F5F9; color: var(--royal); }
+        .container { max-width: 1040px; margin: 22px auto; padding: 0 14px; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-bottom: 18px; box-shadow: 0 6px 20px rgba(15,23,42,0.04); }
+        .btn-primary {
+            background: var(--royal); color: #fff; border: none; padding: 10px 16px;
+            border-radius: 11px; font-weight: 700; font-size: 13px; cursor: pointer;
+        }
+        .btn-primary:hover { filter: brightness(0.95); }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 16px; }
+        .kpi-box { background: #F8FAFC; border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+        .kpi-label { font-size: 12px; color: var(--muted); font-weight: 700; }
+        .kpi-val { font-size: 19px; font-weight: 900; margin-top: 6px; color: var(--navy); }
+        .link-copy-bar {
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+            background: #EFF6FF; border: 1px solid #BFDBFE; padding: 10px 12px; border-radius: 12px; margin-top: 12px;
+        }
+        .link-copy-bar input { flex: 1; min-width: 210px; border: 1px solid #CBD5E1; background: #fff; padding: 8px 10px; border-radius: 9px; font-size: 12.5px; }
+        .table-wrap { overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
+        th { background: #F8FAFC; color: var(--navy); font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="drawer-backdrop" id="drawerBackdrop" onclick="toggleDrawer(false)"></div>
+    <aside class="side-drawer" id="sideDrawer">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid var(--border);">
+            <strong style="color:var(--navy);">أقسام منصة صدارة</strong>
+            <button type="button" onclick="toggleDrawer(false)" style="border:none; background:#F1F5F9; padding:4px 9px; border-radius:8px; cursor:pointer;">✕</button>
         </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button type="button" class="btn-primary" onclick="SadaraAuth.openModal('login', syncAffiliateFromAuth)">تسجيل الدخول 🔓</button>
-            <button type="button" class="btn-primary" style="background:var(--green);" onclick="SadaraAuth.openModal('register', syncAffiliateFromAuth)">إنشاء حساب جديد 🚀</button>
-        </div>
-    </div>
+        <a href="index.html" class="drawer-link"><i class="fa-solid fa-store"></i> المتجر والمنتجات (الرئيسية)</a>
+        <a href="courses.html" class="drawer-link"><i class="fa-solid fa-graduation-cap"></i> الدورات التدريبية</a>
+        <a href="affiliate.html" class="drawer-link"><i class="fa-solid fa-handshake"></i> بوابة المسوّقين بالعمولة</a>
+        <a href="jobs.html" class="drawer-link"><i class="fa-solid fa-briefcase"></i> الوظائف والكفاءات</a>
+        <a href="blog.html" class="drawer-link"><i class="fa-solid fa-newspaper"></i> المدونة والمقالات</a>
+    </aside>
 
-    <div id="affDashboardArea" style="display:none; margin-top:20px; padding-top:18px; border-top:1px solid var(--border);">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-            <h3 id="affWelcomeTitle" style="font-size:17px; color:var(--navy);"></h3>
-            <div style="display:flex; gap:8px; align-items:center;">
-                <span id="affCodeBadge" style="background:#FFFBEB; color:#B45309; border:1px solid #FDE68A; padding:4px 12px; border-radius:99px; font-size:12.5px; font-weight:700;"></span>
-                <button type="button" onclick="SadaraAuth.logout(); location.reload();" style="border:1px solid var(--border); background:#fff; color:#E11D48; padding:5px 10px; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer;">خروج</button>
+    <header class="topbar">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <button type="button" onclick="toggleDrawer(true)" style="background:rgba(255,255,255,0.12); color:#fff; border:none; padding:8px 11px; border-radius:10px; cursor:pointer;">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="index.html" class="brand"><i class="fa-solid fa-handshake" style="color:var(--gold);"></i> صدارة — التسويق بالعمولة</a>
+        </div>
+        <div class="top-actions">
+            <button type="button" data-sadara-auth-btn class="sa-pill-btn" onclick="SadaraAuth.openModal('login', syncAffiliateFromAuth)">🔐 دخول / حساب جديد</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card" id="affAuthCard">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <div>
+                    <h1 style="font-size:20px; color:var(--navy); font-weight:900;">بوابة وحساب المسوّق بالعمولة</h1>
+                    <p style="font-size:13.5px; color:var(--muted); margin-top:4px;">سجّل دخولك بالاسم أو رقم الجوال + رمز من 4 أرقام أو حروف، أو أنشئ حسابك الجديد للبدء فوراً.</p>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button type="button" class="btn-primary" onclick="SadaraAuth.openModal('login', syncAffiliateFromAuth)">تسجيل الدخول 🔓</button>
+                    <button type="button" class="btn-primary" style="background:var(--green);" onclick="SadaraAuth.openModal('register', syncAffiliateFromAuth)">إنشاء حساب جديد 🚀</button>
+                </div>
             </div>
-        </div>
 
-        <div class="kpi-grid">
-            <div class="kpi-box"><div class="kpi-label">المستحقات المعلقة</div><div class="kpi-val" style="color:var(--green);" id="kpiPending">0 YER</div></div>
-            <div class="kpi-box"><div class="kpi-label">الأرباح المصروفة</div><div class="kpi-val" style="color:var(--royal);" id="kpiSettled">0 YER</div></div>
-            <div class="kpi-box"><div class="kpi-label">إجمالي الأرباح التراكمي</div><div class="kpi-val" id="kpiTotal">0 YER</div></div>
-            <div class="kpi-box"><div class="kpi-label">عدد المبيعات الناجحة</div><div class="kpi-val" id="kpiSales">0</div></div>
-        </div>
+            <div id="affDashboardArea" style="display:none; margin-top:20px; padding-top:18px; border-top:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                    <h2 id="affWelcomeTitle" style="font-size:17px; color:var(--navy); font-weight:900;"></h2>
+                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                        <span id="affCodeBadge" style="background:#FFFBEB; color:#B45309; border:1px solid #FDE68A; padding:5px 12px; border-radius:99px; font-size:12.5px; font-weight:700;"></span>
+                        <button type="button" onclick="SadaraAuth.logout(); location.reload();" style="border:1px solid var(--border); background:#fff; color:#E11D48; padding:6px 12px; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer;">تسجيل خروج</button>
+                    </div>
+                </div>
 
-        <div class="link-copy-bar">
-            <span style="font-size:12.5px; font-weight:700; color:var(--royal);">رابط المتجر الموحد:</span>
-            <input type="text" id="storeRefLink" readonly>
-            <button type="button" class="btn-primary" style="padding:7px 14px; font-size:12.5px;" onclick="copyInput('storeRefLink')">نسخ الرابط 📋</button>
-        </div>
+                <div class="kpi-grid">
+                    <div class="kpi-box"><div class="kpi-label">المستحقات المعلقة</div><div class="kpi-val" style="color:var(--green);" id="kpiPending">0 YER</div></div>
+                    <div class="kpi-box"><div class="kpi-label">الأرباح المصروفة</div><div class="kpi-val" style="color:var(--royal);" id="kpiSettled">0 YER</div></div>
+                    <div class="kpi-box"><div class="kpi-label">إجمالي الأرباح التراكمي</div><div class="kpi-val" id="kpiTotal">0 YER</div></div>
+                    <div class="kpi-box"><div class="kpi-label">عدد المبيعات الناجحة</div><div class="kpi-val" id="kpiSales">0</div></div>
+                </div>
 
-        <div class="link-copy-bar" style="background:#F0FDFA; border-color:#99F6E4;">
-            <span style="font-size:12.5px; font-weight:700; color:var(--emerald);">رابط الدورات التدريبية:</span>
-            <input type="text" id="coursesRefLink" readonly>
-            <button type="button" class="btn-primary" style="background:var(--emerald); padding:7px 14px; font-size:12.5px;" onclick="copyInput('coursesRefLink')">نسخ الرابط 📋</button>
-        </div>
+                <div class="link-copy-bar">
+                    <span style="font-size:12.5px; font-weight:700; color:var(--royal);">رابط المتجر الموحد:</span>
+                    <input type="text" id="storeRefLink" readonly>
+                    <button type="button" class="btn-primary" style="padding:8px 14px; font-size:12.5px;" onclick="copyInput('storeRefLink')">نسخ الرابط 📋</button>
+                </div>
 
-        <h4 style="font-size:15px; color:var(--navy); margin-top:20px;">سجل الطلبات والعمولات المرتبطة بكودك</h4>
-        <div class="table-wrap">
-            <table>
-                <thead><tr><th>المنتج / الدورة</th><th>العميل</th><th>المبلغ</th><th>الحالة</th></tr></thead>
-                <tbody id="affOrdersTable"></tbody>
-            </table>
-        </div>
+                <div class="link-copy-bar" style="background:#F0FDFA; border-color:#99F6E4;">
+                    <span style="font-size:12.5px; font-weight:700; color:var(--emerald);">رابط الدورات التدريبية:</span>
+                    <input type="text" id="coursesRefLink" readonly>
+                    <button type="button" class="btn-primary" style="background:var(--emerald); padding:8px 14px; font-size:12.5px;" onclick="copyInput('coursesRefLink')">نسخ الرابط 📋</button>
+                </div>
 
-        <h4 style="font-size:15px; color:var(--navy); margin-top:20px;">سجل التسويات</h4>
-        <div class="table-wrap">
-            <table>
-                <thead><tr><th>النوع</th><th>المبلغ المصفّى</th><th>الفترة</th><th>ملاحظات</th></tr></thead>
-                <tbody id="affSettlementsTable"></tbody>
-            </table>
-        </div>
-    </div>
-</section>
+                <h3 style="font-size:15.5px; color:var(--navy); margin-top:22px; font-weight:800;">سجل الطلبات والعمولات المرتبطة بكودك</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>المنتج / الدورة</th><th>العميل</th><th>المبلغ</th><th>الحالة</th></tr></thead>
+                        <tbody id="affOrdersTable"></tbody>
+                    </table>
+                </div>
 
-<script>
-    async function syncAffiliateFromAuth() {
-        const user = window.SadaraAuth ? window.SadaraAuth.getUser() : null;
-        if (!user) return;
-        const promoted = await window.SadaraAuth.promoteToAffiliate();
-        if (!promoted) return;
+                <h3 style="font-size:15.5px; color:var(--navy); margin-top:22px; font-weight:800;">سجل التسويات والترحيل</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>النوع</th><th>المبلغ المصفّى</th><th>الفترة</th><th>ملاحظات</th></tr></thead>
+                        <tbody id="affSettlementsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
 
-        let { data: aff } = await db.from("affiliates").select("*").eq("phone", promoted.phone).maybeSingle();
-        if (!aff) {
-            const { data: created } = await db.from("affiliates").insert([{
-                full_name: promoted.full_name, name: promoted.full_name, phone: promoted.phone,
-                ref_code: promoted.ref_code, pending_earnings: 0, settled_earnings: 0, total_earnings: 0, total_sales: 0
-            }]).select().single();
-            aff = created;
+    <script src="sadara-auth.js"></script>
+    <script>
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        function toggleDrawer(open) {
+            document.getElementById("sideDrawer").classList.toggle("open", open);
+            document.getElementById("drawerBackdrop").style.display = open ? "block" : "none";
         }
 
-        document.getElementById("affDashboardArea").style.display = "block";
-        document.getElementById("affWelcomeTitle").textContent = `لوحة المسوّق: ${aff.full_name || aff.name}`;
-        document.getElementById("affCodeBadge").textContent = `كود الإحالة: ${aff.ref_code}`;
-        document.getElementById("kpiPending").textContent = `${aff.pending_earnings || 0} YER`;
-        document.getElementById("kpiSettled").textContent = `${aff.settled_earnings || 0} YER`;
-        document.getElementById("kpiTotal").textContent = `${aff.total_earnings || 0} YER`;
-        document.getElementById("kpiSales").textContent = aff.total_sales || 0;
+        function copyInput(id) {
+            const el = document.getElementById(id);
+            if (!el || !el.value) return;
+            navigator.clipboard.writeText(el.value);
+            alert("تم نسخ الرابط بنجاح! 📋");
+        }
 
-        const origin = window.location.origin;
-        document.getElementById("storeRefLink").value = `${origin}/index.html?ref=${aff.ref_code}`;
-        document.getElementById("coursesRefLink").value = `${origin}/courses.html?ref=${aff.ref_code}`;
+        async function syncAffiliateFromAuth() {
+            const user = window.SadaraAuth ? window.SadaraAuth.getUser() : null;
+            if (!user) return;
+            const promoted = await window.SadaraAuth.promoteToAffiliate();
+            if (!promoted) return;
 
-        const { data: orders } = await db.from("orders").select("*").eq("ref_code", aff.ref_code).order("id", { ascending: false });
-        document.getElementById("affOrdersTable").innerHTML = (orders || []).map(o => `
-            <tr>
-                <td>${o.product_title || "-"}</td>
-                <td>${o.customer_name || "-"}</td>
-                <td>${o.total_price || 0} YER</td>
-                <td><b>${o.status === "approved" ? "معتمد ✅" : (o.status === "rejected" ? "مرفوض ❌" : "قيد المراجعة ⏳")}</b></td>
-            </tr>
-        `).join("") || '<tr><td colspan="4">لا توجد طلبات مسجلة عبر رابطك بعد.</td></tr>';
+            let { data: aff } = await db.from("affiliates").select("*").eq("phone", promoted.phone).maybeSingle();
+            if (!aff) {
+                const { data: created } = await db.from("affiliates").insert([{
+                    full_name: promoted.full_name,
+                    name: promoted.full_name,
+                    phone: promoted.phone,
+                    ref_code: promoted.ref_code,
+                    pending_earnings: 0,
+                    settled_earnings: 0,
+                    total_earnings: 0,
+                    total_sales: 0
+                }]).select().single();
+                aff = created;
+            }
+            if (!aff) return;
 
-        const { data: sets } = await db.from("affiliate_settlements").select("*").eq("ref_code", aff.ref_code).order("id", { ascending: false });
-        document.getElementById("affSettlementsTable").innerHTML = (sets || []).map(s => `
-            <tr>
-                <td>${s.settlement_type === "yearly_rollover" ? "ترحيل سنوي" : "تسوية"}</td>
-                <td><b>${s.settled_amount || 0} YER</b></td>
-                <td>${s.period_month || s.period_year || "-"}</td>
-                <td>${s.notes || "-"}</td>
-            </tr>
-        `).join("") || '<tr><td colspan="4">لا توجد تسويات مسجلة بعد.</td></tr>';
-    }
+            document.getElementById("affDashboardArea").style.display = "block";
+            document.getElementById("affWelcomeTitle").textContent = `لوحة المسوّق: ${aff.full_name || aff.name}`;
+            document.getElementById("affCodeBadge").textContent = `كود الإحالة: ${aff.ref_code}`;
+            document.getElementById("kpiPending").textContent = `${aff.pending_earnings || 0} YER`;
+            document.getElementById("kpiSettled").textContent = `${aff.settled_earnings || 0} YER`;
+            document.getElementById("kpiTotal").textContent = `${aff.total_earnings || 0} YER`;
+            document.getElementById("kpiSales").textContent = aff.total_sales || 0;
 
-    window.addEventListener("DOMContentLoaded", () => {
-        if (window.SadaraAuth && window.SadaraAuth.getUser()) syncAffiliateFromAuth();
-    });
-</script>
+            const origin = window.location.origin;
+            document.getElementById("storeRefLink").value = `${origin}/index.html?ref=${aff.ref_code}`;
+            document.getElementById("coursesRefLink").value = `${origin}/courses.html?ref=${aff.ref_code}`;
+
+            const { data: orders } = await db.from("orders").select("*").eq("ref_code", aff.ref_code).order("id", { ascending: false });
+            document.getElementById("affOrdersTable").innerHTML = (orders || []).map(o => `
+                <tr>
+                    <td>${o.product_title || "-"}</td>
+                    <td>${o.customer_name || "-"}</td>
+                    <td>${o.total_price || 0} YER</td>
+                    <td><b>${o.status === "approved" ? "معتمد ✅" : (o.status === "rejected" ? "مرفوض ❌" : "قيد المراجعة ⏳")}</b></td>
+                </tr>
+            `).join("") || '<tr><td colspan="4">لا توجد طلبات مسجلة عبر رابطك بعد.</td></tr>';
+
+            const { data: sets } = await db.from("affiliate_settlements").select("*").eq("ref_code", aff.ref_code).order("id", { ascending: false });
+            document.getElementById("affSettlementsTable").innerHTML = (sets || []).map(s => `
+                <tr>
+                    <td>${s.settlement_type === "yearly_rollover" ? "ترحيل سنوي" : "تسوية"}</td>
+                    <td><b>${s.settled_amount || 0} YER</b></td>
+                    <td>${s.period_month || s.period_year || "-"}</td>
+                    <td>${s.notes || "-"}</td>
+                </tr>
+            `).join("") || '<tr><td colspan="4">لا توجد تسويات مسجلة بعد.</td></tr>';
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            if (window.SadaraAuth && window.SadaraAuth.getUser()) syncAffiliateFromAuth();
+        });
+        window.addEventListener("sadara:auth-changed", (e) => {
+            if (e.detail) syncAffiliateFromAuth();
+        });
+    </script>
+</body>
+</html>
