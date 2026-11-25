@@ -8,8 +8,10 @@
     const SESSION_KEY = "sadara_unified_user_v1";
     const LOCAL_USERS_KEY = "sadara_local_users_cache_v1";
     const ATTEMPTS_KEY = "sadara_pin_attempts_v1";
+
     let authModalEl = null;
     let onAuthSuccessCallback = null;
+    let isMandatoryLock = true;
 
     function normalizeDigits(raw) {
         return String(raw || "").replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
@@ -54,8 +56,9 @@
             phone: cleanPhone,
             pin_code: normalizePin(user.pin_code || ""),
             is_affiliate: Boolean(user.is_affiliate),
-            ref_code: user.ref_code || ("SDR" + cleanPhone.slice(-4))
+            ref_code: user.ref_code || ("SADARA_" + cleanPhone.slice(-4))
         };
+
         localStorage.removeItem(SESSION_KEY);
         sessionStorage.removeItem(SESSION_KEY);
         if (remember) {
@@ -63,12 +66,19 @@
         } else {
             sessionStorage.setItem(SESSION_KEY, JSON.stringify(clean));
         }
+
         if (clean.phone) {
             localStorage.setItem("sadara_customer_phone", clean.phone);
             localStorage.setItem("sadara_student_phone", clean.phone);
-            if (clean.is_affiliate) localStorage.setItem("sadara_aff_phone", clean.phone);
+            localStorage.setItem("sadara_logged_name", clean.full_name);
+            localStorage.setItem("sadara_logged_phone", clean.phone);
+            if (clean.is_affiliate) {
+                localStorage.setItem("sadara_aff_phone", clean.phone);
+            }
         }
-        updateAuthBadges();
+
+        renderHeaderAccountControls();
+        enforceAuthGate();
         window.dispatchEvent(new CustomEvent("sadara:auth-changed", { detail: clean }));
         return clean;
     }
@@ -76,8 +86,13 @@
     function logoutSadaraUser() {
         localStorage.removeItem(SESSION_KEY);
         sessionStorage.removeItem(SESSION_KEY);
-        updateAuthBadges();
+        localStorage.removeItem("sadara_customer_phone");
+        localStorage.removeItem("sadara_student_phone");
+        localStorage.removeItem("sadara_logged_name");
+        localStorage.removeItem("sadara_logged_phone");
+        renderHeaderAccountControls();
         window.dispatchEvent(new CustomEvent("sadara:auth-changed", { detail: null }));
+        openSadaraAuthModal("login", null, true);
     }
 
     function checkLockout() {
@@ -113,31 +128,61 @@
         const style = document.createElement("style");
         style.textContent = `
             #sadaraAuthModal {
-                display: none; position: fixed; inset: 0; z-index: 5000;
-                background: rgba(15, 23, 42, 0.72); backdrop-filter: blur(4px);
+                display: none; position: fixed; inset: 0; z-index: 9999;
+                background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(5px);
                 align-items: center; justify-content: center; padding: 14px;
             }
             .sa-card {
                 background: #fff; color: #0F172A; width: 100%; max-width: 440px;
                 border-radius: 20px; padding: 20px; border: 1px solid #E2E8F0;
-                box-shadow: 0 20px 50px rgba(15, 23, 42, 0.22);
+                box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
             }
-            .sa-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #F1F5F9; padding: 4px; border-radius: 12px; margin: 12px 0 14px; }
-            .sa-tab { border: none; background: transparent; padding: 8px; border-radius: 9px; font-weight: 700; font-size: 13px; cursor: pointer; color: #475569; }
-            .sa-tab.active { background: #fff; color: #2563EB; box-shadow: 0 2px 8px rgba(15,23,42,0.06); }
+            .sa-tabs {
+                display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+                background: #F1F5F9; padding: 4px; border-radius: 12px; margin: 12px 0 14px;
+            }
+            .sa-tab {
+                border: none; background: transparent; padding: 9px; border-radius: 9px;
+                font-weight: 700; font-size: 13px; cursor: pointer; color: #475569;
+            }
+            .sa-tab.active {
+                background: #fff; color: #2563EB; box-shadow: 0 2px 8px rgba(15,23,42,0.08);
+            }
             .sa-field { margin-bottom: 11px; }
             .sa-field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; color: #0F172A; }
-            .sa-input { width: 100%; padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 11px; font-size: 13.5px; background: #F8FAFC; }
+            .sa-input {
+                width: 100%; padding: 10px 12px; border: 1px solid #CBD5E1;
+                border-radius: 11px; font-size: 13.5px; background: #F8FAFC;
+            }
             .sa-pin-input {
                 width: 100%; padding: 11px 14px; border: 1.5px solid #2563EB; border-radius: 12px;
                 font-size: 18px; font-weight: 700; letter-spacing: 8px; text-align: center;
                 text-transform: uppercase; background: #EFF6FF; color: #0F172A;
             }
-            .sa-submit { width: 100%; background: #2563EB; color: #fff; border: none; padding: 11px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
-            .sa-pill-btn {
-                display: inline-flex; align-items: center; gap: 6px; background: #EFF6FF; color: #1D4ED8;
-                border: 1px solid #BFDBFE; padding: 7px 12px; border-radius: 11px; font-size: 12.5px;
-                font-weight: 700; cursor: pointer; white-space: nowrap;
+            .sa-submit {
+                width: 100%; background: #2563EB; color: #fff; border: none;
+                padding: 11px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
+            }
+            .sa-header-bar {
+                display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap;
+            }
+            .sa-account-badge {
+                display: inline-flex; align-items: center; gap: 6px;
+                background: #EFF6FF; color: #0F172A; border: 1px solid #BFDBFE;
+                padding: 7px 11px; border-radius: 11px; font-size: 12px; font-weight: 700;
+                cursor: pointer; white-space: nowrap;
+            }
+            .sa-logout-btn {
+                display: inline-flex; align-items: center; gap: 5px;
+                background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA;
+                padding: 7px 10px; border-radius: 11px; font-size: 12px; font-weight: 700;
+                cursor: pointer; white-space: nowrap;
+            }
+            .sa-login-btn {
+                display: inline-flex; align-items: center; gap: 6px;
+                background: #2563EB; color: #fff; border: none;
+                padding: 7px 12px; border-radius: 11px; font-size: 12px; font-weight: 700;
+                cursor: pointer; white-space: nowrap;
             }
         `;
         document.head.appendChild(style);
@@ -148,10 +193,10 @@
             <div class="sa-card" onclick="event.stopPropagation()">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
-                        <div style="font-size:16px; font-weight:700; color:#0F172A;">حساب منصة صدارة الموحد</div>
-                        <div style="font-size:12px; color:#64748B;">دخول واحد للمتجر، الدورات، والتسويق بالعمولة</div>
+                        <div style="font-size:16px; font-weight:900; color:#0F172A;">حساب منصة صدارة الموحد</div>
+                        <div style="font-size:12px; color:#64748B;">يجب تسجيل الدخول أو إنشاء حساب للمتابعة في المتجر والدورات</div>
                     </div>
-                    <button type="button" id="saCloseBtn" style="border:none; background:#F1F5F9; width:32px; height:32px; border-radius:9px; font-weight:700; cursor:pointer;">✕</button>
+                    <button type="button" id="saCloseBtn" style="display:none; border:none; background:#F1F5F9; width:32px; height:32px; border-radius:9px; font-weight:700; cursor:pointer;">✕</button>
                 </div>
 
                 <div class="sa-tabs">
@@ -199,9 +244,14 @@
         document.body.appendChild(authModalEl);
 
         authModalEl.addEventListener("click", (e) => {
-            if (e.target.id === "sadaraAuthModal") closeSadaraAuthModal();
+            if (!isMandatoryLock && e.target.id === "sadaraAuthModal") {
+                closeSadaraAuthModal();
+            }
         });
-        document.getElementById("saCloseBtn").onclick = closeSadaraAuthModal;
+
+        document.getElementById("saCloseBtn").onclick = () => {
+            if (!isMandatoryLock) closeSadaraAuthModal();
+        };
         document.getElementById("saTabLogin").onclick = () => switchAuthMode("login");
         document.getElementById("saTabRegister").onclick = () => switchAuthMode("register");
         document.getElementById("saDoLoginBtn").onclick = handleLoginSubmit;
@@ -221,15 +271,28 @@
         document.getElementById("saMsgBox").textContent = "";
     }
 
-    function openSadaraAuthModal(mode = "login", callback = null) {
+    function openSadaraAuthModal(mode = "login", callback = null, mandatory = true) {
         ensureModalStylesAndDom();
         onAuthSuccessCallback = typeof callback === "function" ? callback : null;
+        isMandatoryLock = mandatory;
+        const closeBtn = document.getElementById("saCloseBtn");
+        if (closeBtn) closeBtn.style.display = mandatory ? "none" : "inline-block";
         switchAuthMode(mode);
         authModalEl.style.display = "flex";
     }
 
     function closeSadaraAuthModal() {
+        if (isMandatoryLock && !getSavedUser()) return;
         if (authModalEl) authModalEl.style.display = "none";
+    }
+
+    function enforceAuthGate() {
+        const user = getSavedUser();
+        if (!user) {
+            openSadaraAuthModal("login", null, true);
+        } else if (authModalEl) {
+            authModalEl.style.display = "none";
+        }
     }
 
     async function handleLoginSubmit() {
@@ -258,10 +321,12 @@
         let candidates = [];
 
         if (authClient) {
-            let q = authClient.from("platform_users").select("*");
-            q = cleanPhone.length >= 6 ? q.eq("phone", cleanPhone) : q.ilike("full_name", rawId);
-            const { data } = await q.limit(5);
-            candidates = data || [];
+            try {
+                let q = authClient.from("platform_users").select("*");
+                q = cleanPhone.length >= 6 ? q.eq("phone", cleanPhone) : q.ilike("full_name", rawId);
+                const { data } = await q.limit(5);
+                candidates = data || [];
+            } catch (_) {}
         }
 
         if (!candidates.length) {
@@ -285,9 +350,9 @@
         msgEl.style.color = "#059669";
         msgEl.textContent = `أهلاً بك ${sessionUser.full_name} ✅`;
         setTimeout(() => {
-            closeSadaraAuthModal();
+            if (authModalEl) authModalEl.style.display = "none";
             if (onAuthSuccessCallback) onAuthSuccessCallback(sessionUser);
-        }, 450);
+        }, 350);
     }
 
     async function handleRegisterSubmit() {
@@ -305,41 +370,33 @@
         msgEl.style.color = "#2563EB";
         msgEl.textContent = "جاري إنشاء حسابك الموحد...";
 
-        const ref_code = "SDR" + phone.slice(-4);
+        const ref_code = "SADARA_" + phone.slice(-4);
         let savedRecord = { full_name, phone, pin_code, is_affiliate: false, ref_code, is_active: true };
 
         if (authClient) {
-            const { data: existing, error: findErr } = await authClient
-                .from("platform_users")
-                .select("*")
-                .eq("phone", phone)
-                .maybeSingle();
+            try {
+                const { data: existing } = await authClient
+                    .from("platform_users")
+                    .select("*")
+                    .eq("phone", phone)
+                    .maybeSingle();
 
-            if (!findErr && existing) {
-                msgEl.style.color = "#D97706";
-                msgEl.textContent = "هذا الرقم مسجل مسبقاً. انتقل إلى تبويب «تسجيل الدخول» وأدخل رمزك.";
-                return;
-            }
+                if (existing) {
+                    msgEl.style.color = "#D97706";
+                    msgEl.textContent = "هذا الرقم مسجل مسبقاً. انتقل إلى تبويب «تسجيل الدخول» وأدخل رمزك.";
+                    return;
+                }
 
-            const { data: created, error: insErr } = await authClient
-                .from("platform_users")
-                .insert([savedRecord])
-                .select()
-                .single();
+                const { data: created } = await authClient
+                    .from("platform_users")
+                    .insert([savedRecord])
+                    .select()
+                    .single();
 
-            if (!insErr && created) {
-                savedRecord = created;
-            } else if (insErr) {
-                writeLocalUser(savedRecord);
-                const sessionUser = saveUserSession(savedRecord, true);
-                msgEl.style.color = "#059669";
-                msgEl.textContent = "تم إنشاء الحساب محلياً وحفظه (يرجى التأكد من تفعيل جدول platform_users في Supabase).";
-                setTimeout(() => {
-                    closeSadaraAuthModal();
-                    if (onAuthSuccessCallback) onAuthSuccessCallback(sessionUser);
-                }, 900);
-                return;
-            }
+                if (created) {
+                    savedRecord = created;
+                }
+            } catch (_) {}
         }
 
         writeLocalUser(savedRecord);
@@ -347,46 +404,57 @@
         msgEl.style.color = "#059669";
         msgEl.textContent = "تم إنشاء حسابك وحفظ رمزك بنجاح 🎉";
         setTimeout(() => {
-            closeSadaraAuthModal();
+            if (authModalEl) authModalEl.style.display = "none";
             if (onAuthSuccessCallback) onAuthSuccessCallback(sessionUser);
-        }, 500);
+        }, 400);
     }
 
     async function promoteCurrentUserToAffiliate() {
         const user = getSavedUser();
         if (!user) {
-            openSadaraAuthModal("register", promoteCurrentUserToAffiliate);
+            openSadaraAuthModal("register", promoteCurrentUserToAffiliate, true);
             return null;
         }
-        const ref_code = user.ref_code || ("SDR" + user.phone.slice(-4));
+        const ref_code = user.ref_code || ("SADARA_" + user.phone.slice(-4));
         if (authClient && user.id) {
-            await authClient.from("platform_users").update({ is_affiliate: true, ref_code }).eq("id", user.id);
-            const { data: existingAff } = await authClient.from("affiliates").select("*").eq("phone", user.phone).maybeSingle();
-            if (!existingAff) {
-                await authClient.from("affiliates").insert([{
-                    full_name: user.full_name,
-                    name: user.full_name,
-                    phone: user.phone,
-                    ref_code,
-                    pending_earnings: 0,
-                    settled_earnings: 0,
-                    total_earnings: 0,
-                    total_sales: 0
-                }]);
-            }
+            try {
+                await authClient.from("platform_users").update({ is_affiliate: true, ref_code }).eq("id", user.id);
+                const { data: existingAff } = await authClient.from("affiliates").select("*").eq("phone", user.phone).maybeSingle();
+                if (!existingAff) {
+                    await authClient.from("affiliates").insert([{
+                        full_name: user.full_name,
+                        name: user.full_name,
+                        phone: user.phone,
+                        ref_code,
+                        pending_earnings: 0,
+                        settled_earnings: 0,
+                        total_earnings: 0,
+                        total_sales: 0
+                    }]);
+                }
+            } catch (_) {}
         }
         const updated = { ...user, is_affiliate: true, ref_code };
         writeLocalUser(updated);
         return saveUserSession(updated, true);
     }
 
-    function updateAuthBadges() {
+    function renderHeaderAccountControls() {
         const user = getSavedUser();
-        document.querySelectorAll("[data-sadara-auth-btn]").forEach(btn => {
+        document.querySelectorAll("[data-sadara-auth-btn]").forEach(el => {
             if (user) {
-                btn.innerHTML = `👤 ${user.full_name}`;
+                el.innerHTML = `
+                    <span class="sa-header-bar">
+                        <button type="button" class="sa-account-badge" onclick="SadaraAuth.openModal('login', null, false)">👤 ${user.full_name}</button>
+                        <button type="button" class="sa-logout-btn" onclick="SadaraAuth.logout()">خروج</button>
+                    </span>
+                `;
             } else {
-                btn.innerHTML = `🔐 حسابي`;
+                el.innerHTML = `
+                    <span class="sa-header-bar">
+                        <button type="button" class="sa-login-btn" onclick="SadaraAuth.openModal('login', null, true)">🔐 دخول / حساب</button>
+                    </span>
+                `;
             }
         });
     }
@@ -397,9 +465,14 @@
         closeModal: closeSadaraAuthModal,
         logout: logoutSadaraUser,
         promoteToAffiliate: promoteCurrentUserToAffiliate,
+        enforce: enforceAuthGate,
         normalizePhone,
         normalizePin
     };
 
-    document.addEventListener("DOMContentLoaded", updateAuthBadges);
+    document.addEventListener("DOMContentLoaded", () => {
+        ensureModalStylesAndDom();
+        renderHeaderAccountControls();
+        enforceAuthGate();
+    });
 })();
