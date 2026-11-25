@@ -3,491 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الخارجية الشاملة | صدارة</title>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>لوحة التحكم والإدارة الكاملة | منصة صدارة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --navy: #0F172A; --royal: #2563EB; --green: #10B981;
-            --red: #EF4444; --gold: #F59E0B; --bg: #F8FAFC; --border: #E2E8F0;
+            --navy: #0F172A; --royal: #2563EB; --emerald: #0D9488; --green: #10B981;
+            --gold: #F59E0B; --red: #EF4444; --bg: #F1F5F9; --card: #FFFFFF; --border: #E2E8F0;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; }
-        body { background: var(--bg); color: var(--navy); padding: 14px; line-height: 1.65; }
-        .container { max-width: 1180px; margin: 0 auto; display: grid; gap: 18px; }
-        .header { background: var(--navy); color: #fff; padding: 18px 20px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .card { background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 18px; }
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
-        input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px; background: var(--bg); }
-        .btn { padding: 8px 13px; border: none; border-radius: 10px; font-weight: 700; font-size: 12.5px; cursor: pointer; }
-        .btn-royal { background: var(--royal); color: #fff; }
-        .btn-green { background: var(--green); color: #fff; }
-        .btn-red { background: var(--red); color: #fff; }
-        .btn-gold { background: var(--gold); color: var(--navy); }
-        .row-box { border: 1px solid var(--border); border-radius: 14px; padding: 13px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; background: #fff; }
-        .badge { padding: 3px 10px; border-radius: 99px; font-size: 11.5px; font-weight: 700; }
-        .item-thumb { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); background: var(--bg); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); color: var(--navy); padding: 16px; padding-bottom: 60px; }
+        .container { max-width: 1180px; margin: 0 auto; }
+        .header {
+            background: var(--navy); color: #fff; padding: 18px 20px; border-radius: 16px;
+            border-bottom: 3px solid var(--gold); margin-bottom: 18px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+        }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(15,23,42,0.04); }
+        h2 { font-size: 16.5px; font-weight: 900; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        label { display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-top: 10px; margin-bottom: 4px; }
+        input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 10px; font-size: 13px; background: #F8FAFC; }
+        .btn { border: none; padding: 9px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; color: #fff; }
+        .btn-navy { background: var(--navy); }
+        .btn-royal { background: var(--royal); }
+        .btn-green { background: var(--green); }
+        .btn-gold { background: var(--gold); color: #0F172A; }
+        .btn-red { background: var(--red); }
+        .row-box {
+            border: 1px solid var(--border); background: #F8FAFC; border-radius: 12px;
+            padding: 12px; margin-top: 10px; display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 10px;
+        }
+        .badge { background: #EFF6FF; color: var(--royal); padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+        .msg-box { margin-top: 8px; font-size: 12.5px; font-weight: 700; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <div class="header">
+        <header class="header">
             <div>
-                <h1 style="font-size:clamp(18px, 2.5vw, 22px);">لوحة التحكم الخارجية المتكاملة — صدارة</h1>
-                <p style="font-size:12.5px; color:#CBD5E1;">إضافة، تعديل، حذف، قبول، ورفض لكافة أقسام المنصة مع ربط لحظي</p>
+                <h1 style="font-size:20px; font-weight:900;">لوحة تحكم منصة صدارة الشاملة 🛠️</h1>
+                <p style="font-size:12.5px; opacity:0.85; margin-top:3px;">إدارة الحسابات والرموز، الطلبات والدورات، المسوّقين والتسويات، والخدمات</p>
             </div>
-            <button class="btn btn-gold" onclick="refreshAll()">تحديث شامل 🔄</button>
+            <button type="button" class="btn btn-green" onclick="refreshAll()">تحديث البيانات 🔄</button>
+        </header>
+
+        <!-- إدارة الحسابات الموحدة والرموز الرباعية -->
+        <section class="card">
+            <h2><span>🔐 إدارة الحسابات الموحدة والرموز الرباعية</span><span class="badge" id="usersAdminCount">0</span></h2>
+            <div id="usersAdminList">جاري التحميل...</div>
+        </section>
+
+        <!-- طلبات المتجر والدورات -->
+        <section class="card">
+            <h2><span>📦 طلبات المتجر والدورات (قبول / رفض / فتح آلي)</span><span class="badge" id="ordersAdminCount">0</span></h2>
+            <div id="ordersAdminList">جاري التحميل...</div>
+        </section>
+
+        <!-- المسوقون والتسوية والترحيل -->
+        <section class="card">
+            <h2><span>🤝 المسوقون بالعمولة والتسويات</span><span class="badge" id="affAdminCount">0</span></h2>
+            <div id="affAdminList">جاري التحميل...</div>
+        </section>
+
+        <div class="grid-2">
+            <!-- إضافة أو تعديل خدمة بالمتجر -->
+            <section class="card">
+                <h2><span>🛒 إضافة أو تعديل خدمة بالمتجر</span></h2>
+                <input type="hidden" id="editServiceId">
+                <label>اسم الخدمة أو المنتج</label>
+                <input type="text" id="serviceTitle" placeholder="مثال: اشتراك رقمي أو خدمة تصميم">
+                <label>السعر (YER)</label>
+                <input type="text" id="servicePrice" placeholder="2500">
+                <label>عمولة المسوّق (YER)</label>
+                <input type="number" id="serviceCommission" placeholder="500" value="0">
+                <label>الوصف</label>
+                <textarea id="serviceDesc" rows="2" placeholder="تفاصيل الخدمة..."></textarea>
+                <label>صورة الخدمة (ضغط تلقائي قبل الرفع)</label>
+                <input type="file" id="serviceImgFile" accept="image/*">
+                <label>حالة التوفر</label>
+                <select id="serviceActive">
+                    <option value="true">متوفر للعملاء 🟢</option>
+                    <option value="false">غير متوفر 🔴</option>
+                </select>
+                <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
+                    <button type="button" class="btn btn-royal" onclick="saveServiceWithImage()">حفظ / نشر الخدمة 🚀</button>
+                    <button type="button" class="btn btn-navy" onclick="resetServiceForm()">إلغاء / جديد</button>
+                </div>
+                <div id="serviceMsg" class="msg-box"></div>
+                <div id="servicesAdminList" style="margin-top:12px;"></div>
+            </section>
+
+            <!-- إضافة دورة تدريبية -->
+            <section class="card">
+                <h2><span>🎓 إضافة دورة تدريبية جديدة</span></h2>
+                <label>عنوان الدورة</label>
+                <input type="text" id="courseTitle" placeholder="مثال: أساسيات التسويق الرقمي">
+                <label>المدرب</label>
+                <input type="text" id="courseInstructor" placeholder="منصة صدارة">
+                <label>السعر (YER — اكتب 0 للدورة المجانية)</label>
+                <input type="number" id="coursePrice" placeholder="0" value="0">
+                <label>عمولة المسوّق للدورة (YER)</label>
+                <input type="number" id="courseCommission" placeholder="0" value="0">
+                <label>وصف الدورة</label>
+                <textarea id="courseDesc" rows="2" placeholder="نبذة عن الدورة..."></textarea>
+                <label>عنوان أول درس</label>
+                <input type="text" id="lessonTitle" placeholder="الدرس الأول: مقدمة">
+                <label>رابط فيديو أو ملف PDF للدرس</label>
+                <input type="text" id="lessonUrl" placeholder="https://...">
+                <button type="button" class="btn btn-green" style="margin-top:14px;" onclick="createCourse()">نشر الدورة 🚀</button>
+                <div id="courseMsg" class="msg-box"></div>
+                <div id="coursesAdminList" style="margin-top:12px;"></div>
+            </section>
         </div>
-
-        <!-- 1. المدفوعات والطلبات الموحدة (قبول / رفض / حذف) -->
-        <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">💳 المدفوعات والطلبات (قبول، رفض، حذف)</h2>
-            <div id="unifiedPaymentsList">جاري التحميل...</div>
-        </section>
-
-        <!-- 2. إدارة منتجات المتجر (إضافة / تعديل / حذف) -->
-        <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">🛒 إدارة منتجات المتجر</h2>
-            <div class="grid-2">
-                <input type="text" id="pTitle" placeholder="اسم المنتج">
-                <input type="text" id="pCat" placeholder="التصنيف (مثال: جوالات)">
-                <input type="number" id="pPrice" placeholder="السعر الحالي (YER)">
-                <input type="number" id="pOldPrice" placeholder="السعر السابق (اختياري)">
-                <input type="text" id="pDiscount" placeholder="شارة خصم (مثال: 15%)">
-                <div>
-                    <label style="font-size:11px; font-weight:700;">صورة المنتج (مرونة في المقاس والضغط):</label>
-                    <input type="file" id="pImgFile" accept="image/*">
-                </div>
-                <textarea id="pDesc" placeholder="وصف المنتج..." rows="2"></textarea>
-            </div>
-            <button class="btn btn-royal" style="margin-top:10px;" onclick="saveProduct()">حفظ المنتج ونشره ✅</button>
-            <div id="pStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
-            <div id="productsManageList" style="margin-top:14px;"></div>
-        </section>
-
-        <!-- 3. إدارة الدورات والدروس (إضافة دورة + إضافة درس PDF/صورة/فيديو/صوت + حذف) -->
-        <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">🎓 إدارة الدورات والدروس متعددة الوسائط</h2>
-            <div class="grid-2">
-                <input type="text" id="cTitle" placeholder="عنوان الدورة">
-                <input type="text" id="cInstructor" placeholder="اسم المدرب">
-                <select id="cType" onchange="document.getElementById('cPrice').disabled = (this.value==='free')">
-                    <option value="paid">مدفوعة</option>
-                    <option value="free">مجانية</option>
-                </select>
-                <input type="number" id="cPrice" placeholder="السعر بالريال">
-                <div>
-                    <label style="font-size:11px; font-weight:700;">غلاف الدورة من المعرض:</label>
-                    <input type="file" id="cImgFile" accept="image/*">
-                </div>
-                <textarea id="cDesc" placeholder="وصف الدورة..." rows="2"></textarea>
-            </div>
-            <button class="btn btn-royal" style="margin-top:10px;" onclick="saveNewCourse()">حفظ الدورة ✅</button>
-            <div id="cSaveStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
-
-            <div class="grid-2" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
-                <select id="lessonCourseSelect"></select>
-                <input type="number" id="lessonOrder" placeholder="ترتيب الدرس" value="1">
-                <input type="text" id="lessonTitle" placeholder="عنوان الدرس (مثال: الدرس الأول)">
-                <select id="lessonMediaType">
-                    <option value="video">فيديو</option>
-                    <option value="audio">ملف صوتي</option>
-                </select>
-                <div><label style="font-size:11px; font-weight:700;">ملف PDF للدرس:</label><input type="file" id="lessonPdfFile" accept="application/pdf"></div>
-                <div><label style="font-size:11px; font-weight:700;">صورة الدرس من المعرض:</label><input type="file" id="lessonImgFile" accept="image/*"></div>
-                <div><label style="font-size:11px; font-weight:700;">فيديو أو صوت من الجهاز:</label><input type="file" id="lessonMediaFile" accept="video/*,audio/*"></div>
-                <input type="text" id="lessonMediaUrl" placeholder="أو رابط يوتيوب / صوت مباشر">
-                <textarea id="lessonSummary" placeholder="ملخص الدرس..." rows="2"></textarea>
-            </div>
-            <button class="btn btn-green" style="margin-top:10px;" onclick="saveLesson()">إضافة الدرس ➕</button>
-            <div id="lessonSaveStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
-            <div id="coursesManageList" style="margin-top:14px;"></div>
-        </section>
-
-        <!-- 4. إدارة المدونة (نصوص كاملة + صور بداية/وسط/نهاية + تعديل/حذف) -->
-        <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">📰 إدارة المدونة والمقالات</h2>
-            <div class="grid-2">
-                <input type="text" id="artTitle" placeholder="عنوان المقال">
-                <input type="text" id="artCategory" placeholder="التصنيف">
-                <input type="text" id="artReadTime" placeholder="زمن القراءة (مثال: 4 دقائق)">
-                <input type="text" id="artSummary" placeholder="ملخص مختصر">
-                <div><label style="font-size:11px; font-weight:700;">صورة بداية المقال:</label><input type="file" id="artImgStart" accept="image/*"></div>
-                <div><label style="font-size:11px; font-weight:700;">صورة منتصف المقال:</label><input type="file" id="artImgMid" accept="image/*"></div>
-                <div><label style="font-size:11px; font-weight:700;">صورة نهاية المقال:</label><input type="file" id="artImgEnd" accept="image/*"></div>
-            </div>
-            <textarea id="artContent" placeholder="اكتب نص المقال كاملاً هنا..." rows="5" style="margin-top:10px;"></textarea>
-            <button class="btn btn-royal" style="margin-top:10px;" onclick="saveArticle()">نشر المقال ✅</button>
-            <div id="artSaveStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
-            <div id="articlesManageList" style="margin-top:14px;"></div>
-        </section>
-
-        <!-- 5. إدارة الوظائف والكفاءات (إضافة + حذف) -->
-        <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">💼 إدارة الوظائف الشاغرة والكفاءات</h2>
-            <div class="grid-2">
-                <input type="text" id="jTitle" placeholder="المسمى الوظيفي">
-                <input type="text" id="jCompany" placeholder="اسم الجهة">
-                <input type="text" id="jLocation" placeholder="الموقع">
-                <input type="text" id="jSalary" placeholder="الراتب (اختياري)">
-                <input type="tel" id="jPhone" placeholder="رقم التواصل / واتساب">
-                <input type="text" id="jDesc" placeholder="تفاصيل الوظيفة">
-            </div>
-            <button class="btn btn-royal" style="margin-top:10px;" onclick="saveJobItem()">نشر الوظيفة ✅</button>
-
-            <div class="grid-2" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
-                <input type="text" id="tName" placeholder="اسم الخبير أو الكفاءة">
-                <input type="text" id="tSpecialty" placeholder="التخصص">
-                <input type="tel" id="tPhone" placeholder="رقم الواتساب">
-                <div><label style="font-size:11px; font-weight:700;">صورة الخبير:</label><input type="file" id="tAvatarFile" accept="image/*"></div>
-                <input type="text" id="tExp" placeholder="نبذة عن الخبرات">
-            </div>
-            <button class="btn btn-green" style="margin-top:10px;" onclick="saveTalentItem()">إضافة الكفاءة ✅</button>
-            <div id="jtSaveStatus" style="font-size:12.5px; font-weight:700; margin-top:6px;"></div>
-            <div id="jobsTalentsManageList" style="margin-top:14px;"></div>
-        </section>
-
-        <!-- 6. إدارة المسوّقين مركزياً (تعديل الاسم والكود وتصفية الحساب وحذف) -->
-        <section class="card">
-            <h2 style="font-size:17px; margin-bottom:12px;">🤝 إدارة المسوّقين مركزياً</h2>
-            <div id="affiliatesAdminList">جاري التحميل...</div>
-        </section>
     </div>
 
     <script>
-        const db = supabase.createClient("https://lvutrzswngpkjfamgact.supabase.co", "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG");
-        const BUCKET = "platform-files";
-
-        function normalizePhone(raw) {
-            const eng = String(raw || '').replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
-            return eng.replace(/[^0-9]/g, '');
+        function checkAdminAuth() {
+            const saved = localStorage.getItem("sadara_admin_auth");
+            if (saved !== "Sdr@2026Admin") {
+                const entered = prompt("أدخل كلمة مرور لوحة التحكم:");
+                if (entered === "Sdr@2026Admin") {
+                    localStorage.setItem("sadara_admin_auth", "Sdr@2026Admin");
+                } else {
+                    alert("رمز الدخول غير صحيح");
+                    window.location.href = "index.html";
+                }
+            }
         }
+        checkAdminAuth();
 
-        async function prepareFlexibleImage(file, maxSide = 1280, quality = 0.82) {
-            if (!file || !file.type.startsWith('image/')) return file;
-            return new Promise(resolve => {
+        const SUPABASE_URL = "https://lvutrzswngpkjfamgact.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fB8RmZyfymR8YpjLInA2LQ_hMA6qgRG";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function compressImage(file, maxWidth = 850, quality = 0.72) {
+            return new Promise((resolve) => {
                 const reader = new FileReader();
-                reader.onload = e => {
+                reader.onload = (ev) => {
                     const img = new Image();
                     img.onload = () => {
+                        const canvas = document.createElement("canvas");
                         let w = img.width, h = img.height;
-                        if (w > maxSide || h > maxSide) {
-                            if (w >= h) { h = Math.round(h * maxSide / w); w = maxSide; }
-                            else { w = Math.round(w * maxSide / h); h = maxSide; }
+                        if (w > maxWidth) {
+                            h = Math.round((h * maxWidth) / w);
+                            w = maxWidth;
                         }
-                        const canvas = document.createElement('canvas');
-                        canvas.width = w; canvas.height = h;
-                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        canvas.toBlob(blob => resolve(blob ? new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }) : file), 'image/jpeg', quality);
+                        canvas.width = w;
+                        canvas.height = h;
+                        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+                        canvas.toBlob((blob) => {
+                            resolve(new File([blob || file], file.name, { type: "image/jpeg" }));
+                        }, "image/jpeg", quality);
                     };
-                    img.onerror = () => resolve(file);
-                    img.src = e.target.result;
+                    img.src = ev.target.result;
                 };
-                reader.onerror = () => resolve(file);
                 reader.readAsDataURL(file);
             });
         }
 
-        async function uploadToBucket(file, folder) {
-            if (!file) return '';
-            const processed = file.type.startsWith('image/') ? await prepareFlexibleImage(file, 1280, 0.82) : file;
-            const safeName = `${folder}/${Date.now()}_${processed.name.replace(/\s+/g, '_')}`;
-            const { error } = await db.storage.from(BUCKET).upload(safeName, processed);
-            if (error) return '';
-            return db.storage.from(BUCKET).getPublicUrl(safeName).data.publicUrl;
-        }
-
-        async function loadUnifiedPayments() {
-            const { data: orders } = await db.from('orders').select('*').order('id', { ascending: false });
-            const box = document.getElementById('unifiedPaymentsList');
-            if (!orders || !orders.length) { box.innerHTML = '<p>لا توجد طلبات حالياً.</p>'; return; }
-
-            box.innerHTML = orders.map(o => {
-                const isCourse = o.item_type === 'course';
-                const statusBadge = o.status === 'approved'
-                    ? '<span class="badge" style="background:#ECFDF5; color:#059669;">مقبول ومفتوح ✅</span>'
-                    : (o.status === 'rejected'
-                        ? '<span class="badge" style="background:#FEF2F2; color:#DC2626;">مرفوض ❌</span>'
-                        : '<span class="badge" style="background:#FFFBEB; color:#B45309;">قيد المراجعة ⏳</span>');
-
-                return `
+        async function loadUsersAdmin() {
+            const { data: users } = await db.from("platform_users").select("*").order("id", { ascending: false });
+            document.getElementById("usersAdminCount").textContent = (users || []).length;
+            const box = document.getElementById("usersAdminList");
+            if (!users || !users.length) {
+                box.innerHTML = "<p style='font-size:13px; color:#64748B;'>لا توجد حسابات مسجلة حالياً.</p>";
+                return;
+            }
+            box.innerHTML = users.map(u => `
                 <div class="row-box">
                     <div>
-                        <div style="font-weight:700; font-size:14px;">${isCourse ? '🎓' : '🛒'} ${o.product_title} — <span style="color:var(--royal);">${o.total_price} YER</span></div>
-                        <div style="font-size:12.5px; color:#475569; margin-top:3px;">
-                            العميل: <b>${o.customer_name}</b> | الجوال: <b>${o.customer_phone}</b>
-                            ${o.ref_code ? ` | كود المسوّق: <b style="color:#0D9488;">${o.ref_code}</b>` : ''}
-                        </div>
-                        <div style="margin-top:6px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                            ${statusBadge}
-                            ${o.receipt_url ? `<a href="${o.receipt_url}" target="_blank" style="font-size:12px; font-weight:700; color:var(--royal);">عرض السند 🧾</a>` : ''}
-                        </div>
+                        <b>${u.full_name}</b> — الجوال: <b>${u.phone}</b>
+                        | الرمز الرباعي: <code style="background:#EFF6FF; padding:2px 8px; border-radius:6px; font-weight:700;">${u.pin_code}</code>
+                        ${u.is_affiliate ? `<span class="badge" style="background:#ECFDF5; color:#059669;">مسوّق (${u.ref_code || ""})</span>` : ""}
                     </div>
                     <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                        <button class="btn btn-green" onclick="approveOrder(${o.id}, '${o.item_type || 'product'}', '${o.item_id || ''}', '${o.customer_phone || ''}', '${o.ref_code || ''}', ${Number(o.total_price || 0)})">قبول ✅</button>
-                        <button class="btn btn-gold" onclick="rejectOrder(${o.id}, '${o.item_type || 'product'}', '${o.item_id || ''}', '${o.customer_phone || ''}')">رفض ❌</button>
-                        <button class="btn btn-red" onclick="deleteRow('orders', ${o.id})">حذف 🗑️</button>
+                        <button type="button" class="btn btn-gold" onclick="resetUserPin(${u.id}, '${u.pin_code}')">تغيير الرمز 🔑</button>
+                        <button type="button" class="btn btn-royal" onclick="toggleUserAffiliate(${u.id}, ${!u.is_affiliate}, '${u.phone}')">${u.is_affiliate ? "إلغاء المسوّق" : "تفعيل كمسوّق"}</button>
+                        <button type="button" class="btn btn-red" onclick="deleteRecord('platform_users', ${u.id})">حذف 🗑️</button>
                     </div>
-                </div>`;
-            }).join('');
+                </div>
+            `).join("");
         }
 
-        async function approveOrder(orderId, itemType, itemId, customerPhone, refCode, amount) {
-            const cleanPhone = normalizePhone(customerPhone);
-            await db.from('orders').update({ status: 'approved' }).eq('id', orderId);
-            if (itemType === 'course' && itemId && cleanPhone) {
-                await db.from('course_enrollments').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('course_id', Number(itemId)).eq('student_phone', cleanPhone);
+        async function resetUserPin(id, oldPin) {
+            const raw = prompt("أدخل الرمز الجديد (4 أرقام أو حروف):", oldPin);
+            if (!raw) return;
+            const clean = raw.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 4);
+            if (clean.length !== 4) return alert("يجب أن يكون الرمز 4 خانات (أرقام أو حروف).");
+            await db.from("platform_users").update({ pin_code: clean }).eq("id", id);
+            loadUsersAdmin();
+        }
+
+        async function toggleUserAffiliate(id, makeAff, phone) {
+            const ref_code = "SDR" + String(phone || "").slice(-4);
+            await db.from("platform_users").update({ is_affiliate: makeAff, ref_code }).eq("id", id);
+            loadUsersAdmin();
+        }
+
+        async function loadOrdersAdmin() {
+            const { data: orders } = await db.from("orders").select("*").order("id", { ascending: false });
+            document.getElementById("ordersAdminCount").textContent = (orders || []).length;
+            const box = document.getElementById("ordersAdminList");
+            if (!orders || !orders.length) {
+                box.innerHTML = "<p style='font-size:13px; color:#64748B;'>لا توجد طلبات حالياً.</p>";
+                return;
             }
-            if (refCode && refCode !== 'null' && refCode.trim() !== '') {
-                const { data: aff } = await db.from('affiliates').select('*').eq('ref_code', refCode).maybeSingle();
+            box.innerHTML = orders.map(o => `
+                <div class="row-box">
+                    <div>
+                        <b>${o.product_title || "طلب"}</b> — العميل: <b>${o.customer_name || "-"}</b> (${o.customer_phone || "-"})
+                        | الحالة: <b>${o.status || "pending"}</b>
+                        ${o.ref_code ? `| إحالة: <code>${o.ref_code}</code>` : ""}
+                    </div>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <button type="button" class="btn btn-green" onclick="updateOrderStatus(${o.id}, 'approved', '${o.ref_code || ""}', ${Number(o.commission_amount || 0)})">قبول ✅</button>
+                        <button type="button" class="btn btn-red" onclick="updateOrderStatus(${o.id}, 'rejected', '', 0)">رفض ❌</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        async function updateOrderStatus(orderId, status, refCode, commission) {
+            await db.from("orders").update({ status }).eq("id", orderId);
+            if (status === "approved" && refCode && commission > 0) {
+                const { data: aff } = await db.from("affiliates").select("*").eq("ref_code", refCode).maybeSingle();
                 if (aff) {
-                    const rate = Number(aff.commission_rate || 10) / 100;
-                    const commission = Math.max(100, Math.round(amount * rate));
-                    await db.from('affiliates').update({
-                        pending_earnings: Number(aff.pending_earnings || 0) + commission,
-                        total_earnings: Number(aff.total_earnings || 0) + commission,
-                        total_sales: Number(aff.total_sales || 0) + 1
-                    }).eq('id', aff.id);
+                    const nextPending = Number(aff.pending_earnings || 0) + commission;
+                    const nextTotal = Number(aff.total_earnings || 0) + commission;
+                    const nextSales = Number(aff.total_sales || 0) + 1;
+                    await db.from("affiliates").update({
+                        pending_earnings: nextPending,
+                        total_earnings: nextTotal,
+                        total_sales: nextSales
+                    }).eq("id", aff.id);
                 }
             }
-            alert('تم القبول والتفعيل واحتساب العمولة آلياً ✅');
             refreshAll();
-        }
-
-        async function rejectOrder(orderId, itemType, itemId, customerPhone) {
-            const cleanPhone = normalizePhone(customerPhone);
-            const reason = prompt('سبب الرفض (اختياري):', 'يرجى التأكد من وضوح السند والمبلغ');
-            if (reason === null) return;
-            await db.from('orders').update({ status: 'rejected' }).eq('id', orderId);
-            if (itemType === 'course' && itemId && cleanPhone) {
-                await db.from('course_enrollments').update({ status: 'rejected', reject_reason: reason }).eq('course_id', Number(itemId)).eq('student_phone', cleanPhone);
-            }
-            refreshAll();
-        }
-
-        async function deleteRow(table, id) {
-            if (!confirm('تأكيد حذف هذا العنصر نهائياً؟')) return;
-            await db.from(table).delete().eq('id', id);
-            refreshAll();
-        }
-
-        async function saveProduct() {
-            const title = document.getElementById('pTitle').value.trim();
-            const price = document.getElementById('pPrice').value.trim();
-            if (!title || !price) return alert('أدخل اسم المنتج وسعره.');
-            document.getElementById('pStatus').textContent = 'جاري حفظ المنتج...';
-            const image = await uploadToBucket(document.getElementById('pImgFile').files[0], 'products');
-            await db.from('platform_services').insert([{
-                title, category: document.getElementById('pCat').value.trim() || 'عام', price,
-                old_price: document.getElementById('pOldPrice').value.trim(),
-                discount: document.getElementById('pDiscount').value.trim(),
-                description: document.getElementById('pDesc').value.trim(),
-                image, is_active: true
-            }]);
-            document.getElementById('pStatus').style.color = 'var(--green)';
-            document.getElementById('pStatus').textContent = 'تم حفظ المنتج بنجاح ✅';
-            loadProductsManage();
-        }
-
-        async function loadProductsManage() {
-            const { data } = await db.from('platform_services').select('*').order('id', { ascending: false });
-            document.getElementById('productsManageList').innerHTML = (data || []).map(p => `
-                <div class="row-box">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        ${p.image ? `<img src="${p.image}" class="item-thumb" alt="">` : ''}
-                        <div><b>${p.title}</b> — <span style="color:var(--royal);">${p.price} YER</span> (${p.category || 'عام'})</div>
-                    </div>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn btn-gold" onclick="editProduct(${p.id}, '${p.title.replace(/'/g, "\\'")}', '${p.price}', '${(p.discount || '').replace(/'/g, "\\'")}')">تعديل ✏️</button>
-                        <button class="btn btn-red" onclick="deleteRow('platform_services', ${p.id})">حذف 🗑️</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function editProduct(id, oldTitle, oldPrice, oldDiscount) {
-            const title = prompt('اسم المنتج:', oldTitle); if (!title) return;
-            const price = prompt('السعر (YER):', oldPrice); if (!price) return;
-            const discount = prompt('شارة الخصم (اتركه فارغاً لإزالته):', oldDiscount);
-            await db.from('platform_services').update({ title: title.trim(), price: price.trim(), discount: (discount || '').trim() }).eq('id', id);
-            loadProductsManage();
-        }
-
-        async function saveNewCourse() {
-            const title = document.getElementById('cTitle').value.trim();
-            if (!title) return alert('أدخل عنوان الدورة.');
-            const isFree = document.getElementById('cType').value === 'free';
-            const price = isFree ? '0' : (document.getElementById('cPrice').value.trim() || '0');
-            const image = await uploadToBucket(document.getElementById('cImgFile').files[0], 'courses_covers');
-            await db.from('platform_courses').insert([{
-                title, instructor: document.getElementById('cInstructor').value.trim() || 'صدارة',
-                is_free: isFree, price, description: document.getElementById('cDesc').value.trim(), image, is_active: true
-            }]);
-            document.getElementById('cSaveStatus').style.color = 'var(--green)';
-            document.getElementById('cSaveStatus').textContent = 'تم حفظ الدورة بنجاح ✅';
-            await Promise.all([loadCoursesDropdown(), loadCoursesManage()]);
-        }
-
-        async function loadCoursesDropdown() {
-            const { data } = await db.from('platform_courses').select('id, title').order('id', { ascending: false });
-            document.getElementById('lessonCourseSelect').innerHTML = (data || []).map(c => `<option value="${c.id}">${c.title}</option>`).join('');
-        }
-
-        async function loadCoursesManage() {
-            const { data } = await db.from('platform_courses').select('*').order('id', { ascending: false });
-            document.getElementById('coursesManageList').innerHTML = (data || []).map(c => `
-                <div class="row-box">
-                    <div><b>${c.title}</b> — ${c.is_free ? 'مجانية' : `${c.price} YER`}</div>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn btn-gold" onclick="editCourse(${c.id}, '${c.title.replace(/'/g, "\\'")}', '${c.price || '0'}')">تعديل ✏️</button>
-                        <button class="btn btn-red" onclick="deleteRow('platform_courses', ${c.id})">حذف 🗑️</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function editCourse(id, oldTitle, oldPrice) {
-            const title = prompt('عنوان الدورة:', oldTitle); if (!title) return;
-            const price = prompt('السعر (0 للمجانية):', oldPrice);
-            await db.from('platform_courses').update({ title: title.trim(), price: (price || '0').trim(), is_free: Number(price || 0) <= 0 }).eq('id', id);
-            loadCoursesManage();
-        }
-
-        async function saveLesson() {
-            const course_id = Number(document.getElementById('lessonCourseSelect').value);
-            const title = document.getElementById('lessonTitle').value.trim();
-            if (!course_id || !title) return alert('اختر الدورة وأدخل عنوان الدرس.');
-            document.getElementById('lessonSaveStatus').textContent = 'جاري رفع ملفات الدرس...';
-
-            const pdf_url = await uploadToBucket(document.getElementById('lessonPdfFile').files[0], 'lessons_pdf');
-            const image_url = await uploadToBucket(document.getElementById('lessonImgFile').files[0], 'lessons_images');
-            const mediaFile = document.getElementById('lessonMediaFile').files[0];
-            const media_url = mediaFile ? await uploadToBucket(mediaFile, 'lessons_media') : document.getElementById('lessonMediaUrl').value.trim();
-
-            await db.from('course_lessons').insert([{
-                course_id, lesson_order: Number(document.getElementById('lessonOrder').value || 1),
-                title, summary: document.getElementById('lessonSummary').value.trim(),
-                pdf_url, image_url, media_url, media_type: document.getElementById('lessonMediaType').value
-            }]);
-            document.getElementById('lessonSaveStatus').style.color = 'var(--green)';
-            document.getElementById('lessonSaveStatus').textContent = 'تمت إضافة الدرس بنجاح ✅';
-        }
-
-        async function saveArticle() {
-            const title = document.getElementById('artTitle').value.trim();
-            const content = document.getElementById('artContent').value.trim();
-            if (!title || !content) return alert('أدخل عنوان المقال ونصه الكامل.');
-            document.getElementById('artSaveStatus').textContent = 'جاري رفع صور المقال ونشره...';
-
-            const image_start = await uploadToBucket(document.getElementById('artImgStart').files[0], 'blog_images');
-            const image_middle = await uploadToBucket(document.getElementById('artImgMid').files[0], 'blog_images');
-            const image_end = await uploadToBucket(document.getElementById('artImgEnd').files[0], 'blog_images');
-
-            await db.from('platform_articles').insert([{
-                title, category: document.getElementById('artCategory').value.trim() || 'مقال',
-                read_time: document.getElementById('artReadTime').value.trim() || '3 دقائق',
-                summary: document.getElementById('artSummary').value.trim() || content.slice(0, 120),
-                content, image: image_start, image_start, image_middle, image_end, is_active: true
-            }]);
-            document.getElementById('artSaveStatus').style.color = 'var(--green)';
-            document.getElementById('artSaveStatus').textContent = 'تم نشر المقال بنجاح ✅';
-            loadArticlesManage();
-        }
-
-        async function loadArticlesManage() {
-            const { data } = await db.from('platform_articles').select('*').order('id', { ascending: false });
-            document.getElementById('articlesManageList').innerHTML = (data || []).map(a => `
-                <div class="row-box">
-                    <div><b>${a.title}</b> (${a.category || 'مقال'})</div>
-                    <button class="btn btn-red" onclick="deleteRow('platform_articles', ${a.id})">حذف 🗑️</button>
-                </div>
-            `).join('');
-        }
-
-        async function saveJobItem() {
-            const title = document.getElementById('jTitle').value.trim();
-            if (!title) return alert('أدخل المسمى الوظيفي.');
-            await db.from('platform_jobs').insert([{
-                title, company: document.getElementById('jCompany').value.trim() || 'جهة معلنة',
-                location: document.getElementById('jLocation').value.trim() || 'اليمن',
-                salary: document.getElementById('jSalary').value.trim(),
-                contact_phone: normalizePhone(document.getElementById('jPhone').value) || '967780568507',
-                description: document.getElementById('jDesc').value.trim(), is_active: true
-            }]);
-            document.getElementById('jtSaveStatus').style.color = 'var(--green)';
-            document.getElementById('jtSaveStatus').textContent = 'تم نشر الوظيفة بنجاح ✅';
-            loadJobsTalentsManage();
-        }
-
-        async function saveTalentItem() {
-            const full_name = document.getElementById('tName').value.trim();
-            if (!full_name) return alert('أدخل اسم الخبير أو الكفاءة.');
-            const avatar_url = await uploadToBucket(document.getElementById('tAvatarFile').files[0], 'talents');
-            await db.from('platform_resumes').insert([{
-                full_name, specialty: document.getElementById('tSpecialty').value.trim() || 'تخصص عام',
-                phone: normalizePhone(document.getElementById('tPhone').value) || '967780568507',
-                experience: document.getElementById('tExp').value.trim(), avatar_url, is_verified: true, is_active: true
-            }]);
-            document.getElementById('jtSaveStatus').style.color = 'var(--green)';
-            document.getElementById('jtSaveStatus').textContent = 'تمت إضافة الكفاءة بنجاح ✅';
-            loadJobsTalentsManage();
-        }
-
-        async function loadJobsTalentsManage() {
-            const [jRes, tRes] = await Promise.all([
-                db.from('platform_jobs').select('*').order('id', { ascending: false }),
-                db.from('platform_resumes').select('*').order('id', { ascending: false })
-            ]);
-            const jHtml = (jRes.data || []).map(j => `<div class="row-box"><div>💼 <b>${j.title}</b> — ${j.company || ''}</div><button class="btn btn-red" onclick="deleteRow('platform_jobs', ${j.id})">حذف 🗑️</button></div>`).join('');
-            const tHtml = (tRes.data || []).map(t => `<div class="row-box"><div>👨‍💻 <b>${t.full_name || t.name}</b> — ${t.specialty || ''}</div><button class="btn btn-red" onclick="deleteRow('platform_resumes', ${t.id})">حذف 🗑️</button></div>`).join('');
-            document.getElementById('jobsTalentsManageList').innerHTML = jHtml + tHtml;
         }
 
         async function loadAffiliatesAdmin() {
-            const { data: affs } = await db.from('affiliates').select('*').order('id', { ascending: false });
-            document.getElementById('affiliatesAdminList').innerHTML = (affs || []).map(a => {
-                const displayName = a.full_name || a.name || 'مسوّق';
-                return `
+            const { data: affs } = await db.from("affiliates").select("*").order("id", { ascending: false });
+            document.getElementById("affAdminCount").textContent = (affs || []).length;
+            const box = document.getElementById("affAdminList");
+            if (!affs || !affs.length) {
+                box.innerHTML = "<p style='font-size:13px; color:#64748B;'>لا يوجد مسوقون مسجلون حالياً.</p>";
+                return;
+            }
+            box.innerHTML = affs.map(a => `
                 <div class="row-box">
                     <div>
-                        <b>${displayName}</b> (${a.phone}) — كود الإحالة: <b style="color:var(--royal);">${a.ref_code}</b><br>
-                        <span style="font-size:12.5px;">المعلق: <b style="color:var(--green);">${a.pending_earnings || 0} YER</b> | المصروف: <b>${a.settled_earnings || 0} YER</b></span>
+                        <b>${a.full_name || a.name}</b> (${a.phone}) — كود: <code>${a.ref_code}</code><br>
+                        <span style="font-size:12px; color:#475569;">معلقة: <b>${a.pending_earnings || 0} YER</b> | مصروفة: <b>${a.settled_earnings || 0} YER</b> | إجمالي: <b>${a.total_earnings || 0} YER</b></span>
                     </div>
                     <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                        <button class="btn btn-gold" onclick="editAffiliateInfo(${a.id}, '${displayName.replace(/'/g, "\\'")}', '${a.ref_code}')">تعديل الاسم / الكود ✏️</button>
-                        <button class="btn btn-royal" onclick="settleAffiliate(${a.id}, '${a.ref_code}', '${displayName.replace(/'/g, "\\'")}', ${Number(a.pending_earnings || 0)}, ${Number(a.settled_earnings || 0)})">تصفية الحساب 💸</button>
-                        <button class="btn btn-red" onclick="deleteRow('affiliates', ${a.id})">حذف 🗑️</button>
+                        <button type="button" class="btn btn-green" onclick="settleAffiliate(${a.id}, '${a.ref_code || ""}', ${Number(a.pending_earnings || 0)}, ${Number(a.settled_earnings || 0)})">تسوية وصرف 💳</button>
+                        <button type="button" class="btn btn-navy" onclick="rolloverYearly('${a.ref_code || ""}', ${Number(a.total_earnings || 0)})">ترحيل سنوي 📅</button>
                     </div>
-                </div>`;
-            }).join('') || '<p>لا يوجد مسوقون مسجلون حالياً.</p>';
+                </div>
+            `).join("");
         }
 
-        async function editAffiliateInfo(id, oldName, oldCode) {
-            const newName = prompt('تعديل اسم المسوّق:', oldName); if (!newName) return;
-            const newCode = prompt('تعديل كود الإحالة:', oldCode); if (!newCode) return;
-            await db.from('affiliates').update({ full_name: newName.trim(), name: newName.trim(), ref_code: newCode.trim().toUpperCase() }).eq('id', id);
-            loadAffiliatesAdmin();
-        }
-
-        async function settleAffiliate(id, refCode, name, pending, settled) {
-            if (pending <= 0) return alert('لا توجد مستحقات معلقة للتصفية.');
-            if (!confirm(`تصفية وصرف ${pending} YER للمسوّق ${name}؟`)) return;
-            await db.from('affiliates').update({ pending_earnings: 0, settled_earnings: settled + pending }).eq('id', id);
-            await db.from('affiliate_settlements').insert([{
-                affiliate_id: id, ref_code: refCode, affiliate_name: name, settled_amount: pending,
-                settlement_type: 'monthly', period_month: new Date().toISOString().slice(0, 7), notes: 'تصفية معتمدة من الإدارة'
+        async function settleAffiliate(id, refCode, pending, settled) {
+            if (pending <= 0) return alert("لا توجد مستحقات معلقة للتسوية.");
+            await db.from("affiliates").update({
+                pending_earnings: 0,
+                settled_earnings: settled + pending
+            }).eq("id", id);
+            await db.from("affiliate_settlements").insert([{
+                ref_code: refCode,
+                settlement_type: "monthly_payout",
+                settled_amount: pending,
+                period_month: new Date().toISOString().slice(0, 7),
+                notes: "تسوية وصرف مستحقات المسوّق"
             }]);
             loadAffiliatesAdmin();
         }
 
-        async function refreshAll() {
-            await Promise.all([
-                loadUnifiedPayments(), loadProductsManage(), loadCoursesDropdown(),
-                loadCoursesManage(), loadArticlesManage(), loadJobsTalentsManage(), loadAffiliatesAdmin()
-            ]);
+        async function rolloverYearly(refCode, total) {
+            await db.from("affiliate_settlements").insert([{
+                ref_code: refCode,
+                settlement_type: "yearly_rollover",
+                settled_amount: total,
+                period_year: String(new Date().getFullYear()),
+                notes: "ترحيل سنوي للأرباح"
+            }]);
+            alert("تم تسجيل الترحيل السنوي بنجاح ✅");
         }
 
-        window.addEventListener('DOMContentLoaded', refreshAll);
-    </script>
-</body>
-</html>
+        async function saveServiceWithImage() {
+            const editId = document.getElementById("editServiceId").value;
+            const title = document.getElementById("serviceTitle").value.trim();
+            const price = document.getElementById("servicePrice").value.trim();
+            const commission_amount = Number(document.getElementById("serviceCommission").value || 0);
+            const description = document.getElementById("serviceDesc").value.trim();
+            const is_active = document.getElementById("serviceActive").value === "true";
+            const file = document.getElementById("serviceImgFile").files[0];
+            const msg = document.getElementById("serviceMsg");
+
+            if (!title || !price) return alert("أدخل اسم الخدمة والسعر.");
+            msg.style.color = "#2563EB";
+            msg.textContent = "جاري الحفظ...";
+
+            let image_url = "";
+            if (file) {
+                const compressed = await compressImage(file);
+                const path = `services/srv_${Date.now()}.jpg`;
+                const { error: upErr } = await db.storage.from("platform-files").upload(path, compressed);
+                if (!upErr) {
+                    const { data: pub } = db.storage.from("platform-files").getPublicUrl(path);
+                    image_url = pub.publicUrl;
+                }
+            }
+
+            const payload = { title, price, commission_amount, description, is_active };
+            if (image_url) payload.image_url = image_url;
+
+            const res = editId
+                ? await db.from("platform_services").update(payload).eq("id", editId)
+                : await db.from("platform_services").insert([payload]);
+
+            if (res.error) {
+                msg.style.color = "#DC2626";
+                msg.textContent = "خطأ: " + res.error.message;
+            } else {
+                msg.style.color = "#059669";
+                msg.textContent = "تم حفظ الخدمة بنجاح ✅";
+                resetServiceForm();
+                loadServicesAdmin();
+            }
+        }
+
+        function resetServiceForm() {
+            document.getElementById("editServiceId").value = "";
+            document.getElementById("serviceTitle").value = "";
+            document.getElementById("servicePrice").value = "";
+            document.getElementById("serviceCommission").value = "0";
+            document.getElementById("serviceDesc").value = "";
+            document.getElementById("serviceImgFile").value = "";
+        }
+
+        async function loadServicesAdmin() {
+            const { data: list } = await db.from("platform_services").select("*").order("id", { ascending: false });
+            document.getElementById("servicesAdminList").innerHTML = (list || []).map(s => `
+                <div class="row-box">
+                    <div><b>${s.title}</b> — ${s.price} YER (${s.is_active === false ? "مخفي" : "متوفر"})</div>
+                    <div style="display:flex; gap:6px;">
+                        <button type="button" class="btn btn-gold" onclick='editService(${JSON.stringify(s).replace(/'/g, "&apos;")})'>تعديل ✏️</button>
+                        <button type="button" class="btn btn-red" onclick="deleteRecord('platform_services', ${s.id})">حذف 🗑️</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function editService(s) {
+            document.getElementById("editServiceId").value = s.id;
+            document.getElementById("serviceTitle").value = s.title || "";
+            document.getElementById("servicePrice").value = s.price || "";
+            document.getElementById("serviceCommission").value = s.commission_amount || 0;
+            document.getElementById("serviceDesc").value = s.description || "";
+            document.getElementById("serviceActive").value = String(s.is_active !== false);
+        }
+
+        async function createCourse() {
+            const title = document.getElementById("courseTitle").value.trim();
+            const instructor = document.getElementById("courseInstructor").value.trim() || "منصة صدارة";
+            const price = Number(document.getElementById("coursePrice").value || 0);
+            const commission_amount = Number(document.getElementById("courseCommission").value || 0);
+            const description = document.getElementById("courseDesc").value.trim();
+            const lTitle = document.getElementById("lessonTitle").value.trim();
+            const lUrl = document.getElementById("lessonUrl").value.trim();
+            const msg = document.getElementById("courseMsg");
+
+            if (!title) return alert("أدخل عنوان الدورة.");
+            const lessons = lTitle || lUrl ? [{ title: lTitle || "الدرس الأول", video_url: lUrl }] : [];
+            const { error } = await db.from("courses").insert([{
+                title, instructor, price, commission_amount, description, lessons, is_active: true
+            }]);
+            if (error) {
+                msg.style.color = "#DC2626";
+                msg.textContent = "خطأ: " + error.message;
+            } else {
+                msg.style.color = "#059669";
+                msg.textContent = "تم نشر الدورة بنجاح ✅";
+                document.getElementById("courseTitle").value = "";
+                document.getElementById("courseDesc").value = "";
+                document.getElementById("lessonTitle").
