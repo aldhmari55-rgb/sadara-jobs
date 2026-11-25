@@ -6,9 +6,9 @@
         : null;
 
     const SESSION_KEY = "sadara_unified_user_v1";
+    const LOCAL_USERS_KEY = "sadara_local_users_cache_v1";
     const ATTEMPTS_KEY = "sadara_pin_attempts_v1";
     let authModalEl = null;
-    let currentMode = "login"; // 'login' | 'register'
     let onAuthSuccessCallback = null;
 
     function normalizeDigits(raw) {
@@ -23,6 +23,20 @@
         return normalizeDigits(raw).replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 4);
     }
 
+    function readLocalUsers() {
+        try {
+            return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || "[]");
+        } catch (_) {
+            return [];
+        }
+    }
+
+    function writeLocalUser(userObj) {
+        const list = readLocalUsers().filter(u => u.phone !== userObj.phone);
+        list.unshift(userObj);
+        localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(list));
+    }
+
     function getSavedUser() {
         try {
             const raw = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
@@ -33,12 +47,14 @@
     }
 
     function saveUserSession(user, remember = true) {
+        const cleanPhone = normalizePhone(user.phone);
         const clean = {
-            id: user.id,
+            id: user.id || Date.now(),
             full_name: user.full_name || "مستخدم صدارة",
-            phone: normalizePhone(user.phone),
+            phone: cleanPhone,
+            pin_code: normalizePin(user.pin_code || ""),
             is_affiliate: Boolean(user.is_affiliate),
-            ref_code: user.ref_code || ("SDR" + normalizePhone(user.phone).slice(-4))
+            ref_code: user.ref_code || ("SDR" + cleanPhone.slice(-4))
         };
         localStorage.removeItem(SESSION_KEY);
         sessionStorage.removeItem(SESSION_KEY);
@@ -118,7 +134,6 @@
                 text-transform: uppercase; background: #EFF6FF; color: #0F172A;
             }
             .sa-submit { width: 100%; background: #2563EB; color: #fff; border: none; padding: 11px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
-            .sa-submit:hover { background: #1D4ED8; }
             .sa-pill-btn {
                 display: inline-flex; align-items: center; gap: 6px; background: #EFF6FF; color: #1D4ED8;
                 border: 1px solid #BFDBFE; padding: 7px 12px; border-radius: 11px; font-size: 12.5px;
@@ -194,12 +209,11 @@
         document.getElementById("saForgotBtn").onclick = () => {
             const msg = document.getElementById("saMsgBox");
             msg.style.color = "#2563EB";
-            msg.textContent = "لاستعادة أو تغيير رمز الـ 4 خانات، تواصل مع الإدارة عبر واتساب (780568507) برقم جوالك المسجل.";
+            msg.textContent = "لاستعادة رمز الـ 4 خانات، تواصل مع الإدارة عبر واتساب (780568507) برقم جوالك المسجل.";
         };
     }
 
     function switchAuthMode(mode) {
-        currentMode = mode;
         document.getElementById("saTabLogin").classList.toggle("active", mode === "login");
         document.getElementById("saTabRegister").classList.toggle("active", mode === "register");
         document.getElementById("saLoginForm").style.display = mode === "login" ? "block" : "none";
@@ -241,18 +255,23 @@
         msgEl.textContent = "جاري التحقق من الحساب...";
 
         const cleanPhone = normalizePhone(rawId);
-        let query = authClient.from("platform_users").select("*").eq("is_active", true);
-        if (cleanPhone.length >= 6) {
-            query = query.eq("phone", cleanPhone);
-        } else {
-            query = query.ilike("full_name", rawId);
+        let candidates = [];
+
+        if (authClient) {
+            let q = authClient.from("platform_users").select("*");
+            q = cleanPhone.length >= 6 ? q.eq("phone", cleanPhone) : q.ilike("full_name", rawId);
+            const { data } = await q.limit(5);
+            candidates = data || [];
         }
 
-        const { data: candidates } = await query.limit(5);
-        const matched = (candidates || []).find(
-            u => normalizePin(u.pin_code) === pin
-        );
+        if (!candidates.length) {
+            candidates = readLocalUsers().filter(u =>
+                (cleanPhone.length >= 6 && u.phone === cleanPhone) ||
+                u.full_name.toLowerCase() === rawId.toLowerCase()
+            );
+        }
 
+        const matched = candidates.find(u => normalizePin(u.pin_code) === pin);
         if (!matched) {
             recordFailedPinAttempt();
             msgEl.style.color = "#DC2626";
@@ -261,13 +280,14 @@
         }
 
         resetPinAttempts();
+        writeLocalUser(matched);
         const sessionUser = saveUserSession(matched, remember);
         msgEl.style.color = "#059669";
         msgEl.textContent = `أهلاً بك ${sessionUser.full_name} ✅`;
         setTimeout(() => {
             closeSadaraAuthModal();
             if (onAuthSuccessCallback) onAuthSuccessCallback(sessionUser);
-        }, 500);
+        }, 450);
     }
 
     async function handleRegisterSubmit() {
@@ -285,38 +305,51 @@
         msgEl.style.color = "#2563EB";
         msgEl.textContent = "جاري إنشاء حسابك الموحد...";
 
-        const { data: existing } = await authClient
-            .from("platform_users")
-            .select("*")
-            .eq("phone", phone)
-            .maybeSingle();
-
-        if (existing) {
-            msgEl.style.color = "#D97706";
-            msgEl.textContent = "هذا الرقم مسجل مسبقاً. انتقل إلى تبويب «تسجيل الدخول» وأدخل رمزك.";
-            return;
-        }
-
         const ref_code = "SDR" + phone.slice(-4);
-        const { data: created, error } = await authClient
-            .from("platform_users")
-            .insert([{ full_name, phone, pin_code, is_affiliate: false, ref_code, is_active: true }])
-            .select()
-            .single();
+        let savedRecord = { full_name, phone, pin_code, is_affiliate: false, ref_code, is_active: true };
 
-        if (error || !created) {
-            msgEl.style.color = "#DC2626";
-            msgEl.textContent = "تعذر إنشاء الحساب حالياً، حاول مرة أخرى.";
-            return;
+        if (authClient) {
+            const { data: existing, error: findErr } = await authClient
+                .from("platform_users")
+                .select("*")
+                .eq("phone", phone)
+                .maybeSingle();
+
+            if (!findErr && existing) {
+                msgEl.style.color = "#D97706";
+                msgEl.textContent = "هذا الرقم مسجل مسبقاً. انتقل إلى تبويب «تسجيل الدخول» وأدخل رمزك.";
+                return;
+            }
+
+            const { data: created, error: insErr } = await authClient
+                .from("platform_users")
+                .insert([savedRecord])
+                .select()
+                .single();
+
+            if (!insErr && created) {
+                savedRecord = created;
+            } else if (insErr) {
+                writeLocalUser(savedRecord);
+                const sessionUser = saveUserSession(savedRecord, true);
+                msgEl.style.color = "#059669";
+                msgEl.textContent = "تم إنشاء الحساب محلياً وحفظه (يرجى التأكد من تفعيل جدول platform_users في Supabase).";
+                setTimeout(() => {
+                    closeSadaraAuthModal();
+                    if (onAuthSuccessCallback) onAuthSuccessCallback(sessionUser);
+                }, 900);
+                return;
+            }
         }
 
-        const sessionUser = saveUserSession(created, true);
+        writeLocalUser(savedRecord);
+        const sessionUser = saveUserSession(savedRecord, true);
         msgEl.style.color = "#059669";
         msgEl.textContent = "تم إنشاء حسابك وحفظ رمزك بنجاح 🎉";
         setTimeout(() => {
             closeSadaraAuthModal();
             if (onAuthSuccessCallback) onAuthSuccessCallback(sessionUser);
-        }, 600);
+        }, 500);
     }
 
     async function promoteCurrentUserToAffiliate() {
@@ -326,31 +359,34 @@
             return null;
         }
         const ref_code = user.ref_code || ("SDR" + user.phone.slice(-4));
-        await authClient.from("platform_users").update({ is_affiliate: true, ref_code }).eq("id", user.id);
-
-        const { data: existingAff } = await authClient.from("affiliates").select("*").eq("phone", user.phone).maybeSingle();
-        if (!existingAff) {
-            await authClient.from("affiliates").insert([{
-                full_name: user.full_name,
-                name: user.full_name,
-                phone: user.phone,
-                ref_code,
-                pending_earnings: 0,
-                settled_earnings: 0,
-                total_earnings: 0,
-                total_sales: 0
-            }]);
+        if (authClient && user.id) {
+            await authClient.from("platform_users").update({ is_affiliate: true, ref_code }).eq("id", user.id);
+            const { data: existingAff } = await authClient.from("affiliates").select("*").eq("phone", user.phone).maybeSingle();
+            if (!existingAff) {
+                await authClient.from("affiliates").insert([{
+                    full_name: user.full_name,
+                    name: user.full_name,
+                    phone: user.phone,
+                    ref_code,
+                    pending_earnings: 0,
+                    settled_earnings: 0,
+                    total_earnings: 0,
+                    total_sales: 0
+                }]);
+            }
         }
-        return saveUserSession({ ...user, is_affiliate: true, ref_code }, true);
+        const updated = { ...user, is_affiliate: true, ref_code };
+        writeLocalUser(updated);
+        return saveUserSession(updated, true);
     }
 
     function updateAuthBadges() {
         const user = getSavedUser();
         document.querySelectorAll("[data-sadara-auth-btn]").forEach(btn => {
             if (user) {
-                btn.innerHTML = `👤 ${user.full_name} <span style="font-size:11px; opacity:0.8;">(حسابي)</span>`;
+                btn.innerHTML = `👤 ${user.full_name}`;
             } else {
-                btn.innerHTML = `🔐 دخول / حساب جديد`;
+                btn.innerHTML = `🔐 حسابي`;
             }
         });
     }
