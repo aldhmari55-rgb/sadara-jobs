@@ -129,7 +129,7 @@
         style.textContent = `
             #sadaraAuthModal {
                 display: none; position: fixed; inset: 0; z-index: 9999;
-                background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(5px);
+                background: rgba(15, 23, 42, 0.86); backdrop-filter: blur(5px);
                 align-items: center; justify-content: center; padding: 14px;
             }
             .sa-card {
@@ -164,24 +164,25 @@
                 padding: 11px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
             }
             .sa-header-bar {
-                display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap;
+                display: inline-flex; align-items: center; gap: 6px;
+                background: transparent; padding: 0; margin: 0;
             }
             .sa-account-badge {
-                display: inline-flex; align-items: center; gap: 6px;
+                display: inline-flex; align-items: center; gap: 5px;
                 background: #EFF6FF; color: #0F172A; border: 1px solid #BFDBFE;
-                padding: 7px 11px; border-radius: 11px; font-size: 12px; font-weight: 700;
+                padding: 6px 10px; border-radius: 10px; font-size: 12px; font-weight: 700;
                 cursor: pointer; white-space: nowrap;
             }
             .sa-logout-btn {
-                display: inline-flex; align-items: center; gap: 5px;
+                display: inline-flex; align-items: center; gap: 4px;
                 background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA;
-                padding: 7px 10px; border-radius: 11px; font-size: 12px; font-weight: 700;
+                padding: 6px 9px; border-radius: 10px; font-size: 11.5px; font-weight: 700;
                 cursor: pointer; white-space: nowrap;
             }
             .sa-login-btn {
                 display: inline-flex; align-items: center; gap: 6px;
                 background: #2563EB; color: #fff; border: none;
-                padding: 7px 12px; border-radius: 11px; font-size: 12px; font-weight: 700;
+                padding: 7px 12px; border-radius: 10px; font-size: 12px; font-weight: 700;
                 cursor: pointer; white-space: nowrap;
             }
         `;
@@ -194,7 +195,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
                         <div style="font-size:16px; font-weight:900; color:#0F172A;">حساب منصة صدارة الموحد</div>
-                        <div style="font-size:12px; color:#64748B;">يجب تسجيل الدخول أو إنشاء حساب للمتابعة في المتجر والدورات</div>
+                        <div style="font-size:12px; color:#64748B;">يجب تسجيل الدخول أو إنشاء حساب للمتابعة</div>
                     </div>
                     <button type="button" id="saCloseBtn" style="display:none; border:none; background:#F1F5F9; width:32px; height:32px; border-radius:9px; font-weight:700; cursor:pointer;">✕</button>
                 </div>
@@ -439,13 +440,55 @@
         return saveUserSession(updated, true);
     }
 
+    function cleanupDuplicatePageAuthUI(user) {
+        // إخفاء أي نسخة ثانية لزر الحساب خارج الهيدر العلوي (مثل قسم الهيرو أو القائمة)
+        const allAuthNodes = Array.from(document.querySelectorAll("[data-sadara-auth-btn]"));
+        allAuthNodes.forEach((node, index) => {
+            const isInHeader = Boolean(node.closest("header, .navbar, .top-navbar, nav"));
+            if (!isInHeader && index > 0) {
+                node.style.display = "none";
+            }
+        });
+
+        // إخفاء أزرار تسجيل الدخول / إنشاء حساب / خروج المكررة داخل محتوى صفحات الدورات والمسوقين بعد تسجيل الدخول
+        if (user) {
+            document.querySelectorAll("button").forEach(btn => {
+                if (btn.closest("#sadaraAuthModal") || btn.closest("[data-sadara-auth-btn]")) return;
+                const txt = (btn.textContent || "").trim();
+                const onClickAttr = btn.getAttribute("onclick") || "";
+                const isLegacyAuthBtn =
+                    onClickAttr.includes("SadaraAuth.openModal") ||
+                    onClickAttr.includes("SadaraAuth.logout") ||
+                    txt === "دخول حسابي 🔒" ||
+                    txt === "تسجيل الدخول 🔒" ||
+                    txt === "إنشاء حساب جديد 🚀" ||
+                    txt === "خروج" ||
+                    txt === "تسجيل خروج";
+
+                if (isLegacyAuthBtn) {
+                    btn.style.display = "none";
+                }
+            });
+        }
+    }
+
     function renderHeaderAccountControls() {
         const user = getSavedUser();
-        document.querySelectorAll("[data-sadara-auth-btn]").forEach(el => {
+        const headerNodes = Array.from(document.querySelectorAll("[data-sadara-auth-btn]")).filter(node =>
+            Boolean(node.closest("header, .navbar, .top-navbar, nav"))
+        );
+        const targets = headerNodes.length ? headerNodes : Array.from(document.querySelectorAll("[data-sadara-auth-btn]")).slice(0, 1);
+
+        targets.forEach(el => {
+            el.style.display = "inline-flex";
+            el.style.background = "transparent";
+            el.style.border = "none";
+            el.style.padding = "0";
+
             if (user) {
                 el.innerHTML = `
                     <span class="sa-header-bar">
-                        <button type="button" class="sa-account-badge" onclick="SadaraAuth.openModal('login', null, false)">👤 ${user.full_name}</button>
+                        <span class="sa-account-badge" onclick="SadaraAuth.openModal('login', null, false)">👤 ${user.full_name}</span>
                         <button type="button" class="sa-logout-btn" onclick="SadaraAuth.logout()">خروج</button>
                     </span>
                 `;
@@ -457,6 +500,8 @@
                 `;
             }
         });
+
+        cleanupDuplicatePageAuthUI(user);
     }
 
     window.SadaraAuth = {
@@ -474,5 +519,6 @@
         ensureModalStylesAndDom();
         renderHeaderAccountControls();
         enforceAuthGate();
+        setTimeout(() => cleanupDuplicatePageAuthUI(getSavedUser()), 300);
     });
 })();
